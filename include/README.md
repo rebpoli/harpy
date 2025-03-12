@@ -22,20 +22,6 @@ classDiagram
     class Material { }
 
     class Timestep { }
-    class Dog {
-        -breed: string
-        +makeSound() void
-        +fetch() void
-    }
-
-    class Cat {
-        -furColor: string
-        +makeSound() void
-        +climb() void
-    }
-
-    Animal <|-- Dog : implements
-    Animal <|-- Cat : inherits
 
 
 <!--
