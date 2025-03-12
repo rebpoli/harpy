@@ -82,11 +82,11 @@ classDiagram
 
 ```
 2. **function** Merge(A, low, mid, high):
-   Create temporary arrays L and R
-   Copy A[low...mid] to L
-   Copy A[mid+1...high] to R
-   i = 0, j = 0, k = low
-   **while** i < length(L) **and** j < length(R) **do**
+   - Create temporary arrays L and R
+   - Copy A[low...mid] to L
+   - Copy A[mid+1...high] to R
+   - i = 0, j = 0, k = low
+   - **while** i < length(L) **and** j < length(R) **do**
       1. **if** L[i] ≤ R[j] **then**
          1. A[k] = L[i]
          2. i = i + 1
