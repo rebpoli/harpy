@@ -26,11 +26,11 @@ classDiagram
 
 %% Implementations
     class BasicSolverloop {
-        FEM EquationSystems and Mesh framework
+        EquationSystems
     }
 
     class ViscoPlasticMaterial {
-        FEM Element framework
+        Element
     }
 
 %% Dependencies
