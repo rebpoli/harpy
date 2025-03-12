@@ -14,7 +14,6 @@
 
 ```mermaid
 classDiagram
-    class Time { }
     class Timeloop { }
     class Solver { }
     class Solverloop { }
@@ -22,6 +21,8 @@ classDiagram
     class Material { }
 
     class Timestep { }
+
+    Timeloop --> Timestep
 
 
 %%
