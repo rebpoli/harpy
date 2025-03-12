@@ -46,7 +46,7 @@ classDiagram
         set_material( Material )
         eval( vector<Point> )
     }
-    Material <|.. Calculator
+    Material <.. Calculator
     CalcEntry <-- Calculator
 
 %% Helper
