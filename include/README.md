@@ -24,6 +24,7 @@ classDiagram
     }
 
     class Solver {
+        +map< var, Calculator > calculators
         +project_from(Solver, vars)
         +solve()
         -jacobian()
@@ -40,6 +41,12 @@ classDiagram
         +vector<dbl> val
         +vector<Point> grad
     }
+    class Calculator {
+        map< eid, vector< CalcEntry > > output
+        set_material( Material )
+        eval( vector<Point> )
+    }
+    Material <|.. Calculator
 
 %% Helper
     class Timestep { }
@@ -103,5 +110,8 @@ elements of the mesh in all processors, in sync).
         Mat SM = S.get_mat( E )         // Source material (shape funcs)
         Mat TM = get_mat( E )           // Target material (shape funcs)
         qpxyz = TM.get_qpxyz()          // The points of each quadrature point in the target
-        CalcEntry = SM.calc( qpxyz )    // CalcEntry holds the information at the list of points
+        foreach (var) in (vars)
+            calc = calculators[var]
+            calc.set_material( SM )
+            calc.eval( qpxyz )              // CalcEntry holds the information at the list of points
 </pre>
