@@ -44,9 +44,9 @@ classDiagram
         Coupling beween solvers
     }
 
-    class MatViscoPlastic {
-        FEM Element
-    }
+    class MatViscoPlastic { FEM Element }
+
+    class MatPoroelastic { FEM Element }
 
 %% Dependencies
     Timeloop ..> Timestep
