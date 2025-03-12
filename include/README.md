@@ -28,7 +28,6 @@ classDiagram
         -jacobian()
         -residual()
     }
-    note for Solver "Multiplexes element materials."
 
 
     class Material {
@@ -62,6 +61,7 @@ classDiagram
     Material <|.. MatViscoPlastic
     Solverloop <|.. SolverloopSingleNR
     Solver <|.. SolverNR
+    note for SolverNR "Multiplexes element materials."
 
     Solverloop ..> Solver
     Solver..> Material
