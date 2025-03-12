@@ -19,10 +19,11 @@ classDiagram
     class Solver { }
     class Solverloop { }
     class Solver {
-        -jacobian
-        -residual
+        solve()
+        -jacobian()
+        -residual()
     }
-    note for Solver "Hello"
+    note for Solver "Multiplexes element materials."
 
     class Material {
         +jacobian()
