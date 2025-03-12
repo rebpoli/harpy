@@ -30,7 +30,6 @@ classDiagram
     }
     note for Solver "Multiplexes element materials."
 
-    note for SolverloopSingleNR "Bypasses to the NR solver."
 
     class Material {
         +jacobian()
@@ -53,6 +52,9 @@ classDiagram
 %% Dependencies
     Timeloop ..> Timestep
     Timeloop ..> Solverloop
+
+    note for SolverloopSingleNR "Bypasses to the NR solver."
+    SolverloopSingleNR ..> SolverNR
 
 %% Interfaces << implementations
     Timeloop <|.. TimeloopBasic
