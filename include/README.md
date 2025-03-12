@@ -35,8 +35,8 @@ classDiagram
     }
 
 %% Dependencies
-    Timeloop --> Timestep
-    Timeloop --> Solverloop
+    Timeloop ..> Timestep
+    Timeloop ..> Solverloop
 
 %% Interfaces << implementations
     Timeloop <|.. TimeloopBasic
