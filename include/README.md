@@ -14,7 +14,7 @@
 
 ```mermaid
 graph TD
-    SolverLoop --> bu
+    Timeloop --> SolverLoop --> Solver --> Material
     Harpy --> Material[material]
     Harpy --> Solver[solver]
     Harpy --> SolverLoop[solverloop]
