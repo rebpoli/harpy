@@ -29,6 +29,8 @@ classDiagram
     Solverloop <|.. BasicSolverloop
     Solver <|.. NRSolver
 
+    Solverloop ..> Solver ..> Material
+
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
 %% classA <|.. classB    // Implementation (B implements A)
