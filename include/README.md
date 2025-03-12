@@ -18,10 +18,14 @@ classDiagram
     class Timeloop { }
     class Solver { }
     class Solverloop { }
-    class Solver { }
+    class Solver {
+        -jacobian
+        -residual
+        note on Solver "Hello"
+    }
     class Material {
-        jacobian()
-        residual()
+        +jacobian()
+        +residual()
     }
 
 %% Helper
