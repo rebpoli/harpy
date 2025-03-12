@@ -14,7 +14,9 @@
 
 ```mermaid
 classDiagram
-    class Timeloop { }
+    class Timeloop { 
+        independent of libmesh
+    }
     class Solver { }
     class Solverloop { }
     class Solver { }
