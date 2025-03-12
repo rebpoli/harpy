@@ -37,8 +37,8 @@ classDiagram
     }
 
     class CalcEntry {
-        vector[dbl] val
-        vector[Point] grad
+        +vector<dbl> val
+        +vector<Point> grad
     }
 
 %% Helper
