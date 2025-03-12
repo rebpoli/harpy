@@ -14,9 +14,7 @@
 
 ```mermaid
 graph TD
-    Base[Base] --> Config[config]
-    Base --> Harpy[harpy]
-
+    SolverLoop --> bu
     Harpy --> Material[material]
     Harpy --> Solver[solver]
     Harpy --> SolverLoop[solverloop]
