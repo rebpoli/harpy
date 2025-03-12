@@ -25,10 +25,12 @@ classDiagram
     class Timestep { }
 
 %% Implementations
-    class BasicSolverloop { }
+    class BasicSolverloop {
+        FEM EquationSystems and Mesh framework
+    }
 
     class ViscoPlasticMaterial {
-        FEM framework (libmesh)
+        FEM Element framework
     }
 
 %% Dependencies
