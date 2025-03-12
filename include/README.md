@@ -24,11 +24,11 @@ classDiagram
     }
 
     class Solver {
-        +map< var, Calculator > calculators
-        +project_from(Solver, vars)
-        +solve()
-        -jacobian()
-        -residual()
+        map< var, Calculator > calculators
+        project_from(Solver, vars)
+        solve()
+        jacobian()
+        residual()
     }
     class SolverConst {
         A solver that returns const values.
@@ -41,8 +41,8 @@ classDiagram
     }
 
     class CalcEntry {
-        +vector[qp] val
-        +vector[qp] grad
+        vector[qp] val
+        vector[qp] grad
     }
     class Calculator {
         map< eid, vector< CalcEntry > > entries_by_eid
@@ -134,3 +134,14 @@ elements of the mesh in all processors, in sync).
 
 #### Solverloop::solve():
 Integrates many solvers.
+<pre>
+    Solver S1, S2                   // Instantiate the desired types
+    while (not converged)
+        S1->project_from( S2, vars )
+        S1->solve()
+
+        S2->project_from( S1, vars )
+        S2->solve()
+
+        // export intermediate results for debugging
+</pre>
