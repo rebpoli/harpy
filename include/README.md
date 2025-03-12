@@ -49,6 +49,7 @@ classDiagram
     Material <.. Calculator
     CalcEntry <-- Calculator
     Solverloop <|.. SolverloopBasic
+    Calculator <|.. Solver
 
 %% Helper
     class Timestep { }
