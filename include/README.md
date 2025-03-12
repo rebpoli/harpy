@@ -14,9 +14,14 @@
 
 ```mermaid
 classDiagram
-    class Solver {
-    }
+    class Time { }
+    class Timeloop { }
+    class Solver { }
+    class Solverloop { }
+    class Solver { }
+    class Material { }
 
+    class Timestep { }
     class Dog {
         -breed: string
         +makeSound() void
