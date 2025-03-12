@@ -136,12 +136,15 @@ elements of the mesh in all processors, in sync).
 Integrates many solvers.
 <pre>
     Solver S1, S2                   // Instantiate the desired types
-    while (not converged)
+    while ( true )
         S1->project_from( S2, vars )
         S1->solve()
 
         S2->project_from( S1, vars )
         S2->solve()
+
+        if (converged) : break
+        if (maxit) : break
 
         // export intermediate results for debugging
 </pre>
