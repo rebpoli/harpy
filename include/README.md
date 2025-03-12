@@ -138,11 +138,11 @@ This workflow should be implemented in the child classes.
 <pre>
     Solver S1, S2                   // Instantiate the desired types
     while ( true )
-        S1->project_from( S2, vars )
-        S1->solve()
+        S1.project_from( S2, vars )
+        S1.solve()
 
-        S2->project_from( S1, vars )
-        S2->solve()
+        S2.project_from( S1, vars )
+        S2.solve()
 
         if (converged) : break
         if (maxit) : break
