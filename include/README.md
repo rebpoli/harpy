@@ -30,6 +30,7 @@ classDiagram
     Solver <|.. NRSolver
 
     Solverloop ..> Solver
+    Solver..> Material
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
