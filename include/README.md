@@ -64,11 +64,13 @@ classDiagram
 
     class MatPoroelastic { FEM Element }
 
+    class SolverloopSingleNR { Bypasses to the NR solver. } 
+    class SolverNR { Multiplexes element materials. }
+
 %% Dependencies
     Timeloop ..> Timestep
     Timeloop ..> Solverloop
 
-    note for SolverloopSingleNR "Bypasses to the NR solver."
     SolverloopSingleNR ..> SolverNR
 
 %% Interfaces << implementations
@@ -77,7 +79,6 @@ classDiagram
     Material <|.. MatViscoPlastic
     Solverloop <|.. SolverloopSingleNR
     Solver <|.. SolverNR
-    note for SolverNR "Multiplexes element materials."
 
     Solverloop ..> Solver
     Solver..> Material
