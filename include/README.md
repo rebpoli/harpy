@@ -25,6 +25,7 @@ classDiagram
     class BasicSolverloop { }
 
     Timeloop --> Timestep
+    Timeloop --> Solverloop
 
 %% Interfaces
     Timeloop <|.. BasicTimeloop
