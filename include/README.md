@@ -12,71 +12,70 @@
 | timeloop   | Timeloop implementations sharing the harpy/Timeloop interface. Handles different methods of time advancement.                          |
 | util       | Peripheral code for various purposes. Includes file handling, string handling, output operators, etc.                                   |
 
-```plantuml
+```mermaid
 
-@startuml
+classDiagram
+    class Base {
+        +Logger
+        +GlobalSettings
+        +init()
+        +shutdown()
+    }
 
-' Class definitions with descriptions
-class Base {
-  +Logger
-  +GlobalSettings
-  +init()
-  +shutdown()
-}
+    class Config {
+        -jsonData
+        +loadFromFile(path) string
+        +getConfigValue(key) any
+        +validate() boolean
+    }
 
-class Config {
-  -jsonData
-  +loadFromFile(path: string)
-  +getConfigValue(key: string): any
-  +validate(): boolean
-}
+    class Material {
+        <<interface>>
+        +getProperties() Properties
+        +updateState(conditions) void
+    }
 
-package "Harpy Core" {
-  interface Material {
-    +getProperties(): Properties
-    +updateState(conditions: Conditions)
-  }
+    class Solver {
+        <<interface>>
+        +initialize() void
+        +solve(timeStep) Results
+        +getConvergenceInfo() ConvergenceInfo
+    }
 
-  interface Solver {
-    +initialize()
-    +solve(timeStep: double): Results
-    +getConvergenceInfo(): ConvergenceInfo
-  }
+    class SolverLoop {
+        <<interface>>
+        +addSolver(solver) void
+        +iterate(maxIterations) boolean
+    }
 
-  interface SolverLoop {
-    +addSolver(solver: Solver)
-    +iterate(maxIterations: int): boolean
-  }
+    class TimeLoop {
+        <<interface>>
+        +advance() boolean
+        +getCurrentTime() double
+        +setTimeStep(dt) void
+    }
 
-  interface TimeLoop {
-    +advance(): boolean
-    +getCurrentTime(): double
-    +setTimeStep(dt: double)
-  }
-}
+    class ConcreteTimeLoop {
+        -currentTime double
+        -timeStep double
+        +advance() boolean
+        +getCurrentTime() double
+        +setTimeStep(dt) void
+    }
 
-' Implementations
-class ConcreteTimeLoop implements TimeLoop {
-  -currentTime: double
-  -timeStep: double
-  +advance(): boolean
-  +getCurrentTime(): double
-  +setTimeStep(dt: double)
-}
+    class ConcreteSolver {
+        -material Material
+        -tolerance double
+        +initialize() void
+        +solve(timeStep) Results
+        +getConvergenceInfo() ConvergenceInfo
+    }
 
-class ConcreteSolver implements Solver {
-  -material: Material
-  -tolerance: double
-  +initialize()
-  +solve(timeStep: double): Results
-  +getConvergenceInfo(): ConvergenceInfo
-}
+    Config ..> Base : uses
+    Base <.. "Harpy Core" : uses
+    Material <.. Solver : uses
+    Solver <.. SolverLoop : manages
+    TimeLoop <.. SolverLoop : controls
 
-' Relationships
-Base <-- Config: uses
-Base <-- Harpy Core: uses
-Material <-- Solver: uses
-Solver <-- SolverLoop: manages
-TimeLoop <-- SolverLoop: controls
-
-@enduml
+    TimeLoop <|.. ConcreteTimeLoop : implements
+    Solver <|.. ConcreteSolver : implements
