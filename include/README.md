@@ -42,7 +42,7 @@ classDiagram
         +vector<Point> grad
     }
     class Calculator {
-        map< eid, vector< CalcEntry > > output
+        map< eid, vector< CalcEntry > > entries_by_eid
         set_material( Material )
         eval( vector<Point> )
     }
@@ -102,17 +102,27 @@ Returns the material of a given element in the context of this solver.
 The material holds the FE shape functions and quadrature points for integration.
 It is responsible for building the element matrix and RHS.
 
+#### Calculator::eval( Solver S, Meterial TM, var )
+<pre>
+    qpxyz = TM.get_qpxyz()          // The points of each quadrature point in the target
+    foreach (Point pt) in (qpxyz)
+        entries = entries_by_eid[TM.eid]
+        Elem E = S.find_elem( pt )      // Colective task! All processors in sync
+        Mat SM = S.get_mat( E )         // Source material (shape funcs)
+        if ( curr_proc )
+            CalcEntry ce = SM.calc()   // Now only the right processor does the calc
+            entries.push( ce )
+</pre>
+        
+
 #### Solver::project_from(Solver S, vars):
 Creates a fully calculated structure in each integration point of the target.
 Remember: if we need to find elements by point, this is a collective task (need to iterate in all
 elements of the mesh in all processors, in sync).
 <pre>
     foreach (Elem E) in (this)
-        Mat SM = S.get_mat( E )         // Source material (shape funcs)
         Mat TM = get_mat( E )           // Target material (shape funcs)
-        qpxyz = TM.get_qpxyz()          // The points of each quadrature point in the target
         foreach (var) in (vars)
             calc = calculators[var]
-            calc.set_material( SM )
-            calc.eval( qpxyz )              // CalcEntry holds the information at the list of points
+            calc.eval( S, qpxyz, var )  // CalcEntry holds the information at the list of points
 </pre>
