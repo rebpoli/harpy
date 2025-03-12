@@ -47,6 +47,7 @@ classDiagram
         eval( vector<Point> )
     }
     Material <|.. Calculator
+    CalcEntry <-- Calculator
 
 %% Helper
     class Timestep { }
