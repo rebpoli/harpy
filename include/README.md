@@ -86,12 +86,5 @@ classDiagram
 
 #### Solver::project_from(Solver S, vars):
 Creates a fully calculated structure in each integration point of the target.
-   - foreach *Elem* in *this*
-   - **while** i < length(L) **and** j < length(R) **do**
-      1. **if** L[i] ≤ R[j] **then**
-         1. A[k] = L[i]
-         2. i = i + 1
-      2. **else**
-         1. A[k] = R[j]
-         2. j = j + 1
-      3. k = k + 1
+    - foreach **Elem E** in **this**
+        **Mat** M = get_mat(E)
