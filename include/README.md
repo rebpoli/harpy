@@ -14,20 +14,28 @@
 
 ```mermaid
 classDiagram
+%% Interfaces
     class Timeloop { }
     class Solver { }
     class Solverloop { }
     class Solver { }
     class Material { }
 
+%% Helper
     class Timestep { }
-    
+
+%% Implementations
     class BasicSolverloop { }
 
+    class ViscoPlasticMaterial {
+        FEM framework (libmesh)
+    }
+
+%% Dependencies
     Timeloop --> Timestep
     Timeloop --> Solverloop
 
-%% Interfaces
+%% Interfaces << implementations
     Timeloop <|.. BasicTimeloop
     Material <|.. PoroelasticMaterial
     Solverloop <|.. BasicSolverloop
