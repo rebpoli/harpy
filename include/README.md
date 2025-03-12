@@ -41,8 +41,8 @@ classDiagram
     }
 
     class CalcEntry {
-        +vector< dbl > val[qp]
-        +vector< Point > grad[qp]
+        +vector[qp] val[qp]
+        +vector[qp] grad[qp]
     }
     class Calculator {
         map< eid, vector< CalcEntry > > entries_by_eid
