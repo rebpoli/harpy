@@ -134,6 +134,7 @@ elements of the mesh in all processors, in sync).
 
 #### Solverloop::solve():
 Integrates many solvers.
+This workflow should be implemented in the child classes.
 <pre>
     Solver S1, S2                   // Instantiate the desired types
     while ( true )
