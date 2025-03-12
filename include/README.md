@@ -15,8 +15,9 @@
 ```mermaid
 classDiagram
 %% Interfaces
-    class Timeloop { }
-    class Solver { }
+    class Timeloop { 
+        solve()
+    }
     class Solverloop { }
     class Solver {
         solve()
