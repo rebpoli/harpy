@@ -83,9 +83,6 @@ classDiagram
     Solverloop ..> Solver
     Solver..> Material
 
-    SolverNR ..> MatViscoPlastic
-    SolverNR ..> MatPoroelastic
-
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
 %% classA <|.. classB    // Implementation (B implements A)
