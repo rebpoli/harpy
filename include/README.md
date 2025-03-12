@@ -23,7 +23,7 @@ classDiagram
     class Timestep { }
 
     Timeloop --> Timestep
-
+    ViscoPlasticMaterial <|.. Material
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
