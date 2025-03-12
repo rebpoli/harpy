@@ -85,7 +85,8 @@ classDiagram
 ##  Algorithms
 
 #### Solver::project_from(Solver S, vars):
-   - foreach S
+Creates a fully calculated structure in each integration point of the target.
+   - foreach *Elem* in *this*
    - **while** i < length(L) **and** j < length(R) **do**
       1. **if** L[i] ≤ R[j] **then**
          1. A[k] = L[i]
