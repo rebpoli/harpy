@@ -41,6 +41,7 @@ classDiagram
 %% Interfaces << implementations
     Timeloop <|.. BasicTimeloop
     Material <|.. PoroelasticMaterial
+    Material <|.. ViscoPlasticMaterial
     Solverloop <|.. BasicSolverloop
     Solver <|.. NRSolver
 
