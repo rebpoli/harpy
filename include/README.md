@@ -87,4 +87,4 @@ classDiagram
 #### Solver::project_from(Solver S, vars):
 Creates a fully calculated structure in each integration point of the target.
   - foreach **Elem E** in **this**
-    **Mat** M = get_mat(E)
+    - **Mat** M = get_mat(E)
