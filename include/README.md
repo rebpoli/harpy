@@ -13,21 +13,24 @@
 | util       | Peripheral code for various purposes. Includes file handling, string handling, output operators, etc.                                   |
 
 ```mermaid
-graph TD
-    Timeloop --> SolverLoop --> Solver --> Material
-
-```mermaid
 classDiagram
-    Student --|> Course : enrolls in
-    Student {
-        String name
-        int age
-        - enrollCourse()
+    class Animal {
+        +name: string
+        +age: int
+        +makeSound() void
     }
 
-    Course {
-        String name
-        int credit
-        String[] students
-        - getStudents()
+    class Dog {
+        -breed: string
+        +makeSound() void
+        +fetch() void
     }
+
+    class Cat {
+        -furColor: string
+        +makeSound() void
+        +climb() void
+    }
+
+    Animal <|-- Dog : inherits
+    Animal <|-- Cat : inherits
