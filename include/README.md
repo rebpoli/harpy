@@ -41,7 +41,7 @@ classDiagram
     }
 
     class CalcEntry {
-        +vector<dbl> val
+        +vector< dbl > val
         +vector<Point> grad
     }
     class Calculator {
