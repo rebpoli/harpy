@@ -24,8 +24,8 @@ classDiagram
     }
 
     class Solver {
-        project_from(Solver, vars)
-        solve()
+        +project_from(Solver, vars)
+        +solve()
         -jacobian()
         -residual()
     }
@@ -80,3 +80,17 @@ classDiagram
 %% classA ..|> classB    // Realization (B realizes A)
 %% classA <--> classB    // Bidirectional association
 
+```
+2. **function** Merge(A, low, mid, high):
+   1. Create temporary arrays L and R
+   2. Copy A[low...mid] to L
+   3. Copy A[mid+1...high] to R
+   4. i = 0, j = 0, k = low
+   5. **while** i < length(L) **and** j < length(R) **do**
+      1. **if** L[i] ≤ R[j] **then**
+         1. A[k] = L[i]
+         2. i = i + 1
+      2. **else**
+         1. A[k] = R[j]
+         2. j = j + 1
+      3. k = k + 1
