@@ -19,7 +19,10 @@ classDiagram
     class Solver { }
     class Solverloop { }
     class Solver { }
-    class Material { }
+    class Material {
+        jacobian()
+        residual()
+    }
 
 %% Helper
     class Timestep { }
