@@ -24,6 +24,7 @@ classDiagram
     }
 
     class Solver {
+        project_from(Solver, vars)
         solve()
         -jacobian()
         -residual()
