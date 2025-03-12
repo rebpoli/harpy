@@ -16,34 +16,17 @@
 graph TD
     Timeloop --> SolverLoop --> Solver --> Material
 
-classDiagram
-    class TimeLoop {
-        <<interface>>
-        +advance() boolean
-        +getCurrentTime() double
-        +setTimeStep(dt) void
-        +reset() void
-    }
-    
-    class ConcreteTimeLoop {
-        -currentTime double
-        -timeStep double
-        -initialTime double
-        +advance() boolean
-        +getCurrentTime() double
-        +setTimeStep(dt) void
-        +reset() void
-    }
-    
-    class AdaptiveTimeLoop {
-        -currentTime double
-        -timeStep double
-        -minTimeStep double
-        -maxTimeStep double
-        -errorTolerance double
-        +advance() boolean
-        +getCurrentTime() double
-        +setTimeStep(dt) void
-        +reset() void
-        -calculateNextTimeStep() double
-    }
+    classDiagram
+        Student --|> Course : enrolls in
+        Student {
+            String name
+            int age
+            - enrollCourse()
+        }
+
+        Course {
+            String name
+            int credit
+            String[] students
+            - getStudents()
+        }
