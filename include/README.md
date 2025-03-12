@@ -26,7 +26,7 @@ classDiagram
 
     Timeloop --> Timestep
 
-    % Interfaces
+%% Interfaces
     Timeloop <|.. BasicTimeloop
     Material <|.. PoroelasticMaterial
     Solverloop <|.. BasicSolverloop
