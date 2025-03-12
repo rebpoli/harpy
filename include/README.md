@@ -21,9 +21,13 @@ classDiagram
     class Material { }
 
     class Timestep { }
+    
+    class BasicSolverloop { }
 
     Timeloop --> Timestep
-    ViscoPlasticMaterial <|.. Material
+    Material <|.. ViscoPlasticMaterial
+    Solverloop <|.. BasicSolverloop
+    Solver <|.. NRSolver
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
