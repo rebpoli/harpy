@@ -24,15 +24,15 @@ classDiagram
     }
 
     class Solver {
-        map< var, Calculator > calculators
+        map< var, Calculator * > calculators
+        map< sid, Material * > material_by_subdomain
+        ~Solver: delete materials and calculators
         project_from(Solver, vars)
         solve()
         jacobian()
         residual()
     }
-    class SolverConst {
-        A solver that returns const values.
-    }
+    class SolverConst { A solver that returns const values.  }
 
 
     class Material {
@@ -65,7 +65,12 @@ classDiagram
 
     class MatViscoPlastic { FEM Element }
 
-    class MatPoroelastic { FEM Element }
+    class MatPoroelastic {
+        FEM Element 
+        FE ShapeFunc
+        QRule
+        reinit(Elem)
+    }
 
     class SolverloopSingleNR { Bypasses to the NR solver. } 
     class SolverNR { Multiplexes element materials. }
@@ -101,7 +106,7 @@ classDiagram
 
 ##  Algorithms
 
-#### Material Solver::get_mat(Elem E):
+#### Material Solver::get_mat(Elem E)
 Returns the material of a given element in the context of this solver.
 The material holds the FE shape functions and quadrature points for integration.
 It is responsible for building the element matrix and RHS.
@@ -121,7 +126,7 @@ Register in the entries_by_eid. Only in the processor that owns the element.
             entries.push( ce )
 </pre>
         
-#### Solver::project_from(Solver S, vars):
+#### Solver::project_from(Solver S, vars)
 Creates a fully calculated structure in each integration point of the target.
 Remember: if we need to find elements by point, this is a collective task (need to iterate in all
 elements of the mesh in all processors, in sync).
@@ -132,7 +137,7 @@ elements of the mesh in all processors, in sync).
             calc.eval( S, E, var )  // CalcEntry holds the information at the list of points
 </pre>
 
-#### Solverloop::solve():
+#### Solverloop::solve()
 Integrates many solvers.
 This workflow should be implemented in the child classes.
 <pre>
@@ -149,3 +154,29 @@ This workflow should be implemented in the child classes.
 
         // export intermediate results for debugging
 </pre>
+
+#### Solver::Solver()
+
+#### Solver::get_mat( Elem E )
+Retrieves the material for the element.
+Creates a new one if does not exist.
+
+<pre>
+    sid = E.subdomain()
+    if not material_by_subdomain[sid] : material_by_subdomain[sid] = Material::Factory(sid)
+</pre>
+    
+#### Material::factory( sid )
+Multiplexes the material from the configuration.
+Instantiates the right material for the element.
+Should only be called if it hasnt been created befor (see Solver::get_mat)
+<pre>
+    matid = get_mat_id(sid) 
+    if matid == VISCOPLASTIC :
+        return new MatViscoPlastic( E ) // 
+    if matid == POROELASTIC :
+        return new MatViscoPlastic( E ) // 
+</pre>
+
+
+#### Material::Material()
