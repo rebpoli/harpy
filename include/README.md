@@ -29,7 +29,7 @@ classDiagram
     Solverloop <|.. BasicSolverloop
     Solver <|.. NRSolver
 
-    Solverloop ..> Solver ..> Material
+    Solverloop ..> Solver
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
