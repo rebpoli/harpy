@@ -14,8 +14,7 @@
 
 ```mermaid
 classDiagram
-    class Timeloop { 
-    }
+    class Timeloop { }
     class Solver { }
     class Solverloop { }
     class Solver { }
@@ -33,10 +32,6 @@ classDiagram
 
     Solverloop ..> Solver
     Solver..> Material
-
-    note "N1: Independent of libmesh"
-    Timeloop .. N1
-    Solverloop .. N1
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
