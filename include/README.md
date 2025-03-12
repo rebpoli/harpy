@@ -24,7 +24,7 @@ classDiagram
     class Timestep { }
 
 
-<!--
+/*
 classA <|-- classB    // Inheritance (B inherits from A)
 classA <|.. classB    // Implementation (B implements A)
 classA *-- classB     // Composition (B is part of A)
@@ -33,4 +33,4 @@ classA --> classB     // Association (A references B)
 classA ..> classB     // Dependency (A depends on B)
 classA ..|> classB    // Realization (B realizes A)
 classA <--> classB    // Bidirectional association
--->
+*/
