@@ -30,6 +30,8 @@ classDiagram
     }
     note for Solver "Multiplexes element materials."
 
+    note for SolverloopSingleNR "Bypasses to the NR solver."
+
     class Material {
         +jacobian()
         +residual()
@@ -56,7 +58,7 @@ classDiagram
     Timeloop <|.. TimeloopBasic
     Material <|.. MatPoroelastic
     Material <|.. MatViscoPlastic
-    Solverloop <|.. SolverloopSingle
+    Solverloop <|.. SolverloopSingleNR
     Solver <|.. SolverNR
 
     Solverloop ..> Solver
