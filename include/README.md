@@ -25,12 +25,12 @@ classDiagram
     class Timestep { }
 
 %% Implementations
-    class BasicSolverloop {
+    class SolverloopBasic {
         FEM EquationSystems
         Coupling beween solvers
     }
 
-    class ViscoPlasticMaterial {
+    class MatViscoPlastic {
         FEM Element
     }
 
@@ -39,11 +39,11 @@ classDiagram
     Timeloop --> Solverloop
 
 %% Interfaces << implementations
-    Timeloop <|.. BasicTimeloop
-    Material <|.. PoroelasticMaterial
-    Material <|.. ViscoPlasticMaterial
-    Solverloop <|.. BasicSolverloop
-    Solver <|.. NRSolver
+    Timeloop <|.. TimeloopBasic
+    Material <|.. MatPoroelastic
+    Material <|.. MatViscoPlastic
+    Solverloop <|.. SolverloopBasic
+    Solver <|.. SolverNR
 
     Solverloop ..> Solver
     Solver..> Material
