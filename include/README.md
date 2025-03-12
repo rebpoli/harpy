@@ -84,7 +84,7 @@ classDiagram
 
 ##  Algorithms
 
-Solver::project_from(Solver S, vars):
+#### Solver::project_from(Solver S, vars):
    - foreach S
    - **while** i < length(L) **and** j < length(R) **do**
       1. **if** L[i] ≤ R[j] **then**
