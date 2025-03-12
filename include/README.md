@@ -163,10 +163,11 @@ Creates a new one if does not exist.
 
 <pre>
     sid = E.subdomain()
-    if not material_by_subdomain[sid] : material_by_subdomain[sid] = Material::Factory(sid)
+    if not material_by_subdomain[sid] :
+        material_by_subdomain[sid] = Material::Factory(sid)
 </pre>
     
-#### Material::factory( sid )
+#### **static** Material::factory( sid )
 Multiplexes the material from the configuration.
 Instantiates the right material for the element.
 Should only be called if it hasnt been created befor (see Solver::get_mat)
@@ -180,3 +181,4 @@ Should only be called if it hasnt been created befor (see Solver::get_mat)
 
 
 #### Material::Material()
+
