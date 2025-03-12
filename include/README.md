@@ -25,7 +25,9 @@ classDiagram
     class BasicSolverloop { }
 
     Timeloop --> Timestep
-    Material <|.. ViscoPlasticMaterial
+
+    % Interfaces
+    Timeloop <|.. BasicTimeloop
     Material <|.. PoroelasticMaterial
     Solverloop <|.. BasicSolverloop
     Solver <|.. NRSolver
