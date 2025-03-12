@@ -21,8 +21,9 @@ classDiagram
     class Solver {
         -jacobian
         -residual
-        note for Solver "Hello"
     }
+    note for Solver "Hello"
+
     class Material {
         +jacobian()
         +residual()
