@@ -30,6 +30,9 @@ classDiagram
         -jacobian()
         -residual()
     }
+    class SolverConst {
+        A solver that returns const values.
+    }
 
 
     class Material {
@@ -79,6 +82,7 @@ classDiagram
     Material <|.. MatViscoPlastic
     Solverloop <|.. SolverloopSingleNR
     Solver <|.. SolverNR
+    Solver <|.. SolverConst
 
     Solverloop ..> Solver
     Solver..> Material
@@ -117,7 +121,6 @@ Register in the entries_by_eid. Only in the processor that owns the element.
             entries.push( ce )
 </pre>
         
-
 #### Solver::project_from(Solver S, vars):
 Creates a fully calculated structure in each integration point of the target.
 Remember: if we need to find elements by point, this is a collective task (need to iterate in all
@@ -128,3 +131,6 @@ elements of the mesh in all processors, in sync).
             calc = calculators[var]
             calc.eval( S, E, var )  // CalcEntry holds the information at the list of points
 </pre>
+
+#### Solverloop::solve():
+Integrates many solvers.
