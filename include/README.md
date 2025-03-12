@@ -106,11 +106,6 @@ classDiagram
 
 ##  Algorithms
 
-#### Material Solver::get_mat(Elem E)
-Returns the material of a given element in the context of this solver.
-The material holds the FE shape functions and quadrature points for integration.
-It is responsible for building the element matrix and RHS.
-
 #### Calculator::eval( Solver S, Elem TE, var )
 Evaluates the values at the quadrature points of the target materials.
 Register in the entries_by_eid. Only in the processor that owns the element.
@@ -155,16 +150,22 @@ This workflow should be implemented in the child classes.
         // export intermediate results for debugging
 </pre>
 
-#### Solver::Solver()
-
 #### Solver::get_mat( Elem E )
+#### Solver::get_mat( Elem E, Side S )
 Retrieves the material for the element.
-Creates a new one if does not exist.
+Creates a new one if does not exist (lazy worker).
+The material holds the FE shape functions and quadrature points for integration.
+It is responsible for building the element matrix and RHS.
+
+Two versions: one for the element, another for a side of the element.
+The FE structures are the same, but the dimensions are different.
 
 <pre>
     sid = E.subdomain()
     if not material_by_subdomain[sid] :
         material_by_subdomain[sid] = Material::Factory(sid)
+
+    material_by_subdomain[sid].reinit(E)
 </pre>
     
 #### **static** Material::factory( sid )
@@ -174,11 +175,38 @@ Should only be called if it hasnt been created befor (see Solver::get_mat)
 <pre>
     matid = get_mat_id(sid) 
     if matid == VISCOPLASTIC :
-        return new MatViscoPlastic( E ) // 
+        return new MatViscoPlastic( E ) 
     if matid == POROELASTIC :
-        return new MatViscoPlastic( E ) // 
+        return new MatViscoPlastic( E )
 </pre>
 
 
-#### Material::Material()
+#### Material::Material( EquationSystem, System )
+The constructor should be able to query the configuration structure, build the 
+FE structures for the material, the element matrix and RHS structure etc.
 
+#### Material::reinit( Elem E )
+Reinitializes the FE shape function and quadrature for the element.
+
+#### Material::jacobian( solution, K )
+#### Material::jacobian_bc( solution, K )
+Fills the global matrix K with the contributions of the current element.
+
+**jacobian_bc** adds the boundary conditions equations to the matrix.
+
+#### Solver::jacobian( solution, K )
+Multiplexes the material and calls the jacobian in the material.
+
+<pre>
+    // Continua
+    for (Elem E) in (local.this)
+        M = get_mat(E)
+        M.jacobian( solution, K )
+
+    // Boundary conditions
+    for (Elem E) in (local.this)
+    for (Side S) in (E)
+        if ( not has_bc ) continue
+        M = get_mat( E, S )
+        M.jacobian_bc( solution, K )
+</pre>
