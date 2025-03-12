@@ -16,17 +16,18 @@
 graph TD
     Timeloop --> SolverLoop --> Solver --> Material
 
-    classDiagram
-        Student --|> Course : enrolls in
-        Student {
-            String name
-            int age
-            - enrollCourse()
-        }
+```mermaid
+classDiagram
+    Student --|> Course : enrolls in
+    Student {
+        String name
+        int age
+        - enrollCourse()
+    }
 
-        Course {
-            String name
-            int credit
-            String[] students
-            - getStudents()
-        }
+    Course {
+        String name
+        int credit
+        String[] students
+        - getStudents()
+    }
