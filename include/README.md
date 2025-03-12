@@ -36,6 +36,7 @@ classDiagram
 
     note "N1: Independent of libmesh"
     Timeloop .. N1
+    Solverloop .. N1
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
