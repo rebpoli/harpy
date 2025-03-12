@@ -15,13 +15,3 @@
 ```mermaid
 graph TD
     Timeloop --> SolverLoop --> Solver --> Material
-    Harpy --> Material[material]
-    Harpy --> Solver[solver]
-    Harpy --> SolverLoop[solverloop]
-    Harpy --> TimeLoop[timeloop]
-
-    Solver --> Material
-    SolverLoop --> Solver
-    SolverLoop --> TimeLoop
-
-    Base --> Util[util]
