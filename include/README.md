@@ -14,10 +14,7 @@
 
 ```mermaid
 classDiagram
-    class Animal {
-        +name: string
-        +age: int
-        +makeSound() void
+    class Solver {
     }
 
     class Dog {
