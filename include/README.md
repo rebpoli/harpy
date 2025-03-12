@@ -13,69 +13,17 @@
 | util       | Peripheral code for various purposes. Includes file handling, string handling, output operators, etc.                                   |
 
 ```mermaid
+graph TD
+    Base[Base] --> Config[config]
+    Base --> Harpy[harpy]
 
-classDiagram
-    class Base {
-        +Logger
-        +GlobalSettings
-        +init()
-        +shutdown()
-    }
+    Harpy --> Material[material]
+    Harpy --> Solver[solver]
+    Harpy --> SolverLoop[solverloop]
+    Harpy --> TimeLoop[timeloop]
 
-    class Config {
-        -jsonData
-        +loadFromFile(path) string
-        +getConfigValue(key) any
-        +validate() boolean
-    }
+    Solver --> Material
+    SolverLoop --> Solver
+    SolverLoop --> TimeLoop
 
-    class Material {
-        <<interface>>
-        +getProperties() Properties
-        +updateState(conditions) void
-    }
-
-    class Solver {
-        <<interface>>
-        +initialize() void
-        +solve(timeStep) Results
-        +getConvergenceInfo() ConvergenceInfo
-    }
-
-    class SolverLoop {
-        <<interface>>
-        +addSolver(solver) void
-        +iterate(maxIterations) boolean
-    }
-
-    class TimeLoop {
-        <<interface>>
-        +advance() boolean
-        +getCurrentTime() double
-        +setTimeStep(dt) void
-    }
-
-    class ConcreteTimeLoop {
-        -currentTime double
-        -timeStep double
-        +advance() boolean
-        +getCurrentTime() double
-        +setTimeStep(dt) void
-    }
-
-    class ConcreteSolver {
-        -material Material
-        -tolerance double
-        +initialize() void
-        +solve(timeStep) Results
-        +getConvergenceInfo() ConvergenceInfo
-    }
-
-    Config ..> Base : uses
-    Base <.. "Harpy Core" : uses
-    Material <.. Solver : uses
-    Solver <.. SolverLoop : manages
-    TimeLoop <.. SolverLoop : controls
-
-    TimeLoop <|.. ConcreteTimeLoop : implements
-    Solver <|.. ConcreteSolver : implements
+    Base --> Util[util]
