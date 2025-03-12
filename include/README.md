@@ -18,7 +18,11 @@ classDiagram
     class Timeloop { 
         solve()
     }
-    class Solverloop { }
+
+    class Solverloop {
+        solve()
+    }
+
     class Solver {
         solve()
         -jacobian()
@@ -52,7 +56,7 @@ classDiagram
     Timeloop <|.. TimeloopBasic
     Material <|.. MatPoroelastic
     Material <|.. MatViscoPlastic
-    Solverloop <|.. SolverloopBasic
+    Solverloop <|.. SolverloopSingle
     Solver <|.. SolverNR
 
     Solverloop ..> Solver
