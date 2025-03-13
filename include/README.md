@@ -54,8 +54,9 @@ classDiagram
     Solverloop <|.. SolverloopBasic
     Calculator <-- Solver
 
-%% Helper
-    class Timestep { }
+    class Timestep { Controls the time. }
+    class BoundaryCondition { }
+    BoundaryCondition ..> Timestep
 
 %% Implementations
     class SolverloopBasic {
@@ -121,6 +122,16 @@ Register in the entries_by_eid. Only in the processor that owns the element.
             entries.push( ce )
 </pre>
         
+#### Solver::reinit()
+Initializes the timestep. 
+
+
+<pre>
+
+
+
+</pre>
+
 #### Solver::project_from(Solver S, vars)
 Creates a fully calculated structure in each integration point of the target.
 Remember: if we need to find elements by point, this is a collective task (need to iterate in all
@@ -166,6 +177,13 @@ The FE structures are the same, but the dimensions are different.
 
     material_by_subdomain[sid].reinit(E)
 </pre>
+
+#### Solver::Solver
+Creates all materials.
+
+<pre>
+    for (Elem E) in (this.local) : get_mat(E)   // Create all materials.  
+</pre>
     
 #### **static** Material::factory( sid )
 Multiplexes the material from the configuration.
@@ -184,12 +202,16 @@ Should only be called if it hasnt been created befor (see Solver::get_mat)
 The constructor should be able to query the configuration structure, build the 
 FE structures for the material, the element matrix and RHS structure etc.
 
+This constructor fetches all the information needed from EquationSystems,
+like the volume of parameters (permeability, porosity etc). Thhe best is to
+map these parameters into an input_system to be queried in the jaobian and
+residual functions. 
+
 #### Material::reinit( Elem E )
 Reinitializes the FE shape function and quadrature for the element.
 
 #### Material::jacobian( solution, K )  &&  jacobian_bc( solution, K )
 Fills the global matrix K with the contributions of the current element.
-
 **jacobian_bc** adds the boundary conditions equations to the matrix.
 
 #### Solver::jacobian( solution, K )
