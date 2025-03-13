@@ -16,9 +16,11 @@
 classDiagram
 %% Interfaces
     class Timeloop { 
+        BoundaryConditions bc
         Timestep ts
         solve()
     }
+    BoundaryConditions <-- Timeloop
 
     class Solverloop {
         solve()
@@ -41,7 +43,7 @@ classDiagram
         +jacobian()
         +residual()
     }
-    BoundaryConditions <
+    BoundaryConditions <.. Material
 
     class CalcEntry {
         vector[qp] val
