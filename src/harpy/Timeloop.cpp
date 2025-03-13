@@ -1,0 +1,29 @@
+#include "harpy/Timeloop.h"
+
+/**
+ *
+ *
+ *
+ */
+Timeloop::Timeloop() : ts() { main_loop(); }
+
+Timeloop::~Timeloop() { }
+
+/**
+ *
+ * Main time loop. Controls the timestepping and callbacks associated with
+ * the time. This is a control machine, not a worker.
+ *
+ */
+void Timeloop::main_loop() {
+  
+  while ( true )
+  {
+    ilog1 << "====================================================";
+    ilog1 << "Solving timestep "<< ts.t_step<<" @ " << ts.time << "...";
+
+    // Avança os parametros do tstep
+    ts.next();   
+    if ( ts.test_end() ) break;
+  }
+}
