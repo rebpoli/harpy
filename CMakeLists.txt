@@ -132,6 +132,10 @@ target_link_libraries( harpy Modules )
 
 set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 
+# Tests
+add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
+target_link_libraries( ut-timestep Modules )
+
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )
 #   target_link_libraries( FractureNodeSplit Modules )

@@ -1,0 +1,186 @@
+{
+  "_type" : "named_dict",
+
+  "fracture":
+  {
+    "_type" : "named_dict",
+    "stiffness_normal": "double" ,
+    "stiffness_shear": "double" ,
+    "stiffness": "double" ,
+    "max_cohesion": "double" ,
+    "softening_scale": { "_type": "double", "_min": 0, "_help":"A suavizacao do modelo de dano bilinear deve ser positiva e tipicamente algumas vezes maior que a fase rígida. Algo como 10-1000x." } 
+  },
+
+  "mesh" :
+  {
+    "_type" : "named_dict",
+    "run_mesh_fracture" :  "bool",
+    "annotate_bounding_box" :  "bool",
+    "filter_annotations_outside_bounding_box" : { "_type": "bool" },
+    "file":  { "_type" : "string", "_dir":"run/msh" },
+    "flow": { "_type" : "list", "_entry" : "string" },
+    "thermal": { "_type" : "list", "_entry" : "string" },
+    "test_frame": { "_type" : "list", "_entry" : "string" },
+    "frac_n" : "uint",
+    "release_tip" : "bool"
+  },
+
+  "DG": {
+    "_type": "dict",
+    "_entry": {
+      "_type" : "named_dict",
+      "_help":"If true, the pressure is treated as a Discontinous function (Discontinuous Galerkin with interior penalties)" },
+      "enable" : "bool",
+      "internal_penalty" : "double", 
+      "bc_penalty" : "double"
+  },
+
+  "poroelastic":
+  {
+    "_type" : "named_dict",
+    "drained": "bool",
+    "interior_penalty" : {"_type":"double", "_help" : "The interior penalty parameter for the DG method." },
+    "porosity": "double",
+    "Seps": "double",
+    "Kf": "double",
+    "frat_k": "double",
+    "kappa": "double",
+    "mu": "double",
+    "alpha": "double",
+    "nu": "double",
+    "G": "double",
+
+    "implicit":{ "_type" : "double", "_min":0, "_max":1 },
+
+    "penalty": {
+      "_type" : "dict",
+      "_entry" : {
+          "_type":"named_dict", 
+          "_entry" : "double",
+          "_namelist" : ["strength","value"] }
+    },
+
+    "initial": { "_type": "named_dict", "_entry": {"_type":"double"}, "_namelist" : ["P", "UX", "UY", "UZ"] },
+
+    "output": "string",
+    "write_exodus" : "bool",
+    "write_every" : "uint",
+    "dbg_output": "string",
+
+    "scalars": "list",
+    "continuous_stress" : { "_type":"bool", "_help":"If true, posprocesses the stresses into a continous field." },
+
+    "boundary_conditions": {
+      "_type" : "list",
+      "_entry" : {
+        "_type" : "named_dict",
+        "//" : "string",
+        "time" : "double",
+        "drained" : "bool",
+        "pressure" : { "_type":"double", "_help":"If set, this timestep will see a constant pressure in the whole flow domain." },
+        "bc" : {
+          "_type" : "dict",
+          "_entry":  { "_type": "named_dict", "_entry": {"_type":"var_value"}, "_namelist" : ["P", "UX", "UY", "UZ","Q","SXX","SYY","SZZ","SXY", "SXZ", "SYZ"] }
+        },
+        "flow" : {
+          "_type" : "dict",
+          "_entry" : { "_type": "named_dict", "_entry" : "double" }
+        }
+      }
+    }
+  },
+  "thermal":
+  {
+    "_type" :"named_dict",
+    "write_exodus" : "bool",
+
+    "pho_f": "double",
+    "pho_s": "double",
+    "c_s": "double",
+    "c_p": "double",
+    "k_s": "double",
+    "k_f": "double",
+
+    "beta_s": { "_type": "double", "_min":0, "_help":"Drained coefficient of volumetric thermal expansion for solid." },
+    "beta_f": { "_type": "double", "_min":0, "_help":"Coefficient of thermal expansion of the fluid." },
+
+    "force_vel": "double",
+
+    "output": "string",
+    "write_every" : "uint",
+    "initial": {"_type":"named_dict", "_entry":"double","_namelist": [ "T" ] },
+
+    "boundary_conditions": {
+      "_type":"list",
+      "_entry": {
+        "_type":"named_dict",
+        "time": "double",
+        "temperature" : { "_type":"double", "_help":"If set, this timestep will see a constant temperature in the whole thermal domain." },
+        "environment_temperature" : { "_type":"double", "_help":"If set, defines the environment temperature (outside the thermal domain and in the boundaries of the whole domain). Otherwise, it is zero." },
+        "bc" : {
+          "_type" : "dict",
+          "_entry":  { "_type": "named_dict", "_entry": {"_type":"double"}, "_namelist" : ["T"] }
+        }
+      }
+    }
+  },
+
+  "timeloop":{
+    "_type" : "named_dict",
+    "n_steps" : "uint",
+    "t_max" : "double",
+    "dt"      : "double",
+    "dt_k"    : "double",
+    "dt_max" : "double",
+    "dt_min" : "double",
+    "force_ts" : { "_type" : "list", "_entry" : "double" }
+  },
+
+  "pe_numerical": {
+    "_type" : "named_dict",
+    "snes_linesearch_monitor": "bool",
+    "snes_converged_reason":"bool" ,
+    "ksp_monitor_true_residual":"bool",
+    "ksp_converged_reason":"bool",
+    "mumps":"bool",
+    "write_matrix_hdf5":"bool",
+    "pc_type":"string",
+    "ksp_type": "string",
+    "petsc_options" : { "_type" : "dict", "_entry" : { "_type" : "string" } },
+    "view" : "bool",
+    "monitor" : "bool",
+    "profile" : "bool",
+    "ksp_divtol" : "double",
+    "ksp_rtol" : "double",
+    "ksp_atol" : "double",
+    "snes_atol" : "double",
+    "snes_stol" : "double",
+    "ksp_max_it" : "uint",
+    "ksp_gmres_restart" : "uint",
+    "snes_linesearch_type" : "string",
+    "snes_maxit" : "uint",
+    "pc_factor_zeropivot" : "double",
+    "gamma" : "double",
+    "tau_weight": "double",
+    "u_order" : "uint",
+    "p_order" : "uint"
+  },
+
+  "probe" :
+  {
+    "_type" : "dict",
+    "_entry" : {
+      "_type" : "dict",
+      "type" : { "_type": "string", "_namelist": ["gauss","linear","radial", "radial_xy"] },
+      "boundary" : "string",
+      "order" : "uint",
+      "from" : "point",
+      "to" :   "point",
+      "n"    : "uint",
+      "center"    : "point",
+      "dtheta": "double",
+      "r":"double"
+      
+    }
+  }
+}

@@ -1,0 +1,28 @@
+
+topdir := $(shell i=. ; for c in 0 1 2 3 4 5 6 7 8; do [ ! -f $$i/.chimas_top ] && i=$$i/..; done; echo $$i)#
+
+#
+# RODA TARGETS SEQUENCIALMENTE
+#
+# Importante permitir que o "set" rode em paralelo antes
+# de todo mundo: make -j4 plot => compila antes de rodar, 
+# com 4 processadores
+#
+# plot:
+#     $(MAKE) set-opt
+#     $(MAKE) run-opt
+#     $(MAKE) do_plot
+
+set-%:
+	$(MAKE) -C $(topdir) build/$*
+
+# default targets
+set: set-opt
+run: run-opt
+
+go: .force
+	$(MAKE) run
+
+.force:
+
+

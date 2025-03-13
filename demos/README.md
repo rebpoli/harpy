@@ -8,6 +8,17 @@ Second level is the testcase for that paper.
 
 Third level is for uncertainty analysis (when the testcase generates multiple runs).
 
+## Tests
+
+#### UNIT-TEST/
+
+##### 01-MODULE-NAME/
+
+This directory holds a the cpp file for the unit test.
+The cpp file has a main function, and is referenced in CMakelists.
+
+The directory must have a "make test" target that runs the test using the right target.
+
 ## Papers
 
 #### 01-SALT-DESTRESSING/
