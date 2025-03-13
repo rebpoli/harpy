@@ -150,8 +150,7 @@ This workflow should be implemented in the child classes.
         // export intermediate results for debugging
 </pre>
 
-#### Solver::get_mat( Elem E )
-#### Solver::get_mat( Elem E, Side S )
+#### Solver::get_mat( Elem E )   &&   Solver::get_mat( Elem E, Side S )
 Retrieves the material for the element.
 Creates a new one if does not exist (lazy worker).
 The material holds the FE shape functions and quadrature points for integration.
@@ -188,8 +187,7 @@ FE structures for the material, the element matrix and RHS structure etc.
 #### Material::reinit( Elem E )
 Reinitializes the FE shape function and quadrature for the element.
 
-#### Material::jacobian( solution, K )
-#### Material::jacobian_bc( solution, K )
+#### Material::jacobian( solution, K )  &&  Material::jacobian_bc( solution, K )
 Fills the global matrix K with the contributions of the current element.
 
 **jacobian_bc** adds the boundary conditions equations to the matrix.
