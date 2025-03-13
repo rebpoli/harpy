@@ -1,4 +1,4 @@
-### Demos - organization
+## Demos - organization
 
 The demos are organized in two or three levels.
 
@@ -8,9 +8,9 @@ Second level is the testcase for that paper.
 
 Third level is for uncertainty analysis (when the testcase generates multiple runs).
 
-#### Papers
+## Papers
 
-## 01-SALT-DESTRESSING/
+#### 01-SALT-DESTRESSING/
 
 The objective is to run a Thermo-viscoplastic simulation.
 
