@@ -66,7 +66,7 @@ classDiagram
     class BoundaryConditions { 
         Holds current BCs
         Knows the current delta_t
-        Updated when Timestep is updated (a callback is registered).
+        Updated when Timestep is updated by callback
     }
     BoundaryConditions ..> Timestep
 
