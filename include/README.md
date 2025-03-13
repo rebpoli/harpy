@@ -37,9 +37,11 @@ classDiagram
 
 
     class Material {
+        BoundaryConditions *bc
         +jacobian()
         +residual()
     }
+    BoundaryConditions <
 
     class CalcEntry {
         vector[qp] val
@@ -55,9 +57,16 @@ classDiagram
     Solverloop <|.. SolverloopBasic
     Calculator <-- Solver
 
-    class Timestep { Controls the time. }
-    class BoundaryCondition { }
-    BoundaryCondition ..> Timestep
+    class Timestep {
+        Controls the time.
+        Register a callback to BoundaryConditions.
+    }
+    class BoundaryConditions { 
+        Holds current BCs
+        Knows the current delta_t
+        Updated when Timestep is updated (a callback is registered).
+    }
+    BoundaryConditions ..> Timestep
 
 %% Implementations
     class SolverloopBasic {
@@ -108,6 +117,22 @@ classDiagram
 
 ##  Algorithms
 
+#### Timeloop::Timeloop()
+
+<pre>
+    Create Timestep structure
+    Add TS callback to BoundaryConditions (created during config)
+</pre>
+
+#### Timeloop::Timeloop()
+<pre>
+    while ( true ) 
+        Solverloop.solve()
+        Solverloop.export()
+        Timestep.next()
+        if ( Timestep > max ) : break
+</pre>
+
 #### Calculator::eval( Solver S, Elem TE, var )
 Evaluates the values at the quadrature points of the target materials.
 Register in the entries_by_eid. Only in the processor that owns the element.
@@ -123,16 +148,6 @@ Register in the entries_by_eid. Only in the processor that owns the element.
             entries.push( ce )
 </pre>
         
-#### Solver::reinit()
-Initializes the timestep. 
-
-
-<pre>
-
-
-
-</pre>
-
 #### Solver::project_from(Solver S, vars)
 Creates a fully calculated structure in each integration point of the target.
 Remember: if we need to find elements by point, this is a collective task (need to iterate in all
@@ -180,7 +195,7 @@ The FE structures are the same, but the dimensions are different.
 </pre>
 
 #### Solver::Solver
-Creates all materials.
+Creates all materials of the local processor upfront.
 
 <pre>
     for (Elem E) in (this.local) : get_mat(E)   // Create all materials.  
@@ -193,9 +208,9 @@ Should only be called if it hasnt been created befor (see Solver::get_mat)
 <pre>
     matid = get_mat_id(sid) 
     if matid == VISCOPLASTIC :
-        return new MatViscoPlastic( E ) 
+        return new MatViscoPlastic( E, BC ) 
     if matid == POROELASTIC :
-        return new MatViscoPlastic( E )
+        return new MatViscoPlastic( E, BC )
 </pre>
 
 
