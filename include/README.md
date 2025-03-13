@@ -16,6 +16,7 @@
 classDiagram
 %% Interfaces
     class Timeloop { 
+        Timestep ts
         solve()
     }
 
@@ -77,7 +78,7 @@ classDiagram
     class SolverNR { Multiplexes element materials. }
 
 %% Dependencies
-    Timeloop ..> Timestep
+    Timeloop --> Timestep
     Timeloop ..> Solverloop
 
     SolverloopSingleNR ..> SolverNR
