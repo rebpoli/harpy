@@ -1,17 +1,7 @@
-# Chimas 3D
+# HARPY
 
-Simulação de fraturamento hidráulico tridimensional.
+This is a 3D THM simulator framework.
 
-Framework para avaliação e teste de métodos numéricos avançados, em infraestrutura MPI e CUDA.
+It should be able to handle multiple materials and geometries.
 
-## Infraestrutura Petrobras
-
-A aplicação é executada em um container Singularity, residente no caminho:
-```
-/netprodapps/prod_apps/singularity/images/chimas
-```
-
-A receita para criação do container está em
-```
-.../share/singularity
-```
+Lets see how it goes!
