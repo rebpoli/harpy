@@ -32,7 +32,7 @@ classDiagram
     }
 
     class Solver {
-        map< var, Calculator * > calculators
+        map< var, SolverCoupler * > calculators
         map< sid, Material * > material_by_subdomain
         ~Solver: delete materials and calculators
         project_from(Solver, vars)
@@ -54,15 +54,15 @@ classDiagram
         vector[qp] val
         vector[qp] grad
     }
-    class Calculator {
+    class SolverCoupler {
         map< eid, vector< CalcEntry > > entries_by_eid
         set_material( Material )
         eval( vector<Point> )
     }
-    Material <.. Calculator
-    CalcEntry <-- Calculator
+    Material <.. SolverCoupler
+    CalcEntry <-- SolverCoupler
     Solverloop <|.. SolverloopBasic
-    Calculator <-- Solver
+    SolverCoupler <-- Solver
 
 ```
 
@@ -148,7 +148,7 @@ classDiagram
         if ( Timestep > max ) : break
 </pre>
 
-#### Calculator::eval( Solver S, Elem TE, var )
+#### SolverCoupler::eval( Solver S, Elem TE, var )
 Evaluates the values at the quadrature points of the target materials.
 Register in the entries_by_eid. Only in the processor that owns the element.
 <pre>
