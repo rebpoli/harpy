@@ -25,7 +25,6 @@ classDiagram
         Timestep ts
         solve()
     }
-    BoundaryConditions <-- Timeloop
 
     class Solverloop {
         solve()
@@ -40,7 +39,6 @@ classDiagram
         jacobian()
         residual()
     }
-    class SolverConst { A solver that returns const values.  }
 
 
     class Material {
@@ -72,6 +70,10 @@ classDiagram
 
 ```mermaid
 classDiagram
+        BoundaryConditions <-- Timeloop
+
+
+    class SolverConst { A solver that returns const values.  }
 
     class Timestep {
         Controls the time.
