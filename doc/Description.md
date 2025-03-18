@@ -46,7 +46,6 @@ classDiagram
         +jacobian()
         +residual()
     }
-    BoundaryConditions <.. Material
 
     %% An entry of the coupler - a subclass
     class SolverCoupler__Entry { 
@@ -73,6 +72,7 @@ classDiagram
 
 ```mermaid
 classDiagram
+    BoundaryConditions <.. Material
     BoundaryConditions <-- Timeloop
 
     Solverloop <|.. SolverloopBasic
