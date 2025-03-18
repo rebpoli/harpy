@@ -19,6 +19,7 @@
 
 ```mermaid
 %% Interfaces
+classDiagram
     class Timeloop { 
         BoundaryConditions bc
         Timestep ts
