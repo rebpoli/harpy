@@ -1,5 +1,5 @@
 
-## Organization of soiurce files
+## Organization of source files - include/ and src/
 
 | Directory  | Content                                                                                                                                |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------|
@@ -12,8 +12,12 @@
 | timeloop   | Timeloop implementations sharing the harpy/Timeloop interface. Handles different methods of time advancement.                          |
 | util       | Peripheral code for various purposes. Includes file handling, string handling, output operators, etc.                                   |
 
+## Class diagram
+
+#### Interfaces
+
+
 ```mermaid
-classDiagram
 %% Interfaces
     class Timeloop { 
         BoundaryConditions bc
@@ -58,6 +62,14 @@ classDiagram
     CalcEntry <-- Calculator
     Solverloop <|.. SolverloopBasic
     Calculator <-- Solver
+
+```
+
+#### Implementation
+
+
+```mermaid
+classDiagram
 
     class Timestep {
         Controls the time.
