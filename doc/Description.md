@@ -62,6 +62,10 @@ classDiagram
     SolverCoupler__Entry <-- SolverCoupler
     Solverloop <|.. SolverloopBasic
     SolverCoupler <-- Solver
+    Timeloop --> Timestep
+    Timeloop ..> Solverloop
+    Solverloop ..> Solver
+    Solver..> Material
 
 ```
 
@@ -105,8 +109,6 @@ classDiagram
     class SolverNR { Multiplexes element materials. }
 
 %% Dependencies
-    Timeloop --> Timestep
-    Timeloop ..> Solverloop
 
     SolverloopSingleNR ..> SolverNR
 
@@ -118,8 +120,6 @@ classDiagram
     Solver <|.. SolverNR
     Solver <|.. SolverConst
 
-    Solverloop ..> Solver
-    Solver..> Material
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
