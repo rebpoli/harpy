@@ -50,17 +50,14 @@ classDiagram
     }
     BoundaryConditions <.. Material
 
-    class CalcEntry {
-        vector[qp] val
-        vector[qp] grad
-    }
     class SolverCoupler {
-        map< eid, vector< CalcEntry > > entries_by_eid
+        class Entry { val, grad }
+        map< eid, vector< Entry > > entries_by_eid
         set_material( Material )
         eval( vector<Point> )
     }
     Material <.. SolverCoupler
-    CalcEntry <-- SolverCoupler
+    SolverCoupler::Entry <-- SolverCoupler
     Solverloop <|.. SolverloopBasic
     SolverCoupler <-- Solver
 
@@ -159,7 +156,7 @@ Register in the entries_by_eid. Only in the processor that owns the element.
         Elem SE = S.find_elem( pt )        // Colective task! All processors in sync
         Mat SM = S.get_mat( SE )           // Source material (shape funcs)
         if ( curr_proc )
-            CalcEntry ce = SM.calc()       // Now only the right processor does the calc
+            CouplerEntry ce = SM.calc()       // Now only the right processor does the calc
             entries.push( ce )
 </pre>
         
@@ -171,7 +168,7 @@ elements of the mesh in all processors, in sync).
     foreach (Elem E) in (this)
         foreach (var) in (vars)
             calc = calculators[var]
-            calc.eval( S, E, var )  // CalcEntry holds the information at the list of points
+            calc.eval( S, E, var )  // CouplerEntry holds the information at the list of points
 </pre>
 
 #### Solverloop::solve()
