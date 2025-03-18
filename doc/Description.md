@@ -18,7 +18,7 @@
 
 
 ```mermaid
-%% Interfaces
+%% Interfaces, abstract classes
 classDiagram
     class Timeloop { 
         BoundaryConditions bc
@@ -31,9 +31,9 @@ classDiagram
     }
 
     class Solver {
-        map< var, SolverCoupler * > calculators
+        map< var, SolverCoupler * > couplers
         map< sid, Material * > material_by_subdomain
-        ~Solver: delete materials and calculators
+        ~Solver: delete materials and couplers
         project_from(Solver, vars)
         solve()
         jacobian()
@@ -60,7 +60,6 @@ classDiagram
     }
     Material <.. SolverCoupler
     SolverCoupler__Entry <-- SolverCoupler
-    Solverloop <|.. SolverloopBasic
     SolverCoupler <-- Solver
     Timeloop --> Timestep
     Timeloop ..> Solverloop
@@ -74,8 +73,9 @@ classDiagram
 
 ```mermaid
 classDiagram
-        BoundaryConditions <-- Timeloop
+    BoundaryConditions <-- Timeloop
 
+    Solverloop <|.. SolverloopBasic
 
     class SolverConst { A solver that returns const values.  }
 
