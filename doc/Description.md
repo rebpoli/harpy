@@ -50,11 +50,12 @@ classDiagram
     }
     BoundaryConditions <.. Material
 
+    class SolverCoupler::Entry { 
+        val
+        grad 
+    }
+
     class SolverCoupler {
-        class Entry { 
-            val
-            grad 
-        }
         map< eid, vector< Entry > > entries_by_eid
         set_material( Material )
         eval( vector<Point> )
