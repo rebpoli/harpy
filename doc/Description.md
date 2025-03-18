@@ -50,11 +50,11 @@ classDiagram
     }
     BoundaryConditions <.. Material
 
+    %% An entry of the coupler - a subclass
     class SolverCoupler__Entry { 
-        val
-        grad 
+        double val
+        Point grad 
     }
-
     class SolverCoupler {
         map< eid, vector< Entry > > entries_by_eid
         set_material( Material )
