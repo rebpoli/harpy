@@ -36,7 +36,7 @@ classDiagram
     %% Can be specialized for more complex data types (e.g. stress or velocities)
     class SolverCoupler__Cache {
         extends map< eid, map< var, vector<> > >
-        vector<> * get( eid, var ) %% returns a new vec if needed
+        vector<> * get( eid, var ) % returns a new vec if needed
     }
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
@@ -56,7 +56,7 @@ classDiagram
         -map< sid, Material * > material_by_subdomain
         -get_material()
         +couple(src_solver, vars)
-        +sync()  %% Updates the couplers
+        +sync()  % Updates the couplers
         +solve()
     }
     Solver--> SolverCoupler
