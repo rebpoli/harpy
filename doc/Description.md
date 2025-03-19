@@ -82,6 +82,7 @@ classDiagram
         +residual()
     }
 
+    Timeloop --> Timestep
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
