@@ -75,7 +75,6 @@ classDiagram
 
 ```mermaid
 classDiagram
-    BoundaryConditions <.. Material
     BoundaryConditions <-- Timeloop
 
     Solverloop <|.. SolverloopBasic
