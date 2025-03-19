@@ -53,8 +53,6 @@ classDiagram
         +couple_from(Solver, vars)
         +sync()  %% Updates the couplers
         +solve()
-        +jacobian()
-        +residual()
     }
     Solver--> SolverCoupler
     note for Solver "External data static or not, is a simple solver, and a native coupler"
@@ -111,7 +109,11 @@ classDiagram
     }
 
     class SolverloopSingleNR { Bypasses to the NR solver. } 
-    class SolverNR { Multiplexes element materials. }
+    class SolverNR { 
+        +jacobian()
+        +residual()
+        }
+        note for SolverNR "Multiplexes element materials, provides jacobian and residual functions in libmesh context"
 
 %% Dependencies
 
