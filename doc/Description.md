@@ -91,6 +91,7 @@ classDiagram
         has_bc( eid, side )
         -reftime : the time in the config (update only when it changes)
     }
+    BC --> SideBC
     Solver --> BC
 
     class Material {
