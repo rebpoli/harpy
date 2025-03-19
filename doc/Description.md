@@ -132,6 +132,9 @@ classDiagram
     Solver <|.. SolverConst
     Solver <|.. SolverFile
 
+    Timeloop --> Solverloop
+    Solverloop --> Solver
+    Solver --> Material
 
 %%
 %% classA <|-- classB    // Inheritance (B inherits from A)
