@@ -80,7 +80,6 @@ classDiagram
 
     Solverloop <|.. SolverloopBasic
 
-    class SolverConst { A solver that returns const values.  }
 
     class Timestep {
         Controls the time.
@@ -109,11 +108,15 @@ classDiagram
     }
 
     class SolverloopSingleNR { Bypasses to the NR solver. } 
+
+    class SolverConst { Returns const value.  }
+    class SolverFile { Reads from external file. }
     class SolverNR { 
+        Multiplexes material.
+        
         +jacobian()
         +residual()
         }
-        note for SolverNR "Multiplexes element materials, provides \njacobian and residual functions in libmesh context"
 
 %% Dependencies
 
