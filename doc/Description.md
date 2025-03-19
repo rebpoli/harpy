@@ -25,14 +25,15 @@ classDiagram
         solve()
     }
 
-    %% The solver loop couples the solvers
     class Solverloop {
+        % The solver loop couples the solvers
         -Solver S1, S2, ...
         +solve()
     }
 
-    %% Does the calculations needed to couple SRC->TRG
     class SolverCoupler {
+        % Does the calculations needed to couple SRC->TRG
+        % Owned by the target solver
         SolverCoupler( Solver *src , Solver *trg, vars, single )
         -Solver S, T : src and trg solvers
         -vars
@@ -56,8 +57,9 @@ classDiagram
     SolverCoupler ..> ModelParams
     Material ..> ElemParams
 
-    %% The solver keeps its own couplers
     class Solver {
+        % The target solver keeps its own couplers
+        % Coupleres are created by couple()
         -map< var, SolverCoupler * > couplers
         -map< sid, Material * > material_by_sid : sid is the subdomain
         -map< sid, Material * > material_bc_by_sid : sid is the subdomain
