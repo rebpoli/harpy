@@ -33,9 +33,9 @@ classDiagram
     }
 
     %% Does the calculations and hold the cached data needed to couple SRC->TRG
-    %% Can be specialized for more complex data types (e.g. stress or velocities)
+    %% and all the input parameters for the material calculations
     class ModelParams {
-        extends map< eid, map< var, vector<> > >
+        map< eid, map< var, vector<dbl> > > dbl_data
         vector<> * get( eid, var ) returns a new vec if needed
     }
     class SolverCoupler {
@@ -44,7 +44,7 @@ classDiagram
         -vars
         -bool single, skip
         -eval( vector<> , Material, var )
-        +sync() updates cache
+        +sync( ModelParams & ) updates cache
     }
 
     %% The solver keeps its own couplers
@@ -54,7 +54,7 @@ classDiagram
         -map< sid, Material * > material_bc_by_sid : sid is the subdomain
         -get_material( Elem )
         -get_material( Elem, Side ) : material for the boundary
-        +ModelParams cache : holds the params for the materials (k, mu, $\varepsilon$^p, ...)
+        +ModelParams params : holds the params for the materials (k, mu, \eps^p, ...)
         +couple(src_solver, vars)
         +sync()  Updates the couplers
         +solve()
@@ -190,11 +190,11 @@ Can save some time if the meshes are the same.
 Creates a fully calculated structure in each integration point of the target based on the
 registered couplers.
 <pre>
-    foreach coupler : coupler.sync()
+    foreach coupler : coupler.sync( params )
 </pre>
 
-#### SolverCoupler::sync()
-Updates the cache of this coupler.
+#### SolverCoupler::sync( ModelParams & params)
+Updates the model parameters of this solver.
 This can be a single-time or a recurrent runner.
 Example: single-time 
 <pre>
@@ -202,7 +202,7 @@ Example: single-time
 
     foreach (Elem E) in (T)
         foreach (v) in (vars)
-            ret = & cache.get(e,v)                   // Gets the reference
+            ret = & params.get(e,v)                   // Gets the reference
             ret.clear()
             eval( ret, T.get_material(E), var )  
 
