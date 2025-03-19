@@ -42,6 +42,7 @@ classDiagram
         Cache cache
         -eval( vector<> , Material, var )
     }
+    SolverCoupler --> SolverCoupler__Cache
 
     class Solver {
         -map< var, SolverCoupler * > couplers
