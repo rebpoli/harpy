@@ -54,7 +54,6 @@ classDiagram
         vector<> * get( eid, var ) returns a new vec if needed
     }
     ModelParams --> ElemParams
-    Solver --> ModelParams
     SolverCoupler ..> ModelParams
     Material ..> ElemParams
 
