@@ -120,8 +120,6 @@ classDiagram
 
 %% Dependencies
 
-    SolverloopSingleNR ..> SolverNR
-
 %% Interfaces << implementations
     Timeloop <|.. TimeloopBasic
     Material <|.. MatPoroelastic
