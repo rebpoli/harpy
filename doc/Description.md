@@ -41,12 +41,12 @@ classDiagram
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars, single )
-        -Solver S, T % src and trg solvers
+        -Solver S, T src and trg solvers
         -vars
         -Cache cache
         -bool single, skip
         -eval( vector<> , Material, var )
-        +sync() % updates cache
+        +sync() updates cache
     }
     SolverCoupler --> SolverCoupler__Cache
 
@@ -56,7 +56,7 @@ classDiagram
         -map< sid, Material * > material_by_subdomain
         -get_material()
         +couple(src_solver, vars)
-        +sync()  % Updates the couplers
+        +sync()  Updates the couplers
         +solve()
     }
     Solver--> SolverCoupler
