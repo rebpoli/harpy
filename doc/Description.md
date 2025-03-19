@@ -56,6 +56,7 @@ classDiagram
     ModelParams --> ElemParams
     Solver --> ModelParams
     SolverCoupler ..> ModelParams
+    Material ..> ElemParams
 
     %% The solver keeps its own couplers
     class Solver {
