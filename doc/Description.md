@@ -27,13 +27,13 @@ classDiagram
     }
 
     class Solverloop {
+        vector<SolverCoupler *> couplers
         solve()
     }
 
     class SolverCoupler {
         eval( vector<double> , Material, var )
         eval( vector<Point>  , Material, var )
-        ...
     }
 
     class Solver {
@@ -60,6 +60,7 @@ classDiagram
     Timeloop --> Timestep
     Timeloop ..> Solverloop
     Solverloop ..> Solver
+    Solverloop --> SolverCoupler
     Solver..> Material
 
 ```
