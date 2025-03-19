@@ -30,16 +30,25 @@ classDiagram
         solve()
     }
 
+    %% Does the calculations and hold the cached data needed to couple SRC->TRG
+    %% Can be specialized for more complex data types (e.g. stress or velocities)
+    class SolverCoupler__Cache {
+        extends: map< eid, map< var, vector<> > >
+        vector<> * get( eid, var )
+    }
+    Nore for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
-        eval( vector< dbl > , Material, var )
-        eval( vector< Pt >  , Material, var )
+        SolverCoupler( Solver *src , Solver *trg, vars )
+        Cache cache
+        -eval( vector<> , Material, var )
     }
 
     class Solver {
         -map< var, SolverCoupler * > couplers
         -map< sid, Material * > material_by_subdomain
-        -get_mat()
+        -get_material()
         +set_coupler(SolverCoupler, vars)
+        +sync_from_couplers()
         +solve()
         +jacobian()
         +residual()
@@ -52,7 +61,6 @@ classDiagram
         +residual()
     }
 
-    SolverCoupler <|-- Solver
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
@@ -143,30 +151,28 @@ classDiagram
         if ( Timestep > max ) : break
 </pre>
 
-#### SolverCoupler::eval( Solver S, Elem TE, var )
+#### SolverCoupler::eval( vector<> out, Material TM, var )
 Evaluates the values at the quadrature points of the target materials.
 Register in the entries_by_eid. Only in the processor that owns the element.
+Can save some time if the meshes are the same.
 <pre>
-    Mat TM = get_mat( TE )                 // Target material (shape funcs)
     qpxyz = TM.get_qpxyz()                 // The points of each quadrature point in the target
     foreach (Point pt) in (qpxyz)
-        entries = entries_by_eid[TM.eid]
         Elem SE = S.find_elem( pt )        // Colective task! All processors in sync
-        Mat SM = S.get_mat( SE )           // Source material (shape funcs)
+        Mat SM = S.get_material( SE )           // Source material (shape funcs)
         if ( curr_proc )
-            SolverCoupler__Entry ce = SM.calc()       // Now only the right processor does the calc
-            entries.push( ce )
+            val = SM.calc()                // Now only the right processor does the calc
+            out.push( ce )
 </pre>
         
-#### Solver::project_from(Solver S, vars)
-Creates a fully calculated structure in each integration point of the target.
-Remember: if we need to find elements by point, this is a collective task (need to iterate in all
-elements of the mesh in all processors, in sync).
+#### Solver::sync_from_couplers()
+Creates a fully calculated structure in each integration point of the target based on the
+registered couplers.
 <pre>
     foreach (Elem E) in (this)
         foreach (var) in (vars)
-            calc = calculators[var]
-            calc.eval( S, E, var )  // SolverCoupler__Entry holds the information at the list of points
+            coupler = couplers[var]
+            coupler.eval( get_material(E), var )  // SolverCoupler__Entry holds the information at the list of points
 </pre>
 
 #### Solverloop::solve()
@@ -187,7 +193,7 @@ This workflow should be implemented in the child classes.
         // export intermediate results for debugging
 </pre>
 
-#### Solver::get_mat( Elem E )   && get_mat( Elem E, Side S )
+#### Solver::get_material( Elem E )   && get_material( Elem E, Side S )
 Retrieves the material for the element.
 Creates a new one if does not exist (lazy worker).
 The material holds the FE shape functions and quadrature points for integration.
@@ -208,15 +214,15 @@ The FE structures are the same, but the dimensions are different.
 Creates all materials of the local processor upfront.
 
 <pre>
-    for (Elem E) in (this.local) : get_mat(E)   // Create all materials.  
+    for (Elem E) in (this.local) : get_material(E)   // Create all materials.  
 </pre>
     
 #### **static** Material::factory( sid )
 Multiplexes the material from the configuration.
 Instantiates the right material for the element.
-Should only be called if it hasnt been created befor (see Solver::get_mat)
+Should only be called if it hasnt been created befor (see Solver::get_material)
 <pre>
-    matid = get_mat_id(sid) 
+    matid = get_material_id(sid) 
     if matid == VISCOPLASTIC :
         return new MatViscoPlastic( E, BC ) 
     if matid == POROELASTIC :
@@ -246,13 +252,13 @@ Multiplexes the material and calls the jacobian in the material.
 <pre>
     // Continua
     for (Elem E) in (local.this)
-        M = get_mat(E)
+        M = get_material(E)
         M.jacobian( solution, K )
 
     // Boundary conditions
     for (Elem E) in (local.this)
     for (Side S) in (E)
         if ( not has_bc ) continue
-        M = get_mat( E, S )
+        M = get_material( E, S )
         M.jacobian_bc( solution, K )
 </pre>
