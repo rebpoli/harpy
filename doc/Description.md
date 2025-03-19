@@ -30,14 +30,21 @@ classDiagram
         solve()
     }
 
+    class SolverCoupler {
+        eval( vector<double> , Material, var )
+        eval( vector<Point>  , Material, var )
+        ...
+    }
+
     class Solver {
         map< var, SolverCoupler * > couplers
         map< sid, Material * > material_by_subdomain
         ~Solver: delete materials and couplers
-        project_from(Solver, vars)
+        set_coupler(SolverCoupler, vars)
         solve()
         jacobian()
         residual()
+        set_coupler( SolverCoupler, var )
     }
 
 
@@ -47,18 +54,8 @@ classDiagram
         +residual()
     }
 
-    %% An entry of the coupler - a subclass
-    class SolverCoupler__Entry { 
-        double val
-        Point grad 
-    }
-    class SolverCoupler {
-        map< eid, vector< Entry > > entries_by_eid
-        set_material( Material )
-        eval( vector<Point> )
-    }
+    SolverCoupler <|-- Solver
     Material <.. SolverCoupler
-    SolverCoupler__Entry <-- SolverCoupler
     SolverCoupler <-- Solver
     Timeloop --> Timestep
     Timeloop ..> Solverloop
