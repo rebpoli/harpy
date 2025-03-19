@@ -82,7 +82,6 @@ classDiagram
         +residual()
     }
 
-    Timeloop --> Timestep
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
@@ -94,6 +93,7 @@ classDiagram
 
 ```mermaid
 classDiagram
+    Timeloop --> Timestep
     BoundaryConditions <-- Timeloop
 
     Solverloop <|.. SolverloopBasic
