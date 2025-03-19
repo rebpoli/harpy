@@ -34,21 +34,18 @@ classDiagram
 
     %% Does the calculations and hold the cached data needed to couple SRC->TRG
     %% Can be specialized for more complex data types (e.g. stress or velocities)
-    class SolverCoupler__Cache {
+    class ModelParams {
         extends map< eid, map< var, vector<> > >
         vector<> * get( eid, var ) returns a new vec if needed
     }
-    note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars, single )
         -Solver S, T : src and trg solvers
         -vars
-        -Cache cache
         -bool single, skip
         -eval( vector<> , Material, var )
         +sync() updates cache
     }
-    SolverCoupler --> SolverCoupler__Cache
 
     %% The solver keeps its own couplers
     class Solver {
@@ -57,10 +54,12 @@ classDiagram
         -map< sid, Material * > material_bc_by_sid : sid is the subdomain
         -get_material( Elem )
         -get_material( Elem, Side ) : material for the boundary
+        +ModelParams cache : holds the params for the materials (k, mu, $\varepsilon$^p, ...)
         +couple(src_solver, vars)
         +sync()  Updates the couplers
         +solve()
     }
+    Solver --> ModelParams
     Solver--> SolverCoupler
     note for Solver "External data static or not, is a simple solver, and a native coupler"
 
