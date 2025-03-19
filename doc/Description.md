@@ -127,8 +127,10 @@ classDiagram
     Material <|.. MatPoroelastic
     Material <|.. MatViscoPlastic
     Solverloop <|.. SolverloopSingleNR
+
     Solver <|.. SolverNR
     Solver <|.. SolverConst
+    Solver <|.. SolverFile
 
 
 %%
