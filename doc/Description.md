@@ -44,7 +44,6 @@ classDiagram
         solve()
         jacobian()
         residual()
-        set_coupler( SolverCoupler, var )
     }
 
 
