@@ -53,8 +53,10 @@ classDiagram
     %% The solver keeps its own couplers
     class Solver {
         -map< var, SolverCoupler * > couplers
-        -map< sid, Material * > material_by_subdomain
-        -get_material()
+        -map< sid, Material * > material_by_sid : sid is the subdomain
+        -map< sid, Material * > material_bc_by_sid : sid is the subdomain
+        -get_material( Elem )
+        -get_material( Elem, Side ) : material for the boundary
         +couple(src_solver, vars)
         +sync()  Updates the couplers
         +solve()
@@ -67,8 +69,6 @@ classDiagram
         BoundaryConditions *bc
         +jacobian()
         +residual()
-        +jacobian_bc()
-        +residual_bc()
     }
 
     Timeloop --> Solverloop
@@ -110,6 +110,9 @@ classDiagram
         FEM Element 
         FE ShapeFunc
         QRule
+        Ke, Ke_var
+        Re, Re_var
+        dofi, dofi_var
         reinit(Elem)
     }
 
@@ -243,12 +246,20 @@ The FE structures are the same, but the dimensions are different.
 
 <pre>
     sid = E.subdomain()
-    if not material_by_subdomain[sid] :
-        material_by_subdomain[sid] = Material::Factory(sid)
+    if not material_by_sid[sid] :
+        material_by_sid[sid] = Material::Factory(sid)
 
-    material_by_subdomain[sid].reinit(E)
+    material_by_sid[sid].reinit(E)
 </pre>
 
+And for the boundary constrain
+<pre>
+    sid = E.subdomain()
+    if not material_bc_by_sid[sid] :
+        material_bc_by_sid[sid] = Material::Factory(sid, 1)
+
+    material_bc_by_sid[sid].reinit(E, S)
+</pre>
 #### Solver::Solver
 Creates all materials of the local processor upfront.
 
@@ -256,10 +267,12 @@ Creates all materials of the local processor upfront.
     for (Elem E) in (this.local) : get_material(E)   // Create all materials.  
 </pre>
     
-#### **static** Material::factory( sid )
+#### **static** Material::Factory( sid, BC )
 Multiplexes the material from the configuration.
 Instantiates the right material for the element.
-Should only be called if it hasnt been created befor (see Solver::get_material)
+Should only be called if it hasnt been created before (see Solver::get_material)
+
+If BC=True, the material refers to a boundary constraint (reduced dimension).
 <pre>
     matid = get_material_id(sid) 
     if matid == VISCOPLASTIC :
@@ -278,12 +291,23 @@ like the volume of parameters (permeability, porosity etc). Thhe best is to
 map these parameters into an input_system to be queried in the jaobian and
 residual functions. 
 
+Positions the submatrices and subvectors into the element Ke and Re.
+Example:
+<pre>
+Ke = [ [ K00 K01 K02 ]
+       [ K10 K11 K12 ]
+       [ K20 K21 K22 ] ]
+</pre>
+where 0, 1 and 2 are the variables we are interested.
+They must match dofi so that add_matrix and add_vector work seemlessly.
+
 #### Material::reinit( Elem E )
 Reinitializes the FE shape function and quadrature for the element.
 
 #### Material::jacobian( solution, K )  &&  jacobian_bc( solution, K )
 Fills the global matrix K with the contributions of the current element.
-**jacobian_bc** adds the boundary conditions equations to the matrix.
+**jacobian_bc** adds the boundary conditions equations to the matrix if the 
+material is a boundary constrain material.
 
 #### Solver::jacobian( solution, K )
 Multiplexes the material and calls the jacobian in the material.
@@ -299,5 +323,5 @@ Multiplexes the material and calls the jacobian in the material.
     for (Side S) in (E)
         if ( not has_bc ) continue
         M = get_material( E, S )
-        M.jacobian_bc( solution, K )
+        M.jacobian_bc( solution, K )      // Tells the material to build the BC jacobian
 </pre>
