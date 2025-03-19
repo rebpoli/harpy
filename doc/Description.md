@@ -36,7 +36,7 @@ classDiagram
         extends: map< eid, map< var, vector<> > >
         vector<> * get( eid, var )
     }
-    Nore for SolverCoupler__Cache "Provides access functions for the data"
+    Note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars )
         Cache cache
