@@ -113,7 +113,7 @@ classDiagram
         +jacobian()
         +residual()
         }
-        note for SolverNR "Multiplexes element materials, provides jacobian and residual functions in libmesh context"
+        note for SolverNR "Multiplexes element materials, provides \njacobian and residual functions in libmesh context"
 
 %% Dependencies
 
