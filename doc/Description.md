@@ -72,22 +72,39 @@ classDiagram
     Solver --> ModelParams
     Solver--> SolverCoupler
 
-    class BoundaryConditions { 
-        Holds current BCs as parsed from the input
-        Boundaries as strings
-        Updated when Timestep is updated by callback
+    class BCConfig { 
+        % Parses the input BCs into datastructures
+        % Holds all the times
     }
-
+    class SideBC {
+        % extends vector< pair< vid, T > >
+        % Holds the collection of BCs of the side of an element
+    }
     class BC {
         % Resolved BC for a specific solver
+        % BCConfig is global
+        % Only local elements
+
+        BC(mesh) Creates an empty structure
+        update( time ) Updates from BCConfig
+
+        map< pair< eid, side > , SideBC > BCMap
+        has_bc( eid, side )
+        -reftime : the time in the config (update only when it changes)
     }
     Solver --> BC
 
     class Material {
-        BC *bc : current resolved BCs
-        ElemParams *params
+        % Holds the constitutive equations
+        % May refer to a side or to a continua.
+        % 1:1 to an element
+
+        ElemParams * params
+        SideBC * side_bc
         +jacobian()
         +residual()
+        +jacobian_bc()
+        +residual_bc()
     }
 
     Timeloop --> Solverloop
@@ -266,7 +283,7 @@ The FE structures are the same, but the dimensions are different.
     if not material_by_sid[sid] :
         material_by_sid[sid] = Material::Factory(sid)
 
-    material_by_sid[sid].reinit(E, )
+    material_by_sid[sid].reinit(E, params.get(E) )
 </pre>
 
 And for the boundary constrain
@@ -275,7 +292,7 @@ And for the boundary constrain
     if not material_bc_by_sid[sid] :
         material_bc_by_sid[sid] = Material::Factory(sid, 1)
 
-    material_bc_by_sid[sid].reinit(E, S)
+    material_bc_by_sid[sid].reinit(E, S, params.get(E), BC[E,S] )
 </pre>
 #### Solver::Solver
 Creates all materials of the local processor upfront.
@@ -336,9 +353,7 @@ Multiplexes the material and calls the jacobian in the material.
         M.jacobian( solution, K )
 
     // Boundary conditions
-    for (Elem E) in (local.this)
-    for (Side S) in (E)
-        if ( not has_bc ) continue
+    for (E, S) in (BC)
         M = get_material( E, S )
         M.jacobian_bc( solution, K )      // Tells the material to build the BC jacobian
 </pre>
