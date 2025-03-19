@@ -27,8 +27,10 @@ classDiagram
     }
 
     class Solverloop {
-        solve()
+        -vector< SolverCoupler * > couplers
+        +solve()
     }
+    Solverloop --> SolverCoupler
 
     %% Does the calculations and hold the cached data needed to couple SRC->TRG
     %% Can be specialized for more complex data types (e.g. stress or velocities)
