@@ -46,7 +46,7 @@ classDiagram
         -Cache cache
         -bool single, skip
         -eval( vector<> , Material, var )
-        +sync(): updates cache
+        +sync() : updates cache
     }
     SolverCoupler --> SolverCoupler__Cache
 
