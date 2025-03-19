@@ -56,7 +56,6 @@ classDiagram
 
     SolverCoupler <|-- Solver
     Material <.. SolverCoupler
-    SolverCoupler <-- Solver
     Timeloop --> Timestep
     Timeloop ..> Solverloop
     Solverloop ..> Solver
