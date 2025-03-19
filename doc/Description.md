@@ -35,18 +35,18 @@ classDiagram
     %% Does the calculations and hold the cached data needed to couple SRC->TRG
     %% Can be specialized for more complex data types (e.g. stress or velocities)
     class SolverCoupler__Cache {
-        extends: map< eid, map< var, vector<> > >
+        extends map< eid, map< var, vector<> > >
         vector<> * get( eid, var ) %% returns a new vec if needed
     }
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars, single )
-        -Solver S, T: src and trg solvers
+        -Solver S, T % src and trg solvers
         -vars
         -Cache cache
         -bool single, skip
         -eval( vector<> , Material, var )
-        +sync() : updates cache
+        +sync() % updates cache
     }
     SolverCoupler --> SolverCoupler__Cache
 
