@@ -21,7 +21,6 @@
 %% Interfaces, abstract classes
 classDiagram
     class Timeloop { 
-        BoundaryConditions bc
         Timestep ts
         solve()
     }
@@ -110,8 +109,6 @@ classDiagram
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
-    Timeloop --> BoundaryConditions
-    Material ..> BoundaryConditions
 
 ```
 
@@ -121,16 +118,13 @@ classDiagram
 ```mermaid
 classDiagram
     Timeloop --> Timestep
-    BoundaryConditions <-- Timeloop
 
     Solverloop <|.. SolverloopBasic
 
 
     class Timestep {
         Controls the time.
-        Register a callback to BoundaryConditions.
     }
-    BoundaryConditions ..> Timestep
 
 %% Implementations
     class SolverloopBasic {
@@ -195,7 +189,6 @@ classDiagram
 
 <pre>
     Create Timestep structure
-    Add TS callback to BoundaryConditions (created during config)
 </pre>
 
 #### Timeloop::Timeloop()
