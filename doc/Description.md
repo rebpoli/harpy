@@ -51,12 +51,13 @@ classDiagram
         -map< sid, Material * > material_by_subdomain
         -get_material()
         +couple_from(Solver, vars)
-        +sync_from_couplers()
+        +sync()  %% Updates the couplers
         +solve()
         +jacobian()
         +residual()
     }
     Solver--> SolverCoupler
+    note for Solver "External data static or not, is a simple solver, and a native coupler"
 
 
     class Material {
