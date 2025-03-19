@@ -32,8 +32,8 @@ classDiagram
     }
 
     class SolverCoupler {
-        eval( vector<double> , Material, var )
-        eval( vector<Point>  , Material, var )
+        eval( vector< dbl > , Material, var )
+        eval( vector< Pt >  , Material, var )
     }
 
     class Solver {
