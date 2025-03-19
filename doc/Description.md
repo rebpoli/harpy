@@ -40,8 +40,11 @@ classDiagram
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars )
-        Cache cache
+        -Solver S: src solver
+        -Solver T: target solver
+        -Cache cache
         -eval( vector<> , Material, var )
+        +update(): updates cache
     }
     SolverCoupler --> SolverCoupler__Cache
 
