@@ -72,7 +72,6 @@ classDiagram
     }
     Solver --> ModelParams
     Solver--> SolverCoupler
-    note for Solver "External data static or not, is a simple solver, and a native coupler"
 
     class BoundaryConditions { 
         Holds current BCs
