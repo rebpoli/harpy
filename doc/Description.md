@@ -26,11 +26,10 @@ classDiagram
         solve()
     }
 
+    %% The solver loop couples the solvers
     class Solverloop {
-        -vector< SolverCoupler * > couplers
         +solve()
     }
-    Solverloop --> SolverCoupler
 
     %% Does the calculations and hold the cached data needed to couple SRC->TRG
     %% Can be specialized for more complex data types (e.g. stress or velocities)
@@ -46,16 +45,18 @@ classDiagram
     }
     SolverCoupler --> SolverCoupler__Cache
 
+    %% The solver keeps its own couplers
     class Solver {
         -map< var, SolverCoupler * > couplers
         -map< sid, Material * > material_by_subdomain
         -get_material()
-        +set_coupler(SolverCoupler, vars)
+        +couple_from(Solver, vars)
         +sync_from_couplers()
         +solve()
         +jacobian()
         +residual()
     }
+    Solver--> SolverCoupler
 
 
     class Material {
