@@ -27,7 +27,7 @@ classDiagram
     }
 
     class Solverloop {
-        vector<SolverCoupler *> couplers
+        vector< SolverCoupler * > couplers
         solve()
     }
 
