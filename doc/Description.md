@@ -53,6 +53,7 @@ classDiagram
         Point grad 
     }
     class SolverCoupler {
+        class Entry
         map< eid, vector< Entry > > entries_by_eid
         set_material( Material )
         eval( vector<Point> )
