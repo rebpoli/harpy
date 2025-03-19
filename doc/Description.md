@@ -74,6 +74,7 @@ classDiagram
     class BCConfig { 
         % Parses the input BCs into datastructures
         % Holds all the times
+        % Unaware of mesh. Deals with strings.
     }
     class SideBC {
         % extends vector< pair< vid, T > >
@@ -86,9 +87,9 @@ classDiagram
 
         BC(mesh) Creates an empty structure
         update( time ) Updates from BCConfig
+        -validate() Validates BCConfig 
 
         map< pair< eid, side > , SideBC > BCMap
-        has_bc( eid, side )
         -reftime : the time in the config (update only when it changes)
     }
     BC --> BCConfig
@@ -111,6 +112,7 @@ classDiagram
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
+    Material ..> SideBC
 
 ```
 
