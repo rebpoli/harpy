@@ -37,13 +37,13 @@ classDiagram
     }
 
     class Solver {
-        map< var, SolverCoupler * > couplers
-        map< sid, Material * > material_by_subdomain
-        ~Solver: delete materials and couplers
-        set_coupler(SolverCoupler, vars)
-        solve()
-        jacobian()
-        residual()
+        -map< var, SolverCoupler * > couplers
+        -map< sid, Material * > material_by_subdomain
+        -get_mat()
+        +set_coupler(SolverCoupler, vars)
+        +solve()
+        +jacobian()
+        +residual()
     }
 
 
@@ -58,7 +58,7 @@ classDiagram
     Timeloop ..> Solverloop
     Solverloop ..> Solver
     Solverloop --> SolverCoupler
-    Solver..> Material
+    Solver --> Material
 
 ```
 
