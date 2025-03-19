@@ -70,6 +70,7 @@ ADD_LIBRARY(Modules
   src/config/MeshConfig.cpp
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
+  src/config/BCConfig.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
@@ -135,6 +136,9 @@ set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 # Tests
 add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
 target_link_libraries( ut-timestep Modules )
+
+add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
+target_link_libraries( ut-bcconfig Modules )
 
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )
