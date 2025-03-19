@@ -74,6 +74,11 @@ classDiagram
     Solver--> SolverCoupler
     note for Solver "External data static or not, is a simple solver, and a native coupler"
 
+    class BoundaryConditions { 
+        Holds current BCs
+        Knows the current delta_t
+        Updated when Timestep is updated by callback
+    }
 
     class Material {
         BoundaryConditions *bc
@@ -85,6 +90,8 @@ classDiagram
     Timeloop --> Solverloop
     Solverloop --> Solver
     Solver --> Material
+    Timeloop --> BoundaryConditions
+    Material ..> BoundaryConditions
 
 ```
 
@@ -102,11 +109,6 @@ classDiagram
     class Timestep {
         Controls the time.
         Register a callback to BoundaryConditions.
-    }
-    class BoundaryConditions { 
-        Holds current BCs
-        Knows the current delta_t
-        Updated when Timestep is updated by callback
     }
     BoundaryConditions ..> Timestep
 
