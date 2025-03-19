@@ -32,12 +32,7 @@ classDiagram
         +solve()
     }
 
-    %% Does the calculations and hold the cached data needed to couple SRC->TRG
-    %% and all the input parameters for the material calculations
-    class ModelParams {
-        map< eid, map< var, vector<dbl> > > dbl_data
-        vector<> * get( eid, var ) returns a new vec if needed
-    }
+    %% Does the calculations needed to couple SRC->TRG
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars, single )
         -Solver S, T : src and trg solvers
@@ -46,6 +41,21 @@ classDiagram
         -eval( vector<> , Material, var )
         +sync( ModelParams & ) updates cache
     }
+
+    class ElemParams {
+        % Interfaces with Material
+        map< var, vector<dbl> > dbl_data
+        vector<> * get( var ) returns a new vec if needed
+    }
+    class ModelParams {
+        % Interfaces with Solver
+        map< eid, ElemParams > by_eid
+        ElemParams * get( eid )    returns existing ElemParams
+        vector<> * get( eid, var ) returns a new vec if needed
+    }
+    ModelParams --> ElemParams
+    Solver --> ModelParams
+    SolverCoupler ..> ModelParams
 
     %% The solver keeps its own couplers
     class Solver {
@@ -248,7 +258,7 @@ The FE structures are the same, but the dimensions are different.
     if not material_by_sid[sid] :
         material_by_sid[sid] = Material::Factory(sid)
 
-    material_by_sid[sid].reinit(E)
+    material_by_sid[sid].reinit(E, )
 </pre>
 
 And for the boundary constrain
