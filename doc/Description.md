@@ -73,13 +73,18 @@ classDiagram
     Solver--> SolverCoupler
 
     class BoundaryConditions { 
-        Holds current BCs
-        Knows the current delta_t
+        Holds current BCs as parsed from the input
+        Boundaries as strings
         Updated when Timestep is updated by callback
     }
 
+    class BC {
+        % Resolved BC for a specific solver
+    }
+    Solver --> BC
+
     class Material {
-        BoundaryConditions *bc
+        BC *bc : current resolved BCs
         ElemParams *params
         +jacobian()
         +residual()
