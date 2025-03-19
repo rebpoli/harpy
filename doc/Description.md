@@ -41,7 +41,7 @@ classDiagram
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
         SolverCoupler( Solver *src , Solver *trg, vars, single )
-        -Solver S, T src and trg solvers
+        -Solver S, T : src and trg solvers
         -vars
         -Cache cache
         -bool single, skip
