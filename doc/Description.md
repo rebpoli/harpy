@@ -77,6 +77,7 @@ classDiagram
 
     class Material {
         BoundaryConditions *bc
+        ElemParams *params
         +jacobian()
         +residual()
     }
