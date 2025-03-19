@@ -27,7 +27,6 @@ classDiagram
     }
 
     class Solverloop {
-        vector< SolverCoupler * > couplers
         solve()
     }
 
@@ -54,10 +53,8 @@ classDiagram
     }
 
     SolverCoupler <|-- Solver
-    Material <.. SolverCoupler
-    Timeloop ..> Solverloop
-    Solverloop ..> Solver
-    Solverloop --> SolverCoupler
+    Timeloop --> Solverloop
+    Solverloop --> Solver
     Solver --> Material
 
 ```
