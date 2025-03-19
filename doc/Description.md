@@ -28,6 +28,7 @@ classDiagram
 
     %% The solver loop couples the solvers
     class Solverloop {
+        -Solver S1, S2, ...
         +solve()
     }
 
@@ -35,16 +36,17 @@ classDiagram
     %% Can be specialized for more complex data types (e.g. stress or velocities)
     class SolverCoupler__Cache {
         extends: map< eid, map< var, vector<> > >
-        vector<> * get( eid, var )
+        vector<> * get( eid, var ) %% returns a new vec if needed
     }
     note for SolverCoupler__Cache "Provides access functions for the data"
     class SolverCoupler {
-        SolverCoupler( Solver *src , Solver *trg, vars )
-        -Solver S: src solver
-        -Solver T: target solver
+        SolverCoupler( Solver *src , Solver *trg, vars, single )
+        -Solver S, T: src and trg solvers
+        -vars
         -Cache cache
+        -bool single, skip
         -eval( vector<> , Material, var )
-        +update(): updates cache
+        +sync(): updates cache
     }
     SolverCoupler --> SolverCoupler__Cache
 
@@ -53,7 +55,7 @@ classDiagram
         -map< var, SolverCoupler * > couplers
         -map< sid, Material * > material_by_subdomain
         -get_material()
-        +couple_from(Solver, vars)
+        +couple(src_solver, vars)
         +sync()  %% Updates the couplers
         +solve()
     }
@@ -65,6 +67,8 @@ classDiagram
         BoundaryConditions *bc
         +jacobian()
         +residual()
+        +jacobian_bc()
+        +residual_bc()
     }
 
     Timeloop --> Solverloop
@@ -174,32 +178,52 @@ Can save some time if the meshes are the same.
     qpxyz = TM.get_qpxyz()                 // The points of each quadrature point in the target
     foreach (Point pt) in (qpxyz)
         Elem SE = S.find_elem( pt )        // Colective task! All processors in sync
-        Mat SM = S.get_material( SE )           // Source material (shape funcs)
+        Mat SM = S.get_material( SE )      // Source material (shape funcs)
         if ( curr_proc )
             val = SM.calc()                // Now only the right processor does the calc
             out.push( ce )
 </pre>
         
-#### Solver::sync_from_couplers()
+#### Solver::sync()
 Creates a fully calculated structure in each integration point of the target based on the
 registered couplers.
 <pre>
-    foreach (Elem E) in (this)
-        foreach (var) in (vars)
-            coupler = couplers[var]
-            coupler.eval( get_material(E), var )  // SolverCoupler__Entry holds the information at the list of points
+    foreach coupler : coupler.sync()
+</pre>
+
+#### SolverCoupler::sync()
+Updates the cache of this coupler.
+This can be a single-time or a recurrent runner.
+Example: single-time 
+<pre>
+    if ( skip ) return
+
+    foreach (Elem E) in (T)
+        foreach (v) in (vars)
+            ret = & cache.get(e,v)                   // Gets the reference
+            ret.clear()
+            eval( ret, T.get_material(E), var )  
+
+    if ( single ) skip = true
+</pre>
+
+#### Solverloop::Solverloop()
+Constructor - in the child classes
+
+<pre>
+    Solver S1, S2                   // Instantiate the desired types
+    S2.couple( S1, var )            // Sets the coupling - e.g., S1 => S2
 </pre>
 
 #### Solverloop::solve()
 Integrates many solvers.
 This workflow should be implemented in the child classes.
 <pre>
-    Solver S1, S2                   // Instantiate the desired types
     while ( true )
-        S1.project_from( S2, vars )
+        S1.sync()
         S1.solve()
 
-        S2.project_from( S1, vars )
+        S2.sync()
         S2.solve()
 
         if (converged) : break
