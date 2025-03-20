@@ -8,3 +8,6 @@ export CHDEBUG=0
 
 run-%: set-% .force
 	$(topdir)/build/$*/ut-bcconfig
+
+gdb-devel: set-devel .force
+	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/ut-bcconfig

@@ -18,10 +18,9 @@ set-%:
 
 # default targets
 set: set-opt
-run: run-opt
+run: run-opt .force
 
-go: .force
-	$(MAKE) run
+gdb: set-devel gdb-devel .force
 
 .force:
 

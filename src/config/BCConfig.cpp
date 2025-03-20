@@ -29,6 +29,22 @@ void BCConfig::build_scalars()
       scalars.insert(V.GetString());
 }
 
+/*
+ *
+ * Returns the time imediatelly before time.
+ *
+ */
+double BCConfig::get_reftime( double time ) 
+{
+  double reftime = -999;
+  for ( const auto & [ t, e ] : entry_by_time )
+  {
+    if ( t > time ) break; 
+    reftime = t;
+  }
+  return reftime;
+}
+
 /**
  *
  *
@@ -273,39 +289,20 @@ void BCConfig::build_bcs()
 }
 
 
-////ostream& operator<<(ostream& os, const BoundaryConditions & m)
 
-
-//template <>
-//string BCMap<RealTensor>::dump( const System & sys ) const 
-//{
-//  ostringstream os;
-
-//  const MeshBase & mesh = sys.get_mesh();
-//  const BoundaryInfo & bi = mesh.get_boundary_info();
-
-//  for ( auto & me : *this ) {
-//    auto bid = me.first;
-//    for ( auto & er : me.second ) {
-//      auto vid = er.first;
-//      auto val = er.second;
-//      string bname    = bi.get_sideset_name( bid );
-//      string vname = "<unknown>";
-//      if (vid == SIGTOT) vname = "SIGTOT";
-//      if (vid == SIGEFF) vname = "SIGEFF";
-
-//      os << "    " << bname << "("<< bid << ") -> " << vname << "("<< vid <<") = ";
-//      os << "( (SXX, SXY, SXZ), (SYX, SYY, SYZ), (SZX, SZY, SZZ) ) = ( " ;
-//      os << " (" << val(0,0) << ", " << val(0,1) << ", " << val(0,2) << "), ";
-//      os << " (" << val(1,0) << ", " << val(1,1) << ", " << val(1,2) << "), ";
-//      os << " (" << val(2,0) << ", " << val(2,1) << ", " << val(2,2) << ") ";
-//      os << " )" ;
-//      os << endl;
-//    }
-//  }
-
-//  return os.str();
-//}
+/**
+ *
+ *
+ *
+ */
+void BCConfig::all_bnames( set<string> & ret ) 
+{
+  for (const auto& [ts, entry] : entry_by_time ) 
+  {
+    for ( const auto & [bname, item] : entry.dbl_bcs ) ret.insert( bname );
+    for ( const auto & [bname, item] : entry.str_bcs ) ret.insert( bname );
+  }
+}
 
 /**
  *

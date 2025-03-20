@@ -1,4 +1,7 @@
 {
+  "mesh" : {
+    "filename" : "mesh.e"
+  },
   "poroelastic":
   {
     "drained" : false,
@@ -26,6 +29,42 @@
     {
       "//" : "BC TO COMPUTE BIOT COEFF",
       "time": 0,
+      "bc" : {
+        "XN":  { "P":0, "UX":0 },
+        "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":0, "UZ":0 },
+        "ZP":  { "P":0, "SZZ":1e3, "SXY":1500, "UZ":"K0" },
+        "YN":  { "P":0, "UY":0 },
+        "YP":  { "P":0, "SYY":1e3, "UY":"K0" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 10,
+      "bc" : {
+        "XN":  { "P":0, "UX":0 },
+        "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":0, "UZ":0 },
+        "ZP":  { "P":0, "SZZ":1e3, "SXY":1500, "UZ":"K0" },
+        "YN":  { "P":0, "UY":0 },
+        "YP":  { "P":0, "SYY":1e3, "UY":"K0" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 100,
+      "bc" : {
+        "XN":  { "P":0, "UX":0 },
+        "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":0, "UZ":0 },
+        "ZP":  { "P":0, "SZZ":1e3, "SXY":1500, "UZ":"K0" },
+        "YN":  { "P":0, "UY":0 },
+        "YP":  { "P":0, "SYY":1e3, "UY":"K0" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 105,
       "bc" : {
         "XN":  { "P":0, "UX":0 },
         "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },

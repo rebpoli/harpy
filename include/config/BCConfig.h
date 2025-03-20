@@ -53,7 +53,7 @@ class BCConfig {
     };
 
     class PenaltyBC { public: double K; double value; };
-    /* *** */
+    /********* End subclasses definitions *********/
 
     BCConfig( string sys_name_ );
 
@@ -62,6 +62,8 @@ class BCConfig {
     void build_initial() ;
     void build_bcs() ;
 
+    double get_reftime( double time ) ;
+
     string sys_name;
 
     map<string, PenaltyBC> penalty;  // penalty_name => entry
@@ -69,6 +71,8 @@ class BCConfig {
     
     map< string, double > initial_by_vname;
     map< double, TimeEntry > entry_by_time;
+
+    void all_bnames( set<string> & ret ) ;
 
     friend Tester;
     friend ostream& operator<<(ostream& os, const BCConfig & m);

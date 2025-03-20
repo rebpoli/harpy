@@ -17,7 +17,7 @@
     "run_mesh_fracture" :  "bool",
     "annotate_bounding_box" :  "bool",
     "filter_annotations_outside_bounding_box" : { "_type": "bool" },
-    "file":  { "_type" : "string", "_dir":"run/msh" },
+    "filename":  { "_type" : "string", "_dir":"" },
     "flow": { "_type" : "list", "_entry" : "string" },
     "thermal": { "_type" : "list", "_entry" : "string" },
     "test_frame": { "_type" : "list", "_entry" : "string" },

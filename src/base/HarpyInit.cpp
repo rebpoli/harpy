@@ -1,7 +1,6 @@
 #include "base/Global.h"
 #include "base/HarpyInit.h"
 #include "config/Config.h"
-#include "config/MeshConfig.h"
 #include "util/Stopwatch.h"
 #include "util/File.h"
 
@@ -65,10 +64,7 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
 
   // Inicializacoes finais
     Stopwatch::init();
-    MeshCFG.init();
     Log::init(RANK);
-
-
 }
 
 HarpyInit::~HarpyInit() { delete(lm_init); }

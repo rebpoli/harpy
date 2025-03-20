@@ -1,5 +1,6 @@
 #pragma once
 
+#include "base/Global.h"
 #include "config/Config.h"
 
 #include "libmesh/id_types.h"
@@ -67,33 +68,6 @@ const set<libMesh::subdomain_id_type> SD_WELL = { SUBDOMAIN::WELL };
 // Is comletion
 const set<libMesh::subdomain_id_type> SD_COMPLETION = { SUBDOMAIN::COMPLETION };
 
-namespace geo
-{
-
-  // Propriedades de uma fratura
-  typedef struct
-  {
-    // id é um sufixo único para identificar as entidades
-    // correspondentes à fratura: id_point, id_line, id_face.
-    std::string id;
-    // length define o comprimento da fratura
-    double length;
-    // depth define a profundidade da fratura
-    double depth;
-    // Altura dos elementos planos acima e abaixo da fratura
-    double faceLayer;
-    // faceMeshSize define o tamanho aproximado dos elementos
-    // na face da fratura
-    double faceMeshSize;
-    // tipMeshSize define o tamanho aproximado dos elementos
-    // na ponta da fratura
-    double tipMeshSize;
-    // Raio de refino
-    double meshFieldRadius;
-  } Crack;
-
-}
-
 /**
  *
  *
@@ -102,29 +76,8 @@ class MeshConfig
 {
   public:
     MeshConfig();
-    vector<geo::Crack> cracks;
-    string filename() { return "run/msh/" + CFG.str("mesh", "file"); }
-    string model() { return CFG.str("mesh", "model"); }
 
-    void init();
-    void load_mesh( libMesh::MeshBase & mesh );
-    void add_frac_elems( libMesh::MeshBase & mesh );
-    void add_well_elems( libMesh::MeshBase & mesh );
-    void set_subdomains( libMesh::MeshBase & mesh );
-    void dump( const libMesh::MeshBase & mesh );
-
-    set<libMesh::boundary_id_type> completion_bids( const libMesh::MeshBase & mesh );
-    set<libMesh::boundary_id_type> well_bids( const libMesh::MeshBase & mesh );
-    set<uint> flow_domains( const libMesh::MeshBase & mesh );
-    set<uint> thermal_domains( const libMesh::MeshBase & mesh );
-
-    const map<uint,uint> & get_well_mirrors() const { return well_mirrors; }
-
-  private:
-    void _init_cracks();
-
-    /// Associacao entre os elementos (EDGE) de poço e de completação ou casing
-    map<uint,uint> well_mirrors;
+    string filename;   // The mesh filename to read
 };
 
 extern MeshConfig MeshCFG;
