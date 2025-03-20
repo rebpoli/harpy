@@ -256,22 +256,26 @@ void BCConfig::build_bcs()
           {
             if (Yi->value.IsNumber() ) 
             {
-              ItemDbl item = entry.dbl_bcs[bname];
+              ItemDbl item;
               item.vname = var;
               item.bname = bname;
               item.value = Yi->value.GetDouble();
-              entry.dbl_bcs[bname] = item;
+              auto & vec = entry.dbl_bcs[bname];
+              vec.push_back(item);
+              entry.dbl_bcs[bname] = vec;
             }
 
             // SCALARS
             if (Yi->value.IsString() ) 
             {
               string vname = Yi->value.GetString();
-              ItemStr item = entry.str_bcs[bname];
+              ItemStr item;
               item.vname = var;
               item.bname = bname;
               item.value = vname;
-              entry.str_bcs[bname] = item;
+              auto & vec = entry.str_bcs[bname];
+              vec.push_back(item);
+              entry.str_bcs[bname] = vec;
 
               if ( ! scalars.count( vname ) )
               if ( ! penalty.count( vname ) )
@@ -344,10 +348,12 @@ ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m)
 ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m) 
 {
   os << "DBL BCS:" << endl;
-  for ( const auto & [bname, item] : m.dbl_bcs )
+  for ( const auto & [bname, vec] : m.dbl_bcs )
+  for ( const auto & item : vec )
     os << "    " << bname << ": '" << item.vname << "'=" << item.value << endl;
   os << "STR BCS:" << endl;
-  for ( const auto & [bname, item] : m.str_bcs )
+  for ( const auto & [bname, vec] : m.str_bcs )
+  for ( const auto & item : vec )
     os << "    " << bname << ": '" << item.vname << "'=" << item.value << endl;
 
   os << "STOT BCS:" << endl;

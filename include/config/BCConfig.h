@@ -44,8 +44,8 @@ class BCConfig {
                       temperature(0), pressure(0) {}
 
         // Bname => item
-        map<string, ItemDbl> dbl_bcs;
-        map<string, ItemStr> str_bcs;
+        map<string, vector<ItemDbl>> dbl_bcs;
+        map<string, vector<ItemStr>> str_bcs;
         map<string, ItemTensor> stot_bcs;
       
         bool drained, has_temperature, has_pressure;

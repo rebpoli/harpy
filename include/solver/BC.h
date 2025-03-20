@@ -33,8 +33,23 @@ class BC {
     class Item {
       public:
         Item( uint vid_, double val_ ) : vid(vid_), val(val_) {}
-        uint vid, val;
+        uint vid;
+        double val;
     };
+    /**    **/
+    class DirichletItem {
+      public:
+        DirichletItem( uint bid_, uint vid_, double val_, string vname_, string bname_ ) :
+                              bid(bid_), vid(vid_), val(val_), vname(vname_), bname(bname_) {}
+        int bid;
+        uint vid;
+        double val;
+        string vname, bname;
+    };
+    /** ** ** ** ** ** ** ** ** ** ** **/
+
+    BC( const System & sys );
+    void update( double time );
 
   private:
     const System & system;
@@ -44,10 +59,11 @@ class BC {
 
     // (eid,sid) => vector< (vid, double) >
     map< ElemSide , vector<Item> > BCMap;
+    vector< DirichletItem > Dirichlet;
 
-  public:
-    BC( const System & sys );
-    void update( double time );
+    void _validate();
+    void _update_dbl();
+    void _update_dirichlet();
 
     friend Tester;
     friend ostream& operator<<(ostream& os, const BC & m);
@@ -56,3 +72,5 @@ class BC {
 ostream& operator<<(ostream& os, const BC & m);
 ostream& operator<<(ostream& os, const BC::ElemSide & m);
 ostream& operator<<(ostream& os, const BC::Item & m);
+ostream& operator<<(ostream& os, const BC::DirichletItem & m);
+ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m);
