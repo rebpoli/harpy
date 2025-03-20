@@ -1,0 +1,108 @@
+
+#include "solver/BC.h"
+#include "config/BCConfig.h"
+#include "libmesh/elem.h"
+#include "libmesh/boundary_info.h"
+
+/**
+ *
+ * Initialize an empty boundary constriant object.
+ *
+ */
+BC::BC( const System & sys_ ) : system(sys_), config( system.name() ), time(-999), reftime(-999)
+{
+
+}
+
+/**
+ * Updates the BC with information from the BCConfig at time t
+ *
+ */
+void BC::update( double t ) 
+{
+  time = t;
+
+  // Test if the reference time has changed for the new time
+  double rt = config.get_reftime( time );
+  if ( rt == reftime ) {
+    dlog(1) << "Reftime did not change. Continuing...";
+    return; // nothing has changed
+  }
+  reftime = rt;
+
+  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
+
+  dlog(1) << "Reftime: " << rt << " ... timeentry: " << timeentry;
+
+  set<string> seen_bnames;
+
+  // Refresh all data structures - can be only the local (would save some minor time)
+  const MeshBase & mesh = system.get_mesh();
+  const BoundaryInfo & bi = mesh.get_boundary_info();
+  for (const auto & elem : mesh.active_element_ptr_range()) 
+  for (auto side : elem->side_index_range()) {
+    vector<boundary_id_type> vec;
+    bi.boundary_ids(elem, side, vec );
+    for ( auto bid : vec ) 
+    {
+      string bname = bi.get_sideset_name( bid );
+      if ( ! timeentry.dbl_bcs.count( bname ) ) continue;
+    
+      const BCConfig::ItemDbl & item = timeentry.dbl_bcs.at(bname);
+      
+      ElemSide es( elem->id() , side );
+      if ( ! system.has_variable( item.vname ) ) flog << "Cannot add variable '" << item.vname << "' as in DBL BCS. Unexisting in System '" << system.name() << "'.";
+
+      uint vid = system.variable_number( item.vname );
+      vector<Item> v = BCMap[es];
+      v.push_back( Item(vid, item.value) );
+      BCMap[es] = v;
+
+      seen_bnames.insert( bname );
+    }
+  }
+
+  /** Check if all defined boundaries in BC have at least one element side in the mesh **/
+  set<string> bnames;
+  config.all_bnames( bnames );
+  for ( auto bname : bnames ) 
+  if ( ! seen_bnames.count( bname ) )
+    wlog << "No element has boundary '" << bname << "'. Check the mesh or the boundary conditions.";
+  /*******/
+}
+
+/**
+ *
+ *
+ */
+ostream& operator<<(ostream& os, const BC & m)
+{
+  os << "Current boundary condition (BC):" << endl;
+  for ( auto & [es, item_vec] : m.BCMap )
+  {
+    os << "     " << es << " =>  " ;
+    for ( auto & item : item_vec ) os << setw(20) << item;
+    os << endl;
+  }
+  return os;
+}
+ostream& operator<<(ostream& os, const BC::Item & m)
+{
+  os << "Item (vid:" << m.vid << ", val:" << m.val << ")";
+  return os;
+}
+ostream& operator<<(ostream& os, const BC::ElemSide & m)
+{
+  os << "ElemSide (eid:" << m.eid << ", side:" << m.side << ")";
+  return os;
+}
+
+
+/**
+ * Enable the object to index a map
+ */
+bool BC::ElemSide::operator<(const BC::ElemSide & other) const
+{
+  if (eid == other.eid) return side < other.side;
+  return eid < other.eid;
+}
