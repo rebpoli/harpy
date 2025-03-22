@@ -15,6 +15,16 @@ BC::BC( const System & sys_ ) : system(sys_), config( system.name() ), time(-999
 }
 
 /**
+ * Cleanup the generated dynamic datastructures
+ */
+void BC::_cleanup()
+{
+  for ( auto sitem : stotitem_ptrs ) delete(sitem);
+  stot.clear();
+
+}
+
+/**
  * Updates the BC with information from the BCConfig at time t
  */
 void BC::update( double t ) 
@@ -29,8 +39,6 @@ void BC::update( double t )
   }
   reftime = rt;
   // Clean structures
-  bcmap.clear();
-  dirichlet.clear();
 
   // Perform each part of the update
   _validate();
@@ -80,6 +88,7 @@ void BC::_validate()
  */
 void BC::_update_dirichlet()
 {
+  dirichlet.clear();
   const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
   // Refresh data structures - can be only the local (would save some minor time)
@@ -109,6 +118,7 @@ void BC::_update_dirichlet()
  */
 void BC::_update_stot()
 {
+  stot.clear();
   const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
   // Refresh data structures - can be only the local (would save some minor time)
@@ -125,9 +135,22 @@ void BC::_update_stot()
                     v[1][0], v[1][1], v[1][2],
                     v[2][0], v[2][1], v[2][2]  );
     int bid = bi.get_id_by_name( bname );
+    STotItem * sitem = new STotItem( bid, val, bname );
 
-    STotItem si( bid, val, bname );
-    stot.push_back( si );
+    // Register every element and sid with this stress item
+    for (const auto & elem : mesh.active_element_ptr_range()) 
+    for (auto side : elem->side_index_range()) 
+    {
+      vector<boundary_id_type> vec;
+      bi.boundary_ids(elem, side, vec );
+      for ( auto _bid : vec ) 
+      if ( bid == _bid )
+      {
+        ElemSide es(elem->id(), side);
+        stot[es] = sitem;
+        break;
+      }
+    }
   }
 }
 
@@ -187,48 +210,29 @@ void BC::_update_stot()
 ostream& operator<<(ostream& os, const BC & m)
 {
   os << "Current boundary condition (BC):" << endl;
-  os << "   DOUBLE BCS:" << endl;
-  for ( auto & [es, item_vec] : m.bcmap )
-  {
-    os << "      " << es << " =>  " ;
-    for ( auto & item : item_vec ) os << setw(20) << item;
-    os << endl;
-  }
   os << "   DIRICHLET BCS:" << endl;
   os << m.dirichlet;
   os << "   STOT BCS:" << endl;
   os << m.stot;
   return os;
 }
-ostream& operator<<(ostream& os, const BC::Item & m)
-{
-  os << "Item (vid:" << m.vid << ", val:" << m.val << ")";
-  return os;
-}
 ostream& operator<<(ostream& os, const BC::ElemSide & m)
-{
-  os << "ElemSide (eid:" << m.eid << ", side:" << m.side << ")";
-  return os;
-}
+{ os << "ElemSide (eid:" << m.eid << ", side:" << m.side << ")"; return os; }
 ostream& operator<<(ostream& os, const BC::DirichletItem & m)
-{
-  os << "DirichletItem (bid:" << m.bid << "(" << m.bname << "), vid:" << m.vid << "(" << m.vname << "), val:" << m.val << ") " ;
-  return os;
-}
+{ os << "DirichletItem (bid:" << m.bid << "(" << m.bname << "), vid:" << m.vid << "(" << m.vname << "), val:" << m.val << ") " ; return os; }
 ostream& operator<<(ostream& os, const BC::STotItem & m)
-{
-  os << "STotItem (bid:" << m.bid << "(" << m.bname << "), val:" <<endl << m.val << ") " ;
-  return os;
-}
+{ os << "STotItem (bid:" << m.bid << "(" << m.bname << "), val:" <<endl << m.val << ") " ; return os; }
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m)
+{ for ( auto di : m ) { os << setw(30) << di << endl; } return os; }
+
+ostream& operator<<(ostream& os, const map<BC::ElemSide, BC::STotItem *> & m)
 {
-  for ( auto di : m ) { os << setw(30) << di << endl; }
-  return os;
-}
-ostream& operator<<(ostream& os, const vector<BC::STotItem> & m)
-{
-  for ( auto di : m ) { os << setw(30) << di << endl; }
-  return os;
+  for ( auto [ es, sitem ] : m )
+  {
+    os << setw(30) << es << " : ";
+    os << setw(30) << *sitem;
+  }
+  return os; 
 }
 
 /**

@@ -29,13 +29,6 @@ class BC {
         uint eid, side;
         bool operator<(const ElemSide & other) const;
     };
-    /** A class to hold a single BC definition **/
-    class Item {
-      public:
-        Item( uint vid_, double val_ ) : vid(vid_), val(val_) {}
-        uint vid;
-        double val;
-    };
     /**    **/
     class DirichletItem {
       public:
@@ -49,6 +42,7 @@ class BC {
     /**    **/
     class STotItem {
       public:
+        STotItem() : bid(0), val(0), bname("") {}
         STotItem( uint bid_, RealTensor val_, string bname_ ) :
                               bid(bid_), val(val_), bname(bname_) {}
         int bid;
@@ -58,6 +52,7 @@ class BC {
     /** ** ** ** ** ** ** ** ** ** ** **/
 
     BC( const System & sys );
+    ~BC() { _cleanup(); }
     void update( double time );
 
   private:
@@ -67,11 +62,12 @@ class BC {
     double reftime;    // Reference time of the current BC
 
     // (eid,sid) => vector< (vid, double) >
-    map< ElemSide , vector<Item> > bcmap;
 
     vector< DirichletItem > dirichlet;
-    vector< STotItem > stot;
+    map< ElemSide, STotItem * > stot;
+    set< STotItem * > stotitem_ptrs; // List of created pointsr to manage cleanup
 
+    void _cleanup();
     void _validate();
     void _update_stot();
     void _update_dirichlet();
@@ -82,8 +78,7 @@ class BC {
 
 ostream& operator<<(ostream& os, const BC & m);
 ostream& operator<<(ostream& os, const BC::ElemSide & m);
-ostream& operator<<(ostream& os, const BC::Item & m);
 ostream& operator<<(ostream& os, const BC::DirichletItem & m);
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m);
 ostream& operator<<(ostream& os, const BC::STotItem & m);
-ostream& operator<<(ostream& os, const vector<BC::STotItem> & m);
+ostream& operator<<(ostream& os, const map<BC::ElemSide, BC::STotItem *> & m);
