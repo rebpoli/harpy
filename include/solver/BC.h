@@ -46,6 +46,15 @@ class BC {
         double val;
         string vname, bname;
     };
+    /**    **/
+    class STotItem {
+      public:
+        STotItem( uint bid_, RealTensor val_, string bname_ ) :
+                              bid(bid_), val(val_), bname(bname_) {}
+        int bid;
+        RealTensor val;
+        string bname;
+    };
     /** ** ** ** ** ** ** ** ** ** ** **/
 
     BC( const System & sys );
@@ -58,11 +67,13 @@ class BC {
     double reftime;    // Reference time of the current BC
 
     // (eid,sid) => vector< (vid, double) >
-    map< ElemSide , vector<Item> > BCMap;
-    vector< DirichletItem > Dirichlet;
+    map< ElemSide , vector<Item> > bcmap;
+
+    vector< DirichletItem > dirichlet;
+    vector< STotItem > stot;
 
     void _validate();
-    void _update_dbl();
+    void _update_stot();
     void _update_dirichlet();
 
     friend Tester;
@@ -74,3 +85,5 @@ ostream& operator<<(ostream& os, const BC::ElemSide & m);
 ostream& operator<<(ostream& os, const BC::Item & m);
 ostream& operator<<(ostream& os, const BC::DirichletItem & m);
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m);
+ostream& operator<<(ostream& os, const BC::STotItem & m);
+ostream& operator<<(ostream& os, const vector<BC::STotItem> & m);

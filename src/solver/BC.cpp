@@ -29,13 +29,13 @@ void BC::update( double t )
   }
   reftime = rt;
   // Clean structures
-  BCMap.clear();
-  Dirichlet.clear();
+  bcmap.clear();
+  dirichlet.clear();
 
   // Perform each part of the update
   _validate();
   _update_dirichlet();
-  _update_dbl();
+  _update_stot();
 }
 
 /**
@@ -100,15 +100,42 @@ void BC::_update_dirichlet()
     int bid = bi.get_id_by_name( bname );
 
     DirichletItem di( bid, vid, val, vname, bname );
-    Dirichlet.push_back( di );
+    dirichlet.push_back( di );
+  }
+}
+
+/**
+ * Update the Total Stress BCs (bring from BCConfig)
+ */
+void BC::_update_stot()
+{
+  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
+
+  // Refresh data structures - can be only the local (would save some minor time)
+  const MeshBase & mesh = system.get_mesh();
+  const BoundaryInfo & bi = mesh.get_boundary_info();
+
+  for ( auto & [ bname, item ] : timeentry.stot_bcs )
+  {
+    string vname = item.vname;
+
+    const vector<vector<double>> &v = item.value;
+
+    RealTensor val( v[0][0], v[0][1], v[0][2],
+                    v[1][0], v[1][1], v[1][2],
+                    v[2][0], v[2][1], v[2][2]  );
+    int bid = bi.get_id_by_name( bname );
+
+    STotItem si( bid, val, bname );
+    stot.push_back( si );
   }
 }
 
 /**
  * Update the double BCs (bring from BCConfig)
  */
-void BC::_update_dbl()
-{
+//void BC::_update_dbl()
+//{
 //  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
 //  set<string> seen_bnames; // For validation purposes
@@ -135,12 +162,12 @@ void BC::_update_dbl()
 //      if ( ! system.has_variable( item.vname ) ) 
 //        flog << "Cannot add variable '" << item.vname << "' as in DBL BCS. Unexisting in System '" << system.name() << "'.";
 
-//      /** Add the resolved ids to the BCMap **/
+//      /** Add the resolved ids to the bcmap **/
 //      uint vid = system.variable_number( item.vname );
 //      ElemSide es( elem->id() , side );
-//      vector<Item> v = BCMap[es];
+//      vector<Item> v = bcmap[es];
 //      v.push_back( Item(vid, item.value) );
-//      BCMap[es] = v;
+//      bcmap[es] = v;
 
 //      seen_bnames.insert( bname );
 //    }
@@ -152,7 +179,7 @@ void BC::_update_dbl()
 //  for ( auto bname : bnames ) 
 //  if ( ! seen_bnames.count( bname ) )
 //    wlog << "No element has boundary '" << bname << "'. Check the mesh or the boundary conditions.";
-}
+//}
 
 /**
  * Output stream operators
@@ -161,14 +188,16 @@ ostream& operator<<(ostream& os, const BC & m)
 {
   os << "Current boundary condition (BC):" << endl;
   os << "   DOUBLE BCS:" << endl;
-  for ( auto & [es, item_vec] : m.BCMap )
+  for ( auto & [es, item_vec] : m.bcmap )
   {
     os << "      " << es << " =>  " ;
     for ( auto & item : item_vec ) os << setw(20) << item;
     os << endl;
   }
   os << "   DIRICHLET BCS:" << endl;
-  os << m.Dirichlet;
+  os << m.dirichlet;
+  os << "   STOT BCS:" << endl;
+  os << m.stot;
   return os;
 }
 ostream& operator<<(ostream& os, const BC::Item & m)
@@ -186,12 +215,19 @@ ostream& operator<<(ostream& os, const BC::DirichletItem & m)
   os << "DirichletItem (bid:" << m.bid << "(" << m.bname << "), vid:" << m.vid << "(" << m.vname << "), val:" << m.val << ") " ;
   return os;
 }
+ostream& operator<<(ostream& os, const BC::STotItem & m)
+{
+  os << "STotItem (bid:" << m.bid << "(" << m.bname << "), val:" <<endl << m.val << ") " ;
+  return os;
+}
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m)
 {
-  for ( auto di : m ) 
-  {
-    os << setw(30) << di << endl;
-  }
+  for ( auto di : m ) { os << setw(30) << di << endl; }
+  return os;
+}
+ostream& operator<<(ostream& os, const vector<BC::STotItem> & m)
+{
+  for ( auto di : m ) { os << setw(30) << di << endl; }
   return os;
 }
 
