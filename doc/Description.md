@@ -117,25 +117,14 @@ classDiagram
         % May refer to a side or to a continua.
         % 1:1 to an element
 
+        Material * bc_material
         ElemParams * params
+
         +jacobian()
         +residual()
+        +boundary_material() Builds the BC material associated to this one
     }
-    class MaterialContinua {
-        % Functions for building the constitutive
-        % equation in the continua
-        +jacobian()
-        +residual()
-    }
-    class MaterialBC {
-        % Functions for building the constitutive
-        % equation in the boundary
-        SideBC * side_bc
-        +jacobian()
-        +residual()
-    }
-    Material <|.. MaterialBC
-    Material <|.. MaterialContinua
+    Material <.. Material
 
     Timeloop --> Solverloop
     Solverloop --> Solver
@@ -164,7 +153,10 @@ classDiagram
         Coupling beween solvers
     }
 
-    class MatViscoPlastic { FEM Element(dim) }
+    class MatViscoPlastic { 
+        FEM Element(dim) 
+        +boundary_material() Returns a MatViscoPlasticBC
+    }
     class MatViscoPlasticBC { FEM Element(dim-1) }
 
     class MatPoroelastic {
@@ -194,8 +186,6 @@ classDiagram
     Timeloop <|.. TimeloopBasic
     MaterialContinua <|.. MatPoroelastic
     MaterialBC <|.. MatPoroelasticBC
-    MaterialContinua <|.. MatViscoPlastic
-    MaterialBC <|.. MatViscoPlasticBC
     Solverloop <|.. SolverloopSingleNR
 
     Solver <|.. SolverNR
@@ -382,6 +372,21 @@ Ke = [ [ K00 K01 K02 ]
 </pre>
 where 0, 1 and 2 are the variables we are interested.
 They must match dofi so that add_matrix and add_vector work seemlessly.
+
+#### Material * Material::boundary_material()
+Calls the constructor of the BC material associated with this Material.
+Ensures that all the parameters are compatible to this object.
+
+<pre>
+    if bc_material : return bc_material
+    bc_material = new MaterialBC( this )
+</pre>
+
+#### MatPoroelasticBC::MatPoroelasticBC( Material * parent )
+*(or MatViscoPlasticBC::ViscoPlasticBC( Material * parent ) )*
+Creates the boundary material associated with parent.
+This class is not abstract. It inherits directly from Material.
+A similar 
 
 #### Material::reinit( Elem E )
 Reinitializes the FE shape function and quadrature for the element.
