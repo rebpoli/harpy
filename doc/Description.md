@@ -385,9 +385,9 @@ Ensures that all the parameters are compatible to this object.
 #### MatPoroelasticBC::MatPoroelasticBC( Material * parent ) && MatViscoPlasticBC::ViscoPlasticBC( Material * parent )
 Creates the boundary material associated with parent.
 This class is not abstract. It inherits directly from Material.
-A similar 
+The side is only set in reinit.
 
-#### Material::reinit( Elem E )
+#### Material::reinit( Elem E ) && Material::reinit( Elem E, Side S )
 Reinitializes the FE shape function and quadrature for the element.
 
 #### Material::jacobian( solution, K )  &&  jacobian_bc( solution, K )

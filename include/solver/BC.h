@@ -29,26 +29,26 @@ class BC {
         uint eid, side;
         bool operator<(const ElemSide & other) const;
     };
-    /**    **/
+    /** Items to store the resolved boundary conditions **/
     class DirichletItem {
       public:
         DirichletItem( uint bid_, uint vid_, double val_, string vname_, string bname_ ) :
                               bid(bid_), vid(vid_), val(val_), vname(vname_), bname(bname_) {}
-        int bid;
-        uint vid;
-        double val;
-        string vname, bname;
+        int bid; uint vid; double val; string vname, bname;
+    };
+    /**    **/
+    class PenaltyItem {
+      public:
+        PenaltyItem( uint bid_, uint vid_, double pen_K_, double pen_val_, string pen_name_ ) :
+                    bid(bid_), vid(vid_), pen_K(pen_K_), pen_val(pen_val_), pen_name(pen_name_) {}
+        int bid; uint vid;  double pen_K, pen_val;  string pen_name;
     };
     /**    **/
     class ScalarItem {
       public:
         ScalarItem( uint bid_, uint vid_, uint svid_, string scalar_name_, string vname_, string bname_ ) :
-                    bid(bid_), vid(vid_), svid(svid_), 
-                    scalar_name(scalar_name_), vname(vname_), bname(bname_) {}
-        int bid;
-        uint vid;  
-        uint svid; // the variable number of the scalar variable
-        string vname, bname, scalar_name;
+                    bid(bid_), vid(vid_), svid(svid_), scalar_name(scalar_name_), vname(vname_), bname(bname_) {}
+        int bid; uint vid;  uint svid; string vname, bname, scalar_name;
     };
     /**    **/
     class STotItem {
@@ -80,11 +80,15 @@ class BC {
     map< ElemSide, STotItem * > stot;
     set< STotItem * > stotitem_ptrs; // List of created pointsr to manage cleanup
 
+    map< ElemSide, vector<PenaltyItem *> > penalty;
+    map< string, PenaltyItem * > penalty_ptrs; // List of created pointsr to manage cleanup
+
     void _cleanup();
     void _validate();
     void _update_stot();
     void _update_dirichlet();
     void _update_scalar();
+    void _update_penalty();
 
     friend Tester;
     friend ostream& operator<<(ostream& os, const BC & m);
@@ -92,9 +96,16 @@ class BC {
 
 ostream& operator<<(ostream& os, const BC & m);
 ostream& operator<<(ostream& os, const BC::ElemSide & m);
-ostream& operator<<(ostream& os, const BC::DirichletItem & m);
+
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m);
-ostream& operator<<(ostream& os, const BC::ScalarItem & m);
+ostream& operator<<(ostream& os, const BC::DirichletItem & m);
+
 ostream& operator<<(ostream& os, const vector<BC::ScalarItem> & m);
-ostream& operator<<(ostream& os, const BC::STotItem & m);
+ostream& operator<<(ostream& os, const BC::ScalarItem & m);
+
 ostream& operator<<(ostream& os, const map<BC::ElemSide, BC::STotItem *> & m);
+ostream& operator<<(ostream& os, const BC::STotItem & m);
+
+ostream& operator<<(ostream& os, const map<BC::ElemSide, vector<BC::PenaltyItem *>> & m);
+ostream& operator<<(ostream& os, const vector<BC::PenaltyItem *> & m);
+ostream& operator<<(ostream& os, const BC::PenaltyItem & m);

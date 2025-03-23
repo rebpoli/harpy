@@ -250,7 +250,7 @@ void BCConfig::build_bcs()
             entry.stot_bcs[bname] = item; // update datastruct
           }
 
-          /* Doubles and scalars */
+          /* Doubles, scalars and penalties */
           set<string> DBL_VARS = {"UX","UY","UZ","P","T","Q"};
           if ( DBL_VARS.count(var) ) 
           {
@@ -273,13 +273,20 @@ void BCConfig::build_bcs()
               item.vname = var;
               item.bname = bname;
               item.value = scalar_name;
-              auto & vec = entry.scalar_bcs[bname];
-              vec.push_back(item);
-              entry.scalar_bcs[bname] = vec;
 
-              // TODO: Read penalties
-              if ( ! scalars.count( scalar_name ) )
-              if ( ! penalty.count( scalar_name ) )
+              if ( scalars.count( scalar_name ) )
+              {
+                auto & vec = entry.scalar_bcs[bname];
+                vec.push_back(item);
+                entry.scalar_bcs[bname] = vec;
+              } 
+              else if ( penalty.count( scalar_name ) )
+              {
+                auto & vec = entry.penalty_bcs[bname];
+                vec.push_back(item);
+                entry.penalty_bcs[bname] = vec;
+              }
+              else 
                 flog << "Cannot find '" << scalar_name << "' in scalar nor penalty variable list.";
             }
           }
