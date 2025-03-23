@@ -382,8 +382,7 @@ Ensures that all the parameters are compatible to this object.
     bc_material = new MaterialBC( this )
 </pre>
 
-#### MatPoroelasticBC::MatPoroelasticBC( Material * parent )
-*(or MatViscoPlasticBC::ViscoPlasticBC( Material * parent ) )*
+#### MatPoroelasticBC::MatPoroelasticBC( Material * parent ) && (or MatViscoPlasticBC::ViscoPlasticBC( Material * parent ) )
 Creates the boundary material associated with parent.
 This class is not abstract. It inherits directly from Material.
 A similar 
