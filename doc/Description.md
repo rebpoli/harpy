@@ -78,12 +78,17 @@ classDiagram
         % Holds all the times
         % Unaware of mesh. Deals with strings.
     }
-    class SideBC {
-        % extends vector< pair< vid, T > >
-        % Holds the collection of BCs of the side of an element
+    class DirichletItem {
+        % Holds the information of a Dirichlet BC
+        % Other BC Items follow a similar idea
+        vid : variable id
+        vname : var name
+        bid : boundary id
+        bname : boundary name
+        value : value of the BC
     }
     class BC {
-        % Resolved BC for a specific solver
+        % Resolves BCs for a specific system, specific Time
         % BCConfig is global
         % Only local elements
 
@@ -91,7 +96,16 @@ classDiagram
         update( time ) Updates from BCConfig
         -validate() Validates BCConfig 
 
-        map< pair< eid, side > , SideBC > BCMap
+        % BC Item collections 
+
+        % These are set before assembly
+        vector< DirichletItem >
+        vector< ScalarItem >
+        vector< PenaltyItem >
+
+        % These are set during assembly
+        map<ElemSide, STotItem>
+
         -reftime : the time in the config (update only when it changes)
     }
     BC --> BCConfig
@@ -104,12 +118,24 @@ classDiagram
         % 1:1 to an element
 
         ElemParams * params
+        +jacobian()
+        +residual()
+    }
+    class MaterialContinua {
+        % Functions for building the constitutive
+        % equation in the continua
+        +jacobian()
+        +residual()
+    }
+    class MaterialBC {
+        % Functions for building the constitutive
+        % equation in the boundary
         SideBC * side_bc
         +jacobian()
         +residual()
-        +jacobian_bc()
-        +residual_bc()
     }
+    Material <|.. MaterialBC
+    Material <|.. MaterialContinua
 
     Timeloop --> Solverloop
     Solverloop --> Solver
@@ -138,7 +164,8 @@ classDiagram
         Coupling beween solvers
     }
 
-    class MatViscoPlastic { FEM Element }
+    class MatViscoPlastic { FEM Element(dim) }
+    class MatViscoPlasticBC { FEM Element(dim-1) }
 
     class MatPoroelastic {
         FEM Element 
@@ -165,8 +192,10 @@ classDiagram
 
 %% Interfaces << implementations
     Timeloop <|.. TimeloopBasic
-    Material <|.. MatPoroelastic
-    Material <|.. MatViscoPlastic
+    MaterialContinua <|.. MatPoroelastic
+    MaterialBC <|.. MatPoroelasticBC
+    MaterialContinua <|.. MatViscoPlastic
+    MaterialBC <|.. MatViscoPlasticBC
     Solverloop <|.. SolverloopSingleNR
 
     Solver <|.. SolverNR
@@ -279,10 +308,16 @@ The FE structures are the same, but the dimensions are different.
 
 <pre>
     sid = E.subdomain()
-    if not material_by_sid[sid] :
-        material_by_sid[sid] = Material::Factory(sid)
-
-    material_by_sid[sid].reinit(E, params.get(E) )
+    if not S
+        if not material_by_sid[sid] :
+            material_by_sid[sid] = Material::Factory(sid)
+        material = material_by_sid[sid]
+        material.reinit( E, params.get(E) )
+    else
+        if not material_bc_by_sid[sid] :
+            material_bc_by_sid[sid] = MaterialBC::Factory(sid)
+        material = material_bc_by_sid[sid]
+        material.reinit( E, params.get(E), S )
 </pre>
 
 And for the boundary constrain
@@ -302,7 +337,21 @@ Creates all materials of the local processor upfront.
     
 #### **static** Material::Factory( sid, BC )
 Multiplexes the material from the configuration.
-Instantiates the right material for the element.
+Instantiates the right material for the element CONTINUA.
+Should only be called if it hasnt been created before (see Solver::get_material)
+
+If BC=True, the material refers to a boundary constraint (reduced dimension).
+<pre>
+    matid = get_material_id(sid) 
+    if matid == VISCOPLASTIC :
+        return new MatViscoPlastic( E, BC ) 
+    if matid == POROELASTIC :
+        return new MatViscoPlastic( E, BC )
+</pre>
+
+#### **static** MaterialBC::Factory( sid, BC )
+Multiplexes the material from the configuration.
+Instantiates the right material for the element BOUNDARIES.
 Should only be called if it hasnt been created before (see Solver::get_material)
 
 If BC=True, the material refers to a boundary constraint (reduced dimension).
@@ -354,5 +403,5 @@ Multiplexes the material and calls the jacobian in the material.
     // Boundary conditions
     for (E, S) in (BC)
         M = get_material( E, S )
-        M.jacobian_bc( solution, K )      // Tells the material to build the BC jacobian
+        M.jacobian( solution, K )      // Tells the material to build the BC jacobian
 </pre>
