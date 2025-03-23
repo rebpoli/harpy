@@ -268,18 +268,19 @@ void BCConfig::build_bcs()
             // SCALARS
             if (Yi->value.IsString() ) 
             {
-              string vname = Yi->value.GetString();
+              string scalar_name = Yi->value.GetString();
               ItemStr item;
               item.vname = var;
               item.bname = bname;
-              item.value = vname;
-              auto & vec = entry.str_bcs[bname];
+              item.value = scalar_name;
+              auto & vec = entry.scalar_bcs[bname];
               vec.push_back(item);
-              entry.str_bcs[bname] = vec;
+              entry.scalar_bcs[bname] = vec;
 
-              if ( ! scalars.count( vname ) )
-              if ( ! penalty.count( vname ) )
-                flog << "Cannot find '" << vname << "' in scalar nor penalty variable list.";
+              // TODO: Read penalties
+              if ( ! scalars.count( scalar_name ) )
+              if ( ! penalty.count( scalar_name ) )
+                flog << "Cannot find '" << scalar_name << "' in scalar nor penalty variable list.";
             }
           }
         }
@@ -304,7 +305,7 @@ void BCConfig::all_bnames( set<string> & ret )
   for (const auto& [ts, entry] : entry_by_time ) 
   {
     for ( const auto & [bname, item] : entry.dbl_bcs ) ret.insert( bname );
-    for ( const auto & [bname, item] : entry.str_bcs ) ret.insert( bname );
+    for ( const auto & [bname, item] : entry.scalar_bcs ) ret.insert( bname );
   }
 }
 
@@ -352,7 +353,7 @@ ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m)
   for ( const auto & item : vec )
     os << "    " << bname << ": '" << item.vname << "'=" << item.value << endl;
   os << "STR BCS:" << endl;
-  for ( const auto & [bname, vec] : m.str_bcs )
+  for ( const auto & [bname, vec] : m.scalar_bcs )
   for ( const auto & item : vec )
     os << "    " << bname << ": '" << item.vname << "'=" << item.value << endl;
 

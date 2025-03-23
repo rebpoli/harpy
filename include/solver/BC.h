@@ -40,6 +40,17 @@ class BC {
         string vname, bname;
     };
     /**    **/
+    class ScalarItem {
+      public:
+        ScalarItem( uint bid_, uint vid_, uint svid_, string scalar_name_, string vname_, string bname_ ) :
+                    bid(bid_), vid(vid_), svid(svid_), 
+                    scalar_name(scalar_name_), vname(vname_), bname(bname_) {}
+        int bid;
+        uint vid;  
+        uint svid; // the variable number of the scalar variable
+        string vname, bname, scalar_name;
+    };
+    /**    **/
     class STotItem {
       public:
         STotItem() : bid(0), val(0), bname("") {}
@@ -64,6 +75,8 @@ class BC {
     // (eid,sid) => vector< (vid, double) >
 
     vector< DirichletItem > dirichlet;
+    vector< ScalarItem > scalar;
+
     map< ElemSide, STotItem * > stot;
     set< STotItem * > stotitem_ptrs; // List of created pointsr to manage cleanup
 
@@ -71,6 +84,7 @@ class BC {
     void _validate();
     void _update_stot();
     void _update_dirichlet();
+    void _update_scalar();
 
     friend Tester;
     friend ostream& operator<<(ostream& os, const BC & m);
@@ -80,5 +94,7 @@ ostream& operator<<(ostream& os, const BC & m);
 ostream& operator<<(ostream& os, const BC::ElemSide & m);
 ostream& operator<<(ostream& os, const BC::DirichletItem & m);
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m);
+ostream& operator<<(ostream& os, const BC::ScalarItem & m);
+ostream& operator<<(ostream& os, const vector<BC::ScalarItem> & m);
 ostream& operator<<(ostream& os, const BC::STotItem & m);
 ostream& operator<<(ostream& os, const map<BC::ElemSide, BC::STotItem *> & m);

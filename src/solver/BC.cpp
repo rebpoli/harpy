@@ -21,7 +21,6 @@ void BC::_cleanup()
 {
   for ( auto sitem : stotitem_ptrs ) delete(sitem);
   stot.clear();
-
 }
 
 /**
@@ -43,6 +42,7 @@ void BC::update( double t )
   // Perform each part of the update
   _validate();
   _update_dirichlet();
+  _update_scalar();
   _update_stot();
 }
 
@@ -82,6 +82,40 @@ void BC::_validate()
     wlog << "No element has boundary '" << bname << "'. Check the mesh or the boundary conditions.";
 }
 
+/**
+ * Update the Dirichlet BCs (bring from BCConfig)
+ */
+void BC::_update_scalar()
+{
+  dirichlet.clear();
+  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
+
+  // Refresh data structures - can be only the local (would save some minor time)
+  const MeshBase & mesh = system.get_mesh();
+  const BoundaryInfo & bi = mesh.get_boundary_info();
+
+  for ( auto & [ bname, vec ] : timeentry.scalar_bcs )
+  for ( auto & item : vec )
+  {
+    string vname = item.vname;
+
+    /** Validation of the variable name (Dirichlet constraints are on
+        existing variables of the system) **/
+    if ( ! system.has_variable( vname ) ) continue; 
+    uint vid = system.variable_number( vname );
+
+    string scalar_name = item.value;
+
+    // The number of the scalar variable
+    if ( ! system.has_variable( scalar_name ) ) flog << "Trying to attach to a scalar variable that does not exist ('" << scalar_name << "')! This should have been checked in BCConfig! Something is wrong!";
+    uint svid = system.variable_number( scalar_name );
+
+    int bid = bi.get_id_by_name( bname );
+
+    ScalarItem si( bid, vid, svid, scalar_name, vname, bname );
+    scalar.push_back( si );
+  }
+}
 
 /**
  * Update the Dirichlet BCs (bring from BCConfig)
@@ -135,7 +169,10 @@ void BC::_update_stot()
                     v[1][0], v[1][1], v[1][2],
                     v[2][0], v[2][1], v[2][2]  );
     int bid = bi.get_id_by_name( bname );
+
+    // Create and register item
     STotItem * sitem = new STotItem( bid, val, bname );
+    stotitem_ptrs.insert(sitem);
 
     // Register every element and sid with this stress item
     for (const auto & elem : mesh.active_element_ptr_range()) 
@@ -212,6 +249,8 @@ ostream& operator<<(ostream& os, const BC & m)
   os << "Current boundary condition (BC):" << endl;
   os << "   DIRICHLET BCS:" << endl;
   os << m.dirichlet;
+  os << "   SCALAR BCS:" << endl;
+  os << m.scalar;
   os << "   STOT BCS:" << endl;
   os << m.stot;
   return os;
@@ -220,10 +259,14 @@ ostream& operator<<(ostream& os, const BC::ElemSide & m)
 { os << "ElemSide (eid:" << m.eid << ", side:" << m.side << ")"; return os; }
 ostream& operator<<(ostream& os, const BC::DirichletItem & m)
 { os << "DirichletItem (bid:" << m.bid << "(" << m.bname << "), vid:" << m.vid << "(" << m.vname << "), val:" << m.val << ") " ; return os; }
+ostream& operator<<(ostream& os, const BC::ScalarItem & m)
+{ os << "ScalarItem (bid:" << m.bid << "(" << m.bname << "), vid:" << m.vid << "(" << m.vname << "), svid:" << m.svid << ", scalar_name:" << m.scalar_name ; return os; }
 ostream& operator<<(ostream& os, const BC::STotItem & m)
 { os << "STotItem (bid:" << m.bid << "(" << m.bname << "), val:" <<endl << m.val << ") " ; return os; }
 ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m)
 { for ( auto di : m ) { os << setw(30) << di << endl; } return os; }
+ostream& operator<<(ostream& os, const vector<BC::ScalarItem> & m)
+{ for ( auto si : m ) { os << setw(30) << si << endl; } return os; }
 
 ostream& operator<<(ostream& os, const map<BC::ElemSide, BC::STotItem *> & m)
 {

@@ -31,6 +31,10 @@ int main (int argc, char ** argv)
   sys.add_variable("UY", FIRST, LAGRANGE);
   sys.add_variable("UZ", FIRST, LAGRANGE);
   sys.add_variable("P", FIRST, LAGRANGE);
+  sys.add_variable("tri_dx", FIRST, LAGRANGE);
+  sys.add_variable("tri_dy", FIRST, LAGRANGE);
+  sys.add_variable("tri_dz", FIRST, LAGRANGE);
+  sys.add_variable("K0", FIRST, LAGRANGE);
   BC bc(sys);
   bc.update( 100 );
   ilog << bc;
