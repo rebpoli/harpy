@@ -140,7 +140,7 @@ classDiagram
 classDiagram
     Timeloop --> Timestep
 
-    Solverloop <|.. SolverloopBasic
+    Solverloop <|.. SolverloopTHM
 
 
     class Timestep {
@@ -148,7 +148,7 @@ classDiagram
     }
 
 %% Implementations
-    class SolverloopBasic {
+    class SolverloopTHM {
         FEM EquationSystems
         Coupling beween solvers
     }
@@ -169,11 +169,9 @@ classDiagram
         reinit(Elem)
     }
 
-    class SolverloopSingleNR { Bypasses to the NR solver. } 
-
     class SolverConst { Returns const value.  }
     class SolverFile { Reads from external file. }
-    class SolverNR { 
+    class SolverHM { 
         Multiplexes material.
         
         +jacobian()
@@ -186,9 +184,8 @@ classDiagram
     Timeloop <|.. TimeloopBasic
     MaterialContinua <|.. MatPoroelastic
     MaterialBC <|.. MatPoroelasticBC
-    Solverloop <|.. SolverloopSingleNR
 
-    Solver <|.. SolverNR
+    Solver <|.. SolverHM
     Solver <|.. SolverConst
     Solver <|.. SolverFile
 

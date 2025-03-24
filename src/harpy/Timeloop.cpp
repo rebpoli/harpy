@@ -1,4 +1,5 @@
 #include "harpy/Timeloop.h"
+#include "harpy/Solverloop.h"
 
 /**
  *

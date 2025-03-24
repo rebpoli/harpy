@@ -1,5 +1,4 @@
-#ifndef __TIMELOOP_H
-#define __TIMELOOP_H
+#pragma once
 
 #include "base/Global.h"
 #include "base/HarpyInit.h"
@@ -17,4 +16,3 @@ class Timeloop {
     Timestep ts;
 };
 
-#endif
