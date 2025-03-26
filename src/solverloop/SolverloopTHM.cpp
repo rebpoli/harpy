@@ -3,7 +3,8 @@
 
 #include "config/Config.h"
 
-SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) : es(mesh), ts(ts_)
+SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) :
+  es(mesh), ts(ts_), solver(es)
 {
 }
 
@@ -13,5 +14,4 @@ SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) : es(mesh)
  */
 void SolverloopTHM::solve() 
 {
-
 }

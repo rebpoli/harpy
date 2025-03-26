@@ -3,6 +3,8 @@
 #include "base/Global.h"
 #include "harpy/Timestep.h"
 
+#include "solver/SolverTHM.h"
+
 #include "libmesh/equation_systems.h"
 #include "libmesh/mesh.h"
 
@@ -21,6 +23,8 @@ class SolverloopTHM {
     void solve();
 
   private:
-    EquationSystems es;
-    const Timestep & ts;
+    EquationSystems es;         // Owned
+    const Timestep & ts;        // Owned by Timeloop
+
+    SolverTHM solver;
 };

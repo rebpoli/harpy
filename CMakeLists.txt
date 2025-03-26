@@ -84,6 +84,7 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/solver/BC.cpp
+  src/solver/SolverTHM.cpp
   src/solverloop/SolverloopTHM.cpp
 
 
