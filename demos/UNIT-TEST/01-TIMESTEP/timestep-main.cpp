@@ -1,5 +1,5 @@
 
-#include "config/TimeloopConfig.h"
+#include "harpy/Timestep.h"
 #include "base/HarpyInit.h"
 
 int main (int argc, char ** argv)

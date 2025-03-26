@@ -1,12 +1,19 @@
 #include "harpy/Timeloop.h"
-#include "harpy/Solverloop.h"
+#include "solverloop/SolverloopTHM.h"
+
+#include "libmesh/equation_systems.h"
+
+using namespace libMesh;
 
 /**
  *
- *
+ * Starts the timeloop for the specified mesh.
  *
  */
-Timeloop::Timeloop() : ts() { main_loop(); }
+Timeloop::Timeloop( MeshBase & mesh_ ) : mesh(mesh_), ts() 
+{
+  main_loop(); 
+}
 
 Timeloop::~Timeloop() { }
 
@@ -16,12 +23,16 @@ Timeloop::~Timeloop() { }
  * the time. This is a control machine, not a worker.
  *
  */
-void Timeloop::main_loop() {
-  
+void Timeloop::main_loop() 
+{
+  SolverloopTHM sloop( mesh, ts ); 
+
   while ( true )
   {
     ilog1 << "====================================================";
     ilog1 << "Solving timestep "<< ts.t_step<<" @ " << ts.time << "...";
+
+    sloop.solve();
 
     // Avança os parametros do tstep
     ts.next();   

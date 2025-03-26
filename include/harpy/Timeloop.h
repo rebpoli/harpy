@@ -2,17 +2,20 @@
 
 #include "base/Global.h"
 #include "base/HarpyInit.h"
-#include "config/TimeloopConfig.h"
+#include "harpy/Timestep.h"
 
-class Poroelastic;
+#include  "libmesh/mesh.h"
+
+using namespace libMesh;
 
 class Timeloop {
   public:
-    Timeloop();
+    Timeloop( MeshBase & mesh_ );
     ~Timeloop();
     void main_loop();
 
   private:
+    MeshBase & mesh;
     Timestep ts;
 };
 

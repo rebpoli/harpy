@@ -48,7 +48,7 @@ class BC {
       public:
         ScalarItem( uint bid_, uint vid_, uint svid_, string scalar_name_, string vname_, string bname_ ) :
                     bid(bid_), vid(vid_), svid(svid_), scalar_name(scalar_name_), vname(vname_), bname(bname_) {}
-        int bid; uint vid;  uint svid; string vname, bname, scalar_name;
+        int bid; uint vid;  uint svid; string scalar_name, vname, bname;
     };
     /**    **/
     class STotItem {

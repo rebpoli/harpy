@@ -66,6 +66,7 @@ include_directories(include)
 # Compilar arquivos-fonte dentro da biblioteca estática libModules.a
 ADD_LIBRARY(Modules
   src/harpy/Timeloop.cpp
+  src/harpy/Timestep.cpp
   src/harpy/MeshInit.cpp
   src/config/TimeloopConfig.cpp
   src/config/MeshConfig.cpp
@@ -83,6 +84,7 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/solver/BC.cpp
+  src/solverloop/SolverloopTHM.cpp
 
 
 

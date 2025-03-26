@@ -1,8 +1,9 @@
 #include "util/Messages.h"
-#include "config/TimeloopConfig.h"
+#include "harpy/Timestep.h"
 #include "libmesh/linear_solver.h"
 
 using namespace libMesh;
+using namespace std;
 
 /**
  *
@@ -10,9 +11,9 @@ using namespace libMesh;
  *
  */
 string fmt_i( int num, uint w, bool zerofill ) {
-  std::ostringstream out;
-  out << std::setw(w);
-  if ( zerofill ) out << std::setfill('0');
+  ostringstream out;
+  out << setw(w);
+  if ( zerofill ) out << setfill('0');
   out << num;
   return out.str();
 }
@@ -21,7 +22,7 @@ string fmt_i( int num, uint w, bool zerofill ) {
  *
  */
 string fmt_d( double num ) {
-  std::ostringstream out;
+  ostringstream out;
   out << num;
   return out.str();
 }
@@ -31,8 +32,8 @@ string fmt_d( double num ) {
  *
  */
 string fmt_sci( double num ) {
-  std::ostringstream out;
-  out << std::scientific << num;
+  ostringstream out;
+  out << scientific << num;
   return out.str();
 }
 
@@ -46,12 +47,12 @@ string fmt_sci( double num ) {
  *
  */
 string MSG_THERMAL_INIT_TIMESTEP( uint t_step, double time ) {
-  std::ostringstream out;
+  ostringstream out;
 
   out << "Solving THERMAL time step ";
-  out << std::setw(2) << std::right << t_step
-    << ", time=" << std::fixed << std::setw(6)
-    << std::setprecision(3) << std::setfill('0') << std::left
+  out << setw(2) << right << t_step
+    << ", time=" << fixed << setw(6)
+    << setprecision(3) << setfill('0') << left
     << time <<  "...";
 
   return out.str();
@@ -61,11 +62,11 @@ string MSG_THERMAL_INIT_TIMESTEP( uint t_step, double time ) {
  *
  */
 string MSG_POROEL_INIT_TIMESTEP( Timestep & ts ) {
-  std::ostringstream out;
+  ostringstream out;
   out << "Solving POROELASTIC time step "
-    << std::setw(2) << std::right << ts.t_step
-    << ", time=" << std::fixed << std::setw(6)
-    << std::setprecision(3) << std::setfill('0') << std::left
+    << setw(2) << right << ts.t_step
+    << ", time=" << fixed << setw(6)
+    << setprecision(3) << setfill('0') << left
     << ts.time <<  " (dt:"<< ts.dt;
 
   return out.str();
@@ -76,7 +77,7 @@ string MSG_POROEL_INIT_TIMESTEP( Timestep & ts ) {
  */
 string MSG_POROEL_WRITE( Timestep & ts ) {
   UNUSED(ts);
-  std::ostringstream out;
+  ostringstream out;
   out << "Writing poroelastic timestep ...";
   return out.str();
 }
@@ -85,7 +86,7 @@ string MSG_POROEL_WRITE( Timestep & ts ) {
  *
  */
 string MSG_POROEL_EVAL_PROBE( string pname ) {
-  std::ostringstream out;
+  ostringstream out;
   out << "Evaluating poroelastic probe '"<< pname << "' ...";
   return out.str();
 }
@@ -96,7 +97,7 @@ string MSG_POROEL_EVAL_PROBE( string pname ) {
  *
  */
 string MSG_CONVERGED_REASON( const libMesh::TransientLinearImplicitSystem & sys ) {
-  std::ostringstream out;
+  ostringstream out;
   uint nit = sys.n_linear_iterations();
   out << "LINEAR solver convergence/divergence reason: ";
   out << libMesh::Utility::enum_to_string(sys.get_linear_solver()->get_converged_reason());
