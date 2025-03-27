@@ -38,6 +38,10 @@
   "poroelastic":
   {
     "_type" : "named_dict",
+    "material_map" : { 
+      "_type" : "dict" ,
+      "_entry" : "string" 
+    },
     "drained": "bool",
     "interior_penalty" : {"_type":"double", "_help" : "The interior penalty parameter for the DG method." },
     "porosity": "double",

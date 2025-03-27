@@ -78,6 +78,7 @@ ADD_LIBRARY(Modules
   src/util/OutputOperators.cpp
   src/util/TeeBuff.cpp
   src/util/Messages.cpp
+  src/util/SpatialDataReader.cpp
   src/base/Global.cpp
   src/base/HarpyInit.cpp
   src/base/Log.cpp
@@ -143,6 +144,9 @@ target_link_libraries( ut-timestep Modules )
 
 add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
 target_link_libraries( ut-bcconfig Modules )
+
+add_executable( ut-param-interp demos/UNIT-TEST/04-PARAM-INTERPOLATOR/main.cpp  )
+target_link_libraries( ut-param-interp Modules )
 
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )

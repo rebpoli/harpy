@@ -182,7 +182,7 @@ void ConfigValidate::validate_matrix( RJValue & trg, RJValue & gram )
     }
   }
 
-  dlog(1) << "Lida matriz com dimensoes: (l,c) = (" << l << "," << c << ").";
+  dlog(3) << "Lida matriz com dimensoes: (l,c) = (" << l << "," << c << ").";
   if ( gram.IsObject() ) return;
   if ( gram.HasMember("_dim") ) {
     auto  a = gram["_dim"].GetArray();
@@ -203,7 +203,7 @@ void ConfigValidate::validate( const Value & trg, const Value & gram )
 
   // Le na gramatica o que esse cara deve ser
   string type = get_type(gram);
-  dlog(1) << "Validando '"<< context << "' ... type:" << type;
+  dlog(3) << "Validando '"<< context << "' ... type:" << type;
   
   validate_type ( trg, gram );
   validate_string( trg, gram );
@@ -258,7 +258,7 @@ const Value * ConfigValidate::scan( RJValue & gram, uint i )
   string type = get_type(gram);
   if ( type != "list" ) flog << context << " Essa funcao deveria ser chamada apenas para listas? Habemos bug?";
 
-  dlog(1) << "Looking for key '" << context << "' ...";
+  dlog(3) << "Looking for key '" << context << "' ...";
 
   // Nao tem descricao de entrada -- skip.
   if ( ! gram.IsObject() ) return 0;
@@ -295,7 +295,7 @@ const Value * ConfigValidate::scan( RJValue & gram, string & key )
 {
   string type = get_type(gram);
 
-  dlog(1) << "Looking for key '" << context << "' ...";
+  dlog(3) << "Looking for key '" << context << "' ...";
 
   if ( gram.HasMember( key.c_str() ) ) return & gram[key.c_str()];
 
