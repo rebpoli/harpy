@@ -1,0 +1,82 @@
+{
+  "mesh" : {
+    "filename" : "mesh.e"
+  },
+  "poroelastic":
+  {
+    "drained" : false,
+    "output": "solution.e",
+    "dbg_output": "dbg.e",
+
+    "implicit":0.5,
+    "initial": { "P":0, "UX":0, "UY":0, "UZ":0 },
+    "scalars": [ "tri_dx", "tri_dy", "tri_dz" ],
+    "penalty": { 
+      "K0" : { "strength":1e5, "value":0 },
+      "K1" : { "strength":1e1, "value":55 }
+    },
+
+    "boundary_conditions": [
+    {
+      "//" : "REFERENCE STATE",
+      "time": -1,
+      "bc" : {
+        "XN":  { "UX":1 },
+        "XP":  { "UX": "tri_dx" },
+        "ZN":  { "UZ":3 },
+        "ZP":  { "UZ":"tri_dz" },
+        "YN":  { "UY":2 },
+        "YP":  { "UY":"tri_dy" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 0,
+      "bc" : {
+        "XN":  { "P":1, "UX":0 },
+        "XP":  { "P":2, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":3, "UZ":0 },
+        "ZP":  { "P":4, "SZZ":1e3, "SXY":3000, "UZ":"K0" },
+        "YN":  { "P":5, "UY":0 },
+        "YP":  { "P":6, "SYY":1e3, "UY":"K0" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 10,
+      "bc" : {
+        "XN":  { "P":0, "UX":0 },
+        "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":0, "UZ":0 },
+        "ZP":  { "P":0, "SZZ":1e3, "SXY":1500, "UZ":"K0" },
+        "YN":  { "P":0, "UY":0 },
+        "YP":  { "P":0, "SYY":1e3, "UY":"K0" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 100,
+      "bc" : {
+        "XN":  { "P":154, "UX":0 },
+        "XP":  { "P":254, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":354, "UZ":0 },
+        "ZP":  { "P":454, "SZZ":1e3, "SXY":3500, "UZ":"tri_dz" },
+        "YN":  { "P":554, "UY":0 },
+        "YP":  { "P":654, "SYY":1e3, "UY":"K1" }
+      }
+    },
+    {
+      "//" : "BC TO COMPUTE BIOT COEFF",
+      "time": 105,
+      "bc" : {
+        "XN":  { "P":0, "UX":0 },
+        "XP":  { "P":0, "SXX":1e3, "SYY":2e3, "UX":"K0" },
+        "ZN":  { "P":0, "UZ":0 },
+        "ZP":  { "P":0, "SZZ":1e3, "SXY":1500, "UZ":"K0" },
+        "YN":  { "P":0, "UY":0 },
+        "YP":  { "P":0, "SYY":1e3, "UY":"K0" }
+      }
+    }
+    ]
+  }
+}

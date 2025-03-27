@@ -1,0 +1,6 @@
+# Maps subdomains into materials
+# $SUBDOMAIN $MATERIAL
+.SUBDOMAIN
+SIDEBURDEN caprock
+ELLIPSE reservoir
+

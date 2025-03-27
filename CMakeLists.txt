@@ -73,6 +73,7 @@ ADD_LIBRARY(Modules
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
   src/config/BCConfig.cpp
+  src/config/ModelConfig.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
@@ -147,6 +148,9 @@ target_link_libraries( ut-bcconfig Modules )
 
 add_executable( ut-param-interp demos/UNIT-TEST/04-PARAM-INTERPOLATOR/main.cpp  )
 target_link_libraries( ut-param-interp Modules )
+
+add_executable( ut-model-config demos/UNIT-TEST/05-MODEL-CONFIG//main.cpp  )
+target_link_libraries( ut-model-config Modules )
 
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )
