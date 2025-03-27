@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/Global.h"
+#include <map>
 
 /**
  *
@@ -11,6 +12,14 @@
 class ModelConfig
 {
 public:
+  /**       **/
+  map< string, string > subdomain_material;
+
+
+  /** ** ** **/
+
+
+
   ModelConfig( string sys_name_ );
 
 private:

@@ -1,4 +1,19 @@
-# Info:     ModelConfig: (poroelastic) : 
-      dir                 :poroelastic
-      model file          :poroelastic/MODEL
+# Deb[1:0]: Model directory and file ok! We are good to go! (poroelastic, poroelastic/MODEL)
+# Deb[1:0]: 
+# Deb[1:0]:   empty.
+# Deb[1:0]: 
+# Deb[1:0]:   empty.
+# Deb[1:0]: .SUBDOMAIN
+# Deb[1:0]:    key:SUBDOMAIN
+# Deb[1:0]: SIDEBURDEN caprock
+# Deb[1:0]: ELLIPSE reservoir
+# Deb[1:0]: 
+# Deb[1:0]:   empty.
+# Info:     
+ModelConfig: (poroelastic) : 
+      dir                 : poroelastic
+      model file          : poroelastic/MODEL
+      Materials:
+           ELLIPSE        : reservoir
+           SIDEBURDEN     : caprock
 
