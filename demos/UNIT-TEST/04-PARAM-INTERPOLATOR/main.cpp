@@ -2,6 +2,18 @@
 #include "util/SpatialDataReader.h"
 #include "base/HarpyInit.h"
 
+/**
+ *
+ *
+ * Reads a map of properties and interpolates.
+ * 
+ * The properties are in file POR.
+ * The queries are in file QUERY.
+ *
+ *
+ */
+
+
 using namespace std;
 
 int main (int argc, char ** argv)
