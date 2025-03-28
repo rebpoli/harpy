@@ -1,10 +1,16 @@
-# Fail[p0]: Unrecognized format at MODEL(12), TIMESTEP section. Line: xx
- 0# Log::~Log() at /lm23_hdd/harpy/src/base/Log.cpp:167
- 1# ModelReader::timestep_state() at /lm23_hdd/harpy/src/config/ModelReader.cpp:121
- 2# ModelReader::read_model() at /lm23_hdd/harpy/src/config/ModelReader.cpp:77
- 3# ModelReader::ModelReader(ModelConfig&) at /lm23_hdd/harpy/src/config/ModelReader.cpp:31
- 4# ModelConfig::ModelConfig(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) at /lm23_hdd/harpy/src/config/ModelConfig.cpp:11
- 5# main at /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:10
- 6# __libc_start_call_main at ../sysdeps/nptl/libc_start_call_main.h:74
- 7# __libc_start_main at ../csu/libc-start.c:347
- 8# _start in ./../../../build/opt/ut-model-config
+# Info:     ******************************************************
+# Info:                     READS A COMPLETE MODEL
+# Info:     ******************************************************
+# Info:     
+ModelConfig: 
+      model_dir           : model
+      model file          : model/MODEL
+      Timestep:
+           DT0            : 1
+           DTK            : 1
+           MAX_STEPS      : 10
+           T0             : -1
+           TMAX           : 10
+      SYSTEM / Config:
+           POROELASTIC    : BASE
+
