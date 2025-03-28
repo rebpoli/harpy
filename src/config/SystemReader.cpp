@@ -73,7 +73,8 @@ void SystemReader::parse_sys_file()
     // Machine. This is the last part of the loop
     switch (current_state) 
     {
-      case State::CONFIG: { material_state(); break; }
+      case State::CONFIG: { config_state(); break; }
+      case State::NUMERICAL: { numerical_state(); break; }
       default: break;
     } 
 
@@ -116,7 +117,7 @@ bool SystemReader::next_state()
 /**
  * Parse a line in the state
  */
-void SystemReader::material_state()
+void SystemReader::config_state()
 {
   dlog(1) << "Processing material state line '" << line << "' ";
   smatch match;
@@ -131,9 +132,49 @@ void SystemReader::material_state()
 
   all_mat_cfgs[curr_sys_cfg].emplace( 
                  subdom,
-                 SystemConfig::MatConfig( subdom, material, conf ) );
+                 SystemConfig::MatConfig( material, conf ) );
 
 }
+
+/**
+ * Parse a line in the state
+ */
+void SystemReader::numerical_state()
+{
+  dlog(1) << "Processing numerical state line '" << line << "' ";
+  auto & num = config.numerical;
+
+  smatch match;
+
+  // We have a numerical parameter?
+  if ( regex_search( line, match, RE_STR_NUM ) ) 
+  {
+    string vname = match[1];
+    double val = stod( match[2] ); 
+    to_lower(vname);
+    
+    if ( vname == "ls_atol" ) num.ls_atol = val;
+    if ( vname == "ls_rtol" ) num.ls_rtol = val;
+
+    return;
+  } 
+  // We have a string parameter?
+  else if ( regex_search( line, match, RE_STR_STR ) ) 
+  {
+    string vname = match[1];
+    string val = match[2];
+    to_lower(vname);
+
+    if ( vname == "ls_pc" )    num.ls_pc = val;
+    if ( vname == "ls_rtol" )  num.ls_solver = val;
+
+    return;
+  } 
+
+  flog << "Unrecognized format at " << config.sys_file << "(" << ln << "), MATERIAL section. Line: " << line;
+
+}
+
 
 /**
  *

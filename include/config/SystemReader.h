@@ -25,7 +25,7 @@ private:
   SystemConfig & config;
 
   // Parsing stuff
-  enum class State { INITIAL, CONFIG };
+  enum class State { INITIAL, CONFIG, NUMERICAL };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine
@@ -37,7 +37,8 @@ private:
   // System state machine
   void parse_sys_file();
   bool next_state();
-  void material_state();
+  void config_state();
+  void numerical_state();
 
   friend SystemConfig;
   friend ostream& operator<<(ostream& os, const SystemReader & m);

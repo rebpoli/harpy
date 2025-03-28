@@ -1,7 +1,7 @@
 
 ## sys_name config
 .SYSTEM
-POROELASTIC P10
+POROELASTIC BASE
 
 .TIMESTEP 
 T0           -1

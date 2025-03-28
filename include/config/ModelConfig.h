@@ -2,6 +2,7 @@
 
 #include "base/Global.h"
 #include "config/SystemConfig.h"
+#include "config/MaterialConfig.h"
 
 #include <map>
 
@@ -19,8 +20,9 @@ public:
   /** Data structure to the outside **/
   map< string, double > timestep;
 
-  map< string, string > system_cfgid;   /// sys_name -> config name
-  map< string, SystemConfig > systems;  /// Reads a system configuration
+  map< string, string > system_cfgid;        /// sys_name -> config name
+  map< string, SystemConfig > systems;       /// System configurations
+  map< string, MaterialConfig > materials;   /// Material configurations
 
   ModelConfig( string model_dir_ );
 

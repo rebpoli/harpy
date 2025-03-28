@@ -21,13 +21,30 @@ class SystemConfig
 public:
   /**  Structs **/
   struct MatConfig {
-    string subdomain, mat, cfg;
-    MatConfig( string & s, string & m, string c ) : subdomain(s), mat(m), cfg(c) {}
+    string name, cfg;
+    MatConfig( string & m, string c ) : name(m), cfg(c) {}
+
+    // To be indexable
+    bool operator<(const MatConfig & other) const {
+      if (name != other.name) return name < other.name;
+      return cfg < other.cfg;
+    }
   };
   struct MatConfigMap : public map<string, MatConfig> { }; // subdom => (mat, config)
 
+  /* This is a complete object. All parameters must be set at all times (no std::optional here). */
+  struct Numerical {
+    Numerical() : ls_pc("bjacobi"), ls_solver("cg"), ls_atol(1e-10), ls_rtol(1e-6) { }
+    string ls_pc;         /// preconditioner for the linear solver
+    string ls_solver;     /// linear solver engine
+
+    double ls_atol; /// linear solver absolute tolerance
+    double ls_rtol; /// linear solver absolute tolerance
+  };
+
   /** Data structure to the outside **/
   MatConfigMap material_config; /// the chosen configuration for this run
+  Numerical numerical;
 
   SystemConfig( string model_dir_, string sys_name_, string sys_cfg_ );
 

@@ -11,3 +11,5 @@ run-%: set-% .force
 
 gdb-devel: set-devel .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/ut-model-config
+
+gdb: gdb-devel

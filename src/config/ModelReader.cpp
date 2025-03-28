@@ -21,11 +21,20 @@ ModelReader::ModelReader( ModelConfig & config_ ) : config(config_)
   check_files();
   parse_model_file();
 
+  // Reads all the systems
   for ( auto & [ sysname, syscfg ] : config.system_cfgid )
     config.systems.emplace( 
                     sysname, 
                     SystemConfig(config.model_dir, sysname, syscfg) 
               );
+  
+  // Reads all the materials
+  set<SystemConfig::MatConfig> mats;
+  for ( auto & [ sysname, syscfg ] : config.systems )
+  for ( auto & [ matname, matcfg ] : syscfg.material_config )
+    mats.insert( matcfg );
+  for ( auto & mat : mats )
+    config.materials.emplace( mat.name, MaterialConfig( config.model_dir, mat.name, mat.cfg ) );
 }
 
 

@@ -14,5 +14,12 @@ ELLIPSE    reservoir
 
 # Second configuration for this system
 .CONFIG     P10              
-SIDEBURDEN caprock      
-ELLIPSE    reservoir    P20 
+SIDEBURDEN caprock      BASE
+ELLIPSE    reservoir    P10 
+
+# CONFIGURE THE NUMERICS OF THE SYSTEM SOLUTION HERE
+.NUMERICAL
+LS_PC         hypre
+LS_SOLVER     bcgsl
+LS_ATOL       1e-15
+LS_RTOL       1e-6

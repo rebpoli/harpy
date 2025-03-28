@@ -1,12 +1,11 @@
+# This is simply a list of properties for the configuration identified in the name of the file
+# Some properties are present in field units explicitly. Ex: PERMEABILITY_MD = Permeability in milidarcy
 
-.ROCKFLUID
-POROSITY     FILE
-PERMEABILITY 100   # mD
+# The second word in the line identifies how things are to be read.
+# Ex: POROSITY CON 0.2             => means a constant porosity of 20%. The word CON is optional
+#     PERMEABILITY FILE_XYZ PERM-BASE  => looks for the file model/%mat_name%/PERM-BASE with a XYZ format
+#
 
-
-# CONFIGURE THE NUMERICS OF THE SYSTEM SOLUTION HERE
-.NUMERICAL
-PC         hypre
-LINSOLVE   bcgsl
-ATOL       1e-15
-RTOL       1e-6
+POROSITY      FILE    POR-BASE
+PERMEABILITY        1e-12     
+BIOT                0.3

@@ -27,5 +27,9 @@ ostream& operator<<(ostream& os, const ModelConfig & m)
   for ( auto [ s, c ] : m.systems )
     os << "           " << setw(15) << left << s << ": " << c << endl;
 
+  os << "      " << "MATERIAL / Config:" << endl;
+  for ( auto [ s, c ] : m.materials )
+    os << "           " << setw(15) << left << s << ": " << c << endl;
+
   return os;
 }

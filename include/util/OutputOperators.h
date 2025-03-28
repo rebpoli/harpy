@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <set>
+#include <optional>
 
 namespace libMesh { class Point; }
 ostream& operator<<(ostream& os, const vector<libMesh::Point> & m);
@@ -38,3 +39,15 @@ ostream& operator<<(ostream& os, const set<T> & m)
   os << "] ("<< m.size() <<")";
   return os;
 }
+
+/* Output of optional stuff */
+template <typename T>
+ostream& operator<<(ostream& os, const optional<T> & m)
+{
+  if ( m ) 
+    os << *m ; 
+  else 
+    os << "(undef)";
+  return os;
+}
+

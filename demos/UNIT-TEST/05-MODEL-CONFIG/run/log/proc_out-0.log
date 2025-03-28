@@ -1,6 +1,25 @@
 # Info:     ******************************************************
 # Info:                     READS A COMPLETE MODEL
 # Info:     ******************************************************
+# Deb[1:0]: Model directory and file ok! We are good to go! (model, model/MODEL)
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: Model directory and system file ok! We are good to go! (model, model/POROELASTIC)
+# Deb[1:0]: State: CONFIG  , Config:BASE
+# Deb[1:0]: Processing material state line 'SIDEBURDEN caprock      BASE' 
+# Deb[1:0]: Processing material state line 'ELLIPSE    reservoir' 
+# Deb[1:0]: State: CONFIG  , Config:P10
+# Deb[1:0]: Processing material state line 'SIDEBURDEN caprock      BASE' 
+# Deb[1:0]: Processing material state line 'ELLIPSE    reservoir    P10' 
+# Deb[1:0]: Model directory and material file ok! We are good to go! (model, model/caprock/BASE)
+# Deb[1:0]: File param: POROSITY
+# Deb[1:0]: Model directory and material file ok! We are good to go! (model, model/reservoir/BASE)
 # Info:     
 ModelConfig: 
       model_dir           : model
@@ -15,7 +34,28 @@ ModelConfig:
            POROELASTIC    : 
 SystemConfig: 
     Material CFG_ID: 
-           ELLIPSE        : ELLIPSE             reservoir           P20                 
-           SIDEBURDEN     : SIDEBURDEN          caprock             P10                 
+           ELLIPSE        : reservoir           BASE                
+           SIDEBURDEN     : caprock             BASE                
+
+      MATERIAL / Config:
+           caprock        : 
+                            MaterialConfig for 'caprock'/ 'BASE'
+                                 Filename 'model/caprock/BASE'
+                                 Poroelastic:
+                                    Por:              (undef)        POR-BASE       
+                                    Permeability:     1e-12          (undef)        
+                                    Biot:             0.3            (undef)        
+                                    Bulk:             (undef)        (undef)        
+                                    Skempton:         (undef)        (undef)        
+
+           reservoir      : 
+                            MaterialConfig for 'reservoir'/ 'BASE'
+                                 Filename 'model/reservoir/BASE'
+                                 Poroelastic:
+                                    Por:              (undef)        (undef)        
+                                    Permeability:     (undef)        (undef)        
+                                    Biot:             (undef)        (undef)        
+                                    Bulk:             (undef)        (undef)        
+                                    Skempton:         (undef)        (undef)        
 
 

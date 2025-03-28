@@ -32,7 +32,6 @@ ostream& operator<<(ostream& os, const SystemConfig::MatConfigMap & m)
 {
   os << "------------------------------------------------------------------------------------------" << endl;
   os << setw(20) << "Subdomain";
-  os << setw(20) << "Subdomain";
   os << setw(20) << "Material";
   os << setw(20) << "Config";
   os << endl;
@@ -45,8 +44,7 @@ ostream& operator<<(ostream& os, const SystemConfig::MatConfigMap & m)
 }
 ostream& operator<<(ostream& os, const SystemConfig::MatConfig & m)
 {
-  os << setw(20) << m.subdomain;
-  os << setw(20) << m.mat;
+  os << setw(20) << m.name;
   os << setw(20) << m.cfg;
   return os;
 }
