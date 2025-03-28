@@ -1,0 +1,13 @@
+
+## sys_name config
+.SYSTEM
+POROELASTIC BASE
+
+.TIMESTEP 
+T0           -1
+DT0           1
+DTK           1
+TMAX         10  
+MAX_STEPS    10
+
+## COUPLING CONFIGURATION BETWEEN THE SYSTEMS 

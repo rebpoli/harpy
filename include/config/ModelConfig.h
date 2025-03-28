@@ -1,34 +1,29 @@
 #pragma once
 
 #include "base/Global.h"
+
 #include <map>
 
 /**
  *
- * Reads all the model raw information into C++ datastructures.
+ * Stores all the model raw information into C++ datastructures.
+ *
+ * The reading and parsing is done by ModelReader.
  *
  */
 
 class ModelConfig
 {
 public:
-  /**       **/
-  map< string, string > subdomain_material;
+  /** Data structure to the outside **/
+  map< string, double > timestep;
+  map< string, string > systems;
 
+  ModelConfig( string model_dir_ );
 
-  /** ** ** **/
-
-
-
-  ModelConfig( string sys_name_ );
+  string model_dir, model_file;
 
 private:
-  void check_files();
-  void read_model();
-
-  string sys_name;
-  string dir, model_file;
-  
   friend ostream& operator<<(ostream& os, const ModelConfig & m);
 };
 

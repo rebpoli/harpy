@@ -1,0 +1,10 @@
+# Each system is associated with a mesh
+MESH mesh
+
+# One material can have multiple configurations
+CONFIGURATION BASE
+
+# subdomain   material
+.MATERIAL
+SIDEBURDEN caprock
+ELLIPSE reservoir
