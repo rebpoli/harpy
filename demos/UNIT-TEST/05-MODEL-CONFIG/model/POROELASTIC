@@ -1,10 +1,18 @@
 # Each system is associated with a mesh
 MESH mesh
 
-# One material can have multiple configurations
-CONFIGURATION BASE
+#
+# Configuration list: 
+#    One system can be built in many configurations
+#    The configuration to be used is defined in the MODEL file
+#
 
-# subdomain   material
-.MATERIAL
-SIDEBURDEN caprock
-ELLIPSE reservoir
+# subdomain   material   configuration (opt)
+.CONFIG     BASE                 # Material collection for the BASE sys_cfg
+SIDEBURDEN caprock      BASE    # We can ommit the configuration if Mat_cfg = sys_cfgg
+ELLIPSE    reservoir     
+
+# Second configuration for this system
+.CONFIG     P10              
+SIDEBURDEN caprock      
+ELLIPSE    reservoir    P20 

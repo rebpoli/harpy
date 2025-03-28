@@ -75,6 +75,8 @@ ADD_LIBRARY(Modules
   src/config/BCConfig.cpp
   src/config/ModelConfig.cpp
   src/config/ModelReader.cpp
+  src/config/SystemConfig.cpp
+  src/config/SystemReader.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp

@@ -12,5 +12,10 @@ ModelConfig:
            T0             : -1
            TMAX           : 10
       SYSTEM / Config:
-           POROELASTIC    : BASE
+           POROELASTIC    : 
+SystemConfig: 
+    Material CFG_ID: 
+           ELLIPSE        : ELLIPSE             reservoir           P20                 
+           SIDEBURDEN     : SIDEBURDEN          caprock             P10                 
+
 

@@ -1,0 +1,27 @@
+#pragma once
+
+
+/**
+ *
+ * Collection of regular expressions for the model and system readers.
+ *
+ */
+
+namespace MRDEF 
+{
+
+  inline const string tok     = R"(([a-zA-Z_0-9]+))";
+  inline const string num = R"(([-0-9]+))";
+  inline const string sp = R"(\s+)";
+  inline const string tok_op  = R"((?:)" + sp + tok + R"()?)";  // optional token (with leading space)
+                                                                //
+  inline const regex emptyRE ( R"(^\s*$)"               );
+
+  inline const regex RE_STR_STR ( tok + sp + tok  );
+  inline const regex RE_STR_STR_STROPT ( tok + sp + tok + tok_op );
+  inline const regex RE_STR_NUM ( tok + sp + num     );
+
+  // Sections are prefixed with a dot
+  inline const regex sectionRE        ( R"(\.)" + tok + tok_op ); 
+  inline const regex namedSectionRE   ( R"(\.)" + tok + sp + tok );    
+}

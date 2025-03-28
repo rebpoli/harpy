@@ -32,7 +32,7 @@ private:
   void check_files();
 
   // Model state machine
-  void read_model();
+  void parse_model_file();
   bool next_state();
   void timestep_state();
   void system_state();

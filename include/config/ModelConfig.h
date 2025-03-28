@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/Global.h"
+#include "config/SystemConfig.h"
 
 #include <map>
 
@@ -17,7 +18,9 @@ class ModelConfig
 public:
   /** Data structure to the outside **/
   map< string, double > timestep;
-  map< string, string > systems;
+
+  map< string, string > system_cfgid;   /// sys_name -> config name
+  map< string, SystemConfig > systems;  /// Reads a system configuration
 
   ModelConfig( string model_dir_ );
 
