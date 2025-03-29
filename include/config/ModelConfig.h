@@ -10,7 +10,7 @@
  *
  * Stores all the model raw information into C++ datastructures.
  *
- * The reading and parsing is done by ModelReader.
+ * The reading and parsing is done by ModelReader, SystemReader etc.
  *
  */
 

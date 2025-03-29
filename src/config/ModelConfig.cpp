@@ -1,6 +1,6 @@
 
 #include "config/ModelConfig.h"
-#include "config/ModelReader.h"
+#include "config/reader/ModelReader.h"
 #include <iomanip>
 
 /**

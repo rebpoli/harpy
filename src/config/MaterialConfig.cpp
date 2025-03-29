@@ -1,6 +1,7 @@
 
 #include "config/MaterialConfig.h"
-#include "config/ReaderRegex.h"
+
+#include "config/reader/ReaderRegex.h"
 #include "util/OutputOperators.h"
 
 #include "util/File.h"

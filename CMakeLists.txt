@@ -74,16 +74,16 @@ ADD_LIBRARY(Modules
   src/config/Config.cpp
   src/config/BCConfig.cpp
   src/config/ModelConfig.cpp
-  src/config/ModelReader.cpp
   src/config/MaterialConfig.cpp
   src/config/SystemConfig.cpp
-  src/config/SystemReader.cpp
+  src/config/reader/ModelReader.cpp
+  src/config/reader/SystemReader.cpp
+  src/config/reader/SpatialDataReader.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
   src/util/TeeBuff.cpp
   src/util/Messages.cpp
-  src/util/SpatialDataReader.cpp
   src/base/Global.cpp
   src/base/HarpyInit.cpp
   src/base/Log.cpp

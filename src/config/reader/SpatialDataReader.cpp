@@ -1,5 +1,5 @@
 
-#include "util/SpatialDataReader.h"
+#include "config/reader/SpatialDataReader.h"
 
 #include <iostream>
 #include <iomanip>

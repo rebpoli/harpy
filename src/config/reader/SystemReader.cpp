@@ -1,7 +1,7 @@
 
-#include "config/SystemReader.h"
+#include "config/reader/SystemReader.h"
 #include "config/SystemConfig.h"
-#include "config/ReaderRegex.h"
+#include "config/reader/ReaderRegex.h"
 
 #include "util/File.h"
 #include <iomanip>

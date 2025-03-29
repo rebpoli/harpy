@@ -1,7 +1,7 @@
 
-#include "config/ModelReader.h"
+#include "config/reader/ModelReader.h"
+#include "config/reader/ReaderRegex.h"
 #include "config/ModelConfig.h"
-#include "config/ReaderRegex.h"
 #include "config/SystemConfig.h"
 
 #include "util/File.h"
