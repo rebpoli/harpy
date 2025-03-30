@@ -2,14 +2,90 @@
 # Info:                     READS A COMPLETE MODEL
 # Info:     ******************************************************
 # Deb[1:0]: Model directory and file ok! We are good to go! (model, model/MODEL)
+# Deb[1:0]: LINE(1) >>
+# Deb[1:0]: LINE(2) >># Define the system loop
+# Deb[1:0]: LINE(3) >># Then the configuration of each system
+# Deb[1:0]: LINE(4) >>.SYSTEMLOOP POROELASTIC
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(5) >>POROELASTIC BASE
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(6) >>
+# Deb[1:0]: LINE(7) >>.TIMESTEP
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(8) >>T0           -1
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(9) >>DT0           1
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(10) >>DTK           1
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(11) >>TMAX         10
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(12) >>MAX_STEPS    10
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(13) >>
+# Deb[1:0]: LINE(14) >># List of scalar variables
+# Deb[1:0]: LINE(15) >>.SCALAR
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(16) >>tri_dx
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(17) >>tri_dy
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(18) >>
+# Deb[1:0]: LINE(19) >># List of penalty variables
+# Deb[1:0]: LINE(20) >># VNAME    PENALTY   VALUE
+# Deb[1:0]: LINE(21) >>.PENALTY
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(22) >>K0    1e15    0
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(23) >>
+# Deb[1:0]: LINE(24) >>## Initial conditions: used for the first step
+# Deb[1:0]: LINE(25) >># SID   VAR   VAL
+# Deb[1:0]: LINE(26) >>.INITIAL
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(27) >>DOMAIN      RES      P        1E6
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(DOMAIN) bname(RES) vname(P) strval(1E6)
+# Deb[1:0]: LINE(28) >>DOMAIN      RES      T        0
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(DOMAIN) bname(RES) vname(T) strval(0)
+# Deb[1:0]: LINE(29) >>BOUNDARY    XN       UX       0
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(XN) vname(UX) strval(0)
+# Deb[1:0]: LINE(30) >>BOUNDARY    YN       UY       0
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(YN) vname(UY) strval(0)
+# Deb[1:0]: LINE(31) >>BOUNDARY    ZN       UZ       0
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(ZN) vname(UZ) strval(0)
+# Deb[1:0]: LINE(32) >>BOUNDARY    XP       SXX     -1e7
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(XP) vname(SXX) strval(-1e7)
+# Deb[1:0]: LINE(33) >>BOUNDARY    YP       SYY     -2e7
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(YP) vname(SYY) strval(-2e7)
+# Deb[1:0]: LINE(34) >>BOUNDARY    ZP       SZZ     -3e7
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(ZP) vname(SZZ) strval(-3e7)
+# Deb[1:0]: LINE(35) >>
+# Deb[1:0]: LINE(36) >># Boundary conditions foreach time
+# Deb[1:0]: LINE(37) >># BOUNDARY/DOMAIN   BID/SID   VAR   VAL
+# Deb[1:0]: LINE(38) >>.TIME   1
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(39) >>BOUNDARY       XP        UX    200
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(XP) vname(UX) strval(200)
+# Deb[1:0]: LINE(40) >>DOMAIN         RES       T     100
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(DOMAIN) bname(RES) vname(T) strval(100)
+# Deb[1:0]: LINE(41) >>
+# Deb[1:0]: LINE(42) >>.TIME   2
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]: LINE(43) >>BOUNDARY       XP        UX    400
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(BOUNDARY) bname(XP) vname(UX) strval(400)
+# Deb[1:0]: LINE(44) >>DOMAIN         RES       T     500
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?
+# Deb[1:0]:    time_state: type(DOMAIN) bname(RES) vname(T) strval(500)
 # Deb[1:0]: Model directory and system file ok! We are good to go! (model, model/POROELASTIC)
 # Deb[1:0]: State: CONFIG  , Config:BASE
 # Deb[1:0]: Processing material state line 'SIDEBURDEN caprock      BASE' 
@@ -22,6 +98,7 @@
 # Deb[1:0]: Model directory and material file ok! We are good to go! (model, model/reservoir/BASE)
 # Info:     
 ModelConfig: 
+      systemloop          : POROELASTIC
       model_dir           : model
       model file          : model/MODEL
       Timestep:
@@ -32,7 +109,7 @@ ModelConfig:
            TMAX           : 10
       SYSTEM / Config:
            POROELASTIC    : 
-SystemConfig: 
+SolverConfig: 
     Material CFG_ID: 
            ELLIPSE        : reservoir           BASE                
            SIDEBURDEN     : caprock             BASE                
@@ -58,4 +135,70 @@ SystemConfig:
                                     Bulk:             (undef)        (undef)        
                                     Skempton:         (undef)        (undef)        
 
+      Boundary  Config:
+
+|-----------------------------------------------
+|   BOUNDARY CONDITIONS     
+|-----------------------------------------------
+| SCALARS: [] (0)
+|----------------------------------------------
+| INITIAL_BY_VNAME: 
+[] (0)
+|----------------------------------------------
+| PENALTY: 
+All penalties (Map): {
+}
+
+|----------------------------------------------
+| ENTRY_BY_TIME: 
+|---------------------------
+| Time=-1
+|---------------------------
+DBL BCS:
+    RES: 'P'=1e+06
+    RES: 'T'=0
+    XN: 'UX'=0
+    YN: 'UY'=0
+    ZN: 'UZ'=0
+STR BCS:
+STOT BCS:
+    XP: 'STOT'=
+            [ [-1e+07    ,0         ,0         ] ,
+              [0         ,0         ,0         ] ,
+              [0         ,0         ,0         ] ]
+
+    YP: 'STOT'=
+            [ [0         ,0         ,0         ] ,
+              [0         ,-2e+07    ,0         ] ,
+              [0         ,0         ,0         ] ]
+
+    ZP: 'STOT'=
+            [ [0         ,0         ,0         ] ,
+              [0         ,0         ,0         ] ,
+              [0         ,0         ,-3e+07    ] ]
+
+
+|---------------------------
+|---------------------------
+| Time=1
+|---------------------------
+DBL BCS:
+    RES: 'T'=100
+    XP: 'UX'=200
+STR BCS:
+STOT BCS:
+
+|---------------------------
+|---------------------------
+| Time=2
+|---------------------------
+DBL BCS:
+    RES: 'T'=500
+    XP: 'UX'=400
+STR BCS:
+STOT BCS:
+
+|---------------------------
+
+|----------------------------------------------
 

@@ -1,6 +1,7 @@
 
-## sys_name config
-.SYSTEM
+# Define the system loop 
+# Then the configuration of each system
+.SYSTEMLOOP POROELASTIC
 POROELASTIC BASE
 
 .TIMESTEP 
@@ -10,4 +11,34 @@ DTK           1
 TMAX         10  
 MAX_STEPS    10
 
-## COUPLING CONFIGURATION BETWEEN THE SYSTEMS 
+# List of scalar variables
+.SCALAR
+tri_dx
+tri_dy
+
+# List of penalty variables
+# VNAME    PENALTY   VALUE
+.PENALTY
+K0    1e15    0
+
+## Initial conditions: used for the first step
+# SID   VAR   VAL
+.INITIAL 
+DOMAIN      RES      P        1E6
+DOMAIN      RES      T        0
+BOUNDARY    XN       UX       0
+BOUNDARY    YN       UY       0
+BOUNDARY    ZN       UZ       0
+BOUNDARY    XP       SXX     -1e7
+BOUNDARY    YP       SYY     -2e7
+BOUNDARY    ZP       SZZ     -3e7
+
+# Boundary conditions foreach time
+# BOUNDARY/DOMAIN   BID/SID   VAR   VAL
+.TIME   1
+BOUNDARY       XP        UX    200
+DOMAIN         RES       T     100
+
+.TIME   2
+BOUNDARY       XP        UX    400
+DOMAIN         RES       T     500

@@ -75,9 +75,9 @@ ADD_LIBRARY(Modules
   src/config/BCConfig.cpp
   src/config/ModelConfig.cpp
   src/config/MaterialConfig.cpp
-  src/config/SystemConfig.cpp
+  src/config/SolverConfig.cpp
   src/config/reader/ModelReader.cpp
-  src/config/reader/SystemReader.cpp
+  src/config/reader/SolverReader.cpp
   src/config/reader/SpatialDataReader.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
@@ -147,8 +147,8 @@ set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
 target_link_libraries( ut-timestep Modules )
 
-add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
-target_link_libraries( ut-bcconfig Modules )
+# add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
+# target_link_libraries( ut-bcconfig Modules )
 
 add_executable( ut-param-interp demos/UNIT-TEST/04-PARAM-INTERPOLATOR/main.cpp  )
 target_link_libraries( ut-param-interp Modules )

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "base/Global.h"
-#include "config/SystemConfig.h"
+#include "config/SolverConfig.h"
 #include "config/MaterialConfig.h"
+#include "config/BCConfig.h"
 
 #include <map>
 
@@ -10,7 +11,7 @@
  *
  * Stores all the model raw information into C++ datastructures.
  *
- * The reading and parsing is done by ModelReader, SystemReader etc.
+ * The reading and parsing is done by ModelReader, SolverReader etc.
  *
  */
 
@@ -20,10 +21,11 @@ public:
   /** Data structure to the outside **/
   map< string, double > timestep;
 
+  string systemloop;
   map< string, string > system_cfgid;        /// sys_name -> config name
-  map< string, SystemConfig > systems;       /// System configurations
+  map< string, SolverConfig > systems;       /// System configurations
   map< string, MaterialConfig > materials;   /// Material configurations
-
+  BCConfig boundary_config;
   ModelConfig( string model_dir_ );
 
   string model_dir, model_file;

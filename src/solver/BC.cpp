@@ -9,7 +9,7 @@
  * Initialize an empty boundary constriant object.
  *
  */
-BC::BC( const System & sys_ ) : system(sys_), config( system.name() ), time(-999), reftime(-999)
+BC::BC( const System & sys_ ) : system(sys_), config(), time(-999), reftime(-999)
 {
 
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "base/Global.h"
-#include "config/SystemConfig.h"
+#include "config/SolverConfig.h"
 
 #include <map>
 
@@ -16,7 +16,7 @@
  *
  */
 
-class SystemConfig
+class SolverConfig
 {
 public:
   /**  Structs **/
@@ -46,14 +46,14 @@ public:
   MatConfigMap material_config; /// the chosen configuration for this run
   Numerical numerical;
 
-  SystemConfig( string model_dir_, string sys_name_, string sys_cfg_ );
+  SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ );
 
   string model_dir, sys_file, sys_name, sys_cfg;
 
 private:
-  friend ostream& operator<<(ostream& os, const SystemConfig & m);
+  friend ostream& operator<<(ostream& os, const SolverConfig & m);
 };
 
-ostream& operator<<(ostream& os, const SystemConfig & m);
-ostream& operator<<(ostream& os, const SystemConfig::MatConfigMap & m);
-ostream& operator<<(ostream& os, const SystemConfig::MatConfig & m);
+ostream& operator<<(ostream& os, const SolverConfig & m);
+ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m);
+ostream& operator<<(ostream& os, const SolverConfig::MatConfig & m);

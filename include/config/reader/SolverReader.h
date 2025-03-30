@@ -2,7 +2,7 @@
 
 #include "base/Global.h"
 #include "util/String.h"
-#include "config/SystemConfig.h"
+#include "config/SolverConfig.h"
 
 #include <map>
 
@@ -13,16 +13,16 @@
  */
 
 
-class SystemReader
+class SolverReader
 {
 public:
 
-  SystemReader( SystemConfig & config_ );
+  SolverReader( SolverConfig & config_ );
 
 private:
-  map< string, SystemConfig::MatConfigMap > all_mat_cfgs;  /// sys_cfgid => { subdom => (mat,  mat_cfgid) }
+  map< string, SolverConfig::MatConfigMap > all_mat_cfgs;  /// sys_cfgid => { subdom => (mat,  mat_cfgid) }
 
-  SystemConfig & config;
+  SolverConfig & config;
 
   // Parsing stuff
   enum class State { INITIAL, CONFIG, NUMERICAL };
@@ -40,8 +40,8 @@ private:
   void config_state();
   void numerical_state();
 
-  friend SystemConfig;
-  friend ostream& operator<<(ostream& os, const SystemReader & m);
+  friend SolverConfig;
+  friend ostream& operator<<(ostream& os, const SolverReader & m);
 };
 
-ostream& operator<<(ostream& os, const SystemReader & m);
+ostream& operator<<(ostream& os, const SolverReader & m);

@@ -9,6 +9,13 @@
 #include "libmesh/linear_implicit_system.h"
 #include "libmesh/transient_system.h"
 
+
+/*
+ *
+ * THIS TESTCASE IS DEPRECATED!!!
+ *
+ */
+
 int main (int argc, char ** argv)
 {
   // Read configuration file

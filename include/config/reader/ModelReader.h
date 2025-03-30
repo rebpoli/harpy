@@ -23,10 +23,14 @@ private:
 
 
   // Parsing stuff
-  enum class State { INITIAL, SYSTEM, TIMESTEP };
+  enum class State { 
+    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME
+  };
+
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine
+  double current_time;   /// Current timestamp being parsed
   
   // File manip
   void check_files();
@@ -36,6 +40,9 @@ private:
   bool next_state();
   void timestep_state();
   void system_state();
+  void time_state();
+  void scalar_state();
+  void penalty_state();
 
   friend ModelConfig;
 };

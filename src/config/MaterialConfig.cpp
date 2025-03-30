@@ -58,7 +58,7 @@ void MaterialConfig::parse_material_file()
   {
     ln++;
     line = remove_comments_and_trim( line );
-    if (regex_match(line, emptyRE)) continue;
+    if (regex_match(line, RE_EMPTY)) continue;
 
     string vname;
     if ( regex_search( line, match, RE_STR_STR_STR ) ) 

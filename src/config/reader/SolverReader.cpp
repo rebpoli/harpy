@@ -1,6 +1,6 @@
 
-#include "config/reader/SystemReader.h"
-#include "config/SystemConfig.h"
+#include "config/reader/SolverReader.h"
+#include "config/SolverConfig.h"
 #include "config/reader/ReaderRegex.h"
 
 #include "util/File.h"
@@ -15,7 +15,7 @@ using namespace MRDEF;
 /**
  *  
  */
-SystemReader::SystemReader( SystemConfig & config_ ) : config(config_) 
+SolverReader::SolverReader( SolverConfig & config_ ) : config(config_) 
 {
   check_files();
   parse_sys_file();
@@ -34,7 +34,7 @@ SystemReader::SystemReader( SystemConfig & config_ ) : config(config_)
 /**
  *
  */
-void SystemReader::check_files()
+void SolverReader::check_files()
 {
   string model_dir = config.model_dir;
   string sys_file = config.sys_file;
@@ -55,7 +55,7 @@ void SystemReader::check_files()
  *  Regex and other stuff, add in the MRDEF namespace for clarity.
  *
  */
-void SystemReader::parse_sys_file()
+void SolverReader::parse_sys_file()
 {
   ifstream file(config.sys_file);
   if ( !file.is_open() ) flog << "Cannot open file " << config.sys_file << ". Should have been resolved in check_files. What's wrong?";
@@ -86,7 +86,7 @@ void SystemReader::parse_sys_file()
  *   Updates the machine state. Returns true if it was updated.
  *
  */
-bool SystemReader::next_state() 
+bool SolverReader::next_state() 
 {
   smatch match;
 
@@ -96,7 +96,7 @@ bool SystemReader::next_state()
   };
 
   // Resets the state
-  if (regex_match(line, emptyRE)) { current_state = State::INITIAL; return true; }
+  if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
 
   // New section. Changes the state
   if ( ! regex_search(line, match, namedSectionRE) ) return false;
@@ -117,7 +117,7 @@ bool SystemReader::next_state()
 /**
  * Parse a line in the state
  */
-void SystemReader::config_state()
+void SolverReader::config_state()
 {
   dlog(1) << "Processing material state line '" << line << "' ";
   smatch match;
@@ -132,14 +132,14 @@ void SystemReader::config_state()
 
   all_mat_cfgs[curr_sys_cfg].emplace( 
                  subdom,
-                 SystemConfig::MatConfig( material, conf ) );
+                 SolverConfig::MatConfig( material, conf ) );
 
 }
 
 /**
  * Parse a line in the state
  */
-void SystemReader::numerical_state()
+void SolverReader::numerical_state()
 {
   dlog(1) << "Processing numerical state line '" << line << "' ";
   auto & num = config.numerical;
@@ -180,10 +180,10 @@ void SystemReader::numerical_state()
  *
  *
  */
-ostream& operator<<(ostream& os, const SystemReader & m)
+ostream& operator<<(ostream& os, const SolverReader & m)
 {
   os << endl;
-  os << "SystemReader for '" << m.config.sys_name  << "':" << endl;
+  os << "SolverReader for '" << m.config.sys_name  << "':" << endl;
   os << "   All material configurations" << endl;
   os << endl;
   for ( auto & [ sys_cfg , vm ] : m.all_mat_cfgs ) 
