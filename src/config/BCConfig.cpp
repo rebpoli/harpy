@@ -13,6 +13,24 @@ BCConfig::BCConfig()  {}
 /**
  *
  */
+void BCConfig::TimeEntry::add_domain_bc( string subdomain, string vname, double val )
+{
+  set<string> VARS = {"UX","UY","UZ","P","T"};
+  if ( ! VARS.count(vname) ) flog << "Unknown variable for a domain BC: '" << vname << "'.";
+
+  DomainBC dbc;
+  dbc.vname = vname;
+  dbc.subdomain = subdomain;
+  dbc.value = val;
+
+  auto & vec = domain_bcs[subdomain];
+  vec.push_back(dbc);
+  domain_bcs[subdomain] = vec;
+}
+
+/**
+ *
+ */
 void BCConfig::TimeEntry::add_numerical_bc( string bname, string vname, double val )
 {
   // If this is a stress var ...
@@ -422,6 +440,10 @@ ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m)
 }
 ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m) 
 {
+  os << "DOMAIN BCS:" << endl;
+  for ( const auto & [subd, vec] : m.domain_bcs )
+  for ( const auto & dbc : vec )
+    os << "    " << subd << ": '" << dbc.vname << "'=" << dbc.value << endl;
   os << "DBL BCS:" << endl;
   for ( const auto & [bname, vec] : m.dbl_bcs )
   for ( const auto & item : vec )
@@ -430,7 +452,6 @@ ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m)
   for ( const auto & [bname, vec] : m.scalar_bcs )
   for ( const auto & item : vec )
     os << "    " << bname << ": '" << item.vname << "'=" << item.value << endl;
-
   os << "STOT BCS:" << endl;
   for ( const auto & [bname, item] : m.stot_bcs )
     os << "    " << bname << ": '" << item.vname << "'=" << item << endl;

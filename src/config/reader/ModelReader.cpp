@@ -86,6 +86,8 @@ void ModelReader::parse_model_file()
       case State::SYSTEMLOOP: { system_state() ; break; }
       case State::INITIAL:    { time_state() ; break; }
       case State::TIME:       { time_state() ; break; }
+      case State::SCALAR:     { scalar_state() ; break; }
+      case State::PENALTY:    { penalty_state() ; break; }
       default: break;
     } 
 
@@ -187,10 +189,14 @@ void ModelReader::time_state()
   if ( regex_search( line, match, RE_STR_STR_STR_STR ) ) 
   {
     string type = match[1];
-    string bname = match[2];
+    string scope = match[2];
     string vname = match[3];
     string strval = match[4];
-    dlog(1) << "   time_state: type(" << type << ") bname(" << bname << ") vname(" << vname << ") strval(" << strval << ")" ;
+    dlog(1) << "   time_state: type(" << type << ") scope(" << scope << ") vname(" << vname << ") strval(" << strval << ")" ;
+
+    // Validation
+    CISet types = { "domain", "boundary" };
+    if ( ! types.count( type ) ) flog << "Unknown constraint type '" << type << "'. MODEL, line " << ln << ".";
 
     BCConfig & bcconfig = config.boundary_config;
 
@@ -199,16 +205,22 @@ void ModelReader::time_state()
     {
       double val = stod( strval );
       auto & te = bcconfig.entry_by_time[ current_time ];
-      te.add_numerical_bc( bname, vname, val );
+      if ( iequals( type, "domain" ) )
+        te.add_domain_bc( scope, vname, val );
+      else if ( iequals( type, "boundary" ) )
+        te.add_numerical_bc( scope, vname, val );
     } 
     // Penalty/scalar
     else 
     {
+      if ( ! iequals( type, "boundary" ) ) 
+        flog << "Scalars and penalty constrains are only supported in BOUNDARY constraints (not in DOMAIN ones!). MODEL, line " << ln << ".";
+
       auto & te = bcconfig.entry_by_time[ current_time ];
       if ( bcconfig.penalty.count( strval ) )
-        te.add_penalty_bc( bname, vname, strval );
+        te.add_penalty_bc( scope, vname, strval );
       else if ( bcconfig.scalars.count( strval ) )
-        te.add_scalar_bc( bname, vname, strval );
+        te.add_scalar_bc( scope, vname, strval );
       else 
         flog << "Cannot find '" << strval << "' in scalar nor penalty variable list (MODEL file, line " << ln << ").";
     }
@@ -235,8 +247,8 @@ void ModelReader::scalar_state()
 void ModelReader::penalty_state()
 {
   smatch match;
-  if ( regex_search( line, match, RE_STR_NUM_NUM ) ) 
-    flog << "Unrecognized format at MODEL(" << ln << "), PENALRY section. Line: " << line;
+  if ( ! regex_search( line, match, RE_STR_NUM_NUM ) ) 
+    flog << "Unrecognized format at MODEL(" << ln << "), PENALTY section. Line: " << line;
 
   string vname = match[1];
   double k = stod( match[2] );

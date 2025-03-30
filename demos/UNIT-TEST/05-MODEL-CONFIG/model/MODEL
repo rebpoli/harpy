@@ -22,21 +22,23 @@ tri_dy
 K0    1e15    0
 
 ## Initial conditions: used for the first step
-# SID   VAR   VAL
+# DOM/BNDY     SIDE           VAR              VAL
 .INITIAL 
-DOMAIN      RES      P        1E6
-DOMAIN      RES      T        0
-BOUNDARY    XN       UX       0
-BOUNDARY    YN       UY       0
-BOUNDARY    ZN       UZ       0
-BOUNDARY    XP       SXX     -1e7
-BOUNDARY    YP       SYY     -2e7
-BOUNDARY    ZP       SZZ     -3e7
+DOMAIN         RES              P             1E6
+DOMAIN         RES              T             0
+DOMAIN         CAPROCK          T             5
+BOUNDARY       XN               UX            tri_dx
+BOUNDARY       YN               UY            K0
+BOUNDARY       ZN               UZ            3
+BOUNDARY       XP               SXX          -1e7
+BOUNDARY       YP               SYY          -2e7
+BOUNDARY       ZP               SZZ          -3e7
 
 # Boundary conditions foreach time
 # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   1
 BOUNDARY       XP        UX    200
+BOUNDARY       YN        UY    tri_dy
 DOMAIN         RES       T     100
 
 .TIME   2

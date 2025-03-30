@@ -23,8 +23,7 @@ class BCConfig
     template <typename T>
     struct Item {
         Item() : bname("undef"), vname("undef"), value() {}
-        string bname, vname;
-        T value;
+        string bname, vname; T value;
     };
     using ItemDbl = Item<double>;
     using ItemStr = Item<string>;
@@ -35,12 +34,16 @@ class BCConfig
         vector< vector<double> > value;
     };
     /** **/
+    struct DomainBC {
+        DomainBC() : subdomain(""), vname(""), value() {}
+        string subdomain, vname; double value;
+    };
+    /** **/
     struct TimeEntry {
-        TimeEntry() : drained(0), 
-                      has_temperature(0), has_pressure(0),
-                      temperature(0), pressure(0) {}
+        TimeEntry() : drained(0) {}
 
         // Bname => item
+        map<string, vector<DomainBC>> domain_bcs;  /// 
         map<string, vector<ItemDbl>> dbl_bcs;
         map<string, vector<ItemStr>> scalar_bcs;
         map<string, vector<ItemStr>> penalty_bcs;
@@ -50,6 +53,7 @@ class BCConfig
         double temperature, pressure;
 
         // Helpers to fill this struct
+        void add_domain_bc( string subdomain, string vname, double val );
         void add_numerical_bc( string bname, string vname, double val );
         void add_scalar_bc( string bname, string vname, string scalar_name );
         void add_penalty_bc( string bname, string vname, string scalar_name );
