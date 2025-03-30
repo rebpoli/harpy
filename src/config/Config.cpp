@@ -63,7 +63,7 @@ std::string Config::getenv( const std::string & key ) {
  *
  *
  */
-SolverConfig::SolverConfig() {
+_SolverConfig::_SolverConfig() {
   // PETSc manual - 3.3 KSP: Linear System Solvers - Convergence Tests
   // Default:
   // rtol=1e-5 : the decrease of the residual norm relative to the norm of the right hand side

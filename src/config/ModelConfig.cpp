@@ -4,6 +4,14 @@
 #include <iomanip>
 
 /**
+ *
+ * Global instance of the model configuration, read in
+ * load time.
+ *
+ */
+ModelConfig * MODEL;
+
+/**
  *  
  */
 ModelConfig::ModelConfig( string model_dir_ ) :

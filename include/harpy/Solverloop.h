@@ -9,4 +9,8 @@
 
 class Solverloop {
 
+public:
+  void solve();
+  void export_results();
+
 };

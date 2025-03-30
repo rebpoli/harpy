@@ -6,7 +6,16 @@
 /**
  *  Creates the system and the materials.
  */
-SolverTHM::SolverTHM( EquationSystems & es_ ) : es(es_) 
+SolverTHM::SolverTHM( EquationSystems & es_ ) :
+       Solver(), es(es_) 
+{
+
+}
+
+/**
+ *
+ */
+void SolverTHM::solve()
 {
 
 }

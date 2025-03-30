@@ -172,6 +172,7 @@ class Config {
   private:
     friend ConfigValidate;
 };
+
 /**
  *  Parametro global, carregado antes que qualquer coisa no
  *  sistema.
@@ -186,9 +187,9 @@ extern Config CFG;
  *
  *
  */
-class SolverConfig {
+class _SolverConfig {
   public:
-    SolverConfig();
+    _SolverConfig();
 
     double dtol, atol, rtol, maxits;
     string ksptype, pctype;

@@ -4,8 +4,8 @@
 # Info:     
 ModelConfig: 
       systemloop          : POROELASTIC
-      model_dir           : model
-      model file          : model/MODEL
+      model_dir           : model/
+      model file          : model//MODEL
       Timestep:
            DT0            : 1
            DTK            : 1
@@ -22,7 +22,7 @@ SolverConfig:
       MATERIAL / Config:
            caprock        : 
                             MaterialConfig for 'caprock'/ 'BASE'
-                                 Filename 'model/caprock/BASE'
+                                 Filename 'model//caprock/BASE'
                                  Poroelastic:
                                     Por:              (undef)        POR-BASE       
                                     Permeability:     1e-12          (undef)        
@@ -32,7 +32,7 @@ SolverConfig:
 
            reservoir      : 
                             MaterialConfig for 'reservoir'/ 'BASE'
-                                 Filename 'model/reservoir/BASE'
+                                 Filename 'model//reservoir/BASE'
                                  Poroelastic:
                                     Por:              (undef)        (undef)        
                                     Permeability:     (undef)        (undef)        

@@ -11,9 +11,8 @@ int main (int argc, char ** argv)
   ilog << "                READS A COMPLETE MODEL";
   ilog << "******************************************************";
 
-
-  ModelConfig mc( "model" );
-  ilog << mc;
+  MODEL = new ModelConfig( "model/" );
+  ilog << *MODEL;
 
   return 0;
 }

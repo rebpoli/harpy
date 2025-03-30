@@ -14,4 +14,13 @@ SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) :
  */
 void SolverloopTHM::solve() 
 {
+  solver.solve();
+}
+
+/**
+ *
+ *
+ */
+void SolverloopTHM::export_results() 
+{
 }

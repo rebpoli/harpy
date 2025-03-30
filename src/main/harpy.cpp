@@ -3,7 +3,7 @@
 
 #include "base/Global.h"
 #include "base/HarpyInit.h"
-#include "config/Config.h"
+#include "config/ModelConfig.h"
 #include "harpy/Timeloop.h"
 #include "util/Stopwatch.h"
 
@@ -17,6 +17,9 @@ int main (int argc, char ** argv)
   // Loads the mesh
   libMesh::Mesh mesh(init.comm());
   MeshInit mi( mesh );
+
+  // Load the model config
+  MODEL = new ModelConfig( "model/" );
 
   // Starts the timeloop
   Timeloop timeloop( mesh );

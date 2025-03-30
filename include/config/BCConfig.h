@@ -40,7 +40,7 @@ class BCConfig
     };
     /** **/
     struct TimeEntry {
-        TimeEntry() : drained(0) {}
+        TimeEntry() {}
 
         // Bname => item
         map<string, vector<DomainBC>> domain_bcs;  /// 
@@ -49,14 +49,13 @@ class BCConfig
         map<string, vector<ItemStr>> penalty_bcs;
         map<string, ItemTensor> stot_bcs;
       
-        bool drained, has_temperature, has_pressure;
-        double temperature, pressure;
-
         // Helpers to fill this struct
         void add_domain_bc( string subdomain, string vname, double val );
         void add_numerical_bc( string bname, string vname, double val );
         void add_scalar_bc( string bname, string vname, string scalar_name );
         void add_penalty_bc( string bname, string vname, string scalar_name );
+
+        // TODO: access functions
     };
     /** **/
     struct PenaltyBC { 

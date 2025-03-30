@@ -33,6 +33,7 @@ void Timeloop::main_loop()
     ilog1 << "Solving timestep "<< ts.t_step<<" @ " << ts.time << "...";
 
     sloop.solve();
+    sloop.export_results();
 
     // Avança os parametros do tstep
     ts.next();   

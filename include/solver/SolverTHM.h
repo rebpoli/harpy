@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/Global.h"
+#include "harpy/Solver.h"
 
 /**
  *
@@ -24,10 +25,12 @@ namespace libMesh { class EquationSystems; }
 
 using namespace libMesh;
 
-class SolverTHM 
+class SolverTHM : public Solver
 {
   public:
     SolverTHM( EquationSystems & es );
+
+    void solve();
 
   private:
     EquationSystems & es;

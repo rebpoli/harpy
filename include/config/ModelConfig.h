@@ -35,3 +35,6 @@ private:
 };
 
 ostream& operator<<(ostream& os, const ModelConfig & m);
+
+/** Global variable with the model configuration */
+extern ModelConfig * MODEL;
