@@ -2,14 +2,16 @@
 #include "harpy/MeshInit.h"
 
 #include "util/Stopwatch.h"
-#include "config/Config.h"
-#include "config/MeshConfig.h"
+#include "config/ModelConfig.h"
+
+
+/**  DEPRECATED --- REMOVE THIS FILE!!! **/
 
 /**
  *
  *
  */
-MeshInit::MeshInit( MeshBase & mesh_ ) : mesh(mesh_), config()
+MeshInit::MeshInit( MeshBase & mesh_ ) : mesh(mesh_)
 { 
   load_mesh();
 }
@@ -21,9 +23,10 @@ void MeshInit::load_mesh()
 {
   /** Rea mesh from file **/
   {
+    string mesh_fn = ""; // MODEL->mesh_filename;  
     Stopwatch sw("mesh.read()");
-    ilog1 << "Reading mesh '" << config.filename << "' ...";
-    mesh.read( config.filename );
+    ilog1 << "Reading mesh '" << mesh_fn << "' ...";
+    mesh.read( mesh_fn );
   }
 
   /** Convert all elements to the second order 

@@ -25,7 +25,7 @@ Timeloop::~Timeloop() { }
  */
 void Timeloop::main_loop() 
 {
-  SolverloopTHM sloop( mesh, ts ); 
+  SolverloopTHM sloop( ts ); 
 
   while ( true )
   {

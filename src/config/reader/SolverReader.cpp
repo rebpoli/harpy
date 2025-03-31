@@ -92,6 +92,7 @@ bool SolverReader::next_state()
 
   CIMap<State> nextState = {
     { "config", State::CONFIG },
+    { "mesh",   State::INITIAL },
 //    { "system", State::SYSTEM },
   };
 
@@ -107,9 +108,11 @@ bool SolverReader::next_state()
 
   // Save
   current_state  = nextState[ sec ];
-  curr_sys_cfg = match[2];
+  string name = match[2];
 
-  dlog(1) << "State: " << sec << "  , Config:" << curr_sys_cfg;
+  // Register as needed
+  if ( current_state == State::CONFIG ) curr_sys_cfg = name;
+  if ( current_state == State::MESH )    config.mesh_filename = config.model_dir + "/" + name;
 
   return true;
 }

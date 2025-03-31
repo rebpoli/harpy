@@ -90,9 +90,9 @@ AztecLinearSolver	/opt/libmesh/include/solvers/trilinos_aztec_linear_solver.h	/^
 AztecLinearSolver	/opt/libmesh/src/solvers/trilinos_aztec_linear_solver.C	/^AztecLinearSolver<T>::AztecLinearSolver (const libMesh::Parallel::Communicator & comm) :$/;"	f	class:libMesh::AztecLinearSolver
 AztecLinearSolver	/opt/libmesh/src/solvers/trilinos_aztec_linear_solver.C	/^template class LIBMESH_EXPORT AztecLinearSolver<Number>;$/;"	m	namespace:libMesh	typeref:class:libMesh::LIBMESH_EXPORT	file:
 BC	include/solver/BC.h	/^class BC {$/;"	c
-BC	src/solver/BC.cpp	/^BC::BC( const System & sys_ ) : system(sys_), config( system.name() ), time(-999), reftime(-999)$/;"	f	class:BC
-BCConfig	include/config/BCConfig.h	/^class BCConfig {$/;"	c
-BCConfig	src/config/BCConfig.cpp	/^BCConfig::BCConfig(  string sys_name_ ) : sys_name( sys_name_ )$/;"	f	class:BCConfig
+BC	src/solver/BC.cpp	/^BC::BC( const System & sys_ ) : system(sys_), config(), time(-999), reftime(-999)$/;"	f	class:BC
+BCConfig	include/config/BCConfig.h	/^class BCConfig $/;"	c
+BCConfig	src/config/BCConfig.cpp	/^BCConfig::BCConfig()  {}$/;"	f	class:BCConfig
 BCTuple	/opt/libmesh/include/mesh/boundary_info.h	/^  typedef std::tuple<dof_id_type, unsigned short int, boundary_id_type> BCTuple;$/;"	t	class:libMesh::BoundaryInfo
 BCTupleSortBy	/opt/libmesh/include/mesh/boundary_info.h	/^  enum class BCTupleSortBy {ELEM_ID, SIDE_ID, BOUNDARY_ID, UNSORTED};$/;"	c	class:libMesh::BoundaryInfo
 BEST_FIT_TYPE	/opt/libmesh/include/reduced_basis/rb_eim_construction.h	/^  enum BEST_FIT_TYPE { PROJECTION_BEST_FIT, EIM_BEST_FIT, POD_BEST_FIT };$/;"	g	class:libMesh::RBEIMConstruction
@@ -165,6 +165,7 @@ COARSEN_INACTIVE	/opt/libmesh/include/geom/elem.h	/^                         COA
 COMPLETION	include/config/MeshConfig.h	/^enum SUBDOMAIN : uint { FRACTURE=900, FRACTURE_2D, WELL, COMPLETION, CASING };$/;"	e	enum:uint
 COMPLEX	/opt/libmesh/include/base/libmesh_common.h	/^typedef std::complex<Real> COMPLEX;$/;"	t	namespace:libMesh
 COMPLEX	/opt/libmesh/include/base/libmesh_common.h	129;"	d
+CONFIG	include/config/reader/SolverReader.h	/^  enum class State { INITIAL, CONFIG, NUMERICAL };$/;"	m	class:SolverReader::State
 CONVERGED_ABSOLUTE_RESIDUAL	/opt/libmesh/include/solvers/diff_solver.h	/^    CONVERGED_ABSOLUTE_RESIDUAL = 2,$/;"	e	enum:libMesh::DiffSolver::SolveResult
 CONVERGED_ABSOLUTE_STEP	/opt/libmesh/include/solvers/diff_solver.h	/^    CONVERGED_ABSOLUTE_STEP = 8,$/;"	e	enum:libMesh::DiffSolver::SolveResult
 CONVERGED_NO_REASON	/opt/libmesh/include/solvers/diff_solver.h	/^    CONVERGED_NO_REASON = 1,$/;"	e	enum:libMesh::DiffSolver::SolveResult
@@ -451,6 +452,8 @@ DofObject	/opt/libmesh/src/base/dof_object.C	/^DofObject::DofObject (const DofOb
 DofObjectKey	/opt/libmesh/include/parallel/parallel_hilbert.h	/^typedef std::pair<Hilbert::HilbertIndices, unique_id_type> DofObjectKey;$/;"	t	namespace:libMesh::Parallel
 DofValueType	/opt/libmesh/include/systems/generic_projector.h	/^  typedef typename TensorTools::MakeBaseNumber<Output>::type DofValueType;$/;"	t	class:libMesh::FEMFunctionWrapper
 DofValueType	/opt/libmesh/include/systems/generic_projector.h	/^  typedef typename TensorTools::MakeBaseNumber<Output>::type DofValueType;$/;"	t	class:libMesh::OldSolutionBase
+DomainBC	include/config/BCConfig.h	/^        DomainBC() : subdomain(""), vname(""), value() {}$/;"	f	struct:BCConfig::DomainBC
+DomainBC	include/config/BCConfig.h	/^    struct DomainBC {$/;"	s	class:BCConfig
 Dxr_sq	/opt/libmesh/include/fe/inf_fe.h	/^  static Real Dxr_sq (const Real \/*v*\/) { return 1.; }$/;"	f	class:libMesh::InfFERadial
 DynaIO	/opt/libmesh/include/mesh/dyna_io.h	/^class DynaIO : public MeshInput<MeshBase>$/;"	c	namespace:libMesh
 DynaIO	/opt/libmesh/src/mesh/dyna_io.C	/^DynaIO::DynaIO (MeshBase & mesh,$/;"	f	class:libMesh::DynaIO
@@ -879,6 +882,8 @@ I	/opt/libmesh/include/solvers/petscdmlibmesh.h	35;"	d
 I	/opt/libmesh/include/solvers/tao_optimization_solver.h	38;"	d
 I	/opt/libmesh/src/numerics/wrapped_petsc.C	48;"	d	file:
 INACTIVE	/opt/libmesh/include/geom/elem.h	/^                         INACTIVE,$/;"	e	enum:libMesh::Elem::RefinementState
+INITIAL	include/config/reader/ModelReader.h	/^    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME$/;"	m	class:ModelReader::State
+INITIAL	include/config/reader/SolverReader.h	/^  enum class State { INITIAL, CONFIG, NUMERICAL };$/;"	m	class:SolverReader::State
 INPUT	/opt/libmesh/include/mesh/mesh_triangle_wrapper.h	/^  INPUT  = 0,$/;"	e	enum:libMesh::TriangleWrapper::IO_Type
 INSTANTIATE_ELEM_ACCESSORS	/opt/libmesh/src/mesh/mesh_iterators.C	39;"	d	file:
 INSTANTIATE_ELEM_PREDICATES	/opt/libmesh/src/base/single_predicates.C	77;"	d	file:
@@ -965,10 +970,10 @@ InverseDistanceInterpolation	/opt/libmesh/src/solution_transfer/meshfree_interpo
 IsFixed	/opt/libmesh/include/parallel/parallel_eigen.h	/^      static inline constexpr bool IsFixed = TIMPI::StandardType<T2>::is_fixed_type;$/;"	m	class:libMesh::Parallel::Packing
 IsNull	/opt/libmesh/include/base/multi_predicates.h	/^  IsNull() : abstract_multi_predicate<T>(make_vec<pred_ptr<T>>($/;"	f	struct:libMesh::Predicates::IsNull
 IsNull	/opt/libmesh/include/base/multi_predicates.h	/^struct IsNull : abstract_multi_predicate<T>$/;"	s	namespace:libMesh::Predicates
-Item	include/config/BCConfig.h	/^        Item() : bname("undef"), vname("undef"), value() {}$/;"	f	class:BCConfig::Item
-Item	include/config/BCConfig.h	/^    class Item {$/;"	c	class:BCConfig
-ItemTensor	include/config/BCConfig.h	/^        ItemTensor() : bname("undef"), vname("undef"), value( 3, vector<double>(3,0) ) {}$/;"	f	class:BCConfig::ItemTensor
-ItemTensor	include/config/BCConfig.h	/^    class ItemTensor {$/;"	c	class:BCConfig
+Item	include/config/BCConfig.h	/^        Item() : bname("undef"), vname("undef"), value() {}$/;"	f	struct:BCConfig::Item
+Item	include/config/BCConfig.h	/^    struct Item {$/;"	s	class:BCConfig
+ItemTensor	include/config/BCConfig.h	/^        ItemTensor() : bname("undef"), vname("undef"), value( 3, vector<double>(3,0) ) {}$/;"	f	struct:BCConfig::ItemTensor
+ItemTensor	include/config/BCConfig.h	/^    struct ItemTensor {$/;"	s	class:BCConfig
 Iter	/opt/libmesh/include/base/variant_filter_iterator.h	/^    Iter (const Iter & other) :$/;"	f	struct:variant_filter_iterator::Iter
 Iter	/opt/libmesh/include/base/variant_filter_iterator.h	/^    Iter (const IterType & v) :$/;"	f	struct:variant_filter_iterator::Iter
 Iter	/opt/libmesh/include/base/variant_filter_iterator.h	/^  struct Iter : IterBase$/;"	s	class:variant_filter_iterator
@@ -986,7 +991,7 @@ JxW	/opt/libmesh/include/fe/fe_map.h	/^  std::vector<Real> JxW;$/;"	m	class:libM
 JxW	/opt/libmesh/include/fe/inf_fe.h	/^  std::vector<Real> JxW;$/;"	m	class:libMesh::InfFE
 JxW_all_qp	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  std::vector<std::vector<Real>> JxW_all_qp;$/;"	m	struct:libMesh::VectorizedEvalInput
 JxWxdecay	/opt/libmesh/include/fe/inf_fe.h	/^  std::vector<Real> JxWxdecay;$/;"	m	class:libMesh::InfFE
-K	include/config/BCConfig.h	/^    class PenaltyBC { public: double K; double value; };$/;"	m	class:BCConfig::PenaltyBC
+K	include/config/BCConfig.h	/^      double K; double value; $/;"	m	struct:BCConfig::PenaltyBC
 KBGBLK	include/util/TermColors.h	16;"	d
 KBGBLU	include/util/TermColors.h	20;"	d
 KBGCYN	include/util/TermColors.h	22;"	d
@@ -1652,7 +1657,9 @@ MESHFREE_SOLUTION_TRANSFER_H	/opt/libmesh/include/solution_transfer/meshfree_sol
 MESHFUNCTIONSOLUTIONTRANSFER_H	/opt/libmesh/include/solution_transfer/meshfunction_solution_transfer.h	19;"	d
 METIS_CSR_Graph	/opt/libmesh/include/partitioning/metis_csr_graph.h	/^class METIS_CSR_Graph$/;"	c	namespace:libMesh
 MIN_ELEM_PER_PROC	/opt/libmesh/src/partitioning/parmetis_partitioner.C	/^const unsigned int MIN_ELEM_PER_PROC = 4;$/;"	m	namespace:libMesh	file:
+MODEL	src/config/ModelConfig.cpp	/^ModelConfig * MODEL;$/;"	v
 MPI_ERRORVECTORREAL	/opt/libmesh/include/base/libmesh_common.h	226;"	d
+MRDEF	include/config/reader/ReaderRegex.h	/^namespace MRDEF $/;"	n
 MSG_CONVERGED_REASON	src/util/Messages.cpp	/^string MSG_CONVERGED_REASON( const libMesh::TransientLinearImplicitSystem & sys ) {$/;"	f
 MSG_POROEL_EVAL_PROBE	src/util/Messages.cpp	/^string MSG_POROEL_EVAL_PROBE( string pname ) {$/;"	f
 MSG_POROEL_INIT_TIMESTEP	src/util/Messages.cpp	/^string MSG_POROEL_INIT_TIMESTEP( Timestep & ts ) {$/;"	f
@@ -1685,6 +1692,11 @@ MappedInputVector	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^MappedInputVector
 MappedOutputVector	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  struct MappedOutputVector$/;"	s	class:libMesh::ExodusII_IO_Helper
 MappedOutputVector	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^MappedOutputVector(const std::vector<Real> & our_data_in,$/;"	f	class:libMesh::ExodusII_IO_Helper::MappedOutputVector
 MappedSubdomainPartitioner	/opt/libmesh/include/partitioning/mapped_subdomain_partitioner.h	/^class MappedSubdomainPartitioner : public Partitioner$/;"	c	namespace:libMesh
+MatConfig	include/config/SolverConfig.h	/^    MatConfig( string & m, string c ) : name(m), cfg(c) {}$/;"	f	struct:SolverConfig::MatConfig
+MatConfig	include/config/SolverConfig.h	/^  struct MatConfig {$/;"	s	class:SolverConfig
+MatConfigMap	include/config/SolverConfig.h	/^  struct MatConfigMap : public map<string, MatConfig> { }; \/\/ subdom => (mat, config)$/;"	s	class:SolverConfig
+MaterialConfig	include/config/MaterialConfig.h	/^class MaterialConfig$/;"	c
+MaterialConfig	src/config/MaterialConfig.cpp	/^MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ )   :$/;"	f	class:MaterialConfig
 Math	include/base/Global.h	/^class Math {$/;"	c
 MathWrapperTraits	/opt/libmesh/include/numerics/tensor_tools.h	/^struct MathWrapperTraits$/;"	s	namespace:libMesh::TensorTools
 MathWrapperTraits	/opt/libmesh/include/numerics/tensor_tools.h	/^struct MathWrapperTraits<TensorValue<T>>$/;"	s	namespace:libMesh::TensorTools
@@ -1764,7 +1776,9 @@ Metis	/opt/libmesh/src/partitioning/metis_partitioner.C	/^namespace Metis {$/;"	
 MetisPartitioner	/opt/libmesh/include/partitioning/metis_partitioner.h	/^class MetisPartitioner : public Partitioner$/;"	c	namespace:libMesh
 MetricType	/opt/libmesh/include/mesh/mesh_smoother_vsmoother.h	/^  enum MetricType$/;"	g	class:libMesh::VariationalMeshSmoother
 ModelConfig	include/config/ModelConfig.h	/^class ModelConfig$/;"	c
-ModelConfig	src/config/ModelConfig.cpp	/^ModelConfig::ModelConfig( string sys_name_ ) :$/;"	f	class:ModelConfig
+ModelConfig	src/config/ModelConfig.cpp	/^ModelConfig::ModelConfig( string model_dir_ ) :$/;"	f	class:ModelConfig
+ModelReader	include/config/reader/ModelReader.h	/^class ModelReader$/;"	c
+ModelReader	src/config/reader/ModelReader.cpp	/^ModelReader::ModelReader( ModelConfig & config_ ) : config(config_), current_time(-1)$/;"	f	class:ModelReader
 Modification	/opt/libmesh/include/mesh/mesh_modification.h	/^namespace Modification$/;"	n	namespace:libMesh::MeshTools
 MortonSFCPartitioner	/opt/libmesh/include/partitioning/morton_sfc_partitioner.h	/^  MortonSFCPartitioner ()$/;"	f	class:libMesh::MortonSFCPartitioner
 MortonSFCPartitioner	/opt/libmesh/include/partitioning/morton_sfc_partitioner.h	/^class MortonSFCPartitioner : public SFCPartitioner$/;"	c	namespace:libMesh
@@ -1887,6 +1901,8 @@ NumberVectorValue	/opt/libmesh/include/systems/system.h	/^typedef VectorValue<Nu
 NumericVector	/opt/libmesh/include/numerics/numeric_vector.h	/^NumericVector<T>::NumericVector (const Parallel::Communicator & comm_in,$/;"	f	class:libMesh::NumericVector
 NumericVector	/opt/libmesh/include/numerics/numeric_vector.h	/^class NumericVector : public ReferenceCountedObject<NumericVector<T>>,$/;"	c	namespace:libMesh
 NumericVector	/opt/libmesh/src/numerics/numeric_vector.C	/^template class LIBMESH_EXPORT NumericVector<Number>;$/;"	m	namespace:libMesh	typeref:class:libMesh::LIBMESH_EXPORT	file:
+Numerical	include/config/SolverConfig.h	/^    Numerical() : ls_pc("bjacobi"), ls_solver("cg"), ls_atol(1e-10), ls_rtol(1e-6) { }$/;"	f	struct:SolverConfig::Numerical
+Numerical	include/config/SolverConfig.h	/^  struct Numerical {$/;"	s	class:SolverConfig
 OFFIO	/opt/libmesh/include/mesh/off_io.h	/^OFFIO::OFFIO (MeshBase & mesh_in) :$/;"	f	class:libMesh::OFFIO
 OFFIO	/opt/libmesh/include/mesh/off_io.h	/^class OFFIO : public MeshInput<MeshBase>$/;"	c	namespace:libMesh
 OLD	/opt/libmesh/include/systems/fem_context.h	/^                       OLD,       \/\/ Use old_dof_indices, custom solution$/;"	e	enum:libMesh::FEMContext::AlgebraicType
@@ -1935,6 +1951,7 @@ OutputShape	/opt/libmesh/include/fe/fe_base.h	/^  typedef OutputType            
 OutputTensor	/opt/libmesh/include/fe/fe_base.h	/^  typedef typename TensorTools::IncrementRank<OutputGradient>::type       OutputTensor;$/;"	t	class:libMesh::FEGenericBase
 OutputVectorFunction	/opt/libmesh/include/numerics/analytic_function.h	/^  typedef void (*OutputVectorFunction)(DenseVector<Output> & output,$/;"	t	class:libMesh::AnalyticFunction
 P2TPointCompare	/opt/libmesh/src/mesh/poly2tri_triangulator.C	/^struct P2TPointCompare$/;"	s	namespace:__anon79	file:
+PENALTY	include/config/reader/ModelReader.h	/^    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME$/;"	m	class:ModelReader::State
 PETSCDMLIBMESH_H	/opt/libmesh/include/solvers/petscdmlibmesh.h	19;"	d
 PETSC_BEGIN_END	/opt/libmesh/include/numerics/petsc_solver_exception.h	121;"	d
 PETSC_RELEASE_EQUALS	/opt/libmesh/include/numerics/petsc_macro.h	237;"	d
@@ -2055,7 +2072,9 @@ Patch	/opt/libmesh/include/mesh/patch.h	/^  Patch(const processor_id_type my_pro
 Patch	/opt/libmesh/include/mesh/patch.h	/^class Patch : public std::set<const Elem *>$/;"	c	namespace:libMesh
 PatchRecoveryErrorEstimator	/opt/libmesh/include/error_estimation/patch_recovery_error_estimator.h	/^class PatchRecoveryErrorEstimator : public ErrorEstimator$/;"	c	namespace:libMesh
 PatchRecoveryErrorEstimator	/opt/libmesh/src/error_estimation/patch_recovery_error_estimator.C	/^PatchRecoveryErrorEstimator::PatchRecoveryErrorEstimator() :$/;"	f	class:libMesh::PatchRecoveryErrorEstimator
-PenaltyBC	include/config/BCConfig.h	/^    class PenaltyBC { public: double K; double value; };$/;"	c	class:BCConfig
+PenaltyBC	include/config/BCConfig.h	/^      PenaltyBC( double K_, double value_ ) : K(K_), value(value_) {}$/;"	f	struct:BCConfig::PenaltyBC
+PenaltyBC	include/config/BCConfig.h	/^      PenaltyBC() : K(0), value(0) { flog << "This function is not expected to be called."; }$/;"	f	struct:BCConfig::PenaltyBC
+PenaltyBC	include/config/BCConfig.h	/^    struct PenaltyBC { $/;"	s	class:BCConfig
 PenaltyItem	include/solver/BC.h	/^        PenaltyItem( uint bid_, uint vid_, double pen_K_, double pen_val_, string pen_name_ ) :$/;"	f	class:BC::PenaltyItem
 PenaltyItem	include/solver/BC.h	/^    class PenaltyItem {$/;"	c	class:BC
 PerfData	/opt/libmesh/include/utils/perf_log.h	/^  PerfData () :$/;"	f	class:libMesh::PerfData
@@ -2187,8 +2206,8 @@ ProjectSides	/opt/libmesh/include/systems/generic_projector.h	/^  struct Project
 ProjectVertices	/opt/libmesh/include/systems/generic_projector.h	/^    ProjectVertices (GenericProjector & p) : SubProjector(p) {}$/;"	f	struct:libMesh::GenericProjector::ProjectVertices
 ProjectVertices	/opt/libmesh/include/systems/generic_projector.h	/^    ProjectVertices (ProjectVertices & p_v, Threads::split) : SubProjector(p_v.projector) {}$/;"	f	struct:libMesh::GenericProjector::ProjectVertices
 ProjectVertices	/opt/libmesh/include/systems/generic_projector.h	/^  struct ProjectVertices : public SubProjector {$/;"	s	class:libMesh::GenericProjector
-Pt	include/util/SpatialDataReader.h	/^    struct Pt $/;"	s	class:SpatialDataReader
-Pt	src/util/SpatialDataReader.cpp	/^SpatialDataReader::Pt::Pt($/;"	f	class:SpatialDataReader::Pt
+Pt	include/config/reader/SpatialDataReader.h	/^    struct Pt $/;"	s	class:SpatialDataReader
+Pt	src/config/reader/SpatialDataReader.cpp	/^SpatialDataReader::Pt::Pt($/;"	f	class:SpatialDataReader::Pt
 Pyramid	/opt/libmesh/include/geom/cell_pyramid.h	/^  Pyramid(const unsigned int nn, Elem * p, Node ** nodelinkdata) :$/;"	f	class:libMesh::Pyramid
 Pyramid	/opt/libmesh/include/geom/cell_pyramid.h	/^class Pyramid : public Cell$/;"	c	namespace:libMesh
 Pyramid13	/opt/libmesh/include/geom/cell_pyramid13.h	/^  Pyramid13 (Elem * p=nullptr) :$/;"	f	class:libMesh::final
@@ -2417,6 +2436,7 @@ ReverseBytes	/opt/libmesh/include/utils/utility.h	/^class ReverseBytes$/;"	c	nam
 Row	/opt/libmesh/include/base/sparsity_pattern.h	/^typedef std::vector<dof_id_type, Threads::scalable_allocator<dof_id_type>> Row;$/;"	t	namespace:libMesh::SparsityPattern
 Row	/opt/libmesh/include/systems/sensitivity_data.h	/^    Row(SensitivityData & sd, unsigned int qoi) : _sd(sd), _qoi(qoi) {}$/;"	f	class:libMesh::SensitivityData::Row
 Row	/opt/libmesh/include/systems/sensitivity_data.h	/^  class Row$/;"	c	class:libMesh::SensitivityData
+SCALAR	include/config/reader/ModelReader.h	/^    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME$/;"	m	class:ModelReader::State
 SCALAR_dof_indices	/opt/libmesh/src/base/dof_map.C	/^void DofMap::SCALAR_dof_indices (std::vector<dof_id_type> & di,$/;"	f	class:libMesh::DofMap
 SCM_UB_vectors	/opt/libmesh/include/reduced_basis/rb_scm_evaluation.h	/^  std::vector<std::vector<Real>> SCM_UB_vectors;$/;"	m	class:libMesh::RBSCMEvaluation
 SCM_greedy_error_indicator	/opt/libmesh/include/reduced_basis/rb_scm_construction.h	/^  virtual Real SCM_greedy_error_indicator(Real LB, Real UB) { return fabs(UB-LB)\/fabs(UB); }$/;"	f	class:libMesh::RBSCMConstruction
@@ -2456,6 +2476,7 @@ STotItem	include/solver/BC.h	/^    class STotItem {$/;"	c	class:BC
 SUPERTYPE	/opt/libmesh/include/utils/compare_types.h	144;"	d
 SUPERTYPE	/opt/libmesh/include/utils/compare_types.h	195;"	d
 SYNC_SOURCES	/opt/libmesh/include/solution_transfer/meshfree_interpolation.h	/^  enum ParallelizationStrategy {SYNC_SOURCES     = 0,$/;"	e	enum:libMesh::MeshfreeInterpolation::ParallelizationStrategy
+SYSTEMLOOP	include/config/reader/ModelReader.h	/^    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME$/;"	m	class:ModelReader::State
 SYSTEM_VARIABLE_ORDER	/opt/libmesh/include/base/dirichlet_boundaries.h	/^enum VariableIndexing { SYSTEM_VARIABLE_ORDER = 0,$/;"	e	enum:libMesh::VariableIndexing
 ScalarItem	include/solver/BC.h	/^        ScalarItem( uint bid_, uint vid_, uint svid_, string scalar_name_, string vname_, string bname_ ) :$/;"	f	class:BC::ScalarItem
 ScalarItem	include/solver/BC.h	/^    class ScalarItem {$/;"	c	class:BC
@@ -2515,15 +2536,19 @@ SolutionHistory	/opt/libmesh/include/solvers/solution_history.h	/^class Solution
 SolutionTransfer	/opt/libmesh/include/solution_transfer/solution_transfer.h	/^  SolutionTransfer(const libMesh::Parallel::Communicator & comm_in) :$/;"	f	class:libMesh::SolutionTransfer
 SolutionTransfer	/opt/libmesh/include/solution_transfer/solution_transfer.h	/^class SolutionTransfer : public ParallelObject$/;"	c	namespace:libMesh
 SolveResult	/opt/libmesh/include/solvers/diff_solver.h	/^  enum SolveResult {$/;"	g	class:libMesh::DiffSolver
-SolverConfig	include/config/Config.h	/^class SolverConfig {$/;"	c
-SolverConfig	src/config/Config.cpp	/^SolverConfig::SolverConfig() {$/;"	f	class:SolverConfig
+Solver	include/harpy/Solver.h	/^    Solver() {};$/;"	f	class:Solver
+Solver	include/harpy/Solver.h	/^class Solver$/;"	c
+SolverConfig	include/config/SolverConfig.h	/^class SolverConfig$/;"	c
+SolverConfig	src/config/SolverConfig.cpp	/^SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ ) :$/;"	f	class:SolverConfig
 SolverConfiguration	/opt/libmesh/include/solvers/solver_configuration.h	/^class SolverConfiguration : public ReferenceCountedObject<SolverConfiguration>$/;"	c	namespace:libMesh
 SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^  SolverException(int error_code_in) :$/;"	f	class:libMesh::SolverException
 SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^class SolverException: public std::exception$/;"	c	namespace:libMesh
-SolverTHM	include/solver/SolverTHM.h	/^class SolverTHM $/;"	c
-SolverTHM	src/solver/SolverTHM.cpp	/^SolverTHM::SolverTHM( EquationSystems & es_ ) : es(es_) $/;"	f	class:SolverTHM
+SolverReader	include/config/reader/SolverReader.h	/^class SolverReader$/;"	c
+SolverReader	src/config/reader/SolverReader.cpp	/^SolverReader::SolverReader( SolverConfig & config_ ) : config(config_) $/;"	f	class:SolverReader
+SolverTHM	include/solver/SolverTHM.h	/^class SolverTHM : public Solver$/;"	c
+SolverTHM	src/solver/SolverTHM.cpp	/^SolverTHM::SolverTHM( EquationSystems & es_ ) :$/;"	f	class:SolverTHM
 Solverloop	include/harpy/Solverloop.h	/^class Solverloop {$/;"	c
-SolverloopTHM	include/solverloop/SolverloopTHM.h	/^class SolverloopTHM {$/;"	c
+SolverloopTHM	include/solverloop/SolverloopTHM.h	/^class SolverloopTHM : public Solverloop {$/;"	c
 SolverloopTHM	src/solverloop/SolverloopTHM.cpp	/^SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) :$/;"	f	class:SolverloopTHM
 Sort	/opt/libmesh/include/parallel/parallel_sort.h	/^class Sort : public ParallelObject$/;"	c	namespace:libMesh::Parallel
 Sort	/opt/libmesh/src/parallel/parallel_sort.C	/^Sort<KeyType,IdxType>::Sort(const Parallel::Communicator & comm_in,$/;"	f	class:libMesh::Parallel::Sort
@@ -2542,8 +2567,8 @@ SparseShellMatrix	/opt/libmesh/src/numerics/sparse_shell_matrix.C	/^template cla
 SparsityPattern	/opt/libmesh/include/base/sparsity_pattern.h	/^namespace SparsityPattern \/\/ use a namespace so member classes can be forward-declared.$/;"	n	namespace:libMesh
 SparsityPattern	/opt/libmesh/include/numerics/sparse_matrix.h	/^namespace SparsityPattern {$/;"	n	namespace:libMesh
 SparsityPattern	/opt/libmesh/src/base/sparsity_pattern.C	/^namespace SparsityPattern$/;"	n	namespace:libMesh	file:
-SpatialDataReader	include/util/SpatialDataReader.h	/^class SpatialDataReader $/;"	c
-SpatialDataReader	src/util/SpatialDataReader.cpp	/^SpatialDataReader::SpatialDataReader( string fn_ ) : fn(fn_) $/;"	f	class:SpatialDataReader
+SpatialDataReader	include/config/reader/SpatialDataReader.h	/^class SpatialDataReader $/;"	c
+SpatialDataReader	src/config/reader/SpatialDataReader.cpp	/^SpatialDataReader::SpatialDataReader( string fn_ ) : fn(fn_) $/;"	f	class:SpatialDataReader
 Sphere	/opt/libmesh/include/geom/sphere.h	/^class Sphere : public Surface$/;"	c	namespace:libMesh
 Sphere	/opt/libmesh/src/geom/sphere.C	/^Sphere::Sphere () :$/;"	f	class:libMesh::Sphere
 Sphere	/opt/libmesh/src/geom/sphere.C	/^Sphere::Sphere (const Point & c,$/;"	f	class:libMesh::Sphere
@@ -2564,6 +2589,8 @@ StandardType	/opt/libmesh/include/parallel/parallel_fe_type.h	/^class StandardTy
 StandardType	/opt/libmesh/include/parallel/parallel_hilbert.h	/^  StandardType(const Hilbert::HilbertIndices * =nullptr)$/;"	f	class:TIMPI::StandardType
 StandardType	/opt/libmesh/include/parallel/parallel_hilbert.h	/^  StandardType(const StandardType<Hilbert::HilbertIndices> & t)$/;"	f	class:TIMPI::StandardType
 StandardType	/opt/libmesh/include/parallel/parallel_hilbert.h	/^class StandardType<Hilbert::HilbertIndices> : public DataType$/;"	c	namespace:TIMPI
+State	include/config/reader/ModelReader.h	/^  enum class State { $/;"	c	class:ModelReader
+State	include/config/reader/SolverReader.h	/^  enum class State { INITIAL, CONFIG, NUMERICAL };$/;"	c	class:SolverReader
 StaticCondensation	/opt/libmesh/include/numerics/static_condensation.h	/^class StaticCondensation : public PetscMatrixShellMatrix<Number>$/;"	c	namespace:libMesh
 StaticCondensation	/opt/libmesh/src/numerics/static_condensation.C	/^StaticCondensation::StaticCondensation(const MeshBase & mesh,$/;"	f	class:libMesh::StaticCondensation
 StaticCondensation	/opt/libmesh/src/numerics/static_condensation.C	/^StaticCondensation::StaticCondensation(const MeshBase &, const System &, const DofMap & dof_map)$/;"	f	class:libMesh::StaticCondensation
@@ -2659,6 +2686,7 @@ SystemSubsetBySubdomain	/opt/libmesh/src/systems/system_subset_by_subdomain.C	/^
 SystemVars	/opt/libmesh/include/mesh/ensight_io.h	/^  struct SystemVars$/;"	s	class:libMesh::EnsightIO
 TBB_VERSION_LESS_THAN	/opt/libmesh/include/parallel/threads_tbb.h	48;"	d
 TET	/opt/libmesh/include/utils/plt_loader.h	/^                TET,$/;"	e	enum:libMesh::PltLoader::FEType
+TIMESTEP	include/config/reader/ModelReader.h	/^    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME$/;"	m	class:ModelReader::State
 TIMPI	/opt/libmesh/include/base/libmesh.h	/^namespace TIMPI {$/;"	n
 TIMPI	/opt/libmesh/include/base/libmesh_common.h	/^namespace TIMPI {}$/;"	n
 TIMPI	/opt/libmesh/include/parallel/parallel_algebra.h	/^namespace TIMPI {$/;"	n
@@ -2729,8 +2757,8 @@ Threads	/opt/libmesh/include/parallel/threads_none.h	/^namespace Threads$/;"	n	n
 Threads	/opt/libmesh/include/parallel/threads_pthread.h	/^namespace Threads$/;"	n	namespace:libMesh
 Threads	/opt/libmesh/include/parallel/threads_tbb.h	/^namespace Threads$/;"	n	namespace:libMesh
 Threads	/opt/libmesh/src/parallel/threads.C	/^namespace Threads$/;"	n	namespace:libMesh	file:
-TimeEntry	include/config/BCConfig.h	/^        TimeEntry() : drained(0), $/;"	f	class:BCConfig::TimeEntry
-TimeEntry	include/config/BCConfig.h	/^    class TimeEntry {$/;"	c	class:BCConfig
+TimeEntry	include/config/BCConfig.h	/^        TimeEntry() {}$/;"	f	struct:BCConfig::TimeEntry
+TimeEntry	include/config/BCConfig.h	/^    struct TimeEntry {$/;"	s	class:BCConfig
 TimeSolver	/opt/libmesh/include/solvers/time_solver.h	/^class TimeSolver : public ReferenceCountedObject<TimeSolver>$/;"	c	namespace:libMesh
 TimeSolver	/opt/libmesh/src/solvers/time_solver.C	/^TimeSolver::TimeSolver (sys_type & s)$/;"	f	class:libMesh::TimeSolver
 TimeSolverResPtr	/opt/libmesh/include/systems/fem_system.h	/^  typedef bool (TimeSolver::*TimeSolverResPtr)(bool, DiffContext &);$/;"	t	class:libMesh::FEMSystem
@@ -2948,6 +2976,8 @@ _M_assembly_vector	/opt/libmesh/include/reduced_basis/transient_rb_assembly_expa
 _M_theta_vector	/opt/libmesh/include/reduced_basis/transient_rb_theta_expansion.h	/^  std::vector<RBTheta *> _M_theta_vector;$/;"	m	class:libMesh::TransientRBThetaExpansion
 _Nmax	/opt/libmesh/include/reduced_basis/rb_eim_construction.h	/^  unsigned int _Nmax;$/;"	m	class:libMesh::RBEIMConstruction
 _QMat	/opt/libmesh/include/numerics/laspack_matrix.h	/^  QMatrix _QMat;$/;"	m	class:libMesh::final
+_SolverConfig	include/config/Config.h	/^class _SolverConfig {$/;"	c
+_SolverConfig	src/config/Config.cpp	/^_SolverConfig::_SolverConfig() {$/;"	f	class:_SolverConfig
 _WIN_GETTIMEOFDAY_H_	/opt/libmesh/include/utils/win_gettimeofday.h	6;"	d
 _WIN_MKSTEMP_H_	/opt/libmesh/src/base/win_mkstemp.h	6;"	d
 __FUNCT__	/opt/libmesh/src/solvers/petscdmlibmesh.C	32;"	d	file:
@@ -3171,6 +3201,7 @@ _compute_error	/opt/libmesh/src/error_estimation/exact_solution.C	/^void ExactSo
 _compute_node_indices_fast_current_elem_type	/opt/libmesh/include/fe/inf_fe.h	/^  static ElemType _compute_node_indices_fast_current_elem_type;$/;"	m	class:libMesh::InfFE
 _compute_node_indices_fast_current_elem_type	/opt/libmesh/src/fe/inf_fe_static.C	/^ElemType InfFE<Dim,T_radial,T_map>::_compute_node_indices_fast_current_elem_type = INVALID_ELEM;$/;"	m	class:libMesh::InfFE	file:
 _computing_base_vector	/opt/libmesh/include/solvers/petsc_nonlinear_solver.h	/^  bool _computing_base_vector;$/;"	m	class:libMesh::PetscNonlinearSolver
+_con_param	src/config/MaterialConfig.cpp	/^optional<double> & MaterialConfig::_con_param( string & vname )$/;"	f	class:MaterialConfig
 _condensed_dofs_initialized	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  bool _condensed_dofs_initialized;$/;"	m	class:libMesh::CondensedEigenSystem
 _condensed_matrix_A	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  std::unique_ptr<SparseMatrix<Number>> _condensed_matrix_A;$/;"	m	class:libMesh::CondensedEigenSystem
 _condensed_matrix_B	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  std::unique_ptr<SparseMatrix<Number>> _condensed_matrix_B;$/;"	m	class:libMesh::CondensedEigenSystem
@@ -3517,6 +3548,7 @@ _fe_trans	/opt/libmesh/include/fe/fe_base.h	/^  std::unique_ptr<FETransformation
 _field_separator	/opt/libmesh/include/base/getpot.h	/^  std::string _field_separator;$/;"	m	class:GETPOT_NAMESPACE::GetPot
 _field_width	/opt/libmesh/include/mesh/xdr_io.h	/^  unsigned int _field_width;$/;"	m	class:libMesh::XdrIO
 _file	include/base/Log.h	/^  const char * _file;$/;"	m	class:Log
+_file_param	src/config/MaterialConfig.cpp	/^optional<string> & MaterialConfig::_file_param( string & vname )$/;"	f	class:MaterialConfig
 _final_linear_residual	/opt/libmesh/include/systems/linear_implicit_system.h	/^  Real _final_linear_residual;$/;"	m	class:libMesh::LinearImplicitSystem
 _final_nonlinear_residual	/opt/libmesh/include/systems/nonlinear_implicit_system.h	/^  Real _final_nonlinear_residual;$/;"	m	class:libMesh::NonlinearImplicitSystem
 _find_global_index_by_pid_map	/opt/libmesh/src/partitioning/partitioner.C	/^void Partitioner::_find_global_index_by_pid_map(const MeshBase & mesh)$/;"	f	class:libMesh::Partitioner
@@ -4658,6 +4690,7 @@ add_default_ghosting	/opt/libmesh/src/base/dof_map.C	/^void DofMap::add_default_
 add_dirichlet_boundary	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::add_dirichlet_boundary (const DirichletBoundary & dirichlet_boundary)$/;"	f	class:libMesh::DofMap
 add_dofs_helper	/opt/libmesh/src/solvers/petsc_dm_wrapper.C	/^  void PetscDMWrapper::add_dofs_helper (const System & system,$/;"	f	class:libMesh::PetscDMWrapper
 add_dofs_to_section	/opt/libmesh/src/solvers/petsc_dm_wrapper.C	/^  void PetscDMWrapper::add_dofs_to_section (const System & system,$/;"	f	class:libMesh::PetscDMWrapper
+add_domain_bc	src/config/BCConfig.cpp	/^void BCConfig::TimeEntry::add_domain_bc( string subdomain, string vname, double val )$/;"	f	class:BCConfig::TimeEntry
 add_dot_var_dirichlet_bcs	/opt/libmesh/src/systems/diff_system.C	/^void DifferentiableSystem::add_dot_var_dirichlet_bcs( unsigned int var_idx,$/;"	f	class:libMesh::DifferentiableSystem
 add_edge	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::add_edge(const Elem * elem,$/;"	f	class:libMesh::BoundaryInfo
 add_edge	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::add_edge(const dof_id_type e,$/;"	f	class:libMesh::BoundaryInfo
@@ -4739,11 +4772,13 @@ add_node_datum	/opt/libmesh/include/mesh/mesh_base.h	/^unsigned int MeshBase::ad
 add_node_integer	/opt/libmesh/src/mesh/mesh_base.C	/^unsigned int MeshBase::add_node_integer(std::string name,$/;"	f	class:libMesh::MeshBase
 add_node_integers	/opt/libmesh/src/mesh/mesh_base.C	/^std::vector<unsigned int> MeshBase::add_node_integers(const std::vector<std::string> & names,$/;"	f	class:libMesh::MeshBase
 add_node_interpolation_data	/opt/libmesh/src/reduced_basis/rb_eim_evaluation.C	/^void RBEIMEvaluation::add_node_interpolation_data($/;"	f	class:libMesh::RBEIMEvaluation
+add_numerical_bc	src/config/BCConfig.cpp	/^void BCConfig::TimeEntry::add_numerical_bc( string bname, string vname, double val )$/;"	f	class:BCConfig::TimeEntry
 add_old_vectors	/opt/libmesh/src/systems/transient_system.C	/^void TransientSystem<Base>::add_old_vectors()$/;"	f	class:libMesh::TransientSystem
 add_p_level_in_reinit	/opt/libmesh/include/fe/fe_abstract.h	/^  bool add_p_level_in_reinit() const { return _add_p_level_in_reinit; }$/;"	f	class:libMesh::FEAbstract
 add_p_level_in_reinit	/opt/libmesh/include/fe/fe_abstract.h	/^  void add_p_level_in_reinit(bool value) { _add_p_level_in_reinit = value; }$/;"	f	class:libMesh::FEAbstract
 add_p_to_h_refinement	/opt/libmesh/src/mesh/mesh_refinement_flagging.C	/^void MeshRefinement::add_p_to_h_refinement ()$/;"	f	class:libMesh::MeshRefinement
 add_parameter_ranges_to_builder	/opt/libmesh/src/reduced_basis/rb_data_serialization.C	/^void add_parameter_ranges_to_builder(const RBParametrized & rb_evaluation,$/;"	f	namespace:libMesh::RBDataSerialization
+add_penalty_bc	src/config/BCConfig.cpp	/^void BCConfig::TimeEntry::add_penalty_bc( string bname, string vname, string penalty_name )$/;"	f	class:BCConfig::TimeEntry
 add_periodic_boundary	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::add_periodic_boundary (const PeriodicBoundaryBase & boundary,$/;"	f	class:libMesh::DofMap
 add_periodic_boundary	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::add_periodic_boundary (const PeriodicBoundaryBase & periodic_boundary)$/;"	f	class:libMesh::DofMap
 add_point	/opt/libmesh/src/mesh/distributed_mesh.C	/^Node * DistributedMesh::add_point (const Point & p,$/;"	f	class:libMesh::DistributedMesh
@@ -4757,6 +4792,7 @@ add_rb_property_map_entry	/opt/libmesh/src/reduced_basis/rb_eim_evaluation.C	/^v
 add_rb_property_map_entry	/opt/libmesh/src/reduced_basis/rb_parametrized_function.C	/^void RBParametrizedFunction::add_rb_property_map_entry(std::string & property_name, std::set<dof_id_type> & entity_ids)$/;"	f	class:libMesh::RBParametrizedFunction
 add_rb_scm_evaluation_data_to_builder	/opt/libmesh/src/reduced_basis/rb_data_serialization.C	/^void add_rb_scm_evaluation_data_to_builder(RBSCMEvaluation & rb_scm_eval,$/;"	f	namespace:libMesh::RBDataSerialization
 add_scalar	/opt/libmesh/src/mesh/ensight_io.C	/^void EnsightIO::add_scalar(const std::string & system_name,$/;"	f	class:libMesh::EnsightIO
+add_scalar_bc	src/config/BCConfig.cpp	/^void BCConfig::TimeEntry::add_scalar_bc( string bname, string vname, string scalar_name )$/;"	f	class:BCConfig::TimeEntry
 add_scaled	/opt/libmesh/include/numerics/type_n_tensor.h	/^void TypeNTensor<N, T>::add_scaled (const TypeNTensor<N, T2> & p, const T & factor)$/;"	f	class:libMesh::TypeNTensor
 add_scaled	/opt/libmesh/include/numerics/type_tensor.h	/^void TypeTensor<T>::add_scaled (const TypeTensor<T2> & p, const T & factor)$/;"	f	class:libMesh::TypeTensor
 add_scaled	/opt/libmesh/include/numerics/type_vector.h	/^void TypeVector<T>::add_scaled (const TypeVector<T2> & p, const T & factor)$/;"	f	class:libMesh::TypeVector
@@ -4858,11 +4894,12 @@ affine_tol	/opt/libmesh/include/geom/elem.h	/^  static constexpr Real affine_tol
 algebraic_ghosting_functors_begin	/opt/libmesh/include/base/dof_map.h	/^  std::set<GhostingFunctor *>::const_iterator algebraic_ghosting_functors_begin() const$/;"	f	class:libMesh::DofMap
 algebraic_ghosting_functors_end	/opt/libmesh/include/base/dof_map.h	/^  std::set<GhostingFunctor *>::const_iterator algebraic_ghosting_functors_end() const$/;"	f	class:libMesh::DofMap
 algebraic_type	/opt/libmesh/include/systems/fem_context.h	/^  AlgebraicType algebraic_type() const { return _atype; }$/;"	f	class:libMesh::FEMContext
-all_bnames	src/config/BCConfig.cpp	/^void BCConfig::all_bnames( set<string> & ret ) $/;"	f	class:BCConfig
+all_bnames	src/config/BCConfig.cpp	/^void BCConfig::all_bnames( set<string> & ret )$/;"	f	class:BCConfig
 all_complete_order	/opt/libmesh/src/mesh/mesh_base.C	/^void MeshBase::all_complete_order ()$/;"	f	class:libMesh::MeshBase
 all_complete_order_range	/opt/libmesh/src/mesh/unstructured_mesh.C	/^void UnstructuredMesh::all_complete_order_range(const SimpleRange<element_iterator> & range)$/;"	f	class:libMesh::UnstructuredMesh
 all_first_order	/opt/libmesh/src/mesh/unstructured_mesh.C	/^void UnstructuredMesh::all_first_order ()$/;"	f	class:libMesh::UnstructuredMesh
 all_increased_order_range	/opt/libmesh/src/mesh/unstructured_mesh.C	/^all_increased_order_range (UnstructuredMesh & mesh,$/;"	f	namespace:__anon82
+all_mat_cfgs	include/config/reader/SolverReader.h	/^  map< string, SolverConfig::MatConfigMap > all_mat_cfgs;  \/\/\/ sys_cfgid => { subdom => (mat,  mat_cfgid) }$/;"	m	class:SolverReader
 all_second_order	/opt/libmesh/src/mesh/mesh_base.C	/^void MeshBase::all_second_order (const bool full_ordered)$/;"	f	class:libMesh::MeshBase
 all_second_order_range	/opt/libmesh/src/mesh/unstructured_mesh.C	/^UnstructuredMesh::all_second_order_range (const SimpleRange<element_iterator> & range,$/;"	f	class:libMesh::UnstructuredMesh
 all_semilocal_indices	/opt/libmesh/src/base/dof_map.C	/^bool DofMap::all_semilocal_indices (const std::vector<dof_id_type> & dof_indices_in) const$/;"	f	class:libMesh::DofMap
@@ -4996,7 +5033,7 @@ assign_partitioning	/opt/libmesh/src/partitioning/partitioner.C	/^void Partition
 assign_sideset_ids	/opt/libmesh/src/mesh/abaqus_io.C	/^void AbaqusIO::assign_sideset_ids()$/;"	f	class:libMesh::AbaqusIO
 assign_subdomain_ids	/opt/libmesh/src/mesh/abaqus_io.C	/^void AbaqusIO::assign_subdomain_ids()$/;"	f	class:libMesh::AbaqusIO
 associate	/opt/libmesh/include/mesh/vtk_io.h	/^    void associate(ElemType libmesh_type, vtkIdType vtk_type)$/;"	f	struct:libMesh::VTKIO::ElementMaps
-atol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:SolverConfig
+atol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:_SolverConfig
 atomic	/opt/libmesh/include/parallel/threads_none.h	/^  atomic () : _val(0) {}$/;"	f	class:libMesh::Threads::atomic
 atomic	/opt/libmesh/include/parallel/threads_none.h	/^class atomic$/;"	c	namespace:libMesh::Threads
 atomic	/opt/libmesh/include/parallel/threads_pthread.h	/^  atomic () : val(0) {}$/;"	f	class:libMesh::Threads::atomic
@@ -5147,14 +5184,16 @@ binomial	/opt/libmesh/include/utils/utility.h	/^T binomial(T n, T k)$/;"	f	names
 binsort	/opt/libmesh/src/parallel/parallel_bin_sorter.C	/^void BinSorter<KeyType,IdxType>::binsort (const IdxType nbins,$/;"	f	class:libMesh::Parallel::BinSorter
 binsort	/opt/libmesh/src/parallel/parallel_sort.C	/^void Sort<KeyType,IdxType>::binsort()$/;"	f	class:libMesh::Parallel::Sort
 binsort	/opt/libmesh/src/parallel/parallel_sort.C	/^void Sort<Parallel::DofObjectKey,unsigned int>::binsort()$/;"	f	class:libMesh::Parallel::Sort
+biot	include/config/MaterialConfig.h	/^  optional<double> biot, bulk, skempton;$/;"	m	class:MaterialConfig
+biot_file	include/config/MaterialConfig.h	/^  optional<string> biot_file, bulk_file, skempton_file;$/;"	m	class:MaterialConfig
 bln	include/config/Config.h	/^    bool bln(string n, string p, bool & ret, bool def=0) {$/;"	f	class:Config
 block_id_to_elem_connectivity	/opt/libmesh/include/mesh/nemesis_io_helper.h	/^  std::map<int, std::vector<int>> block_id_to_elem_connectivity;$/;"	m	class:libMesh::Nemesis_IO_Helper
 block_ids	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<int> block_ids;$/;"	m	class:libMesh::ExodusII_IO_Helper
 block_size	/opt/libmesh/include/base/dof_map.h	/^  unsigned int block_size() const$/;"	f	class:libMesh::DofMap
 blockids	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  std::map<std::string, unsigned int> * blockids;$/;"	m	struct:DM_libMesh	file:
 blocknames	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  std::map<unsigned int, std::string> * blocknames;$/;"	m	struct:DM_libMesh	file:
-bname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	class:BCConfig::Item
-bname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	class:BCConfig::ItemTensor
+bname	include/config/BCConfig.h	/^        string bname, vname; T value;$/;"	m	struct:BCConfig::Item
+bname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	struct:BCConfig::ItemTensor
 bname	include/solver/BC.h	/^        int bid; uint vid;  uint svid; string scalar_name, vname, bname;$/;"	m	class:BC::ScalarItem
 bname	include/solver/BC.h	/^        int bid; uint vid; double val; string vname, bname;$/;"	m	class:BC::DirichletItem
 bname	include/solver/BC.h	/^        string bname;$/;"	m	class:BC::STotItem
@@ -5171,6 +5210,7 @@ boundary	/opt/libmesh/src/base/periodic_boundaries.C	/^const PeriodicBoundaryBas
 boundary_assembly	/opt/libmesh/include/systems/elem_assembly.h	/^  virtual void boundary_assembly(FEMContext &) { }$/;"	f	class:libMesh::ElemAssembly
 boundary_condition_file_name	/opt/libmesh/include/mesh/xdr_io.h	/^  const std::string & boundary_condition_file_name() const { return _bc_file_name; }$/;"	f	class:libMesh::XdrIO
 boundary_condition_file_name	/opt/libmesh/include/mesh/xdr_io.h	/^  std::string &       boundary_condition_file_name()       { return _bc_file_name; }$/;"	f	class:libMesh::XdrIO
+boundary_config	include/config/ModelConfig.h	/^  BCConfig boundary_config;$/;"	m	class:ModelConfig
 boundary_id_to_ordered_dirichlet_boundaries	/opt/libmesh/src/base/dof_map_constraints.C	/^    const std::map<boundary_id_type, std::set<std::pair<unsigned int, DirichletBoundary *>>> & boundary_id_to_ordered_dirichlet_boundaries;$/;"	m	struct:__anon5::ConstrainDirichlet::SingleElemBoundaryInfo	file:
 boundary_id_type	/opt/libmesh/include/base/id_types.h	/^typedef int8_t boundary_id_type;$/;"	t	namespace:libMesh
 boundary_ids	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  std::vector<boundary_id_type> boundary_ids;$/;"	m	struct:libMesh::VectorizedEvalInput
@@ -5231,7 +5271,6 @@ build_InfFE	/opt/libmesh/src/fe/fe_base.C	/^FEGenericBase<RealGradient>::build_I
 build_active_side_list	/opt/libmesh/src/mesh/boundary_info.C	/^BoundaryInfo::build_active_side_list () const$/;"	f	class:libMesh::BoundaryInfo
 build_active_side_list	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::build_active_side_list (std::vector<dof_id_type> & el,$/;"	f	class:libMesh::BoundaryInfo
 build_around_element	/opt/libmesh/src/mesh/patch.C	/^void Patch::build_around_element (const Elem * e0,$/;"	f	class:libMesh::Patch
-build_bcs	src/config/BCConfig.cpp	/^void BCConfig::build_bcs() $/;"	f	class:BCConfig
 build_constraint_matrix	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::build_constraint_matrix (DenseMatrix<Number> & C,$/;"	f	class:libMesh::DofMap
 build_constraint_matrix_and_vector	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::build_constraint_matrix_and_vector (DenseMatrix<Number> & C,$/;"	f	class:libMesh::DofMap
 build_context	/opt/libmesh/src/reduced_basis/rb_construction.C	/^std::unique_ptr<DGFEMContext> RBConstruction::build_context ()$/;"	f	class:libMesh::RBConstruction
@@ -5299,7 +5338,6 @@ build_histogram	/opt/libmesh/src/parallel/parallel_histogram.C	/^void Histogram<
 build_inf_elem	/opt/libmesh/src/mesh/inf_elem_builder.C	/^const Point InfElemBuilder::build_inf_elem (const InfElemOriginValue & origin_x,$/;"	f	class:libMesh::InfElemBuilder
 build_inf_elem	/opt/libmesh/src/mesh/inf_elem_builder.C	/^const Point InfElemBuilder::build_inf_elem(bool be_verbose)$/;"	f	class:libMesh::InfElemBuilder
 build_inf_elem	/opt/libmesh/src/mesh/inf_elem_builder.C	/^void InfElemBuilder::build_inf_elem(const Point & origin,$/;"	f	class:libMesh::InfElemBuilder
-build_initial	src/config/BCConfig.cpp	/^void BCConfig::build_initial() $/;"	f	class:BCConfig
 build_line	/opt/libmesh/src/mesh/mesh_generation.C	/^void MeshTools::Generation::build_line (UnstructuredMesh & mesh,$/;"	f	class:libMesh::MeshTools::Generation
 build_map	/opt/libmesh/include/solvers/eigen_sparse_linear_solver.h	/^  static std::map<Eigen::ComputationInfo, LinearConvergenceReason> build_map()$/;"	f	class:libMesh::EigenSparseLinearSolver
 build_map	/opt/libmesh/include/solvers/nlopt_optimization_solver.h	/^  static std::map<std::string, nlopt_algorithm> build_map()$/;"	f	class:libMesh::NloptOptimizationSolver
@@ -5312,13 +5350,11 @@ build_node_list_from_side_list	/opt/libmesh/src/mesh/boundary_info.C	/^BoundaryI
 build_nodes_to_elem_map	/opt/libmesh/src/mesh/mesh_tools.C	/^void build_nodes_to_elem_map (const MeshBase & mesh,$/;"	f	namespace:libMesh::MeshTools
 build_parallel_elemental_solution_vector	/opt/libmesh/src/systems/equation_systems.C	/^EquationSystems::build_parallel_elemental_solution_vector (std::vector<std::string> & names) const$/;"	f	class:libMesh::EquationSystems
 build_parallel_solution_vector	/opt/libmesh/src/systems/equation_systems.C	/^EquationSystems::build_parallel_solution_vector(const std::set<std::string> * system_names,$/;"	f	class:libMesh::EquationSystems
-build_penalty	src/config/BCConfig.cpp	/^void BCConfig::build_penalty() $/;"	f	class:BCConfig
 build_point	/opt/libmesh/src/mesh/mesh_generation.C	/^void MeshTools::Generation::build_point (UnstructuredMesh & mesh,$/;"	f	class:libMesh::MeshTools::Generation
 build_preconditioner	/opt/libmesh/src/numerics/preconditioner.C	/^Preconditioner<T>::build_preconditioner(const libMesh::Parallel::Communicator & comm,$/;"	f	class:libMesh::Preconditioner
 build_reading_element_map	/opt/libmesh/src/mesh/gmv_io.C	/^std::map<std::string, ElemType> GMVIO::build_reading_element_map()$/;"	f	class:libMesh::GMVIO
 build_reading_element_map	/opt/libmesh/src/mesh/ucd_io.C	/^std::map<std::string, ElemType> UCDIO::build_reading_element_map()$/;"	f	class:libMesh::UCDIO
 build_reverse_map	/opt/libmesh/src/utils/string_to_enum.C	/^build_reverse_map (const MapType & forward)$/;"	f	namespace:libMesh::__anon98
-build_scalars	src/config/BCConfig.cpp	/^void BCConfig::build_scalars()$/;"	f	class:BCConfig
 build_section	/opt/libmesh/src/solvers/petsc_dm_wrapper.C	/^  void PetscDMWrapper::build_section( const System & system, PetscSection & section )$/;"	f	class:libMesh::PetscDMWrapper
 build_sf	/opt/libmesh/src/solvers/petsc_dm_wrapper.C	/^  void PetscDMWrapper::build_sf( const System & system, PetscSF & star_forest )$/;"	f	class:libMesh::PetscDMWrapper
 build_shellface_boundary_ids	/opt/libmesh/src/mesh/boundary_info.C	/^BoundaryInfo::build_shellface_boundary_ids(std::vector<boundary_id_type> & b_ids) const$/;"	f	class:libMesh::BoundaryInfo
@@ -5402,6 +5438,8 @@ build_variable_names	/opt/libmesh/src/systems/equation_systems.C	/^void Equation
 build_with_id	/opt/libmesh/src/geom/elem.C	/^std::unique_ptr<Elem> Elem::build_with_id (const ElemType type,$/;"	f	class:libMesh::Elem
 build_writing_element_map	/opt/libmesh/src/mesh/ucd_io.C	/^std::map<ElemType, std::string> UCDIO::build_writing_element_map()$/;"	f	class:libMesh::UCDIO
 build_zero_dirichlet_boundary_object	/opt/libmesh/src/reduced_basis/rb_construction.C	/^std::unique_ptr<DirichletBoundary> RBConstruction::build_zero_dirichlet_boundary_object()$/;"	f	class:libMesh::RBConstruction
+bulk	include/config/MaterialConfig.h	/^  optional<double> biot, bulk, skempton;$/;"	m	class:MaterialConfig
+bulk_file	include/config/MaterialConfig.h	/^  optional<string> biot_file, bulk_file, skempton_file;$/;"	m	class:MaterialConfig
 bzip_file	/opt/libmesh/src/utils/xdr_cxx.C	/^void bzip_file (std::string_view unzipped_name)$/;"	f	namespace:__anon99
 bzipped_file	/opt/libmesh/include/utils/xdr_cxx.h	/^  bool gzipped_file, bzipped_file, xzipped_file;$/;"	m	class:libMesh::Xdr
 cache_elem_data	/opt/libmesh/src/mesh/mesh_base.C	/^void MeshBase::cache_elem_data()$/;"	f	class:libMesh::MeshBase
@@ -5474,6 +5512,8 @@ center_node_on_side	/opt/libmesh/src/geom/face_tri7.C	/^unsigned int Tri7::cente
 centroid	/opt/libmesh/src/geom/elem.C	/^Point Elem::centroid() const$/;"	f	class:libMesh::Elem
 centroid_from_points	/opt/libmesh/src/geom/cell_hex8.C	/^Point Hex8::centroid_from_points($/;"	f	class:libMesh::Hex8
 cfg	include/config/ConfigValidate.h	/^    Config & cfg;$/;"	m	class:ConfigValidate
+cfg	include/config/MaterialConfig.h	/^  string name, cfg;$/;"	m	class:MaterialConfig
+cfg	include/config/SolverConfig.h	/^    string name, cfg;$/;"	m	struct:SolverConfig::MatConfig
 cfg	include/harpy/Timestep.h	/^    TimeloopConfig cfg;$/;"	m	class:Timestep
 change_boundary_id	/opt/libmesh/src/mesh/mesh_modification.C	/^void MeshTools::Modification::change_boundary_id (MeshBase & mesh,$/;"	f	class:libMesh::MeshTools::Modification
 change_elemset_code	/opt/libmesh/src/mesh/mesh_base.C	/^void MeshBase::change_elemset_code(dof_id_type old_code, dof_id_type new_code)$/;"	f	class:libMesh::MeshBase
@@ -5483,7 +5523,9 @@ check_convergence	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBCons
 check_dirichlet_bcid_consistency	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::check_dirichlet_bcid_consistency (const MeshBase & mesh,$/;"	f	class:libMesh::DofMap
 check_evaluated_thetas_size	/opt/libmesh/src/reduced_basis/rb_evaluation.C	/^void RBEvaluation::check_evaluated_thetas_size(const std::vector<Number> * evaluated_thetas) const$/;"	f	class:libMesh::RBEvaluation
 check_existing_vars	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::check_existing_vars(ExodusVarType type,$/;"	f	class:libMesh::ExodusII_IO_Helper
-check_files	src/config/ModelConfig.cpp	/^void ModelConfig::check_files()$/;"	f	class:ModelConfig
+check_files	src/config/MaterialConfig.cpp	/^void MaterialConfig::check_files()$/;"	f	class:MaterialConfig
+check_files	src/config/reader/ModelReader.cpp	/^void ModelReader::check_files()$/;"	f	class:ModelReader
+check_files	src/config/reader/SolverReader.cpp	/^void SolverReader::check_files()$/;"	f	class:SolverReader
 check_for_constraint_loops	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::check_for_constraint_loops() {}$/;"	f	class:libMesh::DofMap
 check_for_constraint_loops	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::check_for_constraint_loops()$/;"	f	class:libMesh::DofMap
 check_for_cyclic_constraints	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::check_for_cyclic_constraints()$/;"	f	class:libMesh::DofMap
@@ -5515,6 +5557,7 @@ chunkfloat	/opt/libmesh/src/utils/location_maps.C	/^const Real chunkfloat = 1024
 chunking	/opt/libmesh/src/mesh/checkpoint_io.C	/^void chunking(libMesh::processor_id_type size, libMesh::processor_id_type rank, libMesh::processor_id_type nsplits,$/;"	f	namespace:__anon64
 chunkmax	/opt/libmesh/src/utils/location_maps.C	/^const unsigned int chunkmax = 1024;$/;"	m	namespace:__anon97	file:
 chunks	/opt/libmesh/include/partitioning/subdomain_partitioner.h	/^  std::vector<std::set<subdomain_id_type>> chunks;$/;"	m	class:libMesh::SubdomainPartitioner
+ci_cmp	include/util/String.h	/^  struct ci_cmp {$/;"	s	namespace:harpy_string
 clean_refinement_flags	/opt/libmesh/src/mesh/mesh_refinement_flagging.C	/^void MeshRefinement::clean_refinement_flags ()$/;"	f	class:libMesh::MeshRefinement
 cleanup	/opt/libmesh/src/base/libmesh_singleton.C	/^void Singleton::cleanup ()$/;"	f	class:libMesh::Singleton
 cleanup	/opt/libmesh/src/mesh/checkpoint_io.C	/^void CheckpointIO::cleanup(const std::string & input_name, processor_id_type n_procs)$/;"	f	class:libMesh::CheckpointIO
@@ -5875,8 +5918,11 @@ condense_constrained_dofs	/opt/libmesh/include/systems/system.h	/^  virtual bool
 condensed_global_to_local_map	/opt/libmesh/include/numerics/static_condensation.h	/^    std::unordered_map<dof_id_type, dof_id_type> condensed_global_to_local_map;$/;"	m	struct:libMesh::StaticCondensation::LocalData
 condensed_matrix_A	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  SparseMatrix<Number> * condensed_matrix_A;$/;"	m	class:libMesh::CondensedEigenSystem
 condensed_matrix_B	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  SparseMatrix<Number> * condensed_matrix_B;$/;"	m	class:libMesh::CondensedEigenSystem
+config	include/config/reader/ModelReader.h	/^  ModelConfig & config;$/;"	m	class:ModelReader
+config	include/config/reader/SolverReader.h	/^  SolverConfig & config;$/;"	m	class:SolverReader
 config	include/harpy/MeshInit.h	/^    MeshConfig config;$/;"	m	class:MeshInit
 config	include/solver/BC.h	/^    BCConfig config;$/;"	m	class:BC
+config_state	src/config/reader/SolverReader.cpp	/^void SolverReader::config_state()$/;"	f	class:SolverReader
 conical_product_pyramid	/opt/libmesh/src/quadrature/quadrature_conical.C	/^void QConical::conical_product_pyramid()$/;"	f	class:libMesh::QConical
 conical_product_tet	/opt/libmesh/src/quadrature/quadrature_conical.C	/^void QConical::conical_product_tet()$/;"	f	class:libMesh::QConical
 conical_product_tri	/opt/libmesh/src/quadrature/quadrature_conical.C	/^void QConical::conical_product_tri()$/;"	f	class:libMesh::QConical
@@ -6091,6 +6137,7 @@ curl_from_grad	/opt/libmesh/src/numerics/tensor_tools.C	/^Number curl_from_grad(
 curl_from_grad	/opt/libmesh/src/numerics/tensor_tools.C	/^TensorValue<Number> curl_from_grad( const TypeNTensor<3,Number> & \/* grad *\/ )$/;"	f	namespace:libMesh::TensorTools
 curl_from_grad	/opt/libmesh/src/numerics/tensor_tools.C	/^VectorValue<Number> curl_from_grad(const TensorValue<Number> & grad)$/;"	f	namespace:libMesh::TensorTools
 curl_phi	/opt/libmesh/include/fe/fe_base.h	/^  std::vector<std::vector<OutputShape>> curl_phi;$/;"	m	class:libMesh::FEGenericBase
+curr_sys_cfg	include/config/reader/SolverReader.h	/^  string curr_sys_cfg;   \/\/\/ System configuration being read$/;"	m	class:SolverReader
 current_fe_type	/opt/libmesh/include/fe/inf_fe.h	/^  FEType current_fe_type;$/;"	m	class:libMesh::InfFE
 current_filename	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::string current_filename;$/;"	m	class:libMesh::ExodusII_IO_Helper
 current_local_solution	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  NumericVector<Number> & current_local_solution;$/;"	m	class:libMesh::DTKEvaluator
@@ -6100,7 +6147,10 @@ current_n_processors	/opt/libmesh/include/mesh/checkpoint_io.h	/^  processor_id_
 current_processor_ids	/opt/libmesh/include/mesh/checkpoint_io.h	/^  const std::vector<processor_id_type> & current_processor_ids() const { return _my_processor_ids; }$/;"	f	class:libMesh::CheckpointIO
 current_processor_ids	/opt/libmesh/include/mesh/checkpoint_io.h	/^  std::vector<processor_id_type> & current_processor_ids() { return _my_processor_ids; }$/;"	f	class:libMesh::CheckpointIO
 current_solution	/opt/libmesh/src/systems/system.C	/^Number System::current_solution (const dof_id_type global_dof_number) const$/;"	f	class:libMesh::System
+current_state	include/config/reader/ModelReader.h	/^  State current_state;   \/\/\/ Current state of the state machine$/;"	m	class:ModelReader
+current_state	include/config/reader/SolverReader.h	/^  State current_state;   \/\/\/ Current state of the state machine$/;"	m	class:SolverReader
 current_sys_name	/opt/libmesh/src/apps/projection.C	/^std::string current_sys_name;$/;"	v
+current_time	include/config/reader/ModelReader.h	/^  double current_time;   \/\/\/ Current timestamp being parsed$/;"	m	class:ModelReader
 current_vec	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    PetscVector<libMesh::Number> * current_vec;$/;"	m	struct:libMesh::PetscDMContext
 cursor	/opt/libmesh/include/base/getpot.h	/^  unsigned cursor; \/\/ cursor for argv$/;"	m	class:GETPOT_NAMESPACE::GetPot
 curvatures	/opt/libmesh/include/fe/fe_map.h	/^  std::vector<Real> curvatures;$/;"	m	class:libMesh::FEMap
@@ -6214,7 +6264,7 @@ datum	/opt/libmesh/src/partitioning/partitioner.C	/^  typedef processor_id_type 
 dbl	include/config/Config.h	/^    bool dbl(string n, string p, double & ret, double def=0) {$/;"	f	class:Config
 dbl	include/config/Config.h	/^    double dbl(string n, string p) {$/;"	f	class:Config
 dbl	src/config/ConfigValidate.cpp	/^double ConfigValidate::dbl( const Value & gram, string key )$/;"	f	class:ConfigValidate
-dbl_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemDbl>> dbl_bcs;$/;"	m	class:BCConfig::TimeEntry
+dbl_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemDbl>> dbl_bcs;$/;"	m	struct:BCConfig::TimeEntry
 dblvec	include/config/Config.h	/^    bool dblvec(string n, string p, vector<double> & ret, vector<double> def = {} ) {$/;"	f	class:Config
 deactivate	/opt/libmesh/include/systems/system.h	/^void System::deactivate ()$/;"	f	class:libMesh::System
 deallocate	/opt/libmesh/include/utils/utility.h	/^void deallocate (std::vector<T> & vec)$/;"	f	namespace:libMesh::Utility
@@ -6358,7 +6408,6 @@ dim	/opt/libmesh/src/apps/meshavg.C	/^unsigned char dim = 2; \/\/ This gets over
 dim	/opt/libmesh/src/apps/meshdiff.C	/^unsigned char dim = 2; \/\/ This gets overridden by most mesh formats$/;"	v
 dim	/opt/libmesh/src/apps/solution_components.C	/^unsigned char dim = 2; \/\/ This gets overridden by most mesh formats$/;"	v
 dim	/opt/libmesh/src/systems/system_projection.C	/^                               unsigned int dim,$/;"	m	class:libMesh::OldSolutionCoefs	file:
-dir	include/config/ModelConfig.h	/^  string dir, model_file;$/;"	m	class:ModelConfig
 dir_exists	include/util/File.h	/^inline bool dir_exists (const std::string& name) {$/;"	f
 direct_follow	/opt/libmesh/include/base/getpot.h	/^GetPot::direct_follow(const T& Default, const char* Option)$/;"	f	class:GETPOT_NAMESPACE::GetPot
 direct_follow	/opt/libmesh/include/base/getpot.h	/^GetPot::direct_follow(const char* Default, const char* Option)$/;"	f	class:GETPOT_NAMESPACE::GetPot
@@ -6382,7 +6431,7 @@ discontinuous_gradient	/opt/libmesh/src/mesh/mesh_function.C	/^void MeshFunction
 discontinuous_value	/opt/libmesh/src/mesh/mesh_function.C	/^std::map<const Elem *, Number> MeshFunction::discontinuous_value (const Point & p,$/;"	f	class:libMesh::MeshFunction
 discontinuous_value	/opt/libmesh/src/mesh/mesh_function.C	/^void MeshFunction::discontinuous_value (const Point & p,$/;"	f	class:libMesh::MeshFunction
 discrete_var_norm	/opt/libmesh/src/systems/system.C	/^Real System::discrete_var_norm(const NumericVector<Number> & v,$/;"	f	class:libMesh::System
-dist	src/util/SpatialDataReader.cpp	/^double SpatialDataReader::Pt::dist(const SpatialDataReader::Pt & m)$/;"	f	class:SpatialDataReader::Pt
+dist	src/config/reader/SpatialDataReader.cpp	/^double SpatialDataReader::Pt::dist(const SpatialDataReader::Pt & m)$/;"	f	class:SpatialDataReader::Pt
 distance	/opt/libmesh/src/geom/sphere.C	/^Real Sphere::distance (const Sphere & other_sphere) const$/;"	f	class:libMesh::Sphere
 distance_from_circumcircle	/opt/libmesh/src/mesh/poly2tri_triangulator.C	/^Real distance_from_circumcircle(const Elem & elem,$/;"	f	namespace:__anon79
 distance_moved	/opt/libmesh/include/mesh/mesh_smoother_vsmoother.h	/^  Real distance_moved() const { return _distance; }$/;"	f	class:libMesh::VariationalMeshSmoother
@@ -6447,6 +6496,7 @@ dofs_on_edge	/opt/libmesh/src/fe/fe_subdivision_2D.C	/^template <> void FE<2,SUB
 dofs_on_side	/opt/libmesh/src/fe/fe.C	/^void FE<Dim,T>::dofs_on_side(const Elem * const elem,$/;"	f	class:libMesh::FE
 dofs_on_side	/opt/libmesh/src/fe/fe_interface.C	/^void FEInterface::dofs_on_side(const Elem * const elem,$/;"	f	class:libMesh::FEInterface
 dofs_on_side	/opt/libmesh/src/fe/fe_subdivision_2D.C	/^template <> void FE<2,SUBDIVISION>::dofs_on_side(const Elem * const, const Order, unsigned int, std::vector<unsigned int> & di, bool) { di.resize(0); }$/;"	f	class:libMesh::FE
+domain_bcs	include/config/BCConfig.h	/^        map<string, vector<DomainBC>> domain_bcs;  \/\/\/ $/;"	m	struct:BCConfig::TimeEntry
 done_saving_ids	/opt/libmesh/include/systems/generic_projector.h	/^  bool done_saving_ids;$/;"	m	class:libMesh::GenericProjector
 dont_condense_vars	/opt/libmesh/include/numerics/static_condensation.h	/^StaticCondensation::dont_condense_vars(const std::unordered_set<unsigned int> & vars)$/;"	f	class:libMesh::StaticCondensation
 dont_create_submatrices_in_solve	/opt/libmesh/include/systems/condensed_eigen_system.h	/^  void dont_create_submatrices_in_solve() { _create_submatrices_in_solve = false; }$/;"	f	class:libMesh::CondensedEigenSystem
@@ -6476,7 +6526,6 @@ dphixr	/opt/libmesh/include/fe/inf_fe.h	/^  std::vector<std::vector<RealGradient
 dphixr_sq	/opt/libmesh/include/fe/inf_fe.h	/^  std::vector<std::vector<RealGradient>> dphixr_sq;$/;"	m	class:libMesh::InfFE
 dpsideta_map	/opt/libmesh/include/fe/fe_map.h	/^  std::vector<std::vector<Real>> dpsideta_map;$/;"	m	class:libMesh::FEMap
 dpsidxi_map	/opt/libmesh/include/fe/fe_map.h	/^  std::vector<std::vector<Real>> dpsidxi_map;$/;"	m	class:libMesh::FEMap
-drained	include/config/BCConfig.h	/^        bool drained, has_temperature, has_pressure;$/;"	m	class:BCConfig::TimeEntry
 ds	/opt/libmesh/include/systems/continuation_system.h	/^  Real ds;$/;"	m	class:libMesh::ContinuationSystem
 ds_current	/opt/libmesh/include/systems/continuation_system.h	/^  Real ds_current;$/;"	m	class:libMesh::ContinuationSystem
 ds_min	/opt/libmesh/include/systems/continuation_system.h	/^  Real ds_min;$/;"	m	class:libMesh::ContinuationSystem
@@ -6489,7 +6538,7 @@ dt_max	include/config/TimeloopConfig.h	/^    double dt, dt_k, dt_max, t_max, dt_
 dt_min	include/config/TimeloopConfig.h	/^    double dt, dt_k, dt_max, t_max, dt_min;$/;"	m	class:TimeloopConfig
 dt_parsers	/opt/libmesh/include/numerics/parsed_function.h	/^  std::vector<std::unique_ptr<FunctionParserADBase<Output>>> dt_parsers;$/;"	m	class:libMesh::ParsedFunction
 dtk_maps	/opt/libmesh/include/solution_transfer/dtk_solution_transfer.h	/^  std::map<std::pair<EquationSystems *, EquationSystems *>, std::unique_ptr<shared_domain_map_type>> dtk_maps;$/;"	m	class:libMesh::DTKSolutionTransfer
-dtol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:SolverConfig
+dtol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:_SolverConfig
 du	/opt/libmesh/src/solvers/unsteady_solver.C	/^Real UnsteadySolver::du(const SystemNorm & norm) const$/;"	f	class:libMesh::UnsteadySolver
 du_ds	/opt/libmesh/include/systems/continuation_system.h	/^  NumericVector<Number> * du_ds;$/;"	m	class:libMesh::ContinuationSystem
 dual_coeff	/opt/libmesh/include/fe/fe_base.h	/^  mutable DenseMatrix<Real> dual_coeff;$/;"	m	class:libMesh::FEGenericBase
@@ -6957,6 +7006,7 @@ exodus_elem_num_to_libmesh	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  st
 exodus_elem_type	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^std::string ExodusII_IO_Helper::Conversion::exodus_elem_type() const$/;"	f	class:libMesh::ExodusII_IO_Helper::Conversion
 exodus_node_num_to_libmesh	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<int> exodus_node_num_to_libmesh;$/;"	m	class:libMesh::ExodusII_IO_Helper
 exodus_type	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::string exodus_type;$/;"	m	class:libMesh::ExodusII_IO_Helper::Conversion
+export_results	src/solverloop/SolverloopTHM.cpp	/^void SolverloopTHM::export_results() $/;"	f	class:SolverloopTHM
 expression	/opt/libmesh/include/numerics/parsed_fem_function.h	/^  const std::string & expression() { return _expression; }$/;"	f	class:libMesh::ParsedFEMFunction
 expression	/opt/libmesh/include/numerics/parsed_function.h	/^  const std::string & expression() { return _expression; }$/;"	f	class:libMesh::ParsedFunction
 expression_is_time_dependent	/opt/libmesh/include/numerics/parsed_function.h	/^ParsedFunction<Output,OutputGradient>::expression_is_time_dependent( std::string_view expression ) const$/;"	f	class:libMesh::ParsedFunction
@@ -7064,6 +7114,7 @@ field_variables	/opt/libmesh/include/solution_transfer/meshfree_interpolation.h	
 file_canonical	include/util/File.h	/^inline string file_canonical( const string & fn ) {$/;"	f
 file_exists	include/util/File.h	/^inline bool file_exists (const std::string& name) {$/;"	f
 file_name	/opt/libmesh/include/utils/xdr_cxx.h	/^  std::string file_name;$/;"	m	class:libMesh::Xdr
+filename	include/config/MaterialConfig.h	/^  string filename;$/;"	m	class:MaterialConfig
 filename	include/config/MeshConfig.h	/^    string filename;   \/\/ The mesh filename to read$/;"	m	class:MeshConfig
 fill	/opt/libmesh/src/utils/location_maps.C	/^void LocationMap<Elem>::fill(MeshBase & mesh)$/;"	f	class:libMesh::LocationMap
 fill	/opt/libmesh/src/utils/location_maps.C	/^void LocationMap<Node>::fill(MeshBase & mesh)$/;"	f	class:libMesh::LocationMap
@@ -7496,7 +7547,7 @@ flush	include/util/CsvFile.h	/^inline static CsvFile1& flush(CsvFile1& file)$/;"
 fmt_d	src/util/Messages.cpp	/^string fmt_d( double num ) {$/;"	f
 fmt_i	src/util/Messages.cpp	/^string fmt_i( int num, uint w, bool zerofill ) {$/;"	f
 fmt_sci	src/util/Messages.cpp	/^string fmt_sci( double num ) {$/;"	f
-fn	include/util/SpatialDataReader.h	/^    string fn;$/;"	m	class:SpatialDataReader
+fn	include/config/reader/SpatialDataReader.h	/^    string fn;$/;"	m	class:SpatialDataReader
 fnv_64_buf	/opt/libmesh/include/utils/hashword.h	/^uint64_t fnv_64_buf(const void * buf, size_t len)$/;"	f	namespace:__anon3
 follow	/opt/libmesh/include/base/getpot.h	/^GetPot::follow(const T& Default, const char* Option)$/;"	f	class:GETPOT_NAMESPACE::GetPot
 follow	/opt/libmesh/include/base/getpot.h	/^GetPot::follow(const T& Default, unsigned int No, const char* P, ...)$/;"	f	class:GETPOT_NAMESPACE::GetPot
@@ -8263,7 +8314,7 @@ get_point_locator_close_to_point_tol	/opt/libmesh/src/mesh/mesh_base.C	/^Real Me
 get_points	/opt/libmesh/include/mesh/mesh_triangle_holes.h	/^  const std::vector<Point> & get_points() const$/;"	f	class:libMesh::TriangulatorInterface::ArbitraryHole
 get_points	/opt/libmesh/include/quadrature/quadrature.h	/^  const std::vector<Point> & get_points() const { return _points; }$/;"	f	class:libMesh::QBase
 get_points	/opt/libmesh/include/quadrature/quadrature.h	/^  std::vector<Point> & get_points() { return _points; }$/;"	f	class:libMesh::QBase
-get_points	include/util/SpatialDataReader.h	/^    const vector<Pt>& get_points() const { return points; };$/;"	f	class:SpatialDataReader
+get_points	include/config/reader/SpatialDataReader.h	/^    const vector<Pt>& get_points() const { return points; };$/;"	f	class:SpatialDataReader
 get_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^SparseMatrix<Number> & EigenSystem::get_precond_matrix()$/;"	f	class:libMesh::EigenSystem
 get_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^const SparseMatrix<Number> & EigenSystem::get_precond_matrix() const$/;"	f	class:libMesh::EigenSystem
 get_preconditioner	/opt/libmesh/include/numerics/static_condensation.h	/^  StaticCondensationPreconditioner & get_preconditioner() { return *_scp; }$/;"	f	class:libMesh::StaticCondensation
@@ -8314,7 +8365,6 @@ get_rb_theta_expansion	/opt/libmesh/src/reduced_basis/rb_scm_construction.C	/^RB
 get_rb_theta_expansion	/opt/libmesh/src/reduced_basis/rb_scm_evaluation.C	/^RBThetaExpansion & RBSCMEvaluation::get_rb_theta_expansion()$/;"	f	class:libMesh::RBSCMEvaluation
 get_real_solver_setting	/opt/libmesh/src/solvers/linear_solver.C	/^double LinearSolver<T>::get_real_solver_setting (const std::string & setting_name,$/;"	f	class:libMesh::LinearSolver
 get_refspace_nodes	/opt/libmesh/src/fe/fe_abstract.C	/^void FEAbstract::get_refspace_nodes(const ElemType itemType, std::vector<Point> & nodes)$/;"	f	class:libMesh::FEAbstract
-get_reftime	src/config/BCConfig.cpp	/^double BCConfig::get_reftime( double time ) $/;"	f	class:BCConfig
 get_rel_training_tolerance	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  Real get_rel_training_tolerance() const { return rel_training_tolerance; }$/;"	f	class:libMesh::RBConstruction
 get_rel_training_tolerance	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^Real RBEIMConstruction::get_rel_training_tolerance()$/;"	f	class:libMesh::RBEIMConstruction
 get_relative_error	/opt/libmesh/src/solvers/slepc_eigen_solver.C	/^Real SlepcEigenSolver<T>::get_relative_error(unsigned int i)$/;"	f	class:libMesh::SlepcEigenSolver
@@ -8534,6 +8584,7 @@ hack_p_level	/opt/libmesh/include/geom/elem.h	/^void Elem::hack_p_level(unsigned
 hack_p_level_and_refinement_flag	/opt/libmesh/include/geom/elem.h	/^void Elem::hack_p_level_and_refinement_flag (unsigned int p,$/;"	f	class:libMesh::Elem
 handle_error	/opt/libmesh/src/apps/meshid.C	/^void handle_error(int error, std::string message)$/;"	f
 handle_vi_vj	/opt/libmesh/src/base/sparsity_pattern.C	/^void Build::handle_vi_vj(const std::vector<dof_id_type> & element_dofs_i,$/;"	f	class:libMesh::SparsityPattern::Build
+harpy_string	include/util/String.h	/^namespace harpy_string { $/;"	n
 has_adjoint_dirichlet_boundaries	/opt/libmesh/src/base/dof_map_constraints.C	/^bool DofMap::has_adjoint_dirichlet_boundaries(unsigned int q) const$/;"	f	class:libMesh::DofMap
 has_affine_map	/opt/libmesh/include/geom/elem.h	/^  virtual bool has_affine_map () const { return false; }$/;"	f	class:libMesh::Elem
 has_affine_map	/opt/libmesh/src/geom/cell_hex20.C	/^bool Hex20::has_affine_map() const$/;"	f	class:libMesh::Hex20
@@ -8592,7 +8643,6 @@ has_min_max	/opt/libmesh/include/parallel/parallel_fe_type.h	/^  static const bo
 has_neighbor	/opt/libmesh/include/geom/elem.h	/^bool Elem::has_neighbor (const Elem * elem) const$/;"	f	class:libMesh::Elem
 has_node_integer	/opt/libmesh/src/mesh/mesh_base.C	/^bool MeshBase::has_node_integer(std::string_view name) const$/;"	f	class:libMesh::MeshBase
 has_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^bool EigenSystem::has_precond_matrix() const$/;"	f	class:libMesh::EigenSystem
-has_pressure	include/config/BCConfig.h	/^        bool drained, has_temperature, has_pressure;$/;"	m	class:BCConfig::TimeEntry
 has_shell_matrix_A	/opt/libmesh/src/systems/eigen_system.C	/^bool EigenSystem::has_shell_matrix_A() const$/;"	f	class:libMesh::EigenSystem
 has_shell_matrix_B	/opt/libmesh/src/systems/eigen_system.C	/^bool EigenSystem::has_shell_matrix_B() const$/;"	f	class:libMesh::EigenSystem
 has_shell_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^bool EigenSystem::has_shell_precond_matrix() const$/;"	f	class:libMesh::EigenSystem
@@ -8600,7 +8650,6 @@ has_side_boundary_id	/opt/libmesh/src/systems/fem_context.C	/^bool FEMContext::h
 has_static_condensation	/opt/libmesh/include/base/dof_map.h	/^  bool has_static_condensation() const { return _sc; }$/;"	f	class:libMesh::DofMap
 has_static_condensation	/opt/libmesh/include/systems/implicit_system.h	/^  bool has_static_condensation() const { return _sc; }$/;"	f	class:libMesh::ImplicitSystem
 has_system	/opt/libmesh/include/systems/equation_systems.h	/^bool EquationSystems::has_system (std::string_view name) const$/;"	f	class:libMesh::EquationSystems
-has_temperature	include/config/BCConfig.h	/^        bool drained, has_temperature, has_pressure;$/;"	m	class:BCConfig::TimeEntry
 has_topological_neighbor	/opt/libmesh/src/geom/elem.C	/^bool Elem::has_topological_neighbor (const Elem * elem,$/;"	f	class:libMesh::Elem
 has_topological_neighbor	/opt/libmesh/src/mesh/mesh_refinement.C	/^bool MeshRefinement::has_topological_neighbor(const Elem * elem,$/;"	f	class:libMesh::MeshRefinement
 has_transformation_matrix	/opt/libmesh/src/base/periodic_boundary_base.C	/^bool PeriodicBoundaryBase::has_transformation_matrix() const$/;"	f	class:libMesh::PeriodicBoundaryBase
@@ -8950,6 +8999,7 @@ init_map_phi	/opt/libmesh/src/fe/hcurl_fe_transformation.C	/^void HCurlFETransfo
 init_map_phi	/opt/libmesh/src/fe/hcurl_fe_transformation.C	/^void HCurlFETransformation<Real>::init_map_phi(const FEGenericBase<Real> & ) const$/;"	f	class:libMesh::HCurlFETransformation
 init_map_phi	/opt/libmesh/src/fe/hdiv_fe_transformation.C	/^void HDivFETransformation<OutputShape>::init_map_phi(const FEGenericBase<OutputShape> & fe) const$/;"	f	class:libMesh::HDivFETransformation
 init_map_phi	/opt/libmesh/src/fe/hdiv_fe_transformation.C	/^void HDivFETransformation<Real>::init_map_phi(const FEGenericBase<Real> & ) const$/;"	f	class:libMesh::HDivFETransformation
+init_materials	src/solver/SolverTHM.cpp	/^void SolverTHM::init_materials()$/;"	f	class:SolverTHM
 init_matrices	/opt/libmesh/src/systems/eigen_system.C	/^void EigenSystem::init_matrices ()$/;"	f	class:libMesh::EigenSystem
 init_matrices	/opt/libmesh/src/systems/system.C	/^void System::init_matrices ()$/;"	f	class:libMesh::System
 init_mfi	/opt/libmesh/src/mesh/triangulator_interface.C	/^void AutoAreaFunction::init_mfi (const std::vector<Point> & input_pts,$/;"	f	class:libMesh::AutoAreaFunction
@@ -9586,7 +9636,7 @@ kmax	/opt/libmesh/include/utils/plt_loader.h	/^unsigned int PltLoader::kmax (con
 kronecker_delta	include/base/Global.h	/^    inline static double kronecker_delta(unsigned int i, unsigned int j) { return i == j ? 1. : 0.; }$/;"	f	class:Math
 ksp	/opt/libmesh/src/solvers/petsc_linear_solver.C	/^KSP PetscLinearSolver<T>::ksp()$/;"	f	class:libMesh::PetscLinearSolver
 ksp_solve_func_type	/opt/libmesh/include/solvers/petsc_linear_solver.h	/^  typedef PetscErrorCode (*ksp_solve_func_type)(KSP,Vec,Vec);$/;"	t	class:libMesh::PetscLinearSolver
-ksptype	include/config/Config.h	/^    string ksptype, pctype;$/;"	m	class:SolverConfig
+ksptype	include/config/Config.h	/^    string ksptype, pctype;$/;"	m	class:_SolverConfig
 l1_error	/opt/libmesh/src/error_estimation/exact_solution.C	/^Real ExactSolution::l1_error(std::string_view sys_name,$/;"	f	class:libMesh::ExactSolution
 l1_norm	/opt/libmesh/include/numerics/dense_subvector.h	/^Real DenseSubVector<T>::l1_norm () const$/;"	f	class:libMesh::DenseSubVector
 l1_norm	/opt/libmesh/include/numerics/dense_vector.h	/^Real DenseVector<T>::l1_norm () const$/;"	f	class:libMesh::DenseVector
@@ -10781,6 +10831,9 @@ limit_level_mismatch_at_edge	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/
 limit_level_mismatch_at_node	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/^bool MeshRefinement::limit_level_mismatch_at_node (const unsigned int max_mismatch)$/;"	f	class:libMesh::MeshRefinement
 limit_overrefined_boundary	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/^bool MeshRefinement::limit_overrefined_boundary(const signed char max_mismatch)$/;"	f	class:libMesh::MeshRefinement
 limit_underrefined_boundary	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/^bool MeshRefinement::limit_underrefined_boundary(const signed char max_mismatch)$/;"	f	class:libMesh::MeshRefinement
+line	include/config/MaterialConfig.h	/^  string line;$/;"	m	class:MaterialConfig
+line	include/config/reader/ModelReader.h	/^  string line;           \/\/\/ line being parsed$/;"	m	class:ModelReader
+line	include/config/reader/SolverReader.h	/^  string line;           \/\/\/ line being parsed$/;"	m	class:SolverReader
 line_search	/opt/libmesh/src/solvers/newton_solver.C	/^Real NewtonSolver::line_search(Real tol,$/;"	f	class:libMesh::NewtonSolver
 line_width	/opt/libmesh/include/mesh/postscript_io.h	/^  Real line_width;$/;"	m	class:libMesh::PostscriptIO
 linear_solution_monitor	/opt/libmesh/include/solvers/diff_solver.h	/^  std::unique_ptr<LinearSolutionMonitor> linear_solution_monitor;$/;"	m	class:libMesh::DiffSolver
@@ -10804,6 +10857,9 @@ linfty_norm	/opt/libmesh/src/numerics/trilinos_epetra_matrix.C	/^Real EpetraMatr
 linfty_norm	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^Real EpetraVector<T>::linfty_norm () const$/;"	f	class:libMesh::EpetraVector
 llround	/opt/libmesh/include/base/float128_shims.h	/^inline long long llround$/;"	f	namespace:std
 lm_init	include/base/HarpyInit.h	/^    libMesh::LibMeshInit * lm_init;$/;"	m	class:HarpyInit
+ln	include/config/MaterialConfig.h	/^  uint ln;$/;"	m	class:MaterialConfig
+ln	include/config/reader/ModelReader.h	/^  uint ln;               \/\/\/ line number$/;"	m	class:ModelReader
+ln	include/config/reader/SolverReader.h	/^  uint ln;               \/\/\/ line number$/;"	m	class:SolverReader
 load_basis_function	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::load_basis_function(unsigned int i)$/;"	f	class:libMesh::RBConstruction
 load_matrix_B	/opt/libmesh/src/reduced_basis/rb_scm_construction.C	/^void RBSCMConstruction::load_matrix_B()$/;"	f	class:libMesh::RBSCMConstruction
 load_mesh	src/harpy/MeshInit.cpp	/^void MeshInit::load_mesh() $/;"	f	class:MeshInit
@@ -10967,6 +11023,10 @@ low_order_key	/opt/libmesh/src/geom/face_quad.C	/^dof_id_type Quad::low_order_ke
 low_order_key	/opt/libmesh/src/geom/face_tri.C	/^dof_id_type Tri::low_order_key (const unsigned int s) const$/;"	f	class:libMesh::Tri
 lower_and_upper_bounds_object	/opt/libmesh/include/solvers/optimization_solver.h	/^  OptimizationSystem::ComputeLowerAndUpperBounds * lower_and_upper_bounds_object;$/;"	m	class:libMesh::OptimizationSolver
 lower_bound	/opt/libmesh/include/parallel/parallel_histogram.h	/^double Histogram<KeyType,IdxType>::lower_bound (const IdxType bin) const$/;"	f	class:libMesh::Parallel::Histogram
+ls_atol	include/config/SolverConfig.h	/^    double ls_atol; \/\/\/ linear solver absolute tolerance$/;"	m	struct:SolverConfig::Numerical
+ls_pc	include/config/SolverConfig.h	/^    string ls_pc;         \/\/\/ preconditioner for the linear solver$/;"	m	struct:SolverConfig::Numerical
+ls_rtol	include/config/SolverConfig.h	/^    double ls_rtol; \/\/\/ linear solver absolute tolerance$/;"	m	struct:SolverConfig::Numerical
+ls_solver	include/config/SolverConfig.h	/^    string ls_solver;     \/\/\/ linear solver engine$/;"	m	struct:SolverConfig::Numerical
 ltstr	/opt/libmesh/include/base/getpot.h	/^  struct ltstr$/;"	s	class:GETPOT_NAMESPACE::GetPot
 lu_solve	/opt/libmesh/include/numerics/dense_matrix_impl.h	/^void DenseMatrix<T>::lu_solve (const DenseVector<T> & b,$/;"	f	class:libMesh::DenseMatrix
 m	/opt/libmesh/include/numerics/dense_matrix_base.h	/^  unsigned int m() const { return _m; }$/;"	f	class:libMesh::DenseMatrixBase
@@ -11079,6 +11139,8 @@ mat	/opt/libmesh/include/numerics/trilinos_epetra_matrix.h	/^  Epetra_FECrsMatri
 mat	/opt/libmesh/include/numerics/trilinos_epetra_matrix.h	/^  const Epetra_FECrsMatrix * mat () const { libmesh_assert(_mat); return _mat; }$/;"	f	class:libMesh::final
 mat	/opt/libmesh/include/numerics/trilinos_preconditioner.h	/^  Epetra_FECrsMatrix * mat() { return _mat; }$/;"	f	class:libMesh::TrilinosPreconditioner
 mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^Mat PetscShellMatrix<T>::mat()$/;"	f	class:libMesh::PetscShellMatrix
+material_config	include/config/SolverConfig.h	/^  MatConfigMap material_config; \/\/\/ the chosen configuration for this run$/;"	m	class:SolverConfig
+materials	include/config/ModelConfig.h	/^  map< string, MaterialConfig > materials;   \/\/\/ Material configurations$/;"	m	class:ModelConfig
 matrices	/opt/libmesh/include/numerics/sum_shell_matrix.h	/^  std::vector<ShellMatrix<T> *> matrices;$/;"	m	class:libMesh::SumShellMatrix
 matrices_begin	/opt/libmesh/include/systems/system.h	/^System::const_matrices_iterator System::matrices_begin () const$/;"	f	class:libMesh::System
 matrices_begin	/opt/libmesh/include/systems/system.h	/^System::matrices_iterator System::matrices_begin ()$/;"	f	class:libMesh::System
@@ -11137,7 +11199,7 @@ max_truth_solves	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	
 max_value	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  Real max_value;$/;"	m	struct:libMesh::EIMVarGroupPlottingInfo
 maximum	/opt/libmesh/src/utils/statistics.C	/^T StatisticsVector<T>::maximum() const$/;"	f	class:libMesh::StatisticsVector
 maxits	/opt/libmesh/include/solvers/eigen_time_solver.h	/^  unsigned int maxits;$/;"	m	class:libMesh::EigenTimeSolver
-maxits	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:SolverConfig
+maxits	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:_SolverConfig
 mean	/opt/libmesh/src/utils/error_vector.C	/^Real ErrorVector::mean() const$/;"	f	class:libMesh::ErrorVector
 mean	/opt/libmesh/src/utils/statistics.C	/^Real StatisticsVector<T>::mean() const$/;"	f	class:libMesh::StatisticsVector
 median	/opt/libmesh/src/utils/error_vector.C	/^Real ErrorVector::median() const$/;"	f	class:libMesh::ErrorVector
@@ -11230,7 +11292,10 @@ mkdir	/opt/libmesh/src/utils/utility.C	/^int Utility::mkdir(const char* pathname
 mkstemp	/opt/libmesh/src/base/win_mkstemp.h	/^inline int mkstemp(char *tmpl)$/;"	f
 mode	/opt/libmesh/include/fe/inf_fe.h	/^  std::vector<std::vector<Real>> mode;$/;"	m	class:libMesh::InfFE
 mode	/opt/libmesh/include/utils/xdr_cxx.h	/^  const XdrMODE mode;$/;"	m	class:libMesh::Xdr
-model_file	include/config/ModelConfig.h	/^  string dir, model_file;$/;"	m	class:ModelConfig
+model_dir	include/config/MaterialConfig.h	/^  string model_dir ;$/;"	m	class:MaterialConfig
+model_dir	include/config/ModelConfig.h	/^  string model_dir, model_file;$/;"	m	class:ModelConfig
+model_dir	include/config/SolverConfig.h	/^  string model_dir, sys_file, sys_name, sys_cfg;$/;"	m	class:SolverConfig
+model_file	include/config/ModelConfig.h	/^  string model_dir, model_file;$/;"	m	class:ModelConfig
 modf	/opt/libmesh/include/base/float128_shims.h	/^inline boost::multiprecision::float128 modf$/;"	f	namespace:std
 monomial_n_dofs	/opt/libmesh/src/fe/fe_monomial.C	/^unsigned int monomial_n_dofs(const ElemType t, const Order o)$/;"	f	namespace:libMesh
 monomial_nodal_soln	/opt/libmesh/src/fe/fe_monomial.C	/^void monomial_nodal_soln(const Elem * elem,$/;"	f	namespace:libMesh::__anon37
@@ -11703,6 +11768,8 @@ name	/opt/libmesh/include/base/variable.h	/^  const std::string & name(unsigned 
 name	/opt/libmesh/include/mesh/stl_io.h	/^  const std::string & name () { return _name; }$/;"	f	class:libMesh::STLIO
 name	/opt/libmesh/include/systems/system.h	/^const std::string & System::name() const$/;"	f	class:libMesh::System
 name	/opt/libmesh/src/geom/elem_quality.C	/^std::string Quality::name (const ElemQuality q)$/;"	f	class:libMesh::Quality
+name	include/config/MaterialConfig.h	/^  string name, cfg;$/;"	m	class:MaterialConfig
+name	include/config/SolverConfig.h	/^    string name, cfg;$/;"	m	struct:SolverConfig::MatConfig
 ncon	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  Parmetis::idx_t ncon;$/;"	m	class:libMesh::ParmetisHelper
 ncv_magic	/opt/libmesh/include/base/dof_object.h	/^  static const index_t ncv_magic = 256; \/\/ = 2^8, in case we want to manually bitshift$/;"	m	class:libMesh::DofObject
 ncv_magic_exp	/opt/libmesh/include/base/dof_object.h	/^  static const index_t ncv_magic_exp = 8; \/\/ Let's manually bitshift$/;"	m	class:libMesh::DofObject
@@ -11746,6 +11813,8 @@ next	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  struct token * next;$/;"	
 next	src/harpy/Timestep.cpp	/^double Timestep::next() {$/;"	f	class:Timestep
 next_nominus	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus()$/;"	f	class:GETPOT_NAMESPACE::GetPot
 next_nominus_string	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus_string()$/;"	f	class:GETPOT_NAMESPACE::GetPot
+next_state	src/config/reader/ModelReader.cpp	/^bool ModelReader::next_state() $/;"	f	class:ModelReader
+next_state	src/config/reader/SolverReader.cpp	/^bool SolverReader::next_state() $/;"	f	class:SolverReader
 next_step_deltat	/opt/libmesh/include/solvers/unsteady_solver.h	/^  Real next_step_deltat;$/;"	m	class:libMesh::UnsteadySolver
 next_unique_id	/opt/libmesh/include/mesh/mesh_base.h	/^  unique_id_type next_unique_id() { return _next_unique_id; }$/;"	f	class:libMesh::MeshBase
 nglib	/opt/libmesh/include/mesh/mesh_netgen_interface.h	/^namespace nglib {$/;"	n
@@ -12095,6 +12164,7 @@ null_output_iterator	/opt/libmesh/include/utils/null_output_iterator.h	/^struct 
 nullify_neighbors	/opt/libmesh/src/geom/elem.C	/^void Elem::nullify_neighbors ()$/;"	f	class:libMesh::Elem
 nullspace	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  void (* nullspace) (std::vector<NumericVector<Number> *> & sp, sys_type & S);$/;"	m	class:libMesh::NonlinearSolver
 nullspace_object	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  NonlinearImplicitSystem::ComputeVectorSubspace * nullspace_object;$/;"	m	class:libMesh::NonlinearSolver
+num	include/config/reader/ReaderRegex.h	/^  inline const string num = R"(([+-]?(?:(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?|[+-]?\\d+[eE][+-]?\\d+)))";$/;"	m	namespace:MRDEF
 numNonlocalIDs_	/opt/libmesh/include/numerics/trilinos_epetra_vector.h	/^  int numNonlocalIDs_;$/;"	m	class:libMesh::final
 num_attr	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  int num_attr;$/;"	m	class:libMesh::ExodusII_IO_Helper
 num_border_elems	/opt/libmesh/include/mesh/nemesis_io_helper.h	/^  int num_border_elems;$/;"	m	class:libMesh::Nemesis_IO_Helper
@@ -12285,12 +12355,14 @@ number_p_refinements	/opt/libmesh/include/error_estimation/uniform_refinement_es
 numeric_index_type	/opt/libmesh/include/base/id_types.h	/^typedef dof_id_type numeric_index_type;$/;"	t	namespace:libMesh
 numeric_petsc_cast	/opt/libmesh/include/numerics/petsc_vector.h	/^PetscInt * numeric_petsc_cast(const numeric_index_type * p)$/;"	f	namespace:libMesh
 numeric_trilinos_cast	/opt/libmesh/include/numerics/trilinos_epetra_vector.h	/^int * numeric_trilinos_cast(const numeric_index_type * p)$/;"	f	namespace:libMesh
+numerical	include/config/SolverConfig.h	/^  Numerical numerical;$/;"	m	class:SolverConfig
 numerical_elem_jacobian	/opt/libmesh/src/systems/fem_system.C	/^void FEMSystem::numerical_elem_jacobian (FEMContext & context) const$/;"	f	class:libMesh::FEMSystem
 numerical_jacobian	/opt/libmesh/src/systems/fem_system.C	/^void FEMSystem::numerical_jacobian (TimeSolverResPtr res,$/;"	f	class:libMesh::FEMSystem
 numerical_jacobian_h	/opt/libmesh/include/systems/fem_system.h	/^  Real numerical_jacobian_h;$/;"	m	class:libMesh::FEMSystem
 numerical_jacobian_h_for_var	/opt/libmesh/include/systems/fem_system.h	/^FEMSystem::numerical_jacobian_h_for_var(unsigned int var_num) const$/;"	f	class:libMesh::FEMSystem
 numerical_nonlocal_jacobian	/opt/libmesh/src/systems/fem_system.C	/^void FEMSystem::numerical_nonlocal_jacobian (FEMContext & context) const$/;"	f	class:libMesh::FEMSystem
 numerical_side_jacobian	/opt/libmesh/src/systems/fem_system.C	/^void FEMSystem::numerical_side_jacobian (FEMContext & context) const$/;"	f	class:libMesh::FEMSystem
+numerical_state	src/config/reader/SolverReader.cpp	/^void SolverReader::numerical_state()$/;"	f	class:SolverReader
 numflag	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  Parmetis::idx_t numflag;$/;"	m	class:libMesh::ParmetisHelper
 obj	/opt/libmesh/include/numerics/wrapped_petsc.h	/^  T obj;$/;"	m	namespace:libMesh
 objective_function_relative_tolerance	/opt/libmesh/include/solvers/optimization_solver.h	/^  double objective_function_relative_tolerance;$/;"	m	class:libMesh::OptimizationSolver
@@ -12499,6 +12571,7 @@ operator ()	/opt/libmesh/src/utils/point_locator_nanoflann.C	/^PointLocatorNanof
 operator ()	/opt/libmesh/src/utils/point_locator_tree.C	/^const Elem * PointLocatorTree::operator() (const Point & p,$/;"	f	class:libMesh::PointLocatorTree
 operator ()	/opt/libmesh/src/utils/point_locator_tree.C	/^void PointLocatorTree::operator() (const Point & p,$/;"	f	class:libMesh::PointLocatorTree
 operator ()	/opt/libmesh/src/utils/tree.C	/^Tree<N>::operator() (const Point & p,$/;"	f	class:libMesh::Tree
+operator ()	include/util/String.h	/^    bool operator() ( const string & a , const string & b ) const$/;"	f	struct:harpy_string::ci_cmp
 operator *	/opt/libmesh/include/base/variant_filter_iterator.h	/^  ReferenceType operator*() const$/;"	f	class:variant_filter_iterator
 operator *	/opt/libmesh/include/geom/elem.h	/^  Elem *& operator*() const$/;"	f	class:libMesh::Elem::SideIter
 operator *	/opt/libmesh/include/mesh/mesh_inserter_iterator.h	/^  mesh_inserter_iterator & operator*() { return *this; }$/;"	f	struct:libMesh::mesh_inserter_iterator
@@ -12642,6 +12715,7 @@ operator <	/opt/libmesh/src/numerics/type_tensor.C	/^bool TypeTensor<Complex>::o
 operator <	/opt/libmesh/src/numerics/type_tensor.C	/^bool TypeTensor<Real>::operator < (const TypeTensor<Real> & rhs) const$/;"	f	class:libMesh::TypeTensor
 operator <	/opt/libmesh/src/numerics/type_vector.C	/^bool TypeVector<Complex>::operator < (const TypeVector<Complex> & rhs) const$/;"	f	class:libMesh::TypeVector
 operator <	/opt/libmesh/src/numerics/type_vector.C	/^bool TypeVector<T>::operator < (const TypeVector<T> & rhs) const$/;"	f	class:libMesh::TypeVector
+operator <	include/config/SolverConfig.h	/^    bool operator<(const MatConfig & other) const {$/;"	f	struct:SolverConfig::MatConfig
 operator <	src/solver/BC.cpp	/^bool BC::ElemSide::operator<(const BC::ElemSide & other) const$/;"	f	class:BC::ElemSide
 operator <<	/opt/libmesh/include/fe/fe_type.h	/^inline std::ostream & operator << (std::ostream & os, const OrderWrapper & order)$/;"	f	namespace:libMesh
 operator <<	/opt/libmesh/include/geom/bounding_box.h	/^  friend std::ostream & operator << (std::ostream & os, const BoundingBox & b)$/;"	f	class:libMesh::BoundingBox
@@ -12670,15 +12744,24 @@ operator <<	include/util/CsvFile.h	/^    CsvFile& operator << (const std::string
 operator <<	include/util/CsvFile.h	/^    CsvFile1& operator << (const T& val)$/;"	f	class:CsvFile1
 operator <<	include/util/CsvFile.h	/^    CsvFile1& operator << (const char * val)$/;"	f	class:CsvFile1
 operator <<	include/util/CsvFile.h	/^    CsvFile1& operator << (const std::string & val)$/;"	f	class:CsvFile1
+operator <<	include/util/OutputOperators.h	/^ostream& operator<<(ostream& os, const optional<T> & m)$/;"	f
 operator <<	include/util/OutputOperators.h	/^ostream& operator<<(ostream& os, const set<T> & m)$/;"	f
 operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const BCConfig & m)$/;"	f
 operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const BCConfig::ItemTensor & m)$/;"	f
 operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const BCConfig::PenaltyBC & m)$/;"	f
-operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m) $/;"	f
+operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m)$/;"	f
 operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m)$/;"	f
 operator <<	src/config/BCConfig.cpp	/^ostream& operator<<(ostream& os, const map<string,BCConfig::PenaltyBC> & m)$/;"	f
 operator <<	src/config/ConfigValidate.cpp	/^ostream& operator<<(ostream& os, const ConfigValidate::Context & m)$/;"	f
+operator <<	src/config/MaterialConfig.cpp	/^ostream& operator<<(ostream& os, const MaterialConfig & m)$/;"	f
 operator <<	src/config/ModelConfig.cpp	/^ostream& operator<<(ostream& os, const ModelConfig & m)$/;"	f
+operator <<	src/config/ModelConfig.cpp	/^ostream& operator<<(ostream& os, const map<string,MaterialConfig> & m)$/;"	f
+operator <<	src/config/SolverConfig.cpp	/^ostream& operator<<(ostream& os, const SolverConfig & m)$/;"	f
+operator <<	src/config/SolverConfig.cpp	/^ostream& operator<<(ostream& os, const SolverConfig::MatConfig & m)$/;"	f
+operator <<	src/config/SolverConfig.cpp	/^ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m)$/;"	f
+operator <<	src/config/reader/SolverReader.cpp	/^ostream& operator<<(ostream& os, const SolverReader & m)$/;"	f
+operator <<	src/config/reader/SpatialDataReader.cpp	/^ostream& operator<<(ostream& os, const SpatialDataReader & m)$/;"	f
+operator <<	src/config/reader/SpatialDataReader.cpp	/^ostream& operator<<(ostream& os, const SpatialDataReader::Pt & m)$/;"	f
 operator <<	src/harpy/Timestep.cpp	/^ostream& operator<<(ostream& os, const Timestep & ts)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const BC & m)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const BC::DirichletItem & m)$/;"	f
@@ -12701,8 +12784,6 @@ operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, cons
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const vector<libMesh::Point> & m) {$/;"	f
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m)$/;"	f
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const vector<uint> & m) {$/;"	f
-operator <<	src/util/SpatialDataReader.cpp	/^ostream& operator<<(ostream& os, const SpatialDataReader & m)$/;"	f
-operator <<	src/util/SpatialDataReader.cpp	/^ostream& operator<<(ostream& os, const SpatialDataReader::Pt & m)$/;"	f
 operator <=	/opt/libmesh/include/fe/fe_type.h	/^inline bool operator<=(Order lhs, const OrderWrapper & rhs){ return !(lhs > rhs); }$/;"	f	namespace:libMesh
 operator <=	/opt/libmesh/include/fe/fe_type.h	/^inline bool operator<=(const OrderWrapper & lhs, Order rhs){ return !(lhs > rhs); }$/;"	f	namespace:libMesh
 operator <=	/opt/libmesh/include/fe/fe_type.h	/^inline bool operator<=(const OrderWrapper & lhs, const OrderWrapper & rhs){ return !(lhs > rhs); }$/;"	f	namespace:libMesh
@@ -14679,6 +14760,9 @@ parse_command_line	/opt/libmesh/include/base/getpot.h	/^GetPot::parse_command_li
 parse_input_file	/opt/libmesh/include/base/getpot.h	/^GetPot::parse_input_file(const std::string& FileName,$/;"	f	class:GETPOT_NAMESPACE::GetPot
 parse_input_stream	/opt/libmesh/include/base/getpot.h	/^GetPot::parse_input_stream(std::istream& FileStream,$/;"	f	class:GETPOT_NAMESPACE::GetPot
 parse_label	/opt/libmesh/src/mesh/abaqus_io.C	/^std::string AbaqusIO::parse_label(std::string line, std::string label_name) const$/;"	f	class:libMesh::AbaqusIO
+parse_material_file	src/config/MaterialConfig.cpp	/^void MaterialConfig::parse_material_file()$/;"	f	class:MaterialConfig
+parse_model_file	src/config/reader/ModelReader.cpp	/^void ModelReader::parse_model_file()$/;"	f	class:ModelReader
+parse_sys_file	src/config/reader/SolverReader.cpp	/^void SolverReader::parse_sys_file()$/;"	f	class:SolverReader
 parsers	/opt/libmesh/include/numerics/parsed_fem_function.h	/^  std::vector<char*> parsers;$/;"	m	class:libMesh::ParsedFEMFunction
 parsers	/opt/libmesh/include/numerics/parsed_fem_function.h	/^  std::vector<std::unique_ptr<FunctionParserBase<Output>>> parsers;$/;"	m	class:libMesh::ParsedFEMFunction
 parsers	/opt/libmesh/include/numerics/parsed_function.h	/^  std::vector<std::unique_ptr<FunctionParserADBase<Output>>> parsers;$/;"	m	class:libMesh::ParsedFunction
@@ -14710,14 +14794,15 @@ pc	/opt/libmesh/include/solvers/petsc_linear_solver.h	/^  PC pc() { this->init()
 pc	/opt/libmesh/src/numerics/petsc_preconditioner.C	/^PC PetscPreconditioner<T>::pc()$/;"	f	class:libMesh::PetscPreconditioner
 pcg_ic0	/opt/libmesh/src/mesh/mesh_smoother_vsmoother.C	/^int VariationalMeshSmoother::pcg_ic0(int n,$/;"	f	class:libMesh::VariationalMeshSmoother
 pcg_par_check	/opt/libmesh/src/mesh/mesh_smoother_vsmoother.C	/^int VariationalMeshSmoother::pcg_par_check(int n,$/;"	f	class:libMesh::VariationalMeshSmoother
-pctype	include/config/Config.h	/^    string ksptype, pctype;$/;"	m	class:SolverConfig
+pctype	include/config/Config.h	/^    string ksptype, pctype;$/;"	m	class:_SolverConfig
 pen_K	include/solver/BC.h	/^        int bid; uint vid;  double pen_K, pen_val;  string pen_name;$/;"	m	class:BC::PenaltyItem
 pen_name	include/solver/BC.h	/^        int bid; uint vid;  double pen_K, pen_val;  string pen_name;$/;"	m	class:BC::PenaltyItem
 pen_val	include/solver/BC.h	/^        int bid; uint vid;  double pen_K, pen_val;  string pen_name;$/;"	m	class:BC::PenaltyItem
 penalty	include/config/BCConfig.h	/^    map<string, PenaltyBC> penalty;  \/\/ penalty_name => entry$/;"	m	class:BCConfig
 penalty	include/solver/BC.h	/^    map< ElemSide, vector<PenaltyItem *> > penalty;$/;"	m	class:BC
-penalty_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemStr>> penalty_bcs;$/;"	m	class:BCConfig::TimeEntry
+penalty_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemStr>> penalty_bcs;$/;"	m	struct:BCConfig::TimeEntry
 penalty_ptrs	include/solver/BC.h	/^    map< string, PenaltyItem * > penalty_ptrs; \/\/ List of created pointsr to manage cleanup$/;"	m	class:BC
+penalty_state	src/config/reader/ModelReader.cpp	/^void ModelReader::penalty_state()$/;"	f	class:ModelReader
 perform_A_boundary_assembly	/opt/libmesh/src/reduced_basis/rb_assembly_expansion.C	/^void RBAssemblyExpansion::perform_A_boundary_assembly(unsigned int q,$/;"	f	class:libMesh::RBAssemblyExpansion
 perform_A_interior_assembly	/opt/libmesh/src/reduced_basis/rb_assembly_expansion.C	/^void RBAssemblyExpansion::perform_A_interior_assembly(unsigned int q,$/;"	f	class:libMesh::RBAssemblyExpansion
 perform_F_boundary_assembly	/opt/libmesh/src/reduced_basis/rb_assembly_expansion.C	/^void RBAssemblyExpansion::perform_F_boundary_assembly(unsigned int q,$/;"	f	class:libMesh::RBAssemblyExpansion
@@ -14729,6 +14814,8 @@ perform_fuzzy_linear_search	/opt/libmesh/src/utils/point_locator_tree.C	/^std::s
 perform_linear_search	/opt/libmesh/src/utils/point_locator_tree.C	/^const Elem * PointLocatorTree::perform_linear_search(const Point & p,$/;"	f	class:libMesh::PointLocatorTree
 perform_output_boundary_assembly	/opt/libmesh/src/reduced_basis/rb_assembly_expansion.C	/^void RBAssemblyExpansion::perform_output_boundary_assembly(unsigned int output_index,$/;"	f	class:libMesh::RBAssemblyExpansion
 perform_output_interior_assembly	/opt/libmesh/src/reduced_basis/rb_assembly_expansion.C	/^void RBAssemblyExpansion::perform_output_interior_assembly(unsigned int output_index,$/;"	f	class:libMesh::RBAssemblyExpansion
+permeability	include/config/MaterialConfig.h	/^  optional<double> porosity, permeability;$/;"	m	class:MaterialConfig
+permeability_file	include/config/MaterialConfig.h	/^  optional<string> porosity_file, permeability_file;$/;"	m	class:MaterialConfig
 permute	/opt/libmesh/src/geom/cell_hex20.C	/^Hex20::permute(unsigned int perm_num)$/;"	f	class:libMesh::Hex20
 permute	/opt/libmesh/src/geom/cell_hex27.C	/^Hex27::permute(unsigned int perm_num)$/;"	f	class:libMesh::Hex27
 permute	/opt/libmesh/src/geom/cell_hex8.C	/^Hex8::permute(unsigned int perm_num)$/;"	f	class:libMesh::Hex8
@@ -14810,7 +14897,7 @@ point_value	/opt/libmesh/src/systems/system.C	/^Number System::point_value(unsig
 point_value	/opt/libmesh/src/systems/system.C	/^Number System::point_value(unsigned int var,$/;"	f	class:libMesh::System
 pointer	/opt/libmesh/include/parallel/threads_allocators.h	/^  typedef T * pointer;$/;"	t	class:libMesh::Threads::scalable_allocator
 pointer	/opt/libmesh/include/reduced_basis/rb_parameters.h	/^    typedef value_type* pointer;$/;"	t	class:libMesh::RBParameters::const_iterator
-points	include/util/SpatialDataReader.h	/^    vector<Pt> points;$/;"	m	class:SpatialDataReader
+points	include/config/reader/SpatialDataReader.h	/^    vector<Pt> points;$/;"	m	class:SpatialDataReader
 pointset_convexhull	/opt/libmesh/src/mesh/mesh_tetgen_interface.C	/^void TetGenMeshInterface::pointset_convexhull ()$/;"	f	class:libMesh::TetGenMeshInterface
 pointwise_divide	/opt/libmesh/src/numerics/distributed_vector.C	/^void DistributedVector<T>::pointwise_divide (const NumericVector<T> &,$/;"	f	class:libMesh::DistributedVector
 pointwise_divide	/opt/libmesh/src/numerics/eigen_sparse_vector.C	/^void EigenSparseVector<T>::pointwise_divide (const NumericVector<T> & \/*vec1*\/,$/;"	f	class:libMesh::EigenSparseVector
@@ -14826,6 +14913,8 @@ polynomial_level_file_name	/opt/libmesh/include/mesh/xdr_io.h	/^  std::string & 
 pop	/opt/libmesh/src/utils/perf_log.C	/^void PerfLog::pop (const char * label,$/;"	f	class:libMesh::PerfLog
 pop	/opt/libmesh/src/utils/perf_log.C	/^void PerfLog::pop (const std::string & label,$/;"	f	class:libMesh::PerfLog
 pop_physics	/opt/libmesh/src/systems/diff_system.C	/^void DifferentiableSystem::pop_physics ()$/;"	f	class:libMesh::DifferentiableSystem
+porosity	include/config/MaterialConfig.h	/^  optional<double> porosity, permeability;$/;"	m	class:MaterialConfig
+porosity_file	include/config/MaterialConfig.h	/^  optional<string> porosity_file, permeability_file;$/;"	m	class:MaterialConfig
 pos	/opt/libmesh/src/numerics/laspack_matrix.C	/^numeric_index_type LaspackMatrix<T>::pos (const numeric_index_type i,$/;"	f	class:libMesh::LaspackMatrix
 position_of_spectrum	/opt/libmesh/include/solvers/eigen_solver.h	/^  PositionOfSpectrum position_of_spectrum () const$/;"	f	class:libMesh::EigenSolver
 positive_edge_orientation	/opt/libmesh/src/geom/elem.C	/^Elem::positive_edge_orientation(const unsigned int i) const$/;"	f	class:libMesh::Elem
@@ -14871,7 +14960,6 @@ prepare_subdivision_mesh	/opt/libmesh/src/mesh/mesh_subdivision_support.C	/^void
 prepare_subdivision_properties	/opt/libmesh/src/geom/face_tri3_subdivision.C	/^void Tri3Subdivision::prepare_subdivision_properties()$/;"	f	class:libMesh::Tri3Subdivision
 prepare_to_write_nodal_data	/opt/libmesh/src/mesh/nemesis_io.C	/^void Nemesis_IO::prepare_to_write_nodal_data (const std::string & fname,$/;"	f	class:libMesh::Nemesis_IO
 prepare_to_write_nodal_data	/opt/libmesh/src/mesh/nemesis_io.C	/^void Nemesis_IO::prepare_to_write_nodal_data (const std::string &,$/;"	f	class:libMesh::Nemesis_IO
-pressure	include/config/BCConfig.h	/^        double temperature, pressure;$/;"	m	class:BCConfig::TimeEntry
 prev	/opt/libmesh/include/mesh/mesh_subdivision_support.h	/^static const unsigned int prev[3] = {2,0,1};$/;"	m	namespace:libMesh::MeshTools::Subdivision
 previous_dlambda_ds	/opt/libmesh/include/systems/continuation_system.h	/^  Real previous_dlambda_ds;$/;"	m	class:libMesh::ContinuationSystem
 previous_ds	/opt/libmesh/include/systems/continuation_system.h	/^  Real previous_ds;$/;"	m	class:libMesh::ContinuationSystem
@@ -15205,7 +15293,7 @@ read	/opt/libmesh/src/numerics/sparse_matrix.C	/^void SparseMatrix<T>::read(cons
 read	/opt/libmesh/src/systems/equation_systems_io.C	/^void EquationSystems::read (Xdr & io,$/;"	f	class:libMesh::EquationSystems
 read	/opt/libmesh/src/systems/equation_systems_io.C	/^void EquationSystems::read (std::string_view name,$/;"	f	class:libMesh::EquationSystems
 read	/opt/libmesh/src/utils/plt_loader_read.C	/^void PltLoader::read (const std::string & name)$/;"	f	class:libMesh::PltLoader
-readFromFile	src/util/SpatialDataReader.cpp	/^void SpatialDataReader::readFromFile() $/;"	f	class:SpatialDataReader
+readFromFile	src/config/reader/SpatialDataReader.cpp	/^void SpatialDataReader::readFromFile() $/;"	f	class:SpatialDataReader
 read_SCALAR_dofs	/opt/libmesh/src/systems/system_io.C	/^unsigned int System::read_SCALAR_dofs (const unsigned int var,$/;"	f	class:libMesh::System
 read_adp	/opt/libmesh/src/mesh/mesh_smoother_vsmoother.C	/^int VariationalMeshSmoother::read_adp(std::vector<Real> & afun)$/;"	f	class:libMesh::VariationalMeshSmoother
 read_all_nodesets	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::read_all_nodesets()$/;"	f	class:libMesh::ExodusII_IO_Helper
@@ -15264,7 +15352,6 @@ read_legacy_data	/opt/libmesh/src/systems/system_io.C	/^void System::read_legacy
 read_matlab	/opt/libmesh/src/numerics/sparse_matrix.C	/^void SparseMatrix<T>::read_matlab(const std::string & filename)$/;"	f	class:libMesh::SparseMatrix
 read_mesh	/opt/libmesh/src/mesh/dyna_io.C	/^void DynaIO::read_mesh(std::istream & in)$/;"	f	class:libMesh::DynaIO
 read_mesh	/opt/libmesh/src/mesh/gmsh_io.C	/^void GmshIO::read_mesh(std::istream & in)$/;"	f	class:libMesh::GmshIO
-read_model	src/config/ModelConfig.cpp	/^void ModelConfig::read_model()$/;"	f	class:ModelConfig
 read_nodal_var_values	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::read_nodal_var_values(std::string nodal_var_name, int time_step)$/;"	f	class:libMesh::ExodusII_IO_Helper
 read_node_num_map	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::read_node_num_map ()$/;"	f	class:libMesh::ExodusII_IO_Helper
 read_nodes	/opt/libmesh/src/mesh/abaqus_io.C	/^void AbaqusIO::read_nodes(std::string nset_name)$/;"	f	class:libMesh::AbaqusIO
@@ -15377,6 +15464,8 @@ refine_via_edges	/opt/libmesh/src/mesh/simplex_refiner.C	/^std::size_t SimplexRe
 refinement_datum	/opt/libmesh/include/mesh/simplex_refiner.h	/^    refinement_datum;$/;"	t	class:libMesh::SimplexRefiner
 refinement_flag	/opt/libmesh/include/geom/elem.h	/^Elem::RefinementState Elem::refinement_flag () const$/;"	f	class:libMesh::Elem
 reftime	include/solver/BC.h	/^    double reftime;    \/\/ Reference time of the current BC$/;"	m	class:BC
+reg_param_dbl	src/config/MaterialConfig.cpp	/^void MaterialConfig::reg_param_dbl( string vname, string type, double val )$/;"	f	class:MaterialConfig
+reg_param_str	src/config/MaterialConfig.cpp	/^void MaterialConfig::reg_param_str( string vname, string type, string val )$/;"	f	class:MaterialConfig
 regenerate_id_sets	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::regenerate_id_sets()$/;"	f	class:libMesh::BoundaryInfo
 regular_shape	/opt/libmesh/src/fe/fe_subdivision_2D.C	/^Real FESubdivision::regular_shape(const unsigned int i,$/;"	f	class:libMesh::FESubdivision
 regular_shape_deriv	/opt/libmesh/src/fe/fe_subdivision_2D.C	/^Real FESubdivision::regular_shape_deriv(const unsigned int i,$/;"	f	class:libMesh::FESubdivision
@@ -15447,7 +15536,7 @@ remove	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::remove (const 
 remove	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::remove (const Node * node)$/;"	f	class:libMesh::BoundaryInfo
 remove_adjoint_dirichlet_boundary	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::remove_adjoint_dirichlet_boundary (const DirichletBoundary & boundary_to_remove,$/;"	f	class:libMesh::DofMap
 remove_algebraic_ghosting_functor	/opt/libmesh/src/base/dof_map.C	/^DofMap::remove_algebraic_ghosting_functor(GhostingFunctor & evaluable_functor)$/;"	f	class:libMesh::DofMap
-remove_comments_and_trim	include/util/String.h	/^inline string remove_comments_and_trim (string & str) $/;"	f
+remove_comments_and_trim	include/util/String.h	/^  inline string remove_comments_and_trim (string & str) $/;"	f	namespace:harpy_string
 remove_coupling_functor	/opt/libmesh/src/base/dof_map.C	/^DofMap::remove_coupling_functor(GhostingFunctor & coupling_functor)$/;"	f	class:libMesh::DofMap
 remove_default_ghosting	/opt/libmesh/src/base/dof_map.C	/^void DofMap::remove_default_ghosting()$/;"	f	class:libMesh::DofMap
 remove_dirichlet_boundary	/opt/libmesh/src/base/dof_map_constraints.C	/^void DofMap::remove_dirichlet_boundary (const DirichletBoundary & boundary_to_remove)$/;"	f	class:libMesh::DofMap
@@ -15587,7 +15676,7 @@ row_stop	/opt/libmesh/src/numerics/petsc_matrix_base.C	/^numeric_index_type Pets
 row_stop	/opt/libmesh/src/numerics/static_condensation.C	/^StaticCondensation::row_stop() const$/;"	f	class:libMesh::StaticCondensation
 row_stop	/opt/libmesh/src/numerics/trilinos_epetra_matrix.C	/^numeric_index_type EpetraMatrix<T>::row_stop () const$/;"	f	class:libMesh::EpetraMatrix
 rtime	/opt/libmesh/include/utils/perfmon.h	/^  float rtime, ptime, mflops;$/;"	m	class:libMesh::PerfMon
-rtol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:SolverConfig
+rtol	include/config/Config.h	/^    double dtol, atol, rtol, maxits;$/;"	m	class:_SolverConfig
 run_body	/opt/libmesh/include/parallel/threads_pthread.h	/^void * run_body(void * args)$/;"	f	namespace:libMesh::Threads
 run_tetgen	/opt/libmesh/src/mesh/mesh_tetgen_wrapper.C	/^void TetGenWrapper::run_tetgen()$/;"	f	class:libMesh::TetGenWrapper
 s	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  const  char * s;$/;"	m	struct:token	file:
@@ -15602,11 +15691,12 @@ scalable_allocator	/opt/libmesh/include/parallel/threads_allocators.h	/^  scalab
 scalable_allocator	/opt/libmesh/include/parallel/threads_allocators.h	/^  scalable_allocator(const scalable_allocator<U> & a) :$/;"	f	class:libMesh::Threads::scalable_allocator
 scalable_allocator	/opt/libmesh/include/parallel/threads_allocators.h	/^class scalable_allocator : public tbb::scalable_allocator<T>$/;"	c	namespace:libMesh::Threads
 scalar	include/solver/BC.h	/^    vector< ScalarItem > scalar;$/;"	m	class:BC
-scalar_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemStr>> scalar_bcs;$/;"	m	class:BCConfig::TimeEntry
+scalar_bcs	include/config/BCConfig.h	/^        map<string, vector<ItemStr>> scalar_bcs;$/;"	m	struct:BCConfig::TimeEntry
 scalar_idx	/opt/libmesh/include/mesh/medit_io.h	/^  unsigned int scalar_idx;$/;"	m	class:libMesh::MEDITIO
 scalar_name	/opt/libmesh/include/mesh/ensight_io.h	/^    std::string scalar_name;$/;"	m	struct:libMesh::EnsightIO::Scalars
 scalar_name	include/solver/BC.h	/^        int bid; uint vid;  uint svid; string scalar_name, vname, bname;$/;"	m	class:BC::ScalarItem
 scalar_nodal_soln	/opt/libmesh/src/fe/fe_scalar.C	/^void scalar_nodal_soln(const Elem * elem,$/;"	f	namespace:libMesh::__anon45
+scalar_state	src/config/reader/ModelReader.cpp	/^void ModelReader::scalar_state()$/;"	f	class:ModelReader
 scalars	include/config/BCConfig.h	/^    set<string> scalars;             \/\/ list of scalars$/;"	m	class:BCConfig
 scale	/opt/libmesh/include/numerics/dense_matrix.h	/^void DenseMatrix<T>::scale (const T factor)$/;"	f	class:libMesh::DenseMatrix
 scale	/opt/libmesh/include/numerics/dense_vector.h	/^void DenseVector<T>::scale (const T factor)$/;"	f	class:libMesh::DenseVector
@@ -17098,6 +17188,8 @@ size_type	/opt/libmesh/include/parallel/threads_allocators.h	/^  typedef size_t 
 sizeof	/opt/libmesh/include/numerics/petsc_vector.h	/^static_assert(sizeof(PetscInt) == sizeof(numeric_index_type),$/;"	m	namespace:libMesh
 sizeof	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  static_assert(sizeof(Parmetis::idx_t) == sizeof(dof_id_type),$/;"	m	class:libMesh::ParmetisHelper
 sizeof_bin	/opt/libmesh/include/parallel/parallel_bin_sorter.h	/^IdxType BinSorter<KeyType,IdxType>::sizeof_bin (const IdxType bin) const$/;"	f	class:libMesh::Parallel::BinSorter
+skempton	include/config/MaterialConfig.h	/^  optional<double> biot, bulk, skempton;$/;"	m	class:MaterialConfig
+skempton_file	include/config/MaterialConfig.h	/^  optional<string> biot_file, bulk_file, skempton_file;$/;"	m	class:MaterialConfig
 skip_comment_lines	/opt/libmesh/include/mesh/mesh_input.h	/^void MeshInput<MT>::skip_comment_lines (std::istream & in,$/;"	f	class:libMesh::MeshInput
 skip_degenerate_sides	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  bool skip_degenerate_sides;$/;"	m	class:libMesh::RBConstruction
 skip_noncritical_partitioning	/opt/libmesh/include/mesh/mesh_base.h	/^  bool skip_noncritical_partitioning() const$/;"	f	class:libMesh::MeshBase
@@ -17164,6 +17256,7 @@ solve	/opt/libmesh/src/systems/frequency_system.C	/^void FrequencySystem::solve 
 solve	/opt/libmesh/src/systems/linear_implicit_system.C	/^void LinearImplicitSystem::solve ()$/;"	f	class:libMesh::LinearImplicitSystem
 solve	/opt/libmesh/src/systems/nonlinear_implicit_system.C	/^void NonlinearImplicitSystem::solve ()$/;"	f	class:libMesh::NonlinearImplicitSystem
 solve	/opt/libmesh/src/systems/optimization_system.C	/^void OptimizationSystem::solve ()$/;"	f	class:libMesh::OptimizationSystem
+solve	src/solver/SolverTHM.cpp	/^void SolverTHM::solve()$/;"	f	class:SolverTHM
 solve	src/solverloop/SolverloopTHM.cpp	/^void SolverloopTHM::solve() $/;"	f	class:SolverloopTHM
 solve_base	/opt/libmesh/src/solvers/petsc_linear_solver.C	/^PetscLinearSolver<T>::solve_base (SparseMatrix<T> * matrix,$/;"	f	class:libMesh::PetscLinearSolver
 solve_common	/opt/libmesh/src/solvers/petsc_linear_solver.C	/^PetscLinearSolver<T>::solve_common (SparseMatrix<T> &  matrix_in,$/;"	f	class:libMesh::PetscLinearSolver
@@ -17196,6 +17289,7 @@ sort_x	/opt/libmesh/src/partitioning/centroid_partitioner.C	/^bool CentroidParti
 sort_y	/opt/libmesh/src/partitioning/centroid_partitioner.C	/^bool CentroidPartitioner::sort_y (const std::pair<Point, Elem *> & lhs,$/;"	f	class:libMesh::CentroidPartitioner
 sort_z	/opt/libmesh/src/partitioning/centroid_partitioner.C	/^bool CentroidPartitioner::sort_z (const std::pair<Point, Elem *> & lhs,$/;"	f	class:libMesh::CentroidPartitioner
 sorted_connected_dofs	/opt/libmesh/src/base/sparsity_pattern.C	/^void Build::sorted_connected_dofs(const Elem * elem,$/;"	f	class:libMesh::SparsityPattern::Build
+sp	include/config/reader/ReaderRegex.h	/^  inline const string sp = R"(\\s+)";$/;"	m	namespace:MRDEF
 sparsity_pattern	/opt/libmesh/include/base/sparsity_pattern.h	/^  SparsityPattern::Graph sparsity_pattern;$/;"	m	class:libMesh::SparsityPattern::Build
 spatial_dimension	/opt/libmesh/src/mesh/mesh_base.C	/^unsigned int MeshBase::spatial_dimension () const$/;"	f	class:libMesh::MeshBase
 special_chars_	include/util/CsvFile.h	/^    const std::string special_chars_;$/;"	m	class:CsvFile
@@ -17272,7 +17366,7 @@ stored_vec	/opt/libmesh/include/solvers/memory_history_data.h	/^        stored_v
 stored_vecs	/opt/libmesh/include/solvers/memory_history_data.h	/^        map_type stored_vecs;$/;"	m	class:libMesh::MemoryHistoryData
 stored_vecs_iterator	/opt/libmesh/include/solvers/memory_history_data.h	/^        typedef map_type::iterator stored_vecs_iterator;$/;"	t	class:libMesh::MemoryHistoryData
 stot	include/solver/BC.h	/^    map< ElemSide, STotItem * > stot;$/;"	m	class:BC
-stot_bcs	include/config/BCConfig.h	/^        map<string, ItemTensor> stot_bcs;$/;"	m	class:BCConfig::TimeEntry
+stot_bcs	include/config/BCConfig.h	/^        map<string, ItemTensor> stot_bcs;$/;"	m	struct:BCConfig::TimeEntry
 stotitem_ptrs	include/solver/BC.h	/^    set< STotItem * > stotitem_ptrs; \/\/ List of created pointsr to manage cleanup$/;"	m	class:BC
 str	include/config/Config.h	/^    bool str(string n, string p, string & ret, string def="") {$/;"	f	class:Config
 str	include/config/Config.h	/^    string str(string n, string p) {$/;"	f	class:Config
@@ -17299,6 +17393,7 @@ subdivide_second_order	/opt/libmesh/include/mesh/gmv_io.h	/^  bool & subdivide_s
 subdivide_second_order	/opt/libmesh/include/mesh/stl_io.h	/^  bool subdivide_second_order() { return _subdivide_second_order; }$/;"	f	class:libMesh::STLIO
 subdomain	/opt/libmesh/include/base/single_predicates.h	/^  subdomain(subdomain_id_type sid) : _subdomain(sid) {}$/;"	f	struct:libMesh::Predicates::subdomain
 subdomain	/opt/libmesh/include/base/single_predicates.h	/^struct subdomain : predicate<T>$/;"	s	namespace:libMesh::Predicates
+subdomain	include/config/BCConfig.h	/^        string subdomain, vname; double value;$/;"	m	struct:BCConfig::DomainBC
 subdomain_bounding_sphere	/opt/libmesh/src/mesh/mesh_tools.C	/^subdomain_bounding_sphere (const MeshBase & mesh,$/;"	f	namespace:libMesh::MeshTools
 subdomain_id	/opt/libmesh/include/geom/elem.h	/^subdomain_id_type & Elem::subdomain_id ()$/;"	f	class:libMesh::Elem
 subdomain_id	/opt/libmesh/include/geom/elem.h	/^subdomain_id_type Elem::subdomain_id () const$/;"	f	class:libMesh::Elem
@@ -17307,7 +17402,6 @@ subdomain_ids	/opt/libmesh/src/mesh/mesh_base.C	/^void MeshBase::subdomain_ids (
 subdomain_map	/opt/libmesh/include/mesh/nemesis_io_helper.h	/^  std::map<subdomain_id_type, std::vector<dof_id_type>> subdomain_map;$/;"	m	class:libMesh::Nemesis_IO_Helper
 subdomain_map_file_name	/opt/libmesh/include/mesh/xdr_io.h	/^  const std::string & subdomain_map_file_name() const { return _subdomain_map_file; }$/;"	f	class:libMesh::XdrIO
 subdomain_map_file_name	/opt/libmesh/include/mesh/xdr_io.h	/^  std::string &       subdomain_map_file_name()       { return _subdomain_map_file; }$/;"	f	class:libMesh::XdrIO
-subdomain_material	include/config/ModelConfig.h	/^  map< string, string > subdomain_material;$/;"	m	class:ModelConfig
 subdomain_name	/opt/libmesh/src/mesh/mesh_base.C	/^const std::string & MeshBase::subdomain_name(subdomain_id_type id) const$/;"	f	class:libMesh::MeshBase
 subdomain_name	/opt/libmesh/src/mesh/mesh_base.C	/^std::string & MeshBase::subdomain_name(subdomain_id_type id)$/;"	f	class:libMesh::MeshBase
 subdomain_set	/opt/libmesh/include/base/single_predicates.h	/^  subdomain_set(std::set<subdomain_id_type> sset) : _subdomain_set(sset) {}$/;"	f	struct:libMesh::Predicates::subdomain_set
@@ -17389,8 +17483,10 @@ sys	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  System & sys;$/;"
 sys	/opt/libmesh/include/systems/generic_projector.h	/^  const System & sys;$/;"	m	class:libMesh::OldSolutionBase
 sys	/opt/libmesh/src/solvers/petsc_nonlinear_solver.C	/^  NonlinearImplicitSystem & sys;$/;"	m	class:libMesh::ResidualContext	file:
 sys	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  NonlinearImplicitSystem * sys;$/;"	m	struct:DM_libMesh	file:
+sys_cfg	include/config/SolverConfig.h	/^  string model_dir, sys_file, sys_name, sys_cfg;$/;"	m	class:SolverConfig
+sys_file	include/config/SolverConfig.h	/^  string model_dir, sys_file, sys_name, sys_cfg;$/;"	m	class:SolverConfig
 sys_name	include/config/BCConfig.h	/^    string sys_name;$/;"	m	class:BCConfig
-sys_name	include/config/ModelConfig.h	/^  string sys_name;$/;"	m	class:ModelConfig
+sys_name	include/config/SolverConfig.h	/^  string model_dir, sys_file, sys_name, sys_cfg;$/;"	m	class:SolverConfig
 sys_number	/opt/libmesh/include/base/dof_map.h	/^unsigned int DofMap::sys_number() const$/;"	f	class:libMesh::DofMap
 sys_type	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  typedef RBConstruction sys_type;$/;"	t	class:libMesh::RBConstruction
 sys_type	/opt/libmesh/include/reduced_basis/rb_construction_base.h	/^  typedef RBConstructionBase<Base> sys_type;$/;"	t	class:libMesh::RBConstructionBase
@@ -17446,12 +17542,16 @@ system	/opt/libmesh/include/systems/transient_system.h	/^  sys_type & system () 
 system	/opt/libmesh/src/systems/system_projection.C	/^  const System                     & system;$/;"	m	class:libMesh::BoundaryProjectSolution	file:
 system	/opt/libmesh/src/systems/system_projection.C	/^  const System & system;$/;"	m	class:libMesh::BuildProjectionList	file:
 system	include/solver/BC.h	/^    const System & system;$/;"	m	class:BC
+system_cfgid	include/config/ModelConfig.h	/^  map< string, string > system_cfgid;        \/\/\/ sys_name -> config name$/;"	m	class:ModelConfig
 system_info	/opt/libmesh/src/utils/utility.C	/^std::string Utility::system_info()$/;"	f	class:libMesh::Utility
+system_state	src/config/reader/ModelReader.cpp	/^void ModelReader::system_state()$/;"	f	class:ModelReader
 system_time	/opt/libmesh/include/systems/diff_context.h	/^  const Real system_time;$/;"	m	class:libMesh::DiffContext
 system_type	/opt/libmesh/include/systems/system.h	/^  virtual std::string system_type () const { return "Basic"; }$/;"	f	class:libMesh::System
 system_type	/opt/libmesh/include/systems/transient_system.h	/^std::string TransientSystem<Base>::system_type () const$/;"	f	class:libMesh::TransientSystem
 system_type	/opt/libmesh/src/reduced_basis/rb_construction.C	/^std::string RBConstruction::system_type () const$/;"	f	class:libMesh::RBConstruction
 system_var_to_vg_var	/opt/libmesh/include/base/dof_object.h	/^unsigned int DofObject::system_var_to_vg_var (const unsigned int s,$/;"	f	class:libMesh::DofObject
+systemloop	include/config/ModelConfig.h	/^  string systemloop;$/;"	m	class:ModelConfig
+systems	include/config/ModelConfig.h	/^  map< string, SolverConfig > systems;       \/\/\/ System configurations$/;"	m	class:ModelConfig
 szabab_n_dofs	/opt/libmesh/src/fe/fe_szabab.C	/^unsigned int szabab_n_dofs(const ElemType t, const Order o)$/;"	f	namespace:libMesh::__anon47
 szabab_n_dofs_at_node	/opt/libmesh/src/fe/fe_szabab.C	/^unsigned int szabab_n_dofs_at_node(const ElemType t,$/;"	f	namespace:libMesh::__anon47
 szabab_n_dofs_per_elem	/opt/libmesh/src/fe/fe_szabab.C	/^unsigned int szabab_n_dofs_per_elem(const ElemType t, const Order o)$/;"	f	namespace:libMesh::__anon47
@@ -17481,7 +17581,6 @@ task_scheduler_init	/opt/libmesh/include/parallel/threads_tbb.h	/^typedef tbb::t
 teebuf	include/util/TeeBuff.h	/^class teebuf : public std::streambuf$/;"	c
 teebuf	src/util/TeeBuff.cpp	/^teebuf::teebuf(std::streambuf * sb1, std::streambuf * sb2)$/;"	f	class:teebuf
 tellp	/opt/libmesh/include/utils/ostream_proxy.h	/^  std::streampos tellp() { return _target->tellp(); }$/;"	f	class:libMesh::BasicOStreamProxy
-temperature	include/config/BCConfig.h	/^        double temperature, pressure;$/;"	m	class:BCConfig::TimeEntry
 temporal_data	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::vector<std::unique_ptr<NumericVector<Number>>> temporal_data;$/;"	m	class:libMesh::TransientRBConstruction
 tensor_product_hex	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::tensor_product_hex(const QBase & q1D)$/;"	f	class:libMesh::QBase
 tensor_product_prism	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::tensor_product_prism(const QBase & q1D, const QBase & q2D)$/;"	f	class:libMesh::QBase
@@ -17517,7 +17616,10 @@ time	include/solver/BC.h	/^    double time;        \/\/ Time of the current BC$/
 time_evolving	/opt/libmesh/src/physics/diff_physics.C	/^void DifferentiablePhysics::time_evolving (unsigned int var,$/;"	f	class:libMesh::DifferentiablePhysics
 time_solver	/opt/libmesh/include/systems/diff_system.h	/^  std::unique_ptr<TimeSolver> time_solver;$/;"	m	class:libMesh::DifferentiableSystem
 time_stamp	/opt/libmesh/include/solvers/history_data.h	/^        unsigned int time_stamp;$/;"	m	class:libMesh::HistoryData
+time_state	src/config/reader/ModelReader.cpp	/^void ModelReader::time_state()$/;"	f	class:ModelReader
 time_steps	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> time_steps;$/;"	m	class:libMesh::ExodusII_IO_Helper
+timestep	include/config/ModelConfig.h	/^  map< string, double > timestep;$/;"	m	class:ModelConfig
+timestep_state	src/config/reader/ModelReader.cpp	/^void ModelReader::timestep_state()$/;"	f	class:ModelReader
 timeval	/opt/libmesh/include/utils/win_gettimeofday.h	/^typedef struct timeval {$/;"	s
 timeval	/opt/libmesh/include/utils/win_gettimeofday.h	/^} timeval;$/;"	t	typeref:struct:timeval
 timpi_mpi_var	/opt/libmesh/include/parallel/parallel_algebra.h	/^  StandardType(const StandardType<libMesh::Point> & timpi_mpi_var(t))$/;"	f	class:TIMPI::StandardType
@@ -17538,6 +17640,8 @@ to_key_type	/opt/libmesh/include/parallel/parallel_conversion_utils.h	/^  to_key
 to_p2t	/opt/libmesh/src/mesh/poly2tri_triangulator.C	/^p2t::Point to_p2t(const libMesh::Point & p)$/;"	f	namespace:__anon79
 to_system	/opt/libmesh/include/systems/inter_mesh_projection.h	/^  System & to_system;$/;"	m	class:libMesh::InterMeshProjection
 to_uint	/opt/libmesh/src/mesh/nemesis_io.C	/^inline unsigned int to_uint ( const T & t )$/;"	f	namespace:libMesh::__anon78
+tok	include/config/reader/ReaderRegex.h	/^  inline const string tok     = R"(([-a-zA-Z_0-9]+))";$/;"	m	namespace:MRDEF
+tok_op	include/config/reader/ReaderRegex.h	/^  inline const string tok_op  = R"((?:)" + sp + tok + R"()?)";  \/\/ optional token (with leading space)$/;"	m	namespace:MRDEF
 token	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^struct token {$/;"	s	file:
 tol	/opt/libmesh/include/solvers/eigen_time_solver.h	/^  double tol;$/;"	m	class:libMesh::EigenTimeSolver
 top_parent	/opt/libmesh/include/geom/elem.h	/^const Elem * Elem::top_parent () const$/;"	f	class:libMesh::Elem
@@ -17842,11 +17946,11 @@ user_initialization	/opt/libmesh/src/systems/system.C	/^void System::user_initia
 user_presolve	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  void (* user_presolve)(sys_type & S);$/;"	m	class:libMesh::NonlinearSolver
 uset_type	/opt/libmesh/src/mesh/mesh_communication.C	/^  typedef std::unordered_set<const Node *> uset_type;$/;"	t	struct:libMesh::__anon69::SyncNodeIds	file:
 val	/opt/libmesh/include/parallel/threads_pthread.h	/^  T val;$/;"	m	class:libMesh::Threads::atomic
+val	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
 val	include/solver/BC.h	/^        RealTensor val;$/;"	m	class:BC::STotItem
 val	include/solver/BC.h	/^        int bid; uint vid; double val; string vname, bname;$/;"	m	class:BC::DirichletItem
 val	include/util/CsvFile.h	/^    CsvFile& operator << ( CsvFile& (* val)(CsvFile&))$/;"	f	class:CsvFile
 val	include/util/CsvFile.h	/^    CsvFile1& operator << ( CsvFile1& (* val)(CsvFile1&))$/;"	f	class:CsvFile1
-val	include/util/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
 valence	/opt/libmesh/include/geom/node.h	/^  unsigned int valence() const$/;"	f	class:libMesh::Node
 valence_idx_t	/opt/libmesh/include/geom/node.h	/^  typedef unsigned char valence_idx_t;$/;"	t	class:libMesh::Node
 valid	/opt/libmesh/src/geom/elem_quality.C	/^std::vector<ElemQuality> Quality::valid(const ElemType t)$/;"	f	class:libMesh::Quality
@@ -17887,10 +17991,11 @@ value	/opt/libmesh/include/utils/utility.h	/^  enum { value = !std::is_same<decl
 value	/opt/libmesh/src/mesh/xdr_io.C	/^  static const bool value = false;$/;"	m	struct:libMesh::__anon83::libmesh_type_is_same	file:
 value	/opt/libmesh/src/mesh/xdr_io.C	/^  static const bool value = true;$/;"	m	struct:libMesh::__anon83::libmesh_type_is_same	file:
 value	/opt/libmesh/src/systems/system_projection.C	/^  static const bool value = true;$/;"	m	struct:libMesh::ScalarTraits	file:
-value	include/config/BCConfig.h	/^        T value;$/;"	m	class:BCConfig::Item
-value	include/config/BCConfig.h	/^        vector< vector<double> > value;$/;"	m	class:BCConfig::ItemTensor
-value	include/config/BCConfig.h	/^    class PenaltyBC { public: double K; double value; };$/;"	m	class:BCConfig::PenaltyBC
-value_at	src/util/SpatialDataReader.cpp	/^double SpatialDataReader::value_at( double x, double y, double z, uint n_nb )$/;"	f	class:SpatialDataReader
+value	include/config/BCConfig.h	/^        string bname, vname; T value;$/;"	m	struct:BCConfig::Item
+value	include/config/BCConfig.h	/^        string subdomain, vname; double value;$/;"	m	struct:BCConfig::DomainBC
+value	include/config/BCConfig.h	/^        vector< vector<double> > value;$/;"	m	struct:BCConfig::ItemTensor
+value	include/config/BCConfig.h	/^      double K; double value; $/;"	m	struct:BCConfig::PenaltyBC
+value_at	src/config/reader/SpatialDataReader.cpp	/^double SpatialDataReader::value_at( double x, double y, double z, uint n_nb )$/;"	f	class:SpatialDataReader
 value_base	/opt/libmesh/include/systems/fem_context.h	/^    typedef FEGenericBase<value_shape> value_base;$/;"	t	struct:libMesh::FEMContext::FENeeded
 value_copy	/opt/libmesh/src/systems/parameter_vector.C	/^void ParameterVector::value_copy(ParameterVector & target) const$/;"	f	class:libMesh::ParameterVector
 value_shape	/opt/libmesh/include/systems/fem_context.h	/^    typedef typename TensorTools::MakeReal<OutputType>::type value_shape;$/;"	t	struct:libMesh::FEMContext::FENeeded
@@ -18044,8 +18149,9 @@ vid	include/solver/BC.h	/^        int bid; uint vid;  uint svid; string scalar_n
 vid	include/solver/BC.h	/^        int bid; uint vid; double val; string vname, bname;$/;"	m	class:BC::DirichletItem
 virtual_for_inffe	/opt/libmesh/include/fe/fe_abstract.h	39;"	d
 virtual_for_inffe	/opt/libmesh/include/fe/fe_abstract.h	41;"	d
-vname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	class:BCConfig::Item
-vname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	class:BCConfig::ItemTensor
+vname	include/config/BCConfig.h	/^        string bname, vname; T value;$/;"	m	struct:BCConfig::Item
+vname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	struct:BCConfig::ItemTensor
+vname	include/config/BCConfig.h	/^        string subdomain, vname; double value;$/;"	m	struct:BCConfig::DomainBC
 vname	include/solver/BC.h	/^        int bid; uint vid;  uint svid; string scalar_name, vname, bname;$/;"	m	class:BC::ScalarItem
 vname	include/solver/BC.h	/^        int bid; uint vid; double val; string vname, bname;$/;"	m	class:BC::DirichletItem
 void_fe_switch	/opt/libmesh/src/fe/fe_interface.C	471;"	d	file:
@@ -18286,7 +18392,7 @@ writegr	/opt/libmesh/src/mesh/mesh_smoother_vsmoother.C	/^int VariationalMeshSmo
 writing	/opt/libmesh/include/utils/xdr_cxx.h	/^  bool writing() const { return ((mode == ENCODE) || (mode == WRITE)); }$/;"	f	class:libMesh::Xdr
 writing_map	/opt/libmesh/include/mesh/vtk_io.h	/^    std::map<ElemType, vtkIdType> writing_map;$/;"	m	struct:libMesh::VTKIO::ElementMaps
 x	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> x;$/;"	m	class:libMesh::ExodusII_IO_Helper
-x	include/util/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
+x	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
 xadj	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  std::vector<Parmetis::idx_t>  xadj;$/;"	m	class:libMesh::ParmetisHelper
 xdr_MAX_STRING_LENGTH	/opt/libmesh/include/utils/xdr_cxx.h	/^const unsigned int xdr_MAX_STRING_LENGTH=256;$/;"	v
 xdr_REAL	/opt/libmesh/include/utils/xdr_cxx.h	48;"	d
@@ -18326,12 +18432,12 @@ xzip_file	/opt/libmesh/src/utils/xdr_cxx.C	/^void xzip_file (std::string_view un
 xzipped_file	/opt/libmesh/include/utils/xdr_cxx.h	/^  bool gzipped_file, bzipped_file, xzipped_file;$/;"	m	class:libMesh::Xdr
 y	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> y;$/;"	m	class:libMesh::ExodusII_IO_Helper
 y	/opt/libmesh/include/systems/continuation_system.h	/^  NumericVector<Number> * y;$/;"	m	class:libMesh::ContinuationSystem
-y	include/util/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
+y	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
 y_old	/opt/libmesh/include/systems/continuation_system.h	/^  NumericVector<Number> * y_old;$/;"	m	class:libMesh::ContinuationSystem
 yz_plane	/opt/libmesh/src/geom/plane.C	/^void Plane::yz_plane (const Real xpos)$/;"	f	class:libMesh::Plane
 z	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> z;$/;"	m	class:libMesh::ExodusII_IO_Helper
 z	/opt/libmesh/include/systems/continuation_system.h	/^  NumericVector<Number> * z;$/;"	m	class:libMesh::ContinuationSystem
-z	include/util/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
+z	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
 zero	/opt/libmesh/include/base/libmesh.h	/^const Number zero = 0.;$/;"	m	namespace:libMesh
 zero	/opt/libmesh/include/numerics/dense_matrix.h	/^void DenseMatrix<T>::zero()$/;"	f	class:libMesh::DenseMatrix
 zero	/opt/libmesh/include/numerics/dense_submatrix.h	/^void DenseSubMatrix<T>::zero()$/;"	f	class:libMesh::DenseSubMatrix

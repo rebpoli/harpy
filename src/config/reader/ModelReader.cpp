@@ -21,16 +21,16 @@ ModelReader::ModelReader( ModelConfig & config_ ) : config(config_), current_tim
   check_files();
   parse_model_file();
 
-  // Reads all the systems
+  // Reads all the solvers
   for ( auto & [ sysname, syscfg ] : config.system_cfgid )
-    config.systems.emplace( 
+    config.solvers.emplace( 
                     sysname, 
                     SolverConfig(config.model_dir, sysname, syscfg) 
               );
   
   // Reads all the materials
   set<SolverConfig::MatConfig> mats;
-  for ( auto & [ sysname, syscfg ] : config.systems )
+  for ( auto & [ sysname, syscfg ] : config.solvers )
   for ( auto & [ matname, matcfg ] : syscfg.material_config )
     mats.insert( matcfg );
   for ( auto & mat : mats )

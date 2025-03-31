@@ -2,6 +2,9 @@
 
 #include "base/Global.h"
 #include "harpy/Solver.h"
+#include "harpy/Material.h"
+
+namespace libMesh { class Elem; }
 
 /**
  *
@@ -28,10 +31,15 @@ using namespace libMesh;
 class SolverTHM : public Solver
 {
   public:
-    SolverTHM( EquationSystems & es );
+    SolverTHM( string name );
+    ~SolverTHM();
+
+    void init_materials();
+    Material * get_material( const Elem & elem );
 
     void solve();
 
   private:
-    EquationSystems & es;
+    string name;
+    EquationSystems * es;
 };

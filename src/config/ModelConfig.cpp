@@ -18,6 +18,19 @@ ModelConfig::ModelConfig( string model_dir_ ) :
           model_dir( model_dir_ ), model_file( model_dir + "/MODEL") 
 { ModelReader( *this ); }
 
+/**
+ *
+ */
+SolverConfig * ModelConfig::solver_config( string name )
+{
+  if ( ! solvers.count(name) ) 
+  {
+    string str; for ( auto & [ k, v ] : solvers ) { str += k + ", "; }
+    flog << "Cannot find solver named '" << name << "'. Known solvers: " << str;
+  }
+  SolverConfig & sc = solvers.at(name);
+  return &sc;
+}
 
 /**
  *
@@ -44,7 +57,7 @@ ostream& operator<<(ostream& os, const ModelConfig & m)
   for ( auto [ s, val ] : m.timestep )
     os << "           " << setw(15) << left << s << ": " << val << endl;
   os << "      " << "SYSTEM / Config:" << endl;
-  for ( auto [ s, c ] : m.systems )
+  for ( auto [ s, c ] : m.solvers )
     os << "           " << setw(15) << left << s << ": " << c << endl;
 
   os << "      " << "MATERIAL / Config:" << endl;

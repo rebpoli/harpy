@@ -25,7 +25,7 @@ private:
   SolverConfig & config;
 
   // Parsing stuff
-  enum class State { INITIAL, CONFIG, NUMERICAL };
+  enum class State { INITIAL, CONFIG, MESH, NUMERICAL };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine

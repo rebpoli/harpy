@@ -3,9 +3,14 @@
 
 #include "config/Config.h"
 
-SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) :
-  es(mesh), ts(ts_), solver(es)
+#include "libmesh/equation_systems.h"
+#include "libmesh/mesh.h"
+
+
+SolverloopTHM::SolverloopTHM( const Timestep & ts_ ) :
+  Solverloop(ts_), poroelastic( "Poroelastic" )
 {
+  // Create solver and mesh 
 }
 
 /**
@@ -14,7 +19,7 @@ SolverloopTHM::SolverloopTHM( MeshBase & mesh, const Timestep & ts_ ) :
  */
 void SolverloopTHM::solve() 
 {
-  solver.solve();
+  poroelastic.solve();
 }
 
 /**

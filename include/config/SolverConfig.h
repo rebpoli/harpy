@@ -48,7 +48,7 @@ public:
 
   SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ );
 
-  string model_dir, sys_file, sys_name, sys_cfg;
+  string model_dir, sys_file, sys_name, sys_cfg, mesh_filename;
 
 private:
   friend ostream& operator<<(ostream& os, const SolverConfig & m);

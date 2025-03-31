@@ -16,5 +16,4 @@ class MeshInit
     void load_mesh();
   private:
     MeshBase & mesh;
-    MeshConfig config;
 };
