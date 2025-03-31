@@ -150,6 +150,9 @@ target_link_libraries( ut-timestep Modules )
 # add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
 # target_link_libraries( ut-bcconfig Modules )
 
+add_executable( ut-material-setup demos/UNIT-TEST/03-MATERIAL-SETUP/main.cpp  )
+target_link_libraries( ut-material-setup Modules )
+
 add_executable( ut-param-interp demos/UNIT-TEST/04-PARAM-INTERPOLATOR/main.cpp  )
 target_link_libraries( ut-param-interp Modules )
 

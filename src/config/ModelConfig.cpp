@@ -22,6 +22,17 @@ ModelConfig::ModelConfig( string model_dir_ ) :
 /**
  *
  */
+ostream& operator<<(ostream& os, const map<string,MaterialConfig> & m)
+{
+  os << "Map of MaterialConfig:" << endl;
+  for ( auto & [ k , m ] : m )
+    os << "     " << k << " => " << m;
+  return os;
+}
+
+/**
+ *
+ */
 ostream& operator<<(ostream& os, const ModelConfig & m)
 {
   os << endl;

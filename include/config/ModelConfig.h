@@ -35,6 +35,7 @@ private:
 };
 
 ostream& operator<<(ostream& os, const ModelConfig & m);
+ostream& operator<<(ostream& os, const map<string,MaterialConfig> & m);
 
 /** Global variable with the model configuration */
 extern ModelConfig * MODEL;
