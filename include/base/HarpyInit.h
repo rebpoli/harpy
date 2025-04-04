@@ -21,3 +21,6 @@ class HarpyInit {
     string find_home();
 };
 
+// A global communicator pointer
+namespace libMesh { namespace Parallel { class Communicator; } }
+extern libMesh::Parallel::Communicator * LIBMESH_COMMUNICATOR;

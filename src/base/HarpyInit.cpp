@@ -11,6 +11,8 @@ namespace fs = boost::filesystem;
 using namespace std;
 using namespace libMesh;
 
+// Init with null pointer. HarpyInit should initialize with the right stuff.
+libMesh::Parallel::Communicator * LIBMESH_COMMUNICATOR = 0;
 
 /**
  *
@@ -53,6 +55,7 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
     lm_init = new libMesh::LibMeshInit( argc, argv );
 
     // Variavel global
+    LIBMESH_COMMUNICATOR = &(lm_init->comm());
     RANK = lm_init->comm().rank();
 
   // Cria as pastas de saida

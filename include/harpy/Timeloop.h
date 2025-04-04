@@ -10,12 +10,11 @@ using namespace libMesh;
 
 class Timeloop {
   public:
-    Timeloop( MeshBase & mesh_ );
+    Timeloop();
     ~Timeloop();
     void main_loop();
 
   private:
-    MeshBase & mesh;
     Timestep ts;
 };
 

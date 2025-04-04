@@ -31,7 +31,7 @@ ModelReader::ModelReader( ModelConfig & config_ ) : config(config_), current_tim
   // Reads all the materials
   set<SolverConfig::MatConfig> mats;
   for ( auto & [ sysname, syscfg ] : config.solvers )
-  for ( auto & [ matname, matcfg ] : syscfg.material_config )
+  for ( auto & [ matname, matcfg ] : syscfg.mat_config_by_name )
     mats.insert( matcfg );
   for ( auto & mat : mats )
     config.materials.emplace( mat.name, MaterialConfig( config.model_dir, mat.name, mat.cfg ) );

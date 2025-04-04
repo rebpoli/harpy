@@ -21,7 +21,7 @@ ostream& operator<<(ostream& os, const SolverConfig & m)
   os << "SolverConfig: " << endl;
   os << "    Material CFG_ID: " << endl;
 
-  for ( auto [ s, mconf ] : m.material_config )
+  for ( auto [ s, mconf ] : m.mat_config_by_name )
     os << "           " << setw(15) << left << s << ": " << mconf << endl;
 
   return os;

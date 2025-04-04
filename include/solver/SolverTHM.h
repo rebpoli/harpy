@@ -4,7 +4,13 @@
 #include "harpy/Solver.h"
 #include "harpy/Material.h"
 
-namespace libMesh { class Elem; }
+#include "libmesh/mesh.h"
+#include "libmesh/equation_systems.h"
+
+#include <map>
+
+class SolverConfig;
+namespace libMesh { class Elem; class MeshBase; }
 
 /**
  *
@@ -24,8 +30,6 @@ namespace libMesh { class Elem; }
  *
  */
 
-namespace libMesh { class EquationSystems; }
-
 using namespace libMesh;
 
 class SolverTHM : public Solver
@@ -35,11 +39,17 @@ class SolverTHM : public Solver
     ~SolverTHM();
 
     void init_materials();
-    Material * get_material( const Elem & elem );
+    Material * get_material( const Elem & elem, bool reinit=0 );
 
     void solve();
 
   private:
     string name;
-    EquationSystems * es;
+
+    // In order of initialization
+    SolverConfig * config;
+    Mesh mesh;
+    EquationSystems es;
+
+    map< uint, Material * > material_by_sid;
 };

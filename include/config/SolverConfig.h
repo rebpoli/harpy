@@ -43,7 +43,7 @@ public:
   };
 
   /** Data structure to the outside **/
-  MatConfigMap material_config; /// the chosen configuration for this run
+  MatConfigMap mat_config_by_name; /// the chosen configuration for this run
   Numerical numerical;
 
   SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ );

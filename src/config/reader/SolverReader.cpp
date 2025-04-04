@@ -27,7 +27,7 @@ SolverReader::SolverReader( SolverConfig & config_ ) : config(config_)
   if ( ! all_mat_cfgs.count( curr_cfg ) )
     flog << "System configuration '" << curr_cfg << "' not found for system '" << config.sys_name << "'.";
 
-  config.material_config = all_mat_cfgs[ curr_cfg ];
+  config.mat_config_by_name = all_mat_cfgs[ curr_cfg ];
 }
 
 

@@ -1,16 +1,14 @@
 #include "harpy/Timeloop.h"
 #include "solverloop/SolverloopTHM.h"
 
-#include "libmesh/equation_systems.h"
-
 using namespace libMesh;
 
 /**
  *
- * Starts the timeloop for the specified mesh.
+ * Starts the timeloop.
  *
  */
-Timeloop::Timeloop( MeshBase & mesh_ ) : mesh(mesh_), ts() 
+Timeloop::Timeloop() : ts() 
 {
   main_loop(); 
 }

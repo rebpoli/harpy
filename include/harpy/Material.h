@@ -10,4 +10,6 @@
 class Material {
   public:
     Material();
+
+    static Material * Factory( uint sid );
 };
