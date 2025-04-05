@@ -34,7 +34,7 @@ ModelReader::ModelReader( ModelConfig & config_ ) : config(config_), current_tim
   for ( auto & [ matname, matcfg ] : syscfg.mat_config_by_name )
     mats.insert( matcfg );
   for ( auto & mat : mats )
-    config.materials.emplace( mat.name, MaterialConfig( config.model_dir, mat.name, mat.cfg ) );
+    config.materials.emplace( MaterialConfig( config.model_dir, mat.name, mat.cfg ) );
 }
 
 

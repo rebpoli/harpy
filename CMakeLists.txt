@@ -75,6 +75,7 @@ ADD_LIBRARY(Modules
   src/config/ModelConfig.cpp
   src/config/MaterialConfig.cpp
   src/config/SolverConfig.cpp
+  src/config/reader/MaterialReader.cpp
   src/config/reader/ModelReader.cpp
   src/config/reader/SolverReader.cpp
   src/config/reader/SpatialDataReader.cpp
@@ -82,12 +83,14 @@ ADD_LIBRARY(Modules
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
   src/util/TeeBuff.cpp
+  src/util/MeshUtils.cpp
   src/util/Messages.cpp
   src/base/Global.cpp
   src/base/HarpyInit.cpp
   src/base/Log.cpp
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
+  src/material/ViscoPlasticMaterial.cpp
   src/solver/BC.cpp
   src/solver/SolverViscoplasticTrial.cpp
   src/solverloop/SLViscoplastic.cpp

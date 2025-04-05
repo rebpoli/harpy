@@ -18,6 +18,11 @@ class MaterialConfig
 public:
   MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ );
 
+  // Dummy constructor to serve as key for set search
+  MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};
+
+  string engine;   /// Poroelastic, viscoplastic, thermoporoelastic ...
+
   // Poroelastic
   optional<double> porosity, permeability;
   optional<double> biot, bulk, skempton;
@@ -26,24 +31,23 @@ public:
   optional<string> porosity_file, permeability_file;
   optional<string> biot_file, bulk_file, skempton_file;
 
-private:
-  string line;
-  uint ln;
+  // FEM Stuff
+  string fem_order, fem_family, fem_type;
 
+  // Get param reference by name
+  optional<string> & file_param( string & vname );
+  optional<double> & con_param( string & vname );
+
+  bool operator<(const MaterialConfig & other) const;
+
+  // Basic stuff
   string model_dir ;
   string name, cfg;
   string filename;
 
-  void check_files();
-  void parse_material_file();
-
-  void reg_param_str( string vname, string type, string val );
-  void reg_param_dbl( string vname, string type, double val );
-  optional<string> & _file_param( string & vname );
-  optional<double> & _con_param( string & vname );
+private:
 
   friend ostream& operator<<(ostream& os, const MaterialConfig & m);
-  bool operator<(const MaterialConfig & other) const;
 };
 
 ostream& operator<<(ostream& os, const MaterialConfig & m);

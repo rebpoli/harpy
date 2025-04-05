@@ -46,7 +46,6 @@ class SolverViscoplasticTrial : public Solver
   private:
     
     void load_mesh();
-    void dump_mesh();
 
     string name;
 

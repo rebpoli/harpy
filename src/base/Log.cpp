@@ -10,7 +10,7 @@
 unsigned int Log::_curr_indent = 0;
 
 std::string Log::LogColor = RST;
-bool Log::show_msg_lines = 0;
+bool Log::show_msg_lines = 1;
 int Log::msg_lines_col = 80;
 
 map<tuple<string,string,int>,uint> msg_count;

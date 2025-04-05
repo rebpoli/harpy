@@ -1694,6 +1694,7 @@ MatNameAndCfg	include/config/SolverConfig.h	/^    MatNameAndCfg( string & m, str
 MatNameAndCfg	include/config/SolverConfig.h	/^  struct MatNameAndCfg {$/;"	s	class:SolverConfig
 Material	include/harpy/Material.h	/^class Material $/;"	c
 Material	src/harpy/Material.cpp	/^Material::Material( MaterialConfig & mat_conf )$/;"	f	class:Material
+MaterialConfig	include/config/MaterialConfig.h	/^  MaterialConfig( const string & name_, const string & cfg_ ) : MaterialConfig( "", name_, cfg_ ) {};$/;"	f	class:MaterialConfig
 MaterialConfig	include/config/MaterialConfig.h	/^class MaterialConfig$/;"	c
 MaterialConfig	src/config/MaterialConfig.cpp	/^MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ )   :$/;"	f	class:MaterialConfig
 Math	include/base/Global.h	/^class Math {$/;"	c
@@ -6542,7 +6543,7 @@ dual_phi	/opt/libmesh/include/fe/fe_base.h	/^  std::vector<std::vector<OutputSha
 dual_solution_copies	/opt/libmesh/include/solvers/file_solution_history.h	/^  std::vector< std::unique_ptr<NumericVector<Number>> > dual_solution_copies;$/;"	m	class:libMesh::FileSolutionHistory
 dummy	/opt/libmesh/include/numerics/raw_accessor.h	/^  ScalarType dummy = 0;$/;"	m	class:libMesh::RawAccessor
 dummy_vec	/opt/libmesh/include/base/sparsity_pattern.h	/^  std::vector<dof_id_type> dummy_vec;$/;"	m	class:libMesh::SparsityPattern::Build
-dump_mesh	src/solver/SolverViscoplasticTrial.cpp	/^void SolverViscoplasticTrial::dump_mesh() {$/;"	f	class:SolverViscoplasticTrial
+dump_mesh	src/util/MeshUtils.cpp	/^void dump_mesh( const MeshBase & mesh ) {$/;"	f
 dunavant_rule	/opt/libmesh/src/quadrature/quadrature_gauss.C	/^void QGauss::dunavant_rule(const Real rule_data[][4],$/;"	f	class:libMesh::QGauss
 dunavant_rule2	/opt/libmesh/src/quadrature/quadrature_gauss.C	/^void QGauss::dunavant_rule2(const Real * wts,$/;"	f	class:libMesh::QGauss
 dweight	/opt/libmesh/include/fe/fe_base.h	/^  std::vector<RealGradient> dweight;$/;"	m	class:libMesh::FEGenericBase
@@ -10637,6 +10638,7 @@ libMesh	/opt/libmesh/src/utils/xdr_cxx.C	/^namespace libMesh$/;"	n	file:
 libMesh	include/base/HarpyInit.h	/^namespace libMesh { namespace Parallel { class Communicator; } }$/;"	n
 libMesh	include/config/TimeloopConfig.h	/^namespace libMesh { class System; }$/;"	n
 libMesh	include/solver/SolverViscoplasticTrial.h	/^namespace libMesh { class Elem; class MeshBase; }$/;"	n
+libMesh	include/util/MeshUtils.h	/^namespace libMesh { class MeshBase; }$/;"	n
 libMesh	include/util/OutputOperators.h	/^namespace libMesh { class Point; }$/;"	n
 libMeshEnums	/opt/libmesh/include/base/libmesh_common.h	/^namespace libMeshEnums$/;"	n
 libMeshPrivateData	/opt/libmesh/include/base/libmesh_base.h	/^namespace libMeshPrivateData {$/;"	n	namespace:libMesh
@@ -11134,7 +11136,7 @@ mat	/opt/libmesh/include/numerics/trilinos_preconditioner.h	/^  Epetra_FECrsMatr
 mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^Mat PetscShellMatrix<T>::mat()$/;"	f	class:libMesh::PetscShellMatrix
 mat_config_by_name	include/config/SolverConfig.h	/^  MatConfigMap mat_config_by_name; \/\/\/ the chosen configuration for this run$/;"	m	class:SolverConfig
 material_by_sid	include/solver/SolverViscoplasticTrial.h	/^    map< uint, Material * > material_by_sid;$/;"	m	class:SolverViscoplasticTrial
-materials	include/config/ModelConfig.h	/^  CISet< MaterialConfig > materials;   \/\/\/ Material configurations$/;"	m	class:ModelConfig
+materials	include/config/ModelConfig.h	/^  set< MaterialConfig > materials;   \/\/\/ Material configurations$/;"	m	class:ModelConfig
 matrices	/opt/libmesh/include/numerics/sum_shell_matrix.h	/^  std::vector<ShellMatrix<T> *> matrices;$/;"	m	class:libMesh::SumShellMatrix
 matrices_begin	/opt/libmesh/include/systems/system.h	/^System::const_matrices_iterator System::matrices_begin () const$/;"	f	class:libMesh::System
 matrices_begin	/opt/libmesh/include/systems/system.h	/^System::matrices_iterator System::matrices_begin ()$/;"	f	class:libMesh::System
