@@ -15,7 +15,7 @@
  * The reading and parsing is done by ModelReader, SolverReader etc.
  *
  */
-using namespace harpy_string;
+using harpy_string::CIMap;
 
 class ModelConfig
 {
@@ -25,7 +25,7 @@ public:
   string systemloop;
   CIMap<string > system_cfgid;        /// sys_name -> config name
   CIMap< SolverConfig > solvers;       /// System configurations
-  map< string, MaterialConfig > materials;   /// Material configurations
+  set< MaterialConfig > materials;   /// Material configurations
   map< string, double > timestep;
   BCConfig boundary_config;
 
@@ -39,7 +39,7 @@ private:
 };
 
 ostream& operator<<(ostream& os, const ModelConfig & m);
-ostream& operator<<(ostream& os, const map<string,MaterialConfig> & m);
+ostream& operator<<(ostream& os, const CIMap<MaterialConfig> & m);
 
 /** Global variable with the model configuration */
 extern ModelConfig * MODEL;

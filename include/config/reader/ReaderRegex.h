@@ -12,7 +12,8 @@ namespace MRDEF
 {
   using namespace std;
 
-  inline const string tok     = R"(([-a-zA-Z_0-9]+))";
+  inline const string tok       = R"(([-a-zA-Z_0-9]+))";
+  inline const string filename  = R"(([-a-zA-Z_0-9.]+))";
   inline const string num = R"(([+-]?(?:(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?|[+-]?\d+[eE][+-]?\d+)))";
   inline const string sp = R"(\s+)";
   inline const string tok_op  = R"((?:)" + sp + tok + R"()?)";  // optional token (with leading space)
@@ -33,4 +34,5 @@ namespace MRDEF
   // Sections are prefixed with a dot
   inline const regex sectionRE        ( R"(\.)" + tok + tok_op ); 
   inline const regex namedSectionRE   ( R"(\.)" + tok + sp + tok );    
+  inline const regex RE_SEC_NAME      ( R"(\.)" + tok + sp + filename ); 
 }

@@ -43,6 +43,7 @@ private:
   optional<double> & _con_param( string & vname );
 
   friend ostream& operator<<(ostream& os, const MaterialConfig & m);
+  bool operator<(const MaterialConfig & other) const;
 };
 
 ostream& operator<<(ostream& os, const MaterialConfig & m);

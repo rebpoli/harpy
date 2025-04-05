@@ -1,8 +1,8 @@
 
 # Define the system loop 
 # Then the configuration of each system
-.SYSTEMLOOP POROELASTIC
-POROELASTIC BASE
+.SYSTEMLOOP VISCOPLASTIC
+VISCOPLASTIC BASE
 
 .TIMESTEP 
 T0           -1

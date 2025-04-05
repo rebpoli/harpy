@@ -3,7 +3,7 @@
 #include "base/Global.h"
 #include "harpy/Timestep.h"
 
-#include "solver/SolverTHM.h"
+#include "solver/SolverViscoplasticTrial.h"
 #include "harpy/Solverloop.h"
 
 /**
@@ -14,16 +14,16 @@
 
 using namespace libMesh;
 
-class SolverloopTHM : public Solverloop 
+class SLViscoplastic : public Solverloop 
 {
 
   public:
-    SolverloopTHM( const Timestep & ts_ );
+    SLViscoplastic( const Timestep & ts_ );
 
     void solve();
     void export_results();
 
   private:
 
-    SolverTHM poroelastic;
+    SolverViscoplasticTrial viscoplastic;
 };

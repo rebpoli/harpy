@@ -140,3 +140,16 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
 
   return os;
 }
+
+
+/**
+ * Enable the object to index a map.
+ * The MaterialConfig is indexed by name and configuration
+ */
+bool MaterialConfig::operator<(const MaterialConfig & other) const
+{
+  ci_cmp c;
+  if ( c( name, other.name ) ) return true;
+  if ( c( other.name, name ) ) return false;
+  return c( cfg, other.cfg );
+}

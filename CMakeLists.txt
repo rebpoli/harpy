@@ -67,9 +67,8 @@ include_directories(include)
 ADD_LIBRARY(Modules
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp
-  src/harpy/MeshInit.cpp
+  src/harpy/Material.cpp
   src/config/TimeloopConfig.cpp
-  src/config/MeshConfig.cpp
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
   src/config/BCConfig.cpp
@@ -90,8 +89,8 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/solver/BC.cpp
-  src/solver/SolverTHM.cpp
-  src/solverloop/SolverloopTHM.cpp
+  src/solver/SolverViscoplasticTrial.cpp
+  src/solverloop/SLViscoplastic.cpp
 
 
 

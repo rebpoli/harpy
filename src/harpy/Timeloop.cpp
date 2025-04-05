@@ -1,5 +1,5 @@
 #include "harpy/Timeloop.h"
-#include "solverloop/SolverloopTHM.h"
+#include "solverloop/SLViscoplastic.h"
 
 using namespace libMesh;
 
@@ -23,7 +23,7 @@ Timeloop::~Timeloop() { }
  */
 void Timeloop::main_loop() 
 {
-  SolverloopTHM sloop( ts ); 
+  SLViscoplastic sloop( ts ); 
 
   while ( true )
   {

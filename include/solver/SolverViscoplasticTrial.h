@@ -32,11 +32,11 @@ namespace libMesh { class Elem; class MeshBase; }
 
 using namespace libMesh;
 
-class SolverTHM : public Solver
+class SolverViscoplasticTrial : public Solver
 {
   public:
-    SolverTHM( string name );
-    ~SolverTHM();
+    SolverViscoplasticTrial( string name );
+    ~SolverViscoplasticTrial();
 
     void init_materials();
     Material * get_material( const Elem & elem, bool reinit=0 );
@@ -44,6 +44,10 @@ class SolverTHM : public Solver
     void solve();
 
   private:
+    
+    void load_mesh();
+    void dump_mesh();
+
     string name;
 
     // In order of initialization

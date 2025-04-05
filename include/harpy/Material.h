@@ -1,5 +1,7 @@
 #pragma once
 
+#include "base/Global.h" 
+
 /**
  *
  * This is an abstract class to be the common inteface 
@@ -7,9 +9,12 @@
  *
  */
 
-class Material {
+class MaterialConfig;
+
+class Material 
+{
   public:
-    Material();
+    Material( MaterialConfig & mat_conf );
 
     static Material * Factory( uint sid );
 };

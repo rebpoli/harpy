@@ -35,7 +35,7 @@ SolverConfig * ModelConfig::solver_config( string name )
 /**
  *
  */
-ostream& operator<<(ostream& os, const map<string,MaterialConfig> & m)
+ostream& operator<<(ostream& os, const CIMap<MaterialConfig> & m)
 {
   os << "Map of MaterialConfig:" << endl;
   for ( auto & [ k , m ] : m )
@@ -61,8 +61,8 @@ ostream& operator<<(ostream& os, const ModelConfig & m)
     os << "           " << setw(15) << left << s << ": " << c << endl;
 
   os << "      " << "MATERIAL / Config:" << endl;
-  for ( auto [ s, c ] : m.materials )
-    os << "           " << setw(15) << left << s << ": " << c << endl;
+  for ( auto c : m.materials )
+    os << "           " << setw(15) << left << c << endl;
 
   os << "      " << "Boundary  Config:" << endl;
   os << m.boundary_config;

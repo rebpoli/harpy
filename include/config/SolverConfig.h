@@ -2,6 +2,7 @@
 
 #include "base/Global.h"
 #include "config/SolverConfig.h"
+#include "util/String.h"
 
 #include <map>
 
@@ -16,21 +17,24 @@
  *
  */
 
+using harpy_string::CIMap;
+
 class SolverConfig
 {
 public:
   /**  Structs **/
-  struct MatConfig {
+  struct MatNameAndCfg {
     string name, cfg;
-    MatConfig( string & m, string c ) : name(m), cfg(c) {}
+    MatNameAndCfg( string & m, string c ) : name(m), cfg(c) {}
 
     // To be indexable
-    bool operator<(const MatConfig & other) const {
+    bool operator<(const MatNameAndCfg & other) const {
       if (name != other.name) return name < other.name;
       return cfg < other.cfg;
     }
   };
-  struct MatConfigMap : public map<string, MatConfig> { }; // subdom => (mat, config)
+  // subdom_name => (mat, config)
+  struct MatConfigMap : public CIMap<MatNameAndCfg> { }; 
 
   /* This is a complete object. All parameters must be set at all times (no std::optional here). */
   struct Numerical {
@@ -56,4 +60,4 @@ private:
 
 ostream& operator<<(ostream& os, const SolverConfig & m);
 ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m);
-ostream& operator<<(ostream& os, const SolverConfig::MatConfig & m);
+ostream& operator<<(ostream& os, const SolverConfig::MatNameAndCfg & m);

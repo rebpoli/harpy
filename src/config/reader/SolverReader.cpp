@@ -92,7 +92,7 @@ bool SolverReader::next_state()
 
   CIMap<State> nextState = {
     { "config", State::CONFIG },
-    { "mesh",   State::INITIAL },
+    { "mesh",   State::MESH },
 //    { "system", State::SYSTEM },
   };
 
@@ -100,7 +100,7 @@ bool SolverReader::next_state()
   if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
 
   // New section. Changes the state
-  if ( ! regex_search(line, match, namedSectionRE) ) return false;
+  if ( ! regex_search(line, match, RE_SEC_NAME) ) return false;
 
   string sec = match[1];
 
@@ -111,8 +111,16 @@ bool SolverReader::next_state()
   string name = match[2];
 
   // Register as needed
-  if ( current_state == State::CONFIG ) curr_sys_cfg = name;
-  if ( current_state == State::MESH )    config.mesh_filename = config.model_dir + "/" + name;
+  if ( current_state == State::CONFIG ) {
+    curr_sys_cfg = name;
+  }
+
+  if ( current_state == State::MESH ) {
+    // Single line state.
+    config.mesh_filename = config.model_dir + "/" + name;
+    current_state = State::INITIAL;
+    dlog(1) << "Read mesh filename: '" << config.mesh_filename << "'.";
+  }
 
   return true;
 }
@@ -135,7 +143,7 @@ void SolverReader::config_state()
 
   all_mat_cfgs[curr_sys_cfg].emplace( 
                  subdom,
-                 SolverConfig::MatConfig( material, conf ) );
+                 SolverConfig::MatNameAndCfg( material, conf ) );
 
 }
 

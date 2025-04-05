@@ -19,7 +19,12 @@ ostream& operator<<(ostream& os, const SolverConfig & m)
 {
   os << endl;
   os << "SolverConfig: " << endl;
-  os << "    Material CFG_ID: " << endl;
+  os << "    Model_dir       : " << m.model_dir << endl;
+  os << "    Sys_file        : " << m.sys_file << endl;
+  os << "    Sys_name        : " << m.sys_name << endl;
+  os << "    Sys_cfg         : " << m.sys_cfg << endl;
+  os << "    mesh_filename   : " << m.mesh_filename << endl;
+  os << "    Material CFG_ID : " << endl;
 
   for ( auto [ s, mconf ] : m.mat_config_by_name )
     os << "           " << setw(15) << left << s << ": " << mconf << endl;
@@ -42,7 +47,7 @@ ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m)
   }
   return os;
 }
-ostream& operator<<(ostream& os, const SolverConfig::MatConfig & m)
+ostream& operator<<(ostream& os, const SolverConfig::MatNameAndCfg & m)
 {
   os << setw(20) << m.name;
   os << setw(20) << m.cfg;
