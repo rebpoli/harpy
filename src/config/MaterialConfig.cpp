@@ -1,28 +1,23 @@
 
 #include "config/MaterialConfig.h"
 
-#include "config/reader/ReaderRegex.h"
+#include "config/reader/MaterialReader.h"
 #include "util/OutputOperators.h"
 
-#include "util/File.h"
 #include "util/String.h"
-#include <iomanip>
-#include <regex>
-#include <set>
 
 
-using namespace harpy_string;
-using namespace MRDEF;
-
-set<string> KNOWN_VAR_TYPES = { "CON", "FILE" };
+using harpy_string::iequals;
+using harpy_string::to_upper_copy;
+using harpy_string::ci_cmp;
 
 /**
  *  
  */
 MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ )   :
-            model_dir(model_dir_), name(name_), cfg(cfg_) 
+            model_dir(model_dir_), name(name_), cfg(cfg_) , filename( model_dir + "/" + name + "/" + to_upper_copy(cfg) )
 {
-  filename = model_dir + "/" + name + "/" + to_upper_copy(cfg);
+  MaterialReader( *this );
 }
 
 /**
@@ -72,10 +67,13 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Bulk:             " << setw(15) << m.bulk         << setw(15) << m.bulk_file << endl;
   os << "                                    Skempton:         " << setw(15) << m.skempton     << setw(15) << m.skempton_file << endl;
 
-  os << "                                 FEM:" << endl ;
-  os << "                                    type:              " << setw(15) << m.fem_type     << endl;
-  os << "                                    family:            " << setw(15) << m.fem_family   << endl;
-  os << "                                    order:             " << setw(15) << m.fem_order    << endl;
+  for ( auto & [ v, fem ] : m.fem_by_var ) 
+  {
+    os << "                                 FEM (var: " << v << "):" << endl ;
+    os << "                                    type:              " << setw(15) << fem.type     << endl;
+    os << "                                    family:            " << setw(15) << fem.family   << endl;
+    os << "                                    order:             " << setw(15) << fem.order    << endl;
+  }
 
   return os;
 }

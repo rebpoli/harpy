@@ -2,17 +2,21 @@
 #include "harpy/Material.h"
 #include "config/ModelConfig.h" // MODEL global var
 #include "config/SolverConfig.h"
+#include "material/ViscoPlasticMaterial.h"
 
 #include "libmesh/mesh.h"
+#include "libmesh/system.h"
 
 /**
  *
  *
  */
-Material::Material( const MaterialConfig & mat_conf )
-{
-
-}
+Material::Material( suint sid_, const MaterialConfig & config_, System & sys_ ) :
+                          sid(sid_),
+                          config( config_ ),
+                          system( sys_ ),
+                          qrule(3)
+{ }
 
 /**
  *
@@ -26,7 +30,10 @@ void Material::reinit()
  *   Creates a Material for the subdomain.
  *
  */
-Material * Material::Factory( uint sid, const MeshBase & mesh, const SolverConfig & svr_config )
+Material * Material::Factory(  suint sid,
+                               const MeshBase & mesh,
+                               System & system,
+                               const SolverConfig & svr_config )
 {
   SCOPELOG(1);
 
@@ -47,6 +54,6 @@ Material * Material::Factory( uint sid, const MeshBase & mesh, const SolverConfi
   const MaterialConfig & mat_conf = *it;
 
   dlog(1) << "Resoved material:" << mat_conf;
-  Material * ret = new Material( mat_conf );
+  Material * ret = new ViscoPlasticMaterial( sid, mat_conf, system );
   return ret;
 }

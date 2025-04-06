@@ -23,7 +23,7 @@ private:
   void parse_material_file();
 
   // State machine
-  enum class State { INITIAL, ENGINE, FEM };
+  enum State { INITIAL, ENGINE, FEM };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine

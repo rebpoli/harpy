@@ -9,6 +9,9 @@ export CHDEBUG=1
 run-%: set-% .force
 	$(topdir)/build/$*/ut-material-setup
 
+gdb-dbg: set-dbg .force
+	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/dbg/ut-material-setup
+
 gdb-devel: set-devel .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/ut-material-setup
 

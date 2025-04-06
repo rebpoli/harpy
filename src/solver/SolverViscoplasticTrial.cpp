@@ -3,6 +3,8 @@
 
 #include "libmesh/elem.h"
 #include "libmesh/boundary_info.h"
+#include "libmesh/nonlinear_implicit_system.h"
+#include "libmesh/transient_system.h"
 
 #include "config/ModelConfig.h"
 #include "base/HarpyInit.h"
@@ -13,14 +15,20 @@
  *
  *  This object owns the mesh and the rquation system.
  */
-SolverViscoplasticTrial::SolverViscoplasticTrial( string name_ ) : Solver(), name(name_),
-                                       config (MODEL->solver_config( name ) ) , 
-                                       mesh( *LIBMESH_COMMUNICATOR ),
-                                       es( mesh )
+SolverViscoplasticTrial::SolverViscoplasticTrial( string name_ ) : 
+                   Solver(), 
+                   name(name_),
+                   config (MODEL->solver_config( name ) ) , 
+                   mesh( *LIBMESH_COMMUNICATOR ),
+                   es( mesh ),
+                   system( es.add_system<TransientNonlinearImplicitSystem> ( name ) )
 {
   dlog(1) << "SolverViscoplasticTrial: " << *config;
   load_mesh();
   init_materials();
+  es.init();
+
+  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
 }
 
 /**
@@ -63,7 +71,7 @@ Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit
 {
   uint sid = elem.subdomain_id();
   if  ( ! material_by_sid.count( sid ) ) 
-    material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), *config );
+    material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *config );
 
   Material * mat = material_by_sid.at(sid);
 

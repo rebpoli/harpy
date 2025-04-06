@@ -2,6 +2,7 @@
 
 #include "base/Global.h"
 #include <optional>
+#include <map>
 
 /**
  *
@@ -32,7 +33,11 @@ public:
   optional<string> biot_file, bulk_file, skempton_file;
 
   // FEM Stuff
-  string fem_order, fem_family, fem_type;
+  struct FEMSpec { 
+    FEMSpec() : order("FIRST"), family("LAGRANGE"), type("CONTINUOUS") {};
+    string order, family, type ;
+  };
+  map<string,FEMSpec> fem_by_var;
 
   // Get param reference by name
   optional<string> & file_param( string & vname );

@@ -1,9 +1,195 @@
-# Info:     ******************************************************
-# Info:                     READS A COMPLETE MODEL
-# Info:     ******************************************************
+# Info:     ******************************************************              @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:10
+# Info:                     READS A COMPLETE MODEL                              @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:11
+# Info:     ******************************************************              @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:12
+# Deb[1:0]: Model directory and file ok! We are good to go! (model/, model//MODEL)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:55
+# Deb[1:0]: LINE(1) >>                                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(2) >># Define the system loop                                  @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(3) >># Then the configuration of each system                   @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(4) >>.SYSTEMLOOP VISCOPLASTIC                                  @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(5) >>VISCOPLASTIC BASE                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(6) >>                                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(7) >>.TIMESTEP                                                 @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(8) >>T0           -1                                           @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(9) >>DT0           1                                           @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(10) >>DTK           1                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(11) >>TMAX         10                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(12) >>MAX_STEPS    10                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(13) >>                                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(14) >># List of scalar variables                               @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(15) >>.SCALAR                                                  @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(16) >>tri_dx                                                   @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(17) >>tri_dy                                                   @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(18) >>                                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(19) >># List of penalty variables                              @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(20) >># VNAME    PENALTY   VALUE                               @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(21) >>.PENALTY                                                 @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(22) >>K0    1e15    0                                          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(23) >>                                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(24) >>## Initial conditions: used for the first step           @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(25) >># DOM/BNDY     SIDE           VAR              VAL       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(26) >>.INITIAL                                                 @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(27) >>DOMAIN         RES              P             1E6        @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(DOMAIN) scope(RES) vname(P) strval(1E6)         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(28) >>DOMAIN         RES              T             0          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(DOMAIN) scope(RES) vname(T) strval(0)           @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(29) >>DOMAIN         CAPROCK          T             5          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(DOMAIN) scope(CAPROCK) vname(T) strval(5)       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(30) >>BOUNDARY       XN               UX            tri_dx     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(XN) vname(UX) strval(tri_dx)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(31) >>BOUNDARY       YN               UY            K0         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(YN) vname(UY) strval(K0)        @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(32) >>BOUNDARY       ZN               UZ            3          @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(ZN) vname(UZ) strval(3)         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(33) >>BOUNDARY       XP               SXX          -1e7        @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(XP) vname(SXX) strval(-1e7)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(34) >>BOUNDARY       YP               SYY          -2e7        @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(YP) vname(SYY) strval(-2e7)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(35) >>BOUNDARY       ZP               SZZ          -3e7        @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(ZP) vname(SZZ) strval(-3e7)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(36) >>                                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(37) >># Boundary conditions foreach time                       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(38) >># BOUNDARY/DOMAIN   BID/SID   VAR   VAL                  @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(39) >>.TIME   1                                                @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(40) >>BOUNDARY       XP        UX    200                       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(XP) vname(UX) strval(200)       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(41) >>BOUNDARY       YN        UY    tri_dy                    @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(YN) vname(UY) strval(tri_dy)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(42) >>DOMAIN         RES       T     100                       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(DOMAIN) scope(RES) vname(T) strval(100)         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(43) >>                                                         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(44) >>.TIME   2                                                @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]: LINE(45) >>BOUNDARY       XP        UX    400                       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(BOUNDARY) scope(XP) vname(UX) strval(400)       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: LINE(46) >>DOMAIN         RES       T     500                       @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
+# Deb[1:0]:    time_state: type(DOMAIN) scope(RES) vname(T) strval(500)         @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:195
+# Deb[1:0]: Model directory and system file ok! We are good to go! (model/, model//VISCOPLASTIC)     @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:48
+# Deb[1:0]: Read mesh filename: 'model//mesh.e'.                                @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:122
+# Deb[1:0]: Processing material state line 'TEST_FRAME caprock      BASE'       @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:133
+# Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//caprock/BASE)     @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:38
+# Deb[1:0]: ScopeLog @ MaterialReader::parse_material_file() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:46     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>.ENGINE      VISCOPLASTIC                                @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: 1                                                  @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:107
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>POROSITY      FILE    POR-BASE                           @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::engine_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ File param: POROSITY                                           @ /lm23_hdd/harpy/src/config/MaterialConfig.cpp:28
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::engine_state()                       @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>PERMEABILITY        1e-12                                @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::engine_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::engine_state()                       @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>BIOT                0.3                                  @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::engine_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::engine_state()                       @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>                                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: INITIAL                                            @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:92
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>.FEM                                                     @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ NEXT STATE: 2                                                  @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:107
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>TYPE    CONTINUOUS                                       @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::fem_state()                          @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>FAMILY  LAGRANGE                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::fem_state()                          @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: ____ Line>>ORDER   FIRSTxx                                          @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::fem_state()                          @ /lm23_hdd/harpy/src/base/Log.cpp:205
+# Deb[1:0]: ~ScopeLog @ MaterialReader::parse_material_file()                   @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Info:     
 ModelConfig: 
-      systemloop          : POROELASTIC
+      systemloop          : VISCOPLASTIC
       model_dir           : model/
       model file          : model//MODEL
       Timestep:
@@ -13,14 +199,18 @@ ModelConfig:
            T0             : -1
            TMAX           : 10
       SYSTEM / Config:
-           POROELASTIC    : 
+           VISCOPLASTIC   : 
 SolverConfig: 
-    Material CFG_ID: 
-           ELLIPSE        : reservoir           BASE                
-           SIDEBURDEN     : caprock             BASE                
+    Model_dir       : model/
+    Sys_file        : model//VISCOPLASTIC
+    Sys_name        : VISCOPLASTIC
+    Sys_cfg         : BASE
+    mesh_filename   : model//mesh.e
+    Material CFG_ID : 
+           TEST_FRAME     : caprock             BASE                
 
       MATERIAL / Config:
-           caprock        : 
+           
                             MaterialConfig for 'caprock'/ 'BASE'
                                  Filename 'model//caprock/BASE'
                                  Poroelastic:
@@ -29,16 +219,10 @@ SolverConfig:
                                     Biot:             0.3            (undef)        
                                     Bulk:             (undef)        (undef)        
                                     Skempton:         (undef)        (undef)        
-
-           reservoir      : 
-                            MaterialConfig for 'reservoir'/ 'BASE'
-                                 Filename 'model//reservoir/BASE'
-                                 Poroelastic:
-                                    Por:              (undef)        (undef)        
-                                    Permeability:     (undef)        (undef)        
-                                    Biot:             (undef)        (undef)        
-                                    Bulk:             (undef)        (undef)        
-                                    Skempton:         (undef)        (undef)        
+                                 FEM:
+                                    type:              CONTINUOUS     
+                                    family:            LAGRANGE       
+                                    order:             FIRSTxx        
 
       Boundary  Config:
 
@@ -111,4 +295,4 @@ STOT BCS:
 |---------------------------
 
 |----------------------------------------------
-
+     @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:15

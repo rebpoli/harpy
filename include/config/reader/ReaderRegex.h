@@ -17,22 +17,25 @@ namespace MRDEF
   inline const string num = R"(([+-]?(?:(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?|[+-]?\d+[eE][+-]?\d+)))";
   inline const string sp = R"(\s+)";
   inline const string tok_op  = R"((?:)" + sp + tok + R"()?)";  // optional token (with leading space)
+  inline const string ini  = R"(^)";
+  inline const string end  = R"($)";
                                                                 //
   inline const regex RE_EMPTY ( R"(^\s*$)" );
 
   inline const regex RE_NUM ( num );
   inline const regex RE_STR ( tok );
-  inline const regex RE_STR_STR ( tok + sp + tok  );
-  inline const regex RE_STR_STR_STR ( tok + sp + tok + sp + tok );
-  inline const regex RE_STR_STR_STR_STR ( tok + sp + tok + sp + tok + sp + tok );
-  inline const regex RE_STR_STR_STROPT ( tok + sp + tok + tok_op );
 
-  inline const regex RE_STR_NUM_NUM ( tok + sp + num + sp + num );
-  inline const regex RE_STR_STR_NUM ( tok + sp + tok + sp + num );
-  inline const regex RE_STR_NUM ( tok + sp + num );
+  inline const regex RE_STR_STR          ( ini + tok + sp + tok + end );
+  inline const regex RE_STR_STR_STR      ( ini + tok + sp + tok + sp + tok + end);
+  inline const regex RE_STR_STR_STR_STR  ( ini + tok + sp + tok + sp + tok + sp + tok + end);
+  inline const regex RE_STR_STR_STROPT   ( ini + tok + sp + tok + tok_op + end);
+
+  inline const regex RE_STR_NUM_NUM      ( ini + tok + sp + num + sp + num + end);
+  inline const regex RE_STR_STR_NUM      ( ini + tok + sp + tok + sp + num + end);
+  inline const regex RE_STR_NUM          ( ini + tok + sp + num );
 
   // Sections are prefixed with a dot
-  inline const regex sectionRE        ( R"(\.)" + tok + tok_op ); 
-  inline const regex namedSectionRE   ( R"(\.)" + tok + sp + tok );    
-  inline const regex RE_SEC_NAME      ( R"(\.)" + tok + sp + filename ); 
+  inline const regex RE_SEC              ( ini + R"(\.)" + tok + tok_op + end ); 
+  inline const regex RE_SEC_TOK          ( ini + R"(\.)" + tok + sp + tok + end );    
+  inline const regex RE_SEC_NAME         ( ini + R"(\.)" + tok + sp + filename + end ); 
 }

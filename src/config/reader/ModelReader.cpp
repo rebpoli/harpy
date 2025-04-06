@@ -117,7 +117,7 @@ bool ModelReader::next_state()
   dlog(1) << tok_op;
 
   // New section. Changes the state
-  if ( ! regex_search(line, match, sectionRE) ) return false;
+  if ( ! regex_search(line, match, RE_SEC) ) return false;
   string sec = match[1];
   if ( ! nextState.count(sec) ) flog << "Cannot find next state for section key '" << sec << "' (line " << ln << "'.";
   current_state = nextState[ sec ];

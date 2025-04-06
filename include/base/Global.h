@@ -35,6 +35,7 @@
 using namespace std;
 extern double PI;
 typedef unsigned int uint;
+typedef short unsigned int suint;
 
 extern uint debug_level ;
 extern string CHIMAS_HOME;

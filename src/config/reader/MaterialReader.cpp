@@ -20,8 +20,6 @@ MaterialReader::MaterialReader( MaterialConfig & _config ) : config(_config)
 {
   check_files();
   parse_material_file();
-
-
 }
 
 /**
@@ -45,6 +43,8 @@ void MaterialReader::check_files()
  */
 void MaterialReader::parse_material_file()
 {
+  SCOPELOG(1);
+
   string filename = config.filename;;
   ifstream file(filename);
 
@@ -59,12 +59,13 @@ void MaterialReader::parse_material_file()
     line = remove_comments_and_trim( line );
 
     if ( next_state() ) continue;
+    dlog(1) << "Parsing state: " << current_state;
 
     switch (current_state)
     {
-      case State::INITIAL: { engine_state(); break; }
+      case State::ENGINE: { engine_state(); break; }
       case State::FEM: { fem_state(); break; }
-      default: break;
+      default: { wlog << "Ignoring line " << ln << " >> " << line; break; }
     }
   }
 }
@@ -75,6 +76,10 @@ void MaterialReader::parse_material_file()
  */
 bool MaterialReader::next_state() 
 {
+  SCOPELOG(1);
+
+  dlog(1) << "Line>>" << line;
+
   smatch match;
 
   CIMap<State> nextState = {
@@ -83,10 +88,14 @@ bool MaterialReader::next_state()
   };
 
   // Resets the state
-  if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
+  if (regex_match(line, RE_EMPTY)) { 
+    dlog(1) << "NEXT STATE: INITIAL";
+    current_state = State::INITIAL;
+    return true; 
+  }
 
   // New section. Changes the state
-  if ( ! regex_search(line, match, RE_SEC_NAME) ) return false;
+  if ( ! regex_search(line, match, RE_SEC) ) return false;
 
   string sec = match[1];
 
@@ -94,6 +103,8 @@ bool MaterialReader::next_state()
 
   // Save
   current_state  = nextState[ sec ];
+
+  dlog(1) << "NEXT STATE: " << current_state;
 
   return true;
 }
@@ -103,6 +114,7 @@ bool MaterialReader::next_state()
  */
 void MaterialReader::engine_state() 
 {
+  SCOPELOG(1);
   smatch match;
   string vname;
   if ( regex_search( line, match, RE_STR_STR_STR ) ) 
@@ -121,18 +133,18 @@ void MaterialReader::engine_state()
  */
 void MaterialReader::fem_state() 
 {
+  SCOPELOG(1);
   smatch match;
   string vname;
-  if ( regex_search( line, match, RE_STR_STR ) ) 
+  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
   {
-    string key = match[1], val = match[2];
-    if ( iequals( key, "type" ) ) config.fem_type = val;
-    else
-    if ( iequals( key, "family") ) config.fem_family = val;
-    else
-    if ( iequals( key, "order") ) config.fem_order = val;
-    else
-      flog << "Unknown key '" << key << "' in material parsing, FEM section.";
+    string key = match[1], var = match[2], val = match[3];
+    using FEMSpec = MaterialConfig::FEMSpec;
+    FEMSpec & fem = config.fem_by_var[var];
+    if ( iequals( key, "type" ) )        fem.type = val;
+    else if ( iequals( key, "family") )  fem.family = val;
+    else if ( iequals( key, "order") )   fem.order = val;
+    else flog << "Unknown key '" << key << "' in material parsing, FEM section.";
   }
 }
 

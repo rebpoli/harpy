@@ -6,11 +6,15 @@
 
 #include "libmesh/mesh.h"
 #include "libmesh/equation_systems.h"
+#include "libmesh/transient_system.h"
 
 #include <map>
 
 class SolverConfig;
-namespace libMesh { class Elem; class MeshBase; }
+namespace libMesh {
+  class Elem;
+  class MeshBase; 
+}
 
 /**
  *
@@ -43,6 +47,7 @@ class SolverViscoplasticTrial : public Solver
 
     void solve();
 
+
   private:
     
     void load_mesh();
@@ -53,6 +58,8 @@ class SolverViscoplasticTrial : public Solver
     SolverConfig * config;
     Mesh mesh;
     EquationSystems es;
+
+    TransientNonlinearImplicitSystem & system;
 
     map< uint, Material * > material_by_sid;
 };
