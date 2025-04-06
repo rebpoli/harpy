@@ -13,7 +13,7 @@ MAX_STEPS    10
 
 # List of scalar variables
 .SCALAR
-tri_dx
+tri_dx    LAGRANGE SECOND
 tri_dy
 
 # List of penalty variables

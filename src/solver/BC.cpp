@@ -2,6 +2,8 @@
 #include "solver/BC.h"
 #include "config/ModelConfig.h"
 #include "config/BCConfig.h"
+#include "harpy/Timestep.h"
+
 #include "libmesh/elem.h"
 #include "libmesh/boundary_info.h"
 
@@ -34,16 +36,20 @@ void BC::_cleanup()
 
 /**
  * Updates the BC with information from the BCConfig at time t
+ *
+ * Returns true if reftime has changed from previous update.
  */
-void BC::update( double t ) 
+bool BC::update( double t ) 
 {
+  SCOPELOG(1);
+
   time = t;
 
   /** Test if the reference time has changed for the new time **/
   double rt = config.get_reftime( time );
   if ( rt == reftime ) {
     dlog(1) << "Reftime did not change. Continuing...";
-    return; // nothing has changed
+    return false; // nothing has changed
   }
   reftime = rt;
   // Clean structures
@@ -54,7 +60,14 @@ void BC::update( double t )
   _update_scalar();
   _update_stot();
   _update_penalty();
+
+  return true;
 }
+
+/**
+ *
+ */
+bool BC::update( const Timestep & ts ) { return update( ts.time ) ; }
 
 /**
  *
@@ -117,7 +130,9 @@ void BC::_update_scalar()
     string scalar_name = item.value;
 
     // The number of the scalar variable
-    if ( ! system.has_variable( scalar_name ) ) flog << "Trying to attach to a scalar variable that does not exist ('" << scalar_name << "')! This should have been checked in BCConfig! Something is wrong!";
+    if ( ! system.has_variable( scalar_name ) ) 
+      flog << "Trying to attach to a scalar variable that does not exist ('" << scalar_name << "')! This should have been checked in ModelReader! Something is wrong!";
+
     uint svid = system.variable_number( scalar_name );
 
     int bid = bi.get_id_by_name( bname );

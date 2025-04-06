@@ -1,37 +1,58 @@
 
+
 #include "solver/SolverViscoplasticTrial.h"
+#include "base/HarpyInit.h"
+#include "config/ModelConfig.h"
+#include "harpy/Timestep.h"
+#include "util/MeshUtils.h"
+
 
 #include "libmesh/elem.h"
 #include "libmesh/boundary_info.h"
 #include "libmesh/nonlinear_implicit_system.h"
 #include "libmesh/transient_system.h"
 #include "libmesh/dirichlet_boundaries.h"
-
-#include "config/ModelConfig.h"
-#include "base/HarpyInit.h"
-#include "util/MeshUtils.h"
+#include "libmesh/string_to_enum.h"
+#include "libmesh/enum_fe_family.h"
+#include "libmesh/enum_order.h"
 
 /**
  *  Creates the system and the materials.
  *
  *  This object owns the mesh and the rquation system.
  */
-SolverViscoplasticTrial::SolverViscoplasticTrial( string name_ ) : 
-                   Solver(), 
+SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep & ts_ ) : 
+                   Solver( ts_ ), 
                    name(name_),
                    config (MODEL->solver_config( name ) ) , 
                    mesh( *LIBMESH_COMMUNICATOR ),
                    es( mesh ),
-                   system( es.add_system<TransientNonlinearImplicitSystem> ( name ) )
+                   system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
+                   curr_bc( system )
 {
   dlog(1) << "SolverViscoplasticTrial: " << *config;
 
-  // Init equationsystems
+  // Init equationsystems flow
   load_mesh();
   init_materials();
+  add_scalar_vars();
   es.init();
 
+  // Init FEM of the materials
   for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
+}
+
+/**
+ *
+ */
+void SolverViscoplasticTrial::add_scalar_vars()
+{
+  for ( auto & sv : MODEL->boundary_config.scalars )
+  {
+    Order order = Utility::string_to_enum<Order>( sv.order ) ;
+    FEFamily fe_family = Utility::string_to_enum<FEFamily>( sv.family );
+    system.add_variable( sv.name, order, fe_family );
+  }
 }
 
 /**
@@ -97,6 +118,7 @@ Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit
 void SolverViscoplasticTrial::set_dirichlet_bcs()
 {
   SCOPELOG1(1);
+
   const MeshBase & mesh = es.get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
   DofMap & dof_map = system.get_dof_map();
@@ -139,6 +161,12 @@ void SolverViscoplasticTrial::set_dirichlet_bcs()
  */
 void SolverViscoplasticTrial::solve()
 {
-  set_dirichlet_bcs();
+  SCOPELOG(1);
+  // Shall we update BCs? 
+  if ( curr_bc.update( ts ) ) 
+  {
+    set_dirichlet_bcs();
+  }
+
 }
 

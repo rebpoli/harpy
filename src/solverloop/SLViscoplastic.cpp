@@ -8,7 +8,7 @@
 
 
 SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic( "viscoplastic" )
+  Solverloop(ts_), viscoplastic( "viscoplastic", ts )
 {
   // Create solver and mesh 
 }
@@ -19,6 +19,7 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
  */
 void SLViscoplastic::solve() 
 {
+  SCOPELOG(1);
   viscoplastic.solve();
 }
 

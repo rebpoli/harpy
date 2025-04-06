@@ -63,6 +63,15 @@ class BCConfig
       PenaltyBC( double K_, double value_ ) : K(K_), value(value_) {}
       double K; double value; 
     };
+    /** **/
+    struct ScalarVar {
+      ScalarVar( string name_, string family_, string order_ ):
+        name(name_), family(family_), order(order_) {}
+      // Default stuff
+      ScalarVar( string name_ ): name(name_), family("LAGRANGE"), order("FIRST") {}
+      string name, family, order;
+      bool operator<(const ScalarVar & other) const;   /// Indexer
+    };
     /** ** ** ** ** ** ** ** **/
 
     BCConfig();
@@ -77,12 +86,14 @@ class BCConfig
     string sys_name;
 
     map<string, PenaltyBC> penalty;  // penalty_name => entry
-    set<string> scalars;             // list of scalars
+    set<ScalarVar> scalars;             // list of scalars
     
     map< string, double > initial_by_vname;
     map< double, TimeEntry > entry_by_time;
 
-    void all_bnames( set<string> & ret ) ;
+    // Convenience
+    void all_bnames( set<string> & ret ) const ;
+    bool has_scalar( string name ) const;
 
     friend Tester;
     friend ostream& operator<<(ostream& os, const BCConfig & m);
@@ -94,3 +105,5 @@ ostream& operator<<(ostream& os, const map<string,BCConfig::PenaltyBC> & m);
 ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m);
 ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m);
 ostream& operator<<(ostream& os, const BCConfig::ItemTensor & m);
+ostream& operator<<(ostream& os, const set<BCConfig::ScalarVar> & m);
+ostream& operator<<(ostream& os, const BCConfig::ScalarVar & m);

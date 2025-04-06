@@ -36,7 +36,7 @@ void ViscoPlasticMaterial::setup_variables()
   dlog(1) << "     FEFamily:" << fe_family;
 
   set<subdomain_id_type> sids = { sid };
-   system.add_variable( "UX", order, fe_family, &sids );
+  system.add_variable( "UX", order, fe_family, &sids );
   system.add_variable( "UY", order, fe_family, &sids );
   system.add_variable( "UZ", order, fe_family, &sids );
 }

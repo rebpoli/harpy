@@ -28,7 +28,7 @@ void Timeloop::main_loop()
   while ( true )
   {
     ilog1 << "====================================================";
-    ilog1 << "Solving timestep "<< ts.t_step<<" @ " << ts.time << "...";
+    ilog1 << "Solving timestep "<< ts.t_step<<" @ " << ts.time << "s (dt=" << ts.dt << ") ...";
 
     sloop.solve();
     sloop.export_results();

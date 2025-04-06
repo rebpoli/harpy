@@ -68,7 +68,6 @@ ADD_LIBRARY(Modules
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp
   src/harpy/Material.cpp
-  src/config/TimeloopConfig.cpp
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
   src/config/BCConfig.cpp
@@ -160,6 +159,9 @@ target_link_libraries( ut-param-interp Modules )
 
 add_executable( ut-model-config demos/UNIT-TEST/05-MODEL-CONFIG//main.cpp  )
 target_link_libraries( ut-model-config Modules )
+
+add_executable( ut-viscoplastic demos/UNIT-TEST/06-VISCOPLASTIC/main.cpp  )
+target_link_libraries( ut-viscoplastic Modules )
 
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )

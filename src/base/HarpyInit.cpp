@@ -46,7 +46,7 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
     // Le o config.json (nota: essa funcao nao pode contar com nada configurado, evitar prints de depuracao etc.,
     // que usam o rank do proceso, que ainda nao esta inicializado)
     CHIMAS_HOME = find_home();
-    CFG.init();
+//    CFG.init();  // DEPRECATED -- ALL IN config/* and MODEL
     // Aqui temos que ajustar as configuracoes de depuracao, para a inicializacao
     // fazer direito -- como elas sao definidas no json, eh importante manter a ordem
 //    PENumericalConfig pec; 

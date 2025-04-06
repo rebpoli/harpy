@@ -1,14 +1,41 @@
 #include "harpy/Timestep.h"
 #include <iomanip>
 
+#include "config/ModelConfig.h"
+#include "config/TimestepConfig.h"
+
+/**
+ *
+ */
+Timestep::Timestep() :
+       config(MODEL->timestep),
+       t_step(0),
+       dt(config.dt0), 
+       time(-1) 
+{
+
+  // Build tsqueue
+  set<double> tsset;
+  BCConfig & bcc = MODEL->boundary_config;
+  for ( auto & [k,v] : bcc.entry_by_time ) 
+  if ( k > 0 ) tsset.insert(k);
+
+  for ( double t : tsset ) 
+  {
+    dlog(1) << "--- build tsqueue: " << t;
+    tsqueue.push(t);
+  }
+}
+
+
 /**
  * Returns true if we reached the last timestep of the run.
  */
 bool Timestep::test_end() const {
-  if ( t_step > cfg.n_steps ) return true;
+  if ( t_step > config.max_steps ) return true;
 
-  if ( cfg.t_max > 0 )
-    if ( time > cfg.t_max ) return true;
+  if ( config.t_max > 0 )
+  if ( time > config.t_max ) return true;
 
   return false;
 }
@@ -20,23 +47,23 @@ double Timestep::next() {
   SCOPELOG1(1);
   t_step++;
 
-  // Primeiro timestep após a inicializacao, roda com dt_min
-  if ( ! time ) 
+  // Primeiro timestep após a inicializacao, roda com dt0
+  if ( time < 0 ) 
   { 
-    dt = cfg.dt_min; 
-    time += dt;
+    dt = config.dt0; 
+    time = 0;
     return dt; 
   }
 
   // Controle normal dos timesteps ( dt = progressao geometrica )
-  dt = dt * cfg.dt_k;
-  if ( dt > cfg.dt_max ) dt = cfg.dt_max;
-  if ( dt < cfg.dt_min ) dt = cfg.dt_min;
+  dt = dt * config.dtk;
+  if ( dt > config.dt_max ) dt = config.dt_max;
+
+  if ( dt < config.dt0 ) dt = config.dt0; // This happens after using an entry from tsqueue, near the previous TS
 
   double prev_time = time;
 
   // Verifica se nao estamos bypassando um tsvec
-  queue<double> & tsqueue = cfg.tsqueue;
   while(true) {
     if ( tsqueue.empty() ) break;
     double _t = tsqueue.front();
@@ -52,7 +79,7 @@ double Timestep::next() {
     } 
 
     // nao estamos interessados em passos de tempo muito pequenos
-    if ( _dt < cfg.dt_min ) 
+    if ( _dt < config.dt_min ) 
     {
       tsqueue.pop();
       continue; 
@@ -64,13 +91,8 @@ double Timestep::next() {
       dt = _dt ; tsqueue.pop(); break; 
     }
 
-//    Acredito que nao precisa disso, porque o usuario esta escolhendo o passo de 
-//    tempo. Mas coloquei um warning caso de problema porque teoricamente o dt pode
-//    ficar criticamente pequeno.
-//    if ( _dt < cfg.dt_min )
-//      _dt = cfg.dt_min;
-    if ( _dt < cfg.dt_min )
-      wlog << "Timestep less than minimum (_dt="<<_dt<<" < dt_min="<<cfg.dt_min << ")";
+    if ( _dt < config.dt_min )
+      wlog << "Timestep less than minimum (_dt="<<_dt<<" < dt_min="<<config.dt_min << ")";
 
     break; // _dt >= dt ... good to go.
   }

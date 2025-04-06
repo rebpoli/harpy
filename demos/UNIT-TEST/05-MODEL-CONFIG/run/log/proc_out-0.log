@@ -26,7 +26,7 @@
 # Deb[1:0]: LINE(14) >># List of scalar variables                               @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
 # Deb[1:0]: LINE(15) >>.SCALAR                                                  @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
-# Deb[1:0]: LINE(16) >>tri_dx                                                   @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
+# Deb[1:0]: LINE(16) >>tri_dx    LAGRANGE SECOND                                @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
 # Deb[1:0]: LINE(17) >>tri_dy                                                   @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:77
 # Deb[1:0]: (?:\s+([-a-zA-Z_0-9]+))?                                            @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:117
@@ -169,19 +169,19 @@
 # Deb[1:0]: ____ NEXT STATE: 2                                                  @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:107
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
-# Deb[1:0]: ____ Line>>TYPE    CONTINUOUS                                       @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ Line>>TYPE    U  CONTINUOUS                                    @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
 # Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::fem_state()                          @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
-# Deb[1:0]: ____ Line>>FAMILY  LAGRANGE                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ Line>>FAMILY  U  LAGRANGE                                      @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
 # Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::fem_state()                          @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:191
-# Deb[1:0]: ____ Line>>ORDER   FIRSTxx                                          @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
+# Deb[1:0]: ____ Line>>ORDER   U  FIRST                                         @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:81
 # Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:205
 # Deb[1:0]: __ Parsing state: 2                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
 # Deb[1:0]: __ ScopeLog @ MaterialReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:136     @ /lm23_hdd/harpy/src/base/Log.cpp:191
@@ -219,17 +219,21 @@ SolverConfig:
                                     Biot:             0.3            (undef)        
                                     Bulk:             (undef)        (undef)        
                                     Skempton:         (undef)        (undef)        
-                                 FEM:
+                                 FEM (var: U):
                                     type:              CONTINUOUS     
                                     family:            LAGRANGE       
-                                    order:             FIRSTxx        
+                                    order:             FIRST          
 
       Boundary  Config:
 
 |-----------------------------------------------
 |   BOUNDARY CONDITIONS     
 |-----------------------------------------------
-| SCALARS: ['tri_dx' 'tri_dy'] (2)
+| SCALARS: 
+       Name                Family              Order               
+       tri_dx              LAGRANGE            SECOND              
+       tri_dy              LAGRANGE            FIRST               
+
 |----------------------------------------------
 | INITIAL_BY_VNAME: 
 [] (0)

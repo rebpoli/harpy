@@ -4,6 +4,7 @@
 #include "config/SolverConfig.h"
 #include "config/MaterialConfig.h"
 #include "config/BCConfig.h"
+#include "config/TimestepConfig.h"
 #include "util/String.h"
 
 #include <map>
@@ -26,7 +27,7 @@ public:
   CIMap<string > system_cfgid;        /// sys_name -> config name
   CIMap< SolverConfig > solvers;       /// System configurations
   set< MaterialConfig > materials;   /// Material configurations
-  map< string, double > timestep;
+  TimestepConfig timestep;
   BCConfig boundary_config;
 
   string model_dir, model_file;
@@ -40,6 +41,7 @@ private:
 
 ostream& operator<<(ostream& os, const ModelConfig & m);
 ostream& operator<<(ostream& os, const CIMap<MaterialConfig> & m);
+ostream& operator<<(ostream& os, const TimestepConfig & m);
 
 /** Global variable with the model configuration */
 extern ModelConfig * MODEL;

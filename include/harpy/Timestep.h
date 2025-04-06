@@ -1,22 +1,27 @@
 #pragma once
 
 #include "base/Global.h"
-#include "config/TimeloopConfig.h"
+#include <queue>
+
+class TimestepConfig;
 
 /**
  *
  *
  */
 class Timestep {
-  private:
-    TimeloopConfig cfg;
-
   public:
-    Timestep() : cfg(), t_step(0), dt(cfg.dt), time(0) {}
+    Timestep();
     bool test_end() const;
     double next();
+
+    TimestepConfig & config;
     uint t_step;
     double dt, time;
+
+    queue<double> tsqueue;  
+
+  private:
 
     friend ostream& operator<<(ostream& os, const Timestep & ts);
 };

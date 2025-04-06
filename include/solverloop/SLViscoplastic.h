@@ -1,10 +1,11 @@
 #pragma once
 
 #include "base/Global.h"
-#include "harpy/Timestep.h"
 
 #include "solver/SolverViscoplasticTrial.h"
 #include "harpy/Solverloop.h"
+
+class Timestep;
 
 /**
  *

@@ -1,6 +1,7 @@
 #include "config/BCConfig.h"
 #include "config/Config.h"
 #include "util/OutputOperators.h"
+#include "util/String.h"
 
 /**
  *
@@ -114,10 +115,8 @@ void BCConfig::TimeEntry::add_penalty_bc( string bname, string vname, string pen
 
 /**
  *
- *
- *
  */
-void BCConfig::all_bnames( set<string> & ret )
+void BCConfig::all_bnames( set<string> & ret ) const
 {
   for (const auto& [ts, entry] : entry_by_time )
   {
@@ -125,6 +124,18 @@ void BCConfig::all_bnames( set<string> & ret )
     for ( const auto & [bname, item] : entry.scalar_bcs ) ret.insert( bname );
   }
 }
+/**
+ *    Return true if a scalar named $name exists.
+ */
+bool BCConfig::has_scalar( string name ) const { return scalars.count( ScalarVar(name) ) > 0; }
+
+/**
+ *    Makes the ScalarVar object an indexer for maps and sets.
+ *
+ *    The object is only indexed by the _name_ variable, case insensitive.
+ */
+bool BCConfig::ScalarVar::operator<(const BCConfig::ScalarVar & other) const
+{ harpy_string::ci_cmp c; return c( name, other.name ); }
 
 /**
  *
@@ -137,7 +148,7 @@ ostream& operator<<(ostream& os, const BCConfig & m)
   os << "|-----------------------------------------------" << endl;
   os << "|   BOUNDARY CONDITIONS     " << endl;
   os << "|-----------------------------------------------" << endl;
-  os << "| SCALARS: ";
+  os << "| SCALARS: " << endl;
   os << m.scalars << endl;
   os << "|----------------------------------------------" << endl;
   os << "| INITIAL_BY_VNAME: " << endl;
@@ -152,6 +163,9 @@ ostream& operator<<(ostream& os, const BCConfig & m)
   return os;
 }
 
+/**
+ *
+ */
 ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m)
 {
   for (const auto& [ts, item] : m ) {
@@ -163,6 +177,10 @@ ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m)
   }
   return os;
 }
+
+/**
+ *
+ */
 ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m)
 {
   os << "DOMAIN BCS:" << endl;
@@ -184,6 +202,9 @@ ostream& operator<<(ostream& os, const BCConfig::TimeEntry & m)
   return os;
 }
 
+/**
+ *
+ */
 ostream& operator<<(ostream& os, const BCConfig::ItemTensor & m)
 {
   const vector< vector<double> > & v = m.value;
@@ -195,7 +216,6 @@ ostream& operator<<(ostream& os, const BCConfig::ItemTensor & m)
 }
 
 /**
- *
  *
  */
 ostream& operator<<(ostream& os, const BCConfig::PenaltyBC & m)
@@ -210,3 +230,26 @@ ostream& operator<<(ostream& os, const map<string,BCConfig::PenaltyBC> & m)
   os << "}" << endl;
   return os;
 }
+
+/**
+ *
+ */
+ostream& operator<<(ostream& os, const set<BCConfig::ScalarVar> & m)
+{
+  os << "       ";
+  os << setw(20) << "Name";
+  os << setw(20) << "Family";
+  os << setw(20) << "Order";
+  os << endl;
+  for ( auto & v : m ) os << v << endl;
+  return os;
+}
+ostream& operator<<(ostream& os, const BCConfig::ScalarVar & m)
+{
+  os << "       ";
+  os << setw(20) << m.name;
+  os << setw(20) << m.family;
+  os << setw(20) << m.order;
+  return os;
+}
+

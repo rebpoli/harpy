@@ -6,7 +6,7 @@
 #include "libmesh/mesh.h"
 #include "libmesh/equation_systems.h"
 
-#
+#include "harpy/Timestep.h"
 
 int main (int argc, char ** argv)
 {
@@ -15,7 +15,8 @@ int main (int argc, char ** argv)
 
   MODEL = new ModelConfig( "model/" );
 
-  SolverViscoplasticTrial st( "Viscoplastic" );
+  Timestep ts;
+  SolverViscoplasticTrial st( "Viscoplastic", ts );
 
   return 0;
 }

@@ -159,10 +159,7 @@ void ModelReader::timestep_state()
 
   string key = match[1], val = match[2];
 
-  if ( ! timestepKeys.count(key) )
-    flog << "Unrecognized key at MODEL("<< ln << "), TIMESTEP section. Key: " << key;
-
-  config.timestep[key] = stod( val );
+  config.timestep.set( key, stod( val ) );
 }
 /**
  * Parse a line in the state
@@ -219,7 +216,7 @@ void ModelReader::time_state()
       auto & te = bcconfig.entry_by_time[ current_time ];
       if ( bcconfig.penalty.count( strval ) )
         te.add_penalty_bc( scope, vname, strval );
-      else if ( bcconfig.scalars.count( strval ) )
+      else if ( bcconfig.has_scalar( strval ) )
         te.add_scalar_bc( scope, vname, strval );
       else 
         flog << "Cannot find '" << strval << "' in scalar nor penalty variable list (MODEL file, line " << ln << ").";
@@ -235,11 +232,31 @@ void ModelReader::time_state()
 void ModelReader::scalar_state()
 {
   smatch match;
-  if ( ! regex_search( line, match, RE_STR ) ) 
-    flog << "Unrecognized format at MODEL(" << ln << "), SCALAR section. Line: " << line;
 
   BCConfig & bcconfig = config.boundary_config;
-  bcconfig.scalars.insert( match[1] );
+
+  // Invalid definition!
+  if ( regex_search( line, match, RE_STR_STR ) ) flog << "Unrecognized format at MODEL(" << ln << "), SCALAR section. Line: " << line;
+
+  // Full definition ( NAME FAMILY ORDER )
+  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
+  { 
+    string name = match[1], family=match[2], order=match[3];
+    // Validation
+    CISet CHECK_FMLY = {"LAGRANGE"};
+    if (! CHECK_FMLY.count(family) ) flog << "Invalid FAMILY definition at MODEL(" << ln << "), SCALAR SECTION. Read: '" << family << "'.";
+    CISet CHECK_ORDER = {"FIRST", "SECOND"};
+    if (! CHECK_ORDER.count(order) ) flog << "Invalid ORDER definition at MODEL(" << ln << "), SCALAR SECTION. Read: '" << order << "'.";
+
+    // Add.
+    bcconfig.scalars.emplace( name, family, order ); 
+    return; 
+  }
+
+  // Short definition ( NAME ) -- FAMILY and ORDER are defaults -- see ScalarVar class
+  if ( regex_search( line, match, RE_STR ) ) { bcconfig.scalars.emplace( match[1] ); return; }
+
+  flog << "Unrecognized format at MODEL(" << ln << "), SCALAR section. Line: " << line;
 }
 /**
  * Parse a line in the state

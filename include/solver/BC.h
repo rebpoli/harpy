@@ -18,6 +18,7 @@
  *
  */
 
+class Timestep;
 using namespace libMesh;
 
 class BC {
@@ -64,7 +65,8 @@ class BC {
 
     BC( const System & sys );
     ~BC() { _cleanup(); }
-    void update( double time );
+    bool update( double time );
+    bool update( const Timestep & ts );
 
   private:
     const System & system;

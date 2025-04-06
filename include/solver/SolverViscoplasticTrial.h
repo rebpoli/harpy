@@ -3,6 +3,7 @@
 #include "base/Global.h"
 #include "harpy/Solver.h"
 #include "harpy/Material.h"
+#include "solver/BC.h"
 
 #include "libmesh/mesh.h"
 #include "libmesh/equation_systems.h"
@@ -11,6 +12,8 @@
 #include <map>
 
 class SolverConfig;
+class Timestep;
+
 namespace libMesh {
   class Elem;
   class MeshBase; 
@@ -39,7 +42,7 @@ using namespace libMesh;
 class SolverViscoplasticTrial : public Solver
 {
   public:
-    SolverViscoplasticTrial( string name );
+    SolverViscoplasticTrial( string name, const Timestep & ts_ );
     ~SolverViscoplasticTrial();
 
     void init_materials();
@@ -52,6 +55,7 @@ class SolverViscoplasticTrial : public Solver
     
     void load_mesh();
     void set_dirichlet_bcs();
+    void add_scalar_vars();
 
     string name;
 
@@ -61,6 +65,7 @@ class SolverViscoplasticTrial : public Solver
     EquationSystems es;
 
     TransientNonlinearImplicitSystem & system;
+    BC curr_bc;
 
     map< uint, Material * > material_by_sid;
 };

@@ -54,8 +54,7 @@ ostream& operator<<(ostream& os, const ModelConfig & m)
   os << "      " << setw(20) << left << "model_dir"  << ": " << m.model_dir << endl;
   os << "      " << setw(20) << left << "model file" << ": " << m.model_file << endl;
   os << "      " << "Timestep:" << endl;
-  for ( auto [ s, val ] : m.timestep )
-    os << "           " << setw(15) << left << s << ": " << val << endl;
+  os << m.timestep;
   os << "      " << "SYSTEM / Config:" << endl;
   for ( auto [ s, c ] : m.solvers )
     os << "           " << setw(15) << left << s << ": " << c << endl;
@@ -67,5 +66,20 @@ ostream& operator<<(ostream& os, const ModelConfig & m)
   os << "      " << "Boundary  Config:" << endl;
   os << m.boundary_config;
 
+  return os;
+}
+
+/**
+ *
+ */
+ostream& operator<<(ostream& os, const TimestepConfig & m)
+{
+  os << "TimestepConfig: " << endl; 
+  os << "           dt0:" << setw(10) << m.dt0 << endl;
+  os << "           dtk:" << setw(10) << m.dtk << endl;
+  os << "        dt_min:" << setw(10) << m.dt_min << endl;
+  os << "        dt_max:" << setw(10) << m.dt_max << endl;
+  os << "         t_max:" << setw(10) << m.t_max << endl;
+  os << "     max_steps:" << setw(10) << m.max_steps << endl;
   return os;
 }
