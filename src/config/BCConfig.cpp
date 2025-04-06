@@ -1,11 +1,10 @@
 #include "config/BCConfig.h"
 #include "config/Config.h"
 #include "util/OutputOperators.h"
-using namespace rapidjson;
 
 /**
  *
- * Builds the datastructure from the json
+ * Builds the datastructure from the  model.
  *
  */
 BCConfig::BCConfig()  {}
@@ -27,6 +26,22 @@ void BCConfig::TimeEntry::add_domain_bc( string subdomain, string vname, double 
   auto & vec = domain_bcs[subdomain];
   vec.push_back(dbc);
   domain_bcs[subdomain] = vec;
+}
+
+/*
+ *
+ * Returns the time imediatelly before time.
+ *
+ */
+double BCConfig::get_reftime( double time )
+{
+  double reftime = -999;
+  for ( const auto & [ t, e ] : entry_by_time )
+  {
+    if ( t > time ) break;
+    reftime = t;
+  }
+  return reftime;
 }
 
 /**

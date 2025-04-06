@@ -5,6 +5,7 @@
 #include "libmesh/boundary_info.h"
 #include "libmesh/nonlinear_implicit_system.h"
 #include "libmesh/transient_system.h"
+#include "libmesh/dirichlet_boundaries.h"
 
 #include "config/ModelConfig.h"
 #include "base/HarpyInit.h"
@@ -24,6 +25,8 @@ SolverViscoplasticTrial::SolverViscoplasticTrial( string name_ ) :
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) )
 {
   dlog(1) << "SolverViscoplasticTrial: " << *config;
+
+  // Init equationsystems
   load_mesh();
   init_materials();
   es.init();
@@ -52,7 +55,8 @@ SolverViscoplasticTrial::~SolverViscoplasticTrial()
 }
 
 /**
- *
+ *   Creates all the needed materials for the solution (one per subdomain ID).
+ *   Initializes the material_by_sid structure.
  */
 void SolverViscoplasticTrial::init_materials()
 {
@@ -60,21 +64,28 @@ void SolverViscoplasticTrial::init_materials()
   // ensures creation of all materials to the current mesh (local elems only)
   MeshBase & mesh = es.get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
-    get_material( *elem );
+  {
+    uint sid = elem->subdomain_id();
+    if  ( ! material_by_sid.count( sid ) ) 
+      material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *config );
+  }
 }
 
 /**
  *   Returns the material for a given element.
- *   Creates a material if not existing.
+ *   Fails if not existing.
  */
 Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit )
 {
   uint sid = elem.subdomain_id();
+  // Consistency check
   if  ( ! material_by_sid.count( sid ) ) 
-    material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *config );
+  {
+    string sname = mesh.subdomain_name( sid );
+    flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
+  }
 
   Material * mat = material_by_sid.at(sid);
-
   if ( reinit ) mat->reinit();
 
   return mat;
@@ -83,8 +94,51 @@ Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit
 /**
  *
  */
+void SolverViscoplasticTrial::set_dirichlet_bcs()
+{
+  SCOPELOG1(1);
+  const MeshBase & mesh = es.get_mesh();
+  const BoundaryInfo & bi = mesh.get_boundary_info();
+  DofMap & dof_map = system.get_dof_map();
+  dof_map.get_dirichlet_boundaries()->clear();
+//  BCConfig & bcc = MODEL->boundary_config;
+
+//  // BID => VARID => VALUE
+//  BCMap<double> dbc;
+//  bcs->curr().double_bcs( dbc, _vid_set() );
+//  bool drained = bcs->curr().drained;
+
+//  DGConfig dg_config;
+
+//  for ( auto const & me : dbc  ) {
+//    auto bid = me.first;
+//    auto & vec = me.second;
+//    for ( auto & er : vec ) { 
+//      auto vid = er.first;
+//      auto val = er.second;
+//      string bname    = bi.get_sideset_name( bid );
+//      string vname    = system.variable_name(vid);
+
+//      ConstFunction<> cf( val );
+//      DirichletBoundary bound({bid}, {vid}, cf, LOCAL_VARIABLE_ORDER);
+//      dlog1(1) << "["<< fmt_i(ts.t_step) << "] Adding dirichlet boundary condition: " << vname << "("<< vid << ")" << "=" << val << " @ " << bname << "(" << bid << ")";
+//      dof_map.add_dirichlet_boundary(bound);
+//    }
+//  }
+
+//  system.reinit_constraints();
+
+}
+
+/**
+ *   Implements the workflow of the system solution.
+ *         1. Update dirichlet and rigid constraints
+ *         2. call system.solve
+ *         3. run sys.get_dof_map().enforce_constraints_exactly(sys) ; sys.update()
+ *         4. report convergence
+ */
 void SolverViscoplasticTrial::solve()
 {
-
+  set_dirichlet_bcs();
 }
 

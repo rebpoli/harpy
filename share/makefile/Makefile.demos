@@ -14,7 +14,7 @@ topdir := $(shell i=. ; for c in 0 1 2 3 4 5 6 7 8; do [ ! -f $$i/.chimas_top ] 
 #     $(MAKE) do_plot
 
 set-%:
-	$(MAKE) -C $(topdir) build/$*
+	$(MAKE) -j10 -C $(topdir) build/$*
 
 # default targets
 set: set-opt

@@ -51,6 +51,7 @@ class SolverViscoplasticTrial : public Solver
   private:
     
     void load_mesh();
+    void set_dirichlet_bcs();
 
     string name;
 

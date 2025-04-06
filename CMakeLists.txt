@@ -149,8 +149,8 @@ set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
 target_link_libraries( ut-timestep Modules )
 
-# add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
-# target_link_libraries( ut-bcconfig Modules )
+add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
+target_link_libraries( ut-bcconfig Modules )
 
 add_executable( ut-material-setup demos/UNIT-TEST/03-MATERIAL-SETUP/main.cpp  )
 target_link_libraries( ut-material-setup Modules )

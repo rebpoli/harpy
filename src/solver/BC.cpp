@@ -1,5 +1,6 @@
 
 #include "solver/BC.h"
+#include "config/ModelConfig.h"
 #include "config/BCConfig.h"
 #include "libmesh/elem.h"
 #include "libmesh/boundary_info.h"
@@ -9,7 +10,10 @@
  * Initialize an empty boundary constriant object.
  *
  */
-BC::BC( const System & sys_ ) : system(sys_), config(), time(-999), reftime(-999)
+BC::BC( const System & sys_ ) : 
+              system(sys_), 
+              config( MODEL->boundary_config ),
+              time(-999), reftime(-999)
 {
 
 }
@@ -259,7 +263,9 @@ void BC::_update_penalty()
  */
 ostream& operator<<(ostream& os, const BC & m)
 {
+  os << endl;
   os << "Current boundary condition (BC):" << endl;
+  os << "   Time:" << m.time << setw(15) << "reftime:" << m.reftime << endl;
   os << "   DIRICHLET BCS:" << endl;
   os << m.dirichlet;
   os << "   SCALAR BCS:" << endl;

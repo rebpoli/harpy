@@ -68,7 +68,7 @@ class BC {
 
   private:
     const System & system;
-    BCConfig config;
+    BCConfig & config;
     double time;        // Time of the current BC
     double reftime;    // Reference time of the current BC
 
