@@ -84,8 +84,11 @@ public:
   static bool show_msg_lines;
   static std::string LogColor;
   static void color_rst() { LogColor = RST; }
-  static void color_cyan() { LogColor = std::string(KBGCYN) + KFGBLK; }
-  static void color_green() { LogColor = std::string(KBGGRN) + KFGBLK; }
+  static void color_blue() { LogColor = std::string(KFGBLU) + KBGBLK; }
+  static void color_cyan() { LogColor = std::string(KFGCYN) + KBGBLK; }
+  static void color_green() { LogColor = std::string(KFGGRN) + KBGBLK; }
+  static void color_red() { LogColor = std::string(KFGRED) + KBGBLK; }
+  static void color_yellow() { LogColor = std::string(KFGYEL) + KBGBLK; }
 
   static void indent_inc() { _curr_indent += 2; };
   static void indent_dec() { _curr_indent -= 2; };

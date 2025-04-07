@@ -3,6 +3,7 @@
 #include "config/ModelConfig.h"
 #include "config/BCConfig.h"
 #include "harpy/Timestep.h"
+#include "util/OutputOperators.h"
 
 #include "libmesh/elem.h"
 #include "libmesh/boundary_info.h"
@@ -16,9 +17,7 @@ BC::BC( const System & sys_ ) :
               system(sys_), 
               config( MODEL->boundary_config ),
               time(-999), reftime(-999)
-{
-
-}
+{ }
 
 /**
  * Cleanup the generated dynamic datastructures
@@ -43,6 +42,8 @@ bool BC::update( double t )
 {
   SCOPELOG(1);
 
+  dlog(1) << "BC::update - t=" << t;
+
   time = t;
 
   /** Test if the reference time has changed for the new time **/
@@ -52,7 +53,9 @@ bool BC::update( double t )
     return false; // nothing has changed
   }
   reftime = rt;
-  // Clean structures
+
+  // Clear structures
+  dirichlet.clear();
 
   // Perform each part of the update
   _validate();
@@ -75,7 +78,7 @@ bool BC::update( const Timestep & ts ) { return update( ts.time ) ; }
 void BC::_validate()
 {
   /** Check if all the sides are present in the mesh. Show warnings otherwise. **/
-  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
+//  const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
   set<string> seen_bnames; 
   const MeshBase & mesh = system.get_mesh();
@@ -92,7 +95,6 @@ void BC::_validate()
     {
       /** Is the this bid currently constrained? **/
       string bname = bi.get_sideset_name( bid );
-      if ( ! timeentry.dbl_bcs.count( bname ) ) continue;
       seen_bnames.insert( bname );
     }
   }
@@ -103,6 +105,10 @@ void BC::_validate()
   for ( auto bname : bnames ) 
   if ( ! seen_bnames.count( bname ) )
     wlog << "No element has boundary '" << bname << "'. Check the mesh or the boundary conditions.";
+
+  dlog(1) << "Seen boundary names in the mesh: " << seen_bnames;
+  dlog(1) << "Constrained boundaries in the current BC object: " << bnames;
+
 }
 
 /**
@@ -110,7 +116,6 @@ void BC::_validate()
  */
 void BC::_update_scalar()
 {
-  dirichlet.clear();
   const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
   // Refresh data structures - can be only the local (would save some minor time)
@@ -147,12 +152,15 @@ void BC::_update_scalar()
  */
 void BC::_update_dirichlet()
 {
-  dirichlet.clear();
+  SCOPELOG(1);
+
   const BCConfig::TimeEntry & timeentry = config.entry_by_time[reftime];
 
   // Refresh data structures - can be only the local (would save some minor time)
   const MeshBase & mesh = system.get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
+
+  dlog(1) << "Updating Dirichlet: " << timeentry;
 
   for ( auto & [ bname, vec ] : timeentry.dbl_bcs )
   for ( auto & item : vec )
@@ -161,7 +169,11 @@ void BC::_update_dirichlet()
 
     /** Validation of the variable name (Dirichlet constraints are on
         existing variables of the system) **/
-    if ( ! system.has_variable( vname ) ) continue; 
+    if ( ! system.has_variable( vname ) ) 
+    {
+      dlog(1) << "System '" << system.name() << "' HAS NO variable named '" << vname << "'. Skipping constrain.";
+      continue; 
+    }
     uint vid = system.variable_number( vname );
 
     double val = item.value;
@@ -169,6 +181,7 @@ void BC::_update_dirichlet()
 
     DirichletItem di( bid, vid, val, vname, bname );
     dirichlet.push_back( di );
+    dlog(1) << "Pushing back dirichlet " << di;
   }
 }
 

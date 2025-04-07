@@ -64,10 +64,19 @@ void Log::init( uint rank ) {
 */
 ostringstream & Log::get( int level )
 {
-  if (_fail) _os << "# Fail[p"<< RANK <<"]: ";
+  // Color only to the terminal (not to the log files)
+  if (_fail) color_red();
+  else if (level == 0)  color_green();
+  else if (level == -1) color_yellow();
+  else if (level == -2) color_red();
+  else if (level == -3) color_rst();
+  else color_cyan();
+
+  // Prefix to the lines
+  if (_fail) _os << "# Fail[p" << RANK <<"]: ";
   else if (level == 0) _os <<  "# Info:     ";
-  else if (level == -1) _os << "# Warn:     ";
-  else if (level == -2) _os << "# Err:      ";
+  else if (level == -1) _os <<  "# Warn:     ";
+  else if (level == -2) _os  << "# Err:      ";
   else if (level == -3) {
     _newline = 0;
     _os << "# PETSC: ";
@@ -139,9 +148,11 @@ Log::~Log()
       if ( spaces < 5 ) spaces = 5;
 
       if ( screen ) {
+        if ( LogColor != RST ) fprintf(_out, "%s", LogColor.c_str());
         for ( int i=0;i<spaces;i++) fprintf(_out, " ");
         fprintf( _out, "@ %s", _file ); 
         if ( _line > 0 ) { fprintf(_out, ":%d", _line); }
+        if ( LogColor != RST ) fprintf(_out, "%s", string(RST).c_str());
       }
 
       if ( _dfile ) {

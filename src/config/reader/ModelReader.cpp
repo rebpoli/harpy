@@ -74,7 +74,6 @@ void ModelReader::parse_model_file()
   {
     ln++;
     trim_right(line);
-    dlog(1) << "LINE(" << ln << ") >>" << line;
     line = remove_comments_and_trim( line );
 
     if ( next_state() ) continue;
@@ -113,8 +112,6 @@ bool ModelReader::next_state()
 
   // Resets the state
   if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
-
-  dlog(1) << tok_op;
 
   // New section. Changes the state
   if ( ! regex_search(line, match, RE_SEC) ) return false;
@@ -189,7 +186,6 @@ void ModelReader::time_state()
     string scope = match[2];
     string vname = match[3];
     string strval = match[4];
-    dlog(1) << "   time_state: type(" << type << ") scope(" << scope << ") vname(" << vname << ") strval(" << strval << ")" ;
 
     // Validation
     CISet types = { "domain", "boundary" };

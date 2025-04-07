@@ -8,6 +8,7 @@
 #include "libmesh/mesh.h"
 #include "libmesh/equation_systems.h"
 #include "libmesh/transient_system.h"
+#include "libmesh/nonlinear_implicit_system.h"
 
 #include <map>
 
@@ -39,7 +40,10 @@ namespace libMesh {
 
 using namespace libMesh;
 
-class SolverViscoplasticTrial : public Solver
+class SolverViscoplasticTrial : public Solver, 
+                                public NonlinearImplicitSystem::ComputeResidual,
+                                public NonlinearImplicitSystem::ComputeJacobian
+
 {
   public:
     SolverViscoplasticTrial( string name, const Timestep & ts_ );
@@ -50,11 +54,22 @@ class SolverViscoplasticTrial : public Solver
 
     void solve();
 
+    // Interface to set up the trial system
+    virtual void jacobian (const NumericVector<Number> & soln,
+                           SparseMatrix<Number> & jacobian,
+                           NonlinearImplicitSystem & /*sys*/);
+    virtual void residual (const NumericVector<Number> & soln,
+                           NumericVector<Number> & residual,
+                           NonlinearImplicitSystem & /*sys*/);
+
 
   private:
     
     void load_mesh();
     void set_dirichlet_bcs();
+    void set_scalar_bcs() ;
+    void set_unassigned_scalars();
+
     void add_scalar_vars();
 
     string name;
