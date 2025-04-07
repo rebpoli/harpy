@@ -15,6 +15,11 @@ public:
   ViscoPlasticMaterial( suint sid_, const MaterialConfig & config, System & sys_ );
   virtual void init_fem();
 
+
+  virtual void reinit( const Elem & elem );
+  virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
+  virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
+
 private:
   void setup_variables();
 

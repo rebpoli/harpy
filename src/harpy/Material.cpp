@@ -19,14 +19,6 @@ Material::Material( suint sid_, const MaterialConfig & config_, System & sys_ ) 
 { }
 
 /**
- *
- */
-void Material::reinit()
-{
-  SCOPELOG(1);
-}
-
-/**
  *   Creates a Material for the subdomain.
  *
  */

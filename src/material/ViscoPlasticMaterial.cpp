@@ -77,9 +77,57 @@ void ViscoPlasticMaterial::init_fem()
     Fe_var.emplace_back(Fe);
 }
 
-////  This goes in the jacobian and residual functions
-//
-//  const vector<Real> & JxW = fe_u->get_JxW();
-//  const vector<vector<Real>> & phi_u = fe_u->get_phi();
-//  const vector<vector<RealGradient>> & dphi_u = fe_u->get_dphi();
+/**
+ *  Init the DoF map and the element matrices.
+ *  This function must be called before (or at the beginning of)
+ *  the jacobian and residual.
+ */
+void ViscoPlasticMaterial::reinit( const Elem & elem )
+{
+  SCOPELOG(1);
 
+  fe->reinit( &elem );
+
+  const DofMap & dof_map = system.get_dof_map();
+
+  dof_map.dof_indices (&elem, dof_indices);
+  dof_map.dof_indices (&elem, dof_indices_var[0], 0);
+  dof_map.dof_indices (&elem, dof_indices_var[1], 1);
+  dof_map.dof_indices (&elem, dof_indices_var[2], 2);
+
+  uint n_dofs = dof_indices.size();
+  uint n_dofsv = dof_indices_var[0].size();
+
+  Ke.resize (n_dofs, n_dofs);
+  for (uint vi=0; vi<3; vi++)
+  for (uint vj=0; vj<3; vj++)
+    Ke_var[vi][vj].reposition ( vi*n_dofsv, vj*n_dofsv, n_dofsv, n_dofsv );
+
+  Fe.resize (n_dofs);
+  for (uint vi=0; vi<3; vi++)
+    Fe_var[vi].reposition ( vi*n_dofsv, n_dofsv );
+
+}
+
+/**
+ *     Builds the jacobian of the element and assembles in the global _jacobian_.
+ */
+void ViscoPlasticMaterial::jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian)
+{
+  SCOPELOG(1);
+  const vector<Real> & JxW = fe->get_JxW();
+  const vector<vector<Real>> & phi = fe->get_phi();
+  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+
+
+}
+/**
+ *     Builds the RHS of the element and assembles in the global _residual_.
+ */
+void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, NumericVector<Number> & residual)
+{
+  SCOPELOG(1);
+  const vector<Real> & JxW = fe->get_JxW();
+  const vector<vector<Real>> & phi = fe->get_phi();
+  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+}

@@ -118,7 +118,7 @@ Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit
   }
 
   Material * mat = material_by_sid.at(sid);
-  if ( reinit ) mat->reinit();
+  if ( reinit ) mat->reinit( elem );
 
   return mat;
 }
@@ -295,6 +295,14 @@ void SolverViscoplasticTrial::jacobian
 {
   SCOPELOG(1);
 
+  MeshBase & mesh = es.get_mesh();
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    Material * mat = get_material( *elem, true );
+    mat->jacobian( soln, jacobian );
+  }
+
+
 }
 
 /**
@@ -304,5 +312,12 @@ void SolverViscoplasticTrial::residual
 (const NumericVector<Number> & soln, NumericVector<Number> & residual, NonlinearImplicitSystem & /*sys*/)
 {
   SCOPELOG(1);
+
+  MeshBase & mesh = es.get_mesh();
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    Material * mat = get_material( *elem, true );
+    mat->residual( soln, residual );
+  }
 
 }

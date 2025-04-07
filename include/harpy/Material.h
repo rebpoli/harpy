@@ -24,7 +24,8 @@
 class MaterialConfig;
 class SolverConfig;
 
-namespace libMesh { class MeshBase; class System; }
+namespace libMesh { class MeshBase; class System; class Elem; }
+
 using namespace libMesh;
 
 class Material 
@@ -33,13 +34,20 @@ class Material
     Material( suint sid_, const MaterialConfig & config_, System & sys_ );
     virtual ~Material() {};
 
-    void reinit();
 
     static Material * Factory( suint sid, const MeshBase & mesh, 
                                System & system,
                                const SolverConfig & svr_config );
 
-    virtual void init_fem() { flog << "Must be redifined in the child classes."; }
+    // Interface
+    virtual void init_fem() 
+              { flog << "Must be redifined in the child classes."; }
+    virtual void reinit( const Elem & elem )
+              { flog << "Must be redifined in the child classes."; }
+    virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
+              { flog << "Must be redifined in the child classes."; }
+    virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual )
+              { flog << "Must be redifined in the child classes."; }
 
   protected:
     void _setup_fem();
