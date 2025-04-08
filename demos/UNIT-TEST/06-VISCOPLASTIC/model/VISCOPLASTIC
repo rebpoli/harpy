@@ -1,0 +1,19 @@
+# Each system is associated with a mesh
+.MESH mesh.e
+
+#
+# Configuration list: 
+#    One system can be built in many configurations
+#    The configuration to be used is defined in the MODEL file
+#
+
+# subdomain   material   configuration (opt)
+.CONFIG     BASE                # Material collection for the BASE sys_cfg
+TEST_FRAME caprock      BASE    # We can ommit the configuration if Mat_cfg = sys_cfgg
+
+# CONFIGURE THE NUMERICS OF THE SYSTEM SOLUTION HERE
+.NUMERICAL
+LS_PC         hypre
+LS_SOLVER     bcgsl
+LS_ATOL       1e-15
+LS_RTOL       1e-6

@@ -1,0 +1,22 @@
+# This is simply a list of properties for the configuration identified in the name of the file
+# Some properties are present in field units explicitly. Ex: PERMEABILITY_MD = Permeability in milidarcy
+
+# The second word in the line identifies how things are to be read.
+# Ex: POROSITY CON 0.2             => means a constant porosity of 20%. The word CON is optional
+#     PERMEABILITY FILE_XYZ PERM-BASE  => looks for the file model/%mat_name%/PERM-BASE with a XYZ format
+#
+
+.ENGINE      VISCOPLASTIC
+POROSITY      FILE    POR-BASE
+PERMEABILITY  1e-12     
+BIOT          0.3
+POISSON       0.25
+YOUNG         1e10
+
+
+## Defines finite element stuff
+.FEM
+TYPE         U       CONTINUOUS
+FAMILY       U       LAGRANGE
+ORDER        U       FIRST
+IMPLICIT     U       0.5xx
