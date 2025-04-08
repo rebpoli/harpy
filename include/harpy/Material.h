@@ -31,30 +31,38 @@ using namespace libMesh;
 class Material 
 {
   public:
-    Material( suint sid_, const MaterialConfig & config_, System & sys_ );
+    Material( suint sid_, const MaterialConfig & config_ );
     virtual ~Material() {};
 
 
+    /**
+     *   Creates a Material for the subdomain.
+     *
+     */
     static Material * Factory( suint sid, const MeshBase & mesh, 
-                               System & system,
-                               const SolverConfig & svr_config );
+                               System & system, const SolverConfig & svr_config );
 
     // Interface
+    virtual Material * get_bc_material()  /// Returns a material with the BC definitions and tools
+              { flog << "Must be redifined in the child classes."; return 0; }
     virtual void init_fem() 
               { flog << "Must be redifined in the child classes."; }
     virtual void reinit( const Elem & elem )
+              { flog << "Must be redifined in the child classes."; }
+    virtual void reinit( const Elem & elem, uint side )
               { flog << "Must be redifined in the child classes."; }
     virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
               { flog << "Must be redifined in the child classes."; }
     virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual )
               { flog << "Must be redifined in the child classes."; }
+    virtual bool is_bc() 
+              { flog << "Must be redifined in the child classes."; return 0; }
 
   protected:
     void _setup_fem();
 
     suint sid;   /// Subdomain id
     const MaterialConfig & config;
-    System & system;
 
     // Shape functions, quadratures etc
     QGauss qrule;
@@ -62,6 +70,7 @@ class Material
     unique_ptr<FEBase> fe;  /// The finite element object to hold shape funtions, jxw, etc
 
     DenseMatrix<Number> Ke; /// Jacobian for the element
-    DenseVector<Number> Fe; /// RHS vector for the element
+    DenseVector<Number> Re; /// RHS vector for the element
 };
+
 

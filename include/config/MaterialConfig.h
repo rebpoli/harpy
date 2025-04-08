@@ -26,16 +26,17 @@ public:
 
   // Poroelastic
   optional<double> porosity, permeability;
-  optional<double> biot, bulk, skempton;
+  optional<double> biot, young, poisson;
 
   // Files
   optional<string> porosity_file, permeability_file;
-  optional<string> biot_file, bulk_file, skempton_file;
+  optional<string> biot_file, young_file, poisson_file;
 
   // FEM Stuff
   struct FEMSpec { 
     FEMSpec() : order("FIRST"), family("LAGRANGE"), type("CONTINUOUS") {};
     string order, family, type ;
+    double implicit;
   };
   map<string,FEMSpec> fem_by_var;
 

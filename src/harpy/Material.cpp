@@ -11,21 +11,16 @@
  *
  *
  */
-Material::Material( suint sid_, const MaterialConfig & config_, System & sys_ ) :
-                          sid(sid_),
-                          config( config_ ),
-                          system( sys_ ),
-                          qrule(3)
+Material::Material( suint sid_, const MaterialConfig & config_ ) :
+                          sid(sid_), config( config_ ), qrule(3)
 { }
 
-/**
- *   Creates a Material for the subdomain.
- *
+
+/*
+ * Define the Material Factory
  */
-Material * Material::Factory(  suint sid,
-                               const MeshBase & mesh,
-                               System & system,
-                               const SolverConfig & svr_config )
+Material * Material::Factory( suint sid, const MeshBase & mesh, 
+                           System & system, const SolverConfig & svr_config )
 {
   SCOPELOG(1);
 

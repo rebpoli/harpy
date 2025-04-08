@@ -141,11 +141,16 @@ void MaterialReader::fem_state()
     string key = match[1], var = match[2], val = match[3];
     using FEMSpec = MaterialConfig::FEMSpec;
     FEMSpec & fem = config.fem_by_var[var];
-    if ( iequals( key, "type" ) )        fem.type = val;
-    else if ( iequals( key, "family") )  fem.family = val;
-    else if ( iequals( key, "order") )   fem.order = val;
+    if ( iequals( key, "type" ) )          fem.type = val;
+    else if ( iequals( key, "family") )    fem.family = val;
+    else if ( iequals( key, "order") )     fem.order = val;
+    else if ( iequals( key, "implicit") )  {
+      if ( ! regex_search( val, match, RE_NUM ) ) flog << "Invalid value for IMPLICIT. Must be a number.";
+      fem.implicit = stod(val);
+    }
     else flog << "Unknown key '" << key << "' in material parsing, FEM section.";
   }
+
 }
 
 

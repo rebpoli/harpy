@@ -29,8 +29,8 @@ optional<string> & MaterialConfig::file_param( string & vname )
   if ( iequals( vname, "porosity" ) )      return porosity_file;
   if ( iequals( vname, "permeability" ) )  return permeability_file;
   if ( iequals( vname, "biot" ) )          return biot_file;
-  if ( iequals( vname, "bulk" ) )          return bulk_file;
-  if ( iequals( vname, "skempton" ) )      return skempton_file;
+  if ( iequals( vname, "young" ) )         return young_file;
+  if ( iequals( vname, "poisson" ) )       return poisson_file;
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
@@ -43,8 +43,8 @@ optional<double> & MaterialConfig::con_param( string & vname )
   if ( iequals( vname, "porosity" ) )      return porosity;
   if ( iequals( vname, "permeability" ) )  return permeability;
   if ( iequals( vname, "biot" ) )          return biot;
-  if ( iequals( vname, "bulk" ) )          return bulk;
-  if ( iequals( vname, "skempton" ) )      return skempton;
+  if ( iequals( vname, "young" ) )         return young;
+  if ( iequals( vname, "poisson" ) )       return poisson;
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity;
@@ -64,8 +64,8 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Por:              " << setw(15) << m.porosity     << setw(15) << m.porosity_file << endl;
   os << "                                    Permeability:     " << setw(15) << m.permeability << setw(15) << m.permeability_file << endl;
   os << "                                    Biot:             " << setw(15) << m.biot         << setw(15) << m.biot_file << endl;
-  os << "                                    Bulk:             " << setw(15) << m.bulk         << setw(15) << m.bulk_file << endl;
-  os << "                                    Skempton:         " << setw(15) << m.skempton     << setw(15) << m.skempton_file << endl;
+  os << "                                    Young Modulus:    " << setw(15) << m.young        << setw(15) << m.young_file << endl;
+  os << "                                    Poisson Coef:     " << setw(15) << m.poisson      << setw(15) << m.poisson_file << endl;
 
   for ( auto & [ v, fem ] : m.fem_by_var ) 
   {
@@ -73,6 +73,7 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
     os << "                                    type:              " << setw(15) << fem.type     << endl;
     os << "                                    family:            " << setw(15) << fem.family   << endl;
     os << "                                    order:             " << setw(15) << fem.order    << endl;
+    os << "                                    implicit:          " << setw(15) << fem.implicit     << endl;
   }
 
   return os;

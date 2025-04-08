@@ -87,7 +87,7 @@ class BC {
     vector< DirichletItem > dirichlet;
     vector< ScalarItem > scalar;
 
-    map< ElemSide, STotItem * > stot;
+    map< ElemSide, STotItem *> stot;
     set< STotItem * > stotitem_ptrs; // List of created pointsr to manage cleanup
 
     map< ElemSide, vector<PenaltyItem *> > penalty;

@@ -302,7 +302,6 @@ void SolverViscoplasticTrial::jacobian
     mat->jacobian( soln, jacobian );
   }
 
-
 }
 
 /**
@@ -318,6 +317,14 @@ void SolverViscoplasticTrial::residual
   {
     Material * mat = get_material( *elem, true );
     mat->residual( soln, residual );
-  }
 
+    // Add STOT Boundary Conditions 
+    for (auto side : elem->side_index_range()) 
+    if ( curr_bc.stot.count( BC::ElemSide(elem->id(), side) ) )
+    {
+      Material * bcmat = mat->get_bc_material();
+      bcmat->reinit( *elem, side );
+      bcmat->residual( soln, residual );
+    }
+  }
 }
