@@ -2,6 +2,7 @@
 
 #include "base/Global.h"
 #include "harpy/Material.h"
+#include <optional>
 
 /**
  *
@@ -24,11 +25,11 @@ public:
   virtual ~ViscoPlasticMaterial();
   virtual void init_fem();
 
-  virtual void reinit( const Elem & elem );
+  void reinit( const Elem & elem, uint side=255 );
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
 
-  virtual Material * get_bc_material();
+  virtual Material * get_bc_material( Elem & elem, uint side, bool reinit=true );
 
   virtual bool is_bc() { return false; }
 
@@ -65,11 +66,16 @@ class ViscoPlasticMaterialBC : public ViscoPlasticMaterial
 public:
   ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_, System & sys_ );
 
-  virtual void reinit( const Elem & elem, uint side );
   virtual bool is_bc() { return true; }
 
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
+
+  virtual void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }
+
+private:
+  optional<RealTensor> sigtot;
+
 };
 
 

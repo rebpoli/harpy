@@ -36,14 +36,17 @@ ViscoPlasticMaterial::~ViscoPlasticMaterial()
 /**
  *    Creates an identical Material, but prepared for integrating over boundaries.
  */
-Material * ViscoPlasticMaterial::get_bc_material()
+Material * ViscoPlasticMaterial::get_bc_material( Elem & elem, uint side, bool reinit )
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
   if ( ! bc_material ) 
   {
     bc_material = new ViscoPlasticMaterialBC( sid, config, system );
     bc_material->init_fem();
   }
+
+  if ( reinit ) 
+    bc_material->reinit( elem, side );
 
   return bc_material;
 }
@@ -85,7 +88,7 @@ void ViscoPlasticMaterial::setup_variables()
  */
 void ViscoPlasticMaterial::init_fem()
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
   uint vid = system.variable_number( "UX" );
 
   // Setup shape functions
@@ -107,6 +110,9 @@ void ViscoPlasticMaterial::init_fem()
   fe->get_phi();
   fe->get_dphi();
 
+  if ( is_bc() ) 
+    fe->get_normals(); 
+
   // Jacobian
   for ( uint i=0; i<3; i++ )
   {
@@ -124,12 +130,18 @@ void ViscoPlasticMaterial::init_fem()
  *  Init the DoF map and the element matrices.
  *  This function must be called before (or at the beginning of)
  *  the jacobian and residual.
+ *
+ *  _side_ is an optional parameter, used only when the material
+ *  is being initialized for a BC.
  */
-void ViscoPlasticMaterial::reinit( const Elem & elem )
+void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
 {
   SCOPELOG(5);
 
-  fe->reinit( &elem );
+  if ( is_bc() ) 
+    fe->reinit( &elem, side );
+  else
+    fe->reinit( &elem );
   
   const DofMap & dof_map = system.get_dof_map();
 
@@ -163,8 +175,6 @@ void ViscoPlasticMaterial::jacobian (const NumericVector<Number> & soln, SparseM
   const DofMap & dof_map = system.get_dof_map();
   uint n_dofsv = dof_indices_var[0].size();
 
-  dlog(1) << "IMPLICIT:" << implicit;
-
   // ****
   // Effective mechanics
   //       ( \phi_i,j , C_ijkl u_k,l )   ok
@@ -175,8 +185,10 @@ void ViscoPlasticMaterial::jacobian (const NumericVector<Number> & soln, SparseM
   for (uint j=0; j<3; j++)
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Ke_var[i][k](B,M) += implicit * JxW[qp] * C_ijkl(i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
+    Ke_var[i][k](B,M) += JxW[qp] * C_ijkl(i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
+//    Ke_var[i][k](B,M) += implicit * JxW[qp] * C_ijkl(i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
 
+//  dlog(1) << endl << Ke;
   // Add the the global matrix
   dof_map.constrain_element_matrix (Ke, dof_indices);
   jacobian.add_matrix (Ke, dof_indices);
@@ -208,6 +220,7 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
     GRAD_U[qp](i, j) += dphi[M][qp](j) * soln(dof_indices_var[i][M]);
   }
 
+  // ( \phi_j , Cijkl U_k,l ) 
   for (uint qp=0; qp<qrule.n_points(); qp++   )
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0; i<3; i++) 
@@ -215,12 +228,13 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
   {
-    Re_var[i](B) += implicit     * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
-    Re_var[i](B) -= (1-implicit) * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * OLD_GRAD_U[qp](k,l) ;
+    Re_var[i](B) += JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
+//    Re_var[i](B) += implicit     * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
+//    Re_var[i](B) -= (1-implicit) * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * OLD_GRAD_U[qp](k,l) ;
   }
 
-  dof_map.constrain_element_vector (Re, dof_indices);
-  residual.add_vector (Re, dof_indices);
+  dof_map.constrain_element_vector ( Re, dof_indices );
+  residual.add_vector ( Re, dof_indices );
 }
 
 
@@ -234,48 +248,20 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
  *
  */
 
-/**
- *  Init the DoF map and the element matrices.
- *  This function must be called before (or at the beginning of)
- *  the jacobian and residual.
- */
-void ViscoPlasticMaterialBC::reinit( const Elem & elem, uint side )
-{
-  SCOPELOG(5);
-
-  fe->reinit( &elem, side );
-  
-  const DofMap & dof_map = system.get_dof_map();
-
-  dof_map.dof_indices (&elem, dof_indices);
-  dof_map.dof_indices (&elem, dof_indices_var[0], 0);
-  dof_map.dof_indices (&elem, dof_indices_var[1], 1);
-  dof_map.dof_indices (&elem, dof_indices_var[2], 2);
-
-  uint n_dofs = dof_indices.size();
-  uint n_dofsv = dof_indices_var[0].size();
-  Ke.resize (n_dofs, n_dofs);
-
-  for (uint vi=0; vi<3; vi++)
-  for (uint vj=0; vj<3; vj++)
-    Ke_var[vi][vj].reposition ( vi*n_dofsv, vj*n_dofsv, n_dofsv, n_dofsv );
-
-  Re.resize (n_dofs);
-  for (uint vi=0; vi<3; vi++)
-    Re_var[vi].reposition ( vi*n_dofsv, n_dofsv );
-}
 
 /**
  *     Builds the jacobian of the element and assembles in the global _jacobian_.
  */
 void ViscoPlasticMaterialBC::jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian)
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
   const DofMap & dof_map = system.get_dof_map();
   uint n_dofsv = dof_indices_var[0].size();
+
+  // Nothing to do here.
 }
 
 /**
@@ -283,12 +269,24 @@ void ViscoPlasticMaterialBC::jacobian (const NumericVector<Number> & soln, Spars
  */
 void ViscoPlasticMaterialBC::residual (const NumericVector<Number> & soln, NumericVector<Number> & residual)
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
   const DofMap & dof_map = system.get_dof_map();
+  const vector<Point> & normals = fe->get_normals(); 
   uint n_dofsv = dof_indices_var[0].size();
+
+  if ( sigtot )
+  for (uint qp=0; qp<qrule.n_points(); qp++) 
+  for (uint B=0; B<n_dofsv; B++)
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++) 
+    Re_var[i](B) += JxW[qp] * (*sigtot)(i,j) * normals[qp](j) * phi[B][qp];
+//    Re_var[i](B) += (1-implicit) * JxW_face[qp] * (*sigtot)(i,j) * normals[qp](j) * phi_u_face[B][qp];
+
+  dof_map.constrain_element_vector (Re, dof_indices);
+  residual.add_vector (Re, dof_indices);
 }
 
 

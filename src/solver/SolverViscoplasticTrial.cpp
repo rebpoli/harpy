@@ -144,6 +144,7 @@ void SolverViscoplasticTrial::set_dirichlet_bcs()
 
     ConstFunction<> cf(dbc.val);
     DirichletBoundary bound({dbc.bid}, {dbc.vid}, cf, LOCAL_VARIABLE_ORDER);
+    dof_map.add_dirichlet_boundary( bound );
   }
 
   system.reinit_constraints();
@@ -281,9 +282,12 @@ void SolverViscoplasticTrial::solve()
     set_scalar_bcs();
   }
 
+  es.reinit();
   system.solve();
+  system.get_dof_map().enforce_constraints_exactly(system);
 
-  //  ilog1 << "**VISCPOROELASTICS**" << MSG_CONVERGED_REASON( system );
+  ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
+    << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
 
 }
 
@@ -302,6 +306,18 @@ void SolverViscoplasticTrial::jacobian
     mat->jacobian( soln, jacobian );
   }
 
+  // Add STOT Boundary Conditions 
+  for ( auto & [ elemside, stotitem ] : curr_bc.stot )
+  {
+    Elem & elem = mesh.elem_ref(elemside.eid);
+    // Only on the current processor.
+    if ( elem.processor_id() != mesh.processor_id() ) continue;
+
+    Material * mat = get_material( elem );
+    Material * bcmat = mat->get_bc_material( elem, elemside.side );
+    bcmat->set_bc( stotitem->val );
+    bcmat->jacobian( soln, jacobian );
+  }
 }
 
 /**
@@ -317,14 +333,18 @@ void SolverViscoplasticTrial::residual
   {
     Material * mat = get_material( *elem, true );
     mat->residual( soln, residual );
+  }
 
-    // Add STOT Boundary Conditions 
-    for (auto side : elem->side_index_range()) 
-    if ( curr_bc.stot.count( BC::ElemSide(elem->id(), side) ) )
-    {
-      Material * bcmat = mat->get_bc_material();
-      bcmat->reinit( *elem, side );
-      bcmat->residual( soln, residual );
-    }
+  // Add STOT Boundary Conditions 
+  for ( auto & [ elemside, stotitem ] : curr_bc.stot )
+  {
+    Elem & elem = mesh.elem_ref(elemside.eid);
+    // Only on the current processor.
+    if ( elem.processor_id() != mesh.processor_id() ) continue;
+
+    Material * mat = get_material( elem );
+    Material * bcmat = mat->get_bc_material( elem, elemside.side );
+    bcmat->set_bc( stotitem->val );
+    bcmat->residual( soln, residual );
   }
 }

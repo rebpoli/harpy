@@ -42,14 +42,14 @@ class Material
     static Material * Factory( suint sid, const MeshBase & mesh, 
                                System & system, const SolverConfig & svr_config );
 
-    // Interface
-    virtual Material * get_bc_material()  /// Returns a material with the BC definitions and tools
+    // Interface to any material
+   
+    /// Returns a material with the BC definitions and tools
+    virtual Material * get_bc_material( Elem & elem, uint side, bool reinit=true ) 
               { flog << "Must be redifined in the child classes."; return 0; }
     virtual void init_fem() 
               { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const Elem & elem )
-              { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const Elem & elem, uint side )
+    virtual void reinit( const Elem & elem, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
     virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
               { flog << "Must be redifined in the child classes."; }
@@ -57,6 +57,9 @@ class Material
               { flog << "Must be redifined in the child classes."; }
     virtual bool is_bc() 
               { flog << "Must be redifined in the child classes."; return 0; }
+    // Many types of BC can be set. These functions provide a standard interface to pass BCs to any material.
+    virtual void set_bc( const RealTensor & value )
+              { flog << "Must be redifined in the child classes.";  }
 
   protected:
     void _setup_fem();
