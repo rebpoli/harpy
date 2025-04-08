@@ -25,6 +25,8 @@ namespace harpy_string {
   
   using boost::iequals;       // Case insensitive comparison
 
+  using boost::replace_all;
+
   /**
    *
    */

@@ -33,3 +33,4 @@ inline string file_canonical( const string & fn ) {
   return p.native();
 
 }
+

@@ -65,9 +65,10 @@ include_directories(include)
 
 # Compilar arquivos-fonte dentro da biblioteca estática libModules.a
 ADD_LIBRARY(Modules
+  src/harpy/Material.cpp
+  src/harpy/DirManager.cpp
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp
-  src/harpy/Material.cpp
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
   src/config/BCConfig.cpp

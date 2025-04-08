@@ -69,8 +69,9 @@ class SolverViscoplasticTrial : public Solver,
     void set_dirichlet_bcs();
     void set_scalar_bcs() ;
     void set_unassigned_scalars();
-
     void add_scalar_vars();
+
+    void export_exo();
 
     string name;
 

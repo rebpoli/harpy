@@ -13,9 +13,13 @@ class Solver
 {
   public:
     Solver( const Timestep & ts_ ) : ts(ts_) {};
-    void solve();
-    void export_results();
+
+    virtual void solve()
+      { flog << "Must be defined in the child class."; }
+    virtual void export_results( string basename )
+      { flog << "Must be defined in the child class."; }
 
   protected:
     const Timestep & ts;
+
 };

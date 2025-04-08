@@ -80,7 +80,11 @@ void BCConfig::TimeEntry::add_numerical_bc( string bname, string vname, double v
     auto & vec = dbl_bcs[bname];
     vec.push_back(item);
     dbl_bcs[bname] = vec;
+    return;
   }
+
+  elog << "Known variables are: " << STOT_VARS << " and " << DBL_VARS;
+  flog << "Unknown variable named '" << vname << "'";
 }
 
 /**

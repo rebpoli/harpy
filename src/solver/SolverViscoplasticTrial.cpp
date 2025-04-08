@@ -4,11 +4,10 @@
 #include "base/HarpyInit.h"
 #include "config/ModelConfig.h"
 #include "harpy/Timestep.h"
+#include "harpy/DirManager.h"
 #include "util/MeshUtils.h"
 #include "util/Messages.h"
 #include "util/OutputOperators.h"
-
-
 
 #include "libmesh/boundary_info.h"
 #include "libmesh/elem.h"
@@ -22,6 +21,8 @@
 #include "libmesh/string_to_enum.h"
 #include "libmesh/enum_fe_family.h"
 #include "libmesh/enum_order.h"
+
+#include "libmesh/exodusII_io.h"
 
 /**
  *  Creates the system and the materials.
@@ -289,6 +290,7 @@ void SolverViscoplasticTrial::solve()
   ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
     << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
 
+  export_exo();
 }
 
 /**
@@ -347,4 +349,22 @@ void SolverViscoplasticTrial::residual
     bcmat->set_bc( stotitem->val );
     bcmat->residual( soln, residual );
   }
+}
+
+/**
+ *   
+ *   SUPPORT FUNCTIONS 
+ *
+ */
+
+/**
+ *
+ */
+void SolverViscoplasticTrial::export_exo()
+{
+  using namespace harpy_dirmanager;
+  string fn = exo_filename( "vptrial", ts );
+
+  ExodusII_IO exo(es.get_mesh());
+  exo.write_timestep_discontinuous ( fn, es, 1, ts.time );
 }
