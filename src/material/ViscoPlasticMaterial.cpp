@@ -36,7 +36,7 @@ ViscoPlasticMaterial::~ViscoPlasticMaterial()
 /**
  *    Creates an identical Material, but prepared for integrating over boundaries.
  */
-Material * ViscoPlasticMaterial::get_bc_material( Elem & elem, uint side, bool reinit )
+Material * ViscoPlasticMaterial::get_bc_material()
 {
   SCOPELOG(5);
   if ( ! bc_material ) 
@@ -44,9 +44,6 @@ Material * ViscoPlasticMaterial::get_bc_material( Elem & elem, uint side, bool r
     bc_material = new ViscoPlasticMaterialBC( sid, config, system );
     bc_material->init_fem();
   }
-
-  if ( reinit ) 
-    bc_material->reinit( elem, side );
 
   return bc_material;
 }
@@ -121,9 +118,10 @@ void ViscoPlasticMaterial::init_fem()
     Ke_var.push_back(kk);
   }
 
-  // RHS Vector
-  for ( uint i=0; i<3; i++ )
-    Re_var.emplace_back(Re);
+//  // RHS Vector
+//  for ( uint i=0; i<3; i++ )
+//    Re_var.emplace_back(Re);
+
 }
 
 /**
@@ -134,7 +132,7 @@ void ViscoPlasticMaterial::init_fem()
  *  _side_ is an optional parameter, used only when the material
  *  is being initialized for a BC.
  */
-void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
+void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem, uint side )
 {
   SCOPELOG(5);
 
@@ -159,8 +157,34 @@ void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
     Ke_var[vi][vj].reposition ( vi*n_dofsv, vj*n_dofsv, n_dofsv, n_dofsv );
 
   Re.resize (n_dofs);
-  for (uint vi=0; vi<3; vi++)
-    Re_var[vi].reposition ( vi*n_dofsv, n_dofsv );
+//  for (uint vi=0; vi<3; vi++)
+//    Re_var[vi].reposition ( vi*n_dofsv, n_dofsv );
+
+  // Prepare the Uib vector for the automatic differentiation
+  Uib.clear();
+  for ( uint i=0; i<3; i++ )
+  {
+    vector<Number> row;
+    for ( uint B=0; B<n_dofsv; B++ )
+      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
+    Uib.push_back(row);
+  }
+
+  // Initialize Fib
+  Fib.clear();
+  for ( uint i=0; i<3; i++ )
+  {
+    vector<Number> row;
+    for ( uint B=0; B<n_dofsv; B++ ) row.push_back( 0 );
+    Fib.push_back(row);
+  }
+
+//  {
+//    ostringstream os; 
+//    os << "Uib: ["; for ( uint i=0; i<3; i++ ) { os << " [ "; for ( uint B=0; B<n_dofsv; B++ ) os << Uib[i][B] << ", "; os << " ], "; } os << "]";
+//    dlog(1) << os.str();
+//  }
+
 }
 
 /**
@@ -216,8 +240,8 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint j=0; j<3; j++)
   for (uint M=0;  M<n_dofsv;  M++)
   {
-    OLD_GRAD_U[qp](i, j) += dphi[M][qp](j) * system.old_solution(dof_indices_var[i][M]);
-    GRAD_U[qp](i, j) += dphi[M][qp](j) * soln(dof_indices_var[i][M]);
+//    OLD_GRAD_U[qp](i, j) += dphi[M][qp](j) * system.old_solution(dof_indices_var[i][M]);
+    GRAD_U[qp](i, j) += dphi[M][qp](j) * Uib[i][M];
   }
 
   // ( \phi_j , Cijkl U_k,l ) 
@@ -228,10 +252,15 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
   {
-    Re_var[i](B) += JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
-//    Re_var[i](B) += implicit     * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
-//    Re_var[i](B) -= (1-implicit) * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * OLD_GRAD_U[qp](k,l) ;
+    Fib[i][B] += JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
+//    Fib[i][B] += implicit     * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
+//    Fib[i][B] -= (1-implicit) * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * OLD_GRAD_U[qp](k,l) ;
   }
+
+  // Build the Re vector
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    Re( i*n_dofsv + B ) = Fib[i][B];
 
   dof_map.constrain_element_vector ( Re, dof_indices );
   residual.add_vector ( Re, dof_indices );
@@ -282,8 +311,13 @@ void ViscoPlasticMaterialBC::residual (const NumericVector<Number> & soln, Numer
   for (uint B=0; B<n_dofsv; B++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++) 
-    Re_var[i](B) += JxW[qp] * (*sigtot)(i,j) * normals[qp](j) * phi[B][qp];
+    Fib[i][B] += JxW[qp] * (*sigtot)(i,j) * normals[qp](j) * phi[B][qp];
 //    Re_var[i](B) += (1-implicit) * JxW_face[qp] * (*sigtot)(i,j) * normals[qp](j) * phi_u_face[B][qp];
+
+  // Build the Re vector
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    Re( i*n_dofsv + B ) = Fib[i][B];
 
   dof_map.constrain_element_vector (Re, dof_indices);
   residual.add_vector (Re, dof_indices);

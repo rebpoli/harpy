@@ -50,7 +50,7 @@ class SolverViscoplasticTrial : public Solver,
     ~SolverViscoplasticTrial();
 
     void init_materials();
-    Material * get_material( const Elem & elem, bool reinit=0 );
+    Material * get_material( const Elem & elem );
 
     void solve();
 

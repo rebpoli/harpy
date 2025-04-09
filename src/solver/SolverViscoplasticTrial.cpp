@@ -108,7 +108,7 @@ void SolverViscoplasticTrial::init_materials()
  *   Returns the material for a given element.
  *   Fails if not existing.
  */
-Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit )
+Material * SolverViscoplasticTrial::get_material( const Elem & elem )
 {
   uint sid = elem.subdomain_id();
   // Consistency check
@@ -119,7 +119,6 @@ Material * SolverViscoplasticTrial::get_material( const Elem & elem, bool reinit
   }
 
   Material * mat = material_by_sid.at(sid);
-  if ( reinit ) mat->reinit( elem );
 
   return mat;
 }
@@ -304,7 +303,8 @@ void SolverViscoplasticTrial::jacobian
   MeshBase & mesh = es.get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    Material * mat = get_material( *elem, true );
+    Material * mat = get_material( *elem );
+    mat->reinit( soln, *elem );
     mat->jacobian( soln, jacobian );
   }
 
@@ -316,7 +316,7 @@ void SolverViscoplasticTrial::jacobian
     if ( elem.processor_id() != mesh.processor_id() ) continue;
 
     Material * mat = get_material( elem );
-    Material * bcmat = mat->get_bc_material( elem, elemside.side );
+    Material * bcmat = mat->get_bc_material();
     bcmat->set_bc( stotitem->val );
     bcmat->jacobian( soln, jacobian );
   }
@@ -333,7 +333,8 @@ void SolverViscoplasticTrial::residual
   MeshBase & mesh = es.get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    Material * mat = get_material( *elem, true );
+    Material * mat = get_material( *elem );
+    mat->reinit( soln, *elem );
     mat->residual( soln, residual );
   }
 
@@ -345,7 +346,8 @@ void SolverViscoplasticTrial::residual
     if ( elem.processor_id() != mesh.processor_id() ) continue;
 
     Material * mat = get_material( elem );
-    Material * bcmat = mat->get_bc_material( elem, elemside.side );
+    Material * bcmat = mat->get_bc_material();
+    bcmat->reinit( soln, elem, elemside.side );
     bcmat->set_bc( stotitem->val );
     bcmat->residual( soln, residual );
   }

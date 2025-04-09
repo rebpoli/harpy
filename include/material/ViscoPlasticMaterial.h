@@ -25,11 +25,11 @@ public:
   virtual ~ViscoPlasticMaterial();
   virtual void init_fem();
 
-  void reinit( const Elem & elem, uint side=255 );
+  void reinit( const NumericVector<Number> & soln, const Elem & elem, uint side=255 );
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
 
-  virtual Material * get_bc_material( Elem & elem, uint side, bool reinit=true );
+  virtual Material * get_bc_material();
 
   virtual bool is_bc() { return false; }
 
@@ -40,6 +40,9 @@ protected:
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
   vector< DenseSubVector<Number> > Re_var;
 
+  vector<vector<Number>> Uib; /// first index is the node b, the second is the dimension i
+  vector<vector<Number>> Fib;
+ 
   TransientNonlinearImplicitSystem & system;
 
   // PARAMETERS

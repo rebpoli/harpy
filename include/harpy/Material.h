@@ -45,11 +45,11 @@ class Material
     // Interface to any material
    
     /// Returns a material with the BC definitions and tools
-    virtual Material * get_bc_material( Elem & elem, uint side, bool reinit=true ) 
+    virtual Material * get_bc_material() 
               { flog << "Must be redifined in the child classes."; return 0; }
     virtual void init_fem() 
               { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const Elem & elem, uint side=255 )
+    virtual void reinit( const NumericVector<Number> & soln, const Elem & elem, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
     virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
               { flog << "Must be redifined in the child classes."; }
