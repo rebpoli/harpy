@@ -38,7 +38,7 @@ protected:
 
   vector<vector<dof_id_type>> dof_indices_var;
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
-  vector< DenseSubVector<Number> > Re_var;
+//  vector< DenseSubVector<Number> > Re_var;
 
   vector<vector<Number>> Uib; /// first index is the node b, the second is the dimension i
   vector<vector<Number>> Fib;

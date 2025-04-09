@@ -170,7 +170,7 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
     Uib.push_back(row);
   }
 
-  // Initialize Fib
+  // Prepare Fib vector for the automatic differentiation
   Fib.clear();
   for ( uint i=0; i<3; i++ )
   {
