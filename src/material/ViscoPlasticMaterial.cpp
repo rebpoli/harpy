@@ -213,10 +213,10 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Cou
   elem_coupler = & ( coupler.at(eid) );
 
   // Fetch the needed parameters from the coupler
-  get_from_element_coupler( "T", temperature ); 
-  get_from_element_coupler( "alpha_d", alpha_d  ); 
-  get_from_element_coupler( "lame_mu", lame_mu  ); 
-  get_from_element_coupler( "lame_lambda", lame_lambda ); 
+  get_from_element_coupler(  "T",             temperature    ); 
+  get_from_element_coupler(  "alpha_d",       alpha_d        ); 
+  get_from_element_coupler(  "lame_mu",       lame_mu        ); 
+  get_from_element_coupler(  "lame_lambda",   lame_lambda    ); 
 }
 
 /**
