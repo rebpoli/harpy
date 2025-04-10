@@ -68,6 +68,17 @@ ostream& operator<<(ostream& os, const vector<uint> & m) {
   return os;
 }
 
+ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m) {
+  os << "[";
+  uint i=0;
+  for ( auto v : m ) {
+    if ( i++ ) os << ", ";
+    os << "'" << v.first << "':";
+    os << v.second;
+  }
+  os << "] ("<< m.size() <<")";
+  return os;
+}
 ostream& operator<<(ostream& os, const map<string, double> & m) {
   os << "[";
   uint i=0;

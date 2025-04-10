@@ -31,6 +31,8 @@ optional<string> & MaterialConfig::file_param( string & vname )
   if ( iequals( vname, "biot" ) )          return biot_file;
   if ( iequals( vname, "young" ) )         return young_file;
   if ( iequals( vname, "poisson" ) )       return poisson_file;
+  if ( iequals( vname, "beta_e" ) )        return beta_e_file;
+  if ( iequals( vname, "beta_d" ) )        return beta_d_file;
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
@@ -45,6 +47,8 @@ optional<double> & MaterialConfig::con_param( string & vname )
   if ( iequals( vname, "biot" ) )          return biot;
   if ( iequals( vname, "young" ) )         return young;
   if ( iequals( vname, "poisson" ) )       return poisson;
+  if ( iequals( vname, "beta_e" ) )        return beta_e;
+  if ( iequals( vname, "beta_d" ) )        return beta_d;
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity;

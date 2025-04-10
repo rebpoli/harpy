@@ -1,7 +1,9 @@
 #pragma once
 
 #include "base/Global.h"
+#include "harpy/Coupler.h"
 #include "harpy/Material.h"
+#include "config/ModelConfig.h"
 #include <optional>
 
 /**
@@ -25,7 +27,8 @@ public:
   virtual ~ViscoPlasticMaterial();
   virtual void init_fem();
 
-  void reinit( const NumericVector<Number> & soln, const Elem & elem, uint side=255 );
+  void reinit( const Elem & elem, uint side=255 );
+  void reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side=255 );
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
 
@@ -52,6 +55,10 @@ protected:
   // These material parameters are constant for now.
   // They must be imported from a Coupler.
   double lame_mu, lame_lambda; /// Lame parameters
+  double poisson, young, bulk_modulus;
+
+  // Parameters from couplers
+  vector< double > temperature, beta_d;
 
   // THE CHILD MATERIAL
   ViscoPlasticMaterialBC * bc_material;

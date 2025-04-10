@@ -6,7 +6,6 @@
 #include "solver/BC.h"
 
 #include "libmesh/mesh.h"
-#include "libmesh/equation_systems.h"
 #include "libmesh/transient_system.h"
 #include "libmesh/nonlinear_implicit_system.h"
 
@@ -50,7 +49,7 @@ class SolverViscoplasticTrial : public Solver,
     ~SolverViscoplasticTrial();
 
     void init_materials();
-    Material * get_material( const Elem & elem );
+    virtual MeshBase * get_mesh() { return &mesh; }
 
     void solve();
 
@@ -73,15 +72,7 @@ class SolverViscoplasticTrial : public Solver,
 
     void export_exo();
 
-    string name;
-
-    // In order of initialization
-    SolverConfig * config;
-    Mesh mesh;
-    EquationSystems es;
-
     TransientNonlinearImplicitSystem & system;
     BC curr_bc;
 
-    map< uint, Material * > material_by_sid;
 };

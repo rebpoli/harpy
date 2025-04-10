@@ -23,6 +23,9 @@
 
 class MaterialConfig;
 class SolverConfig;
+class ElemCoupler;
+class Coupler;
+class Solver;
 
 namespace libMesh { class MeshBase; class System; class Elem; }
 
@@ -40,7 +43,11 @@ class Material
      *
      */
     static Material * Factory( suint sid, const MeshBase & mesh, 
-                               System & system, const SolverConfig & svr_config );
+                               System & system, const Solver & solver );
+
+    // Common interface to the couplers
+    void get_from_element_coupler( string vname, vector<double> & curr , vector<double> & old );
+    void get_from_element_coupler( string vname, vector<double> & curr );
 
     // Interface to any material
    
@@ -49,7 +56,9 @@ class Material
               { flog << "Must be redifined in the child classes."; return 0; }
     virtual void init_fem() 
               { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const NumericVector<Number> & soln, const Elem & elem, uint side=255 )
+    virtual void reinit( const Elem & elem, uint side=255 )
+              { flog << "Must be redifined in the child classes."; }
+    virtual void reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
     virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
               { flog << "Must be redifined in the child classes."; }
@@ -61,19 +70,23 @@ class Material
     virtual void set_bc( const RealTensor & value )
               { flog << "Must be redifined in the child classes.";  }
 
-  protected:
-    void _setup_fem();
-
-    suint sid;   /// Subdomain id
-    const MaterialConfig & config;
-
     // Shape functions, quadratures etc
     QGauss qrule;
     vector<dof_id_type> dof_indices;
     unique_ptr<FEBase> fe;  /// The finite element object to hold shape funtions, jxw, etc
 
+    const MaterialConfig & config;
+    string name;
+
+  protected:
+    void _setup_fem();
+
+    suint sid;   /// Subdomain id
+
     DenseMatrix<Number> Ke; /// Jacobian for the element
     DenseVector<Number> Re; /// RHS vector for the element
+
+    const ElemCoupler * elem_coupler;
 };
 
 

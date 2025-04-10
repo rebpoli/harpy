@@ -3,9 +3,10 @@
 # Then the configuration of each system
 .SYSTEMLOOP VISCOPLASTIC
 VISCOPLASTIC BASE
+THERMAL BASE
 
 .TIMESTEP 
-DT0           0.1
+DT0           1
 DTK           1.2
 TMAX         100  
 MAX_STEPS    5
@@ -26,14 +27,25 @@ BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       XP               UX            0
 BOUNDARY       YP               UY            0
-BOUNDARY       ZP               SYZ           1e6
+DOMAIN         caprock          T             0
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
-# .TIME   1
-# BOUNDARY       XP        UX    200
-# BOUNDARY       YN        UY    tri_dy
-# DOMAIN         RES       T     100
+.TIME   1
+BOUNDARY       XN               UX            0
+BOUNDARY       YN               UY            0
+BOUNDARY       ZN               UZ            0
+BOUNDARY       XP               UX            0
+BOUNDARY       YP               UY            0
+DOMAIN         caprock          T             100
+
+.TIME   2
+BOUNDARY       XN               UX            0
+BOUNDARY       YN               UY            0
+BOUNDARY       ZN               UZ            0
+BOUNDARY       XP               UX            0
+BOUNDARY       YP               UY            0
+DOMAIN         caprock          T             200
 
 # .TIME   2
 # BOUNDARY       XP        UX    400

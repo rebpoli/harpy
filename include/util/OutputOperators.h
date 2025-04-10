@@ -3,6 +3,7 @@
 #include "base/Global.h"
 
 #include "libmesh/vector_value.h"
+#include "util/String.h"
 
 #include <vector>
 #include <set>
@@ -18,6 +19,7 @@ ostream& operator<<(ostream& os, const vector<uint> & m);
 
 
 ostream& operator<<(ostream& os, const map<string, double> & m);
+ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m);
 
 ostream& operator<<(ostream& os, const pair<uint,uint> & m);
 ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m);

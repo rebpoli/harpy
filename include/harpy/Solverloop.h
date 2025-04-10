@@ -7,6 +7,8 @@
  *
  */
 
+class Timestep;
+
 class Solverloop 
 {
 

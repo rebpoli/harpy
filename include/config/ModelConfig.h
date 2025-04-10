@@ -24,7 +24,7 @@ public:
   ModelConfig( string model_dir_ );
 
   string systemloop;
-  CIMap<string > system_cfgid;        /// sys_name -> config name
+  CIMap<string> system_cfgid;        /// sys_name -> config name
   CIMap< SolverConfig > solvers;       /// System configurations
   set< MaterialConfig > materials;   /// Material configurations
   TimestepConfig timestep;

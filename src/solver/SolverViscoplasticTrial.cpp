@@ -1,7 +1,6 @@
 
 
 #include "solver/SolverViscoplasticTrial.h"
-#include "base/HarpyInit.h"
 #include "config/ModelConfig.h"
 #include "harpy/Timestep.h"
 #include "harpy/DirManager.h"
@@ -30,11 +29,7 @@
  *  This object owns the mesh and the rquation system.
  */
 SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep & ts_ ) : 
-                   Solver( ts_ ), 
-                   name(name_),
-                   config (MODEL->solver_config( name ) ) , 
-                   mesh( *LIBMESH_COMMUNICATOR ),
-                   es( mesh ),
+                   Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    curr_bc( system )
 {
@@ -100,27 +95,8 @@ void SolverViscoplasticTrial::init_materials()
   {
     uint sid = elem->subdomain_id();
     if  ( ! material_by_sid.count( sid ) ) 
-      material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *config );
+      material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *this );
   }
-}
-
-/**
- *   Returns the material for a given element.
- *   Fails if not existing.
- */
-Material * SolverViscoplasticTrial::get_material( const Elem & elem )
-{
-  uint sid = elem.subdomain_id();
-  // Consistency check
-  if  ( ! material_by_sid.count( sid ) ) 
-  {
-    string sname = mesh.subdomain_name( sid );
-    flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
-  }
-
-  Material * mat = material_by_sid.at(sid);
-
-  return mat;
 }
 
 /**
@@ -304,7 +280,7 @@ void SolverViscoplasticTrial::jacobian
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
-    mat->reinit( soln, *elem );
+    mat->reinit( soln, coupler, *elem );
     mat->jacobian( soln, jacobian );
   }
 
@@ -334,7 +310,7 @@ void SolverViscoplasticTrial::residual
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
-    mat->reinit( soln, *elem );
+    mat->reinit( soln, coupler, *elem );
     mat->residual( soln, residual );
   }
 
@@ -347,8 +323,8 @@ void SolverViscoplasticTrial::residual
 
     Material * mat = get_material( elem );
     Material * bcmat = mat->get_bc_material();
-    bcmat->reinit( soln, elem, elemside.side );
-    bcmat->set_bc( stotitem->val );
+    bcmat->reinit( soln, coupler, elem, elemside.side );
+    bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
     bcmat->residual( soln, residual );
   }
 }

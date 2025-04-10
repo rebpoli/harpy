@@ -2,8 +2,10 @@
 
 #include "base/Global.h"
 
-#include "solver/SolverViscoplasticTrial.h"
 #include "harpy/Solverloop.h"
+
+#include "solver/SolverViscoplasticTrial.h"
+#include "solver/SolverThermalExplicit.h"
 
 class Timestep;
 
@@ -27,4 +29,5 @@ class SLViscoplastic : public Solverloop
   private:
 
     SolverViscoplasticTrial viscoplastic;
+    SolverThermalExplicit thermal;
 };

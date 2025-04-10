@@ -7,8 +7,7 @@ include $(topdir)/share/makefile/Makefile.demos
 export CHDEBUG=1
 export N=1
 
-PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -ksp_monitor -pc_type lu -ksp_type cg -snes_converged_reason -ksp_converged_reason
-
+PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -ksp_monitor -pc_type lu -ksp_type cg -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7
 
 run-%: set-% .force
 	rm -rf run/

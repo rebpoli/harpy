@@ -27,10 +27,15 @@ public:
   // Poroelastic
   optional<double> porosity, permeability;
   optional<double> biot, young, poisson;
+  // Thermal
+  optional<double> beta_e, beta_d;
 
   // Files
+  // Poroelastic
   optional<string> porosity_file, permeability_file;
   optional<string> biot_file, young_file, poisson_file;
+  // Thermal
+  optional<string> beta_e_file, beta_d_file;
 
   // FEM Stuff
   struct FEMSpec { 

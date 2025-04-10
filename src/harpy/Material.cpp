@@ -1,5 +1,6 @@
 
 #include "harpy/Material.h"
+#include "harpy/Solver.h"
 #include "config/ModelConfig.h" // MODEL global var
 #include "config/SolverConfig.h"
 #include "material/ViscoPlasticMaterial.h"
@@ -12,7 +13,8 @@
  *
  */
 Material::Material( suint sid_, const MaterialConfig & config_ ) :
-                          sid(sid_), config( config_ ), qrule(3)
+                          config(config_), name(config.name),
+                          sid(sid_), qrule(3), elem_coupler(0)
 { }
 
 
@@ -20,7 +22,7 @@ Material::Material( suint sid_, const MaterialConfig & config_ ) :
  * Define the Material Factory
  */
 Material * Material::Factory( suint sid, const MeshBase & mesh, 
-                           System & system, const SolverConfig & svr_config )
+                           System & system, const Solver & solver )
 {
   SCOPELOG(1);
 
@@ -28,6 +30,7 @@ Material * Material::Factory( suint sid, const MeshBase & mesh,
 
   string sname = mesh.subdomain_name( sid );
 
+  SolverConfig & svr_config = *( solver.config );
   if ( ! svr_config.mat_config_by_name.count( sname ) ) flog << "Cannot find material configuration by name for subdomain '" << sname << "'. The model is inconsistent.";
   auto & mat_conf_id = svr_config.mat_config_by_name.at( sname );
 
@@ -42,5 +45,35 @@ Material * Material::Factory( suint sid, const MeshBase & mesh,
 
   dlog(1) << "Resoved material:" << mat_conf;
   Material * ret = new ViscoPlasticMaterial( sid, mat_conf, system );
+
   return ret;
+}
+
+
+/**
+ *
+ */
+void Material::get_from_element_coupler( string vname, vector<double> & curr,  vector<double> & old )
+{
+  if ( ! elem_coupler ) flog << "Element coupler not initialized! Something is wrong.";
+
+  if ( ! elem_coupler->dbl_params.count( vname ) ) flog << "Cannot find variable '" << vname << "' in element coupler. Cannot continue." ;
+  if ( ! elem_coupler->dbl_params_old.count( vname ) ) flog << "Cannot find variable '" << vname << "' in element coupler (OLD). Cannot continue." ;
+
+  curr = elem_coupler->dbl_params.at( vname );
+  old = elem_coupler->dbl_params_old.at( vname );
+}
+
+/**
+ *
+ */
+void Material::get_from_element_coupler( string vname, vector<double> & curr )
+{
+  if ( ! elem_coupler ) flog << "Element coupler not initialized! Something is wrong.";
+  if ( ! elem_coupler->dbl_params.count( vname ) ) {
+    dlog(1) << *elem_coupler ;
+    flog << "Cannot find variable '" << vname << "' in element coupler. Cannot continue." ;
+  }
+
+  curr = elem_coupler->dbl_params.at( vname );
 }

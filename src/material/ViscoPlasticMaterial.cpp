@@ -12,6 +12,8 @@
 #include "libmesh/nonlinear_implicit_system.h"
 #include "libmesh/transient_system.h"
 
+#include "util/OutputOperators.h"
+
 
 /**
  *
@@ -20,10 +22,14 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_, const MaterialConfig & c
   Material( sid_, config ), dof_indices_var(3),
   system( dynamic_cast<TransientNonlinearImplicitSystem&>(sys_) ),
   implicit(1),
-  lame_mu( *(config.young) / 2 / ( 1 + *(config.poisson) ) ),
-  lame_lambda( *(config.young) * *(config.poisson) / (1 + *(config.poisson)) / (1-2 * *(config.poisson)) ),
   bc_material(0)
 {
+  young = *(config.young);
+  poisson = *(config.poisson);
+  lame_mu =  young / 2 / ( 1 + poisson );
+  lame_lambda = young * poisson / (1 + poisson) / (1 - 2*poisson );
+  bulk_modulus = young / 3 / ( 1 - 2* poisson );
+
   setup_variables();
 }
 
@@ -132,9 +138,11 @@ void ViscoPlasticMaterial::init_fem()
  *  _side_ is an optional parameter, used only when the material
  *  is being initialized for a BC.
  */
-void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem, uint side )
+void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
 {
   SCOPELOG(5);
+
+  elem_coupler = 0;
 
   if ( is_bc() ) 
     fe->reinit( &elem, side );
@@ -159,6 +167,26 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
   Re.resize (n_dofs);
 //  for (uint vi=0; vi<3; vi++)
 //    Re_var[vi].reposition ( vi*n_dofsv, n_dofsv );
+}
+
+/**
+ *  Init the DoF map and the element matrices.
+ *
+ *  Then, initializes the solution depending on soln.
+ */
+void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side )
+{
+  SCOPELOG(5);
+
+  /*
+   * Initializes the FEM structures, not depending on the solution
+   */
+  reinit( elem, side );
+
+  /*
+   * Now initializes the structures depending on the solution vector
+   */
+  uint n_dofsv = dof_indices_var[0].size();
 
   // Prepare the Uib vector for the automatic differentiation
   Uib.clear();
@@ -179,12 +207,13 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
     Fib.push_back(row);
   }
 
-//  {
-//    ostringstream os; 
-//    os << "Uib: ["; for ( uint i=0; i<3; i++ ) { os << " [ "; for ( uint B=0; B<n_dofsv; B++ ) os << Uib[i][B] << ", "; os << " ], "; } os << "]";
-//    dlog(1) << os.str();
-//  }
+  uint eid = elem.id();
+  if ( ! coupler.count( eid ) ) flog << "Coupler has not been initialized for element '" << eid << "'. Something is terribly wrong.";
+  elem_coupler = & ( coupler.at(eid) );
 
+  // Fetch the needed parameters from the coupler
+  get_from_element_coupler( "T", temperature ); 
+  get_from_element_coupler( "beta_d", beta_d  ); 
 }
 
 /**
@@ -239,10 +268,7 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint i=0; i<3; i++)
   for (uint j=0; j<3; j++)
   for (uint M=0;  M<n_dofsv;  M++)
-  {
-//    OLD_GRAD_U[qp](i, j) += dphi[M][qp](j) * system.old_solution(dof_indices_var[i][M]);
     GRAD_U[qp](i, j) += dphi[M][qp](j) * Uib[i][M];
-  }
 
   // ( \phi_j , Cijkl U_k,l ) 
   for (uint qp=0; qp<qrule.n_points(); qp++   )
@@ -251,13 +277,19 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-  {
     Fib[i][B] += JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
-//    Fib[i][B] += implicit     * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
-//    Fib[i][B] -= (1-implicit) * JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * OLD_GRAD_U[qp](k,l) ;
-  }
 
-  // Build the Re vector
+  // Temperature
+  //       alpha_d = beta_d * K_bulk
+  //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
+  for (uint qp=0; qp<qrule.n_points(); qp++   )
+  for (uint B=0;  B<n_dofsv;  B++)
+  for (uint i=0;  i<3;  i++)
+    Fib[i][B] -= JxW[qp] *  dphi[B][qp](i) * ( bulk_modulus * beta_d[qp] ) * temperature[qp];
+
+  /*
+  *    Build the Re vector and assemble in the global residual vector
+  */
   for (uint i=0; i<3; i++) 
   for (uint B=0;  B<n_dofsv;  B++)
     Re( i*n_dofsv + B ) = Fib[i][B];
@@ -265,7 +297,6 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   dof_map.constrain_element_vector ( Re, dof_indices );
   residual.add_vector ( Re, dof_indices );
 }
-
 
 /**
  *

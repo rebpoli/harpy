@@ -8,9 +8,11 @@
 
 
 SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic( "viscoplastic", ts )
+  Solverloop(ts_), viscoplastic( "viscoplastic", ts ), thermal( "thermal", ts )
 {
-  // Create solver and mesh 
+
+  // Initialize structures
+  thermal.init_coupler( viscoplastic );
 }
 
 /**
@@ -20,6 +22,12 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
 void SLViscoplastic::solve() 
 {
   SCOPELOG(1);
+  
+  // Update the temperature, sync the coupler
+  thermal.solve(); 
+  thermal.update_coupler( viscoplastic );
+
+  // Run the viscoplastic
   viscoplastic.solve();
 }
 
