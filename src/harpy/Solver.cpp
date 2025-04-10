@@ -38,7 +38,6 @@ Material * Solver::get_material( const Elem & elem )
 /**
  *    Fetches information from the configuration and feeds the object coupler.
  *
- *    This function needs the FEBase member to be initialized in the Material to fetch the xyz.
  */
 void Solver::init_coupler()
 {
@@ -48,20 +47,11 @@ void Solver::init_coupler()
   {
     Material * mat = get_material( *elem );
 
-    // Calc xyz
-    const std::vector<Point> & xyz = mat->fe->get_xyz();
-    mat->fe->reinit( elem );
 
     // Create element in the coupler
     uint eid = elem->id();
     if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
     ElemCoupler & ec = coupler.at( eid );
-
-    // Feed the coupler
-    for ( auto & pname : mat->required_material_properties )
-    {
-      const MaterialConfig & mconf = mat->config;
-      mat->config.get_property( ec.dbl_params[pname], pname, xyz );
-    }
+    mat->init_coupler( elem, ec );
   }
 }

@@ -49,8 +49,9 @@ class Material
     void get_from_element_coupler( string vname, vector<double> & curr , vector<double> & old );
     void get_from_element_coupler( string vname, vector<double> & curr );
 
+    void init_coupler( Elem * elem, ElemCoupler & ec );
+
     // Interface to any material
-   
     /// Returns a material with the BC definitions and tools
     virtual Material * get_bc_material() 
               { flog << "Must be redifined in the child classes."; return 0; }

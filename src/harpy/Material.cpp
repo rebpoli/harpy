@@ -5,6 +5,7 @@
 #include "config/SolverConfig.h"
 #include "material/ViscoPlasticMaterial.h"
 
+#include "libmesh/elem.h"
 #include "libmesh/mesh.h"
 #include "libmesh/system.h"
 
@@ -49,6 +50,23 @@ Material * Material::Factory( suint sid, const MeshBase & mesh,
   return ret;
 }
 
+/**
+ *
+ *    This function needs the FEBase member to be initialized in the Material to fetch the xyz.
+ */
+void Material::init_coupler( Elem * elem, ElemCoupler & ec )
+{
+  // Calc xyz
+  const std::vector<Point> & xyz = fe->get_xyz();
+  fe->reinit( elem );
+
+  // Feed the coupler
+  for ( auto & pname : required_material_properties )
+  {
+    const MaterialConfig & mconf = config;
+    config.get_property( ec.dbl_params[pname], pname, xyz );
+  }
+}
 
 /**
  *
