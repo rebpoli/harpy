@@ -5,17 +5,26 @@
 #include "harpy/Timestep.h"
 #include "harpy/Material.h"
 #include "util/String.h"
-#include "libmesh/mesh.h"
 #include "util/OutputOperators.h"
 
+#include "libmesh/mesh.h"
+#include "libmesh/explicit_system.h"
+
 using harpy_string::iequals;
+
 
 /**
  *
  */
 SolverThermalExplicit::SolverThermalExplicit( string name_, const Timestep & ts_ ) :
-    Solver(name_, ts_), bc_config(MODEL->boundary_config)
-{}
+    Solver(name_, ts_ ),
+    system(es.add_system<ExplicitSystem>("thermal"))
+{
+
+  // Add a temperature across the whole mesh
+  system.add_variable( "T", SECOND, L2_LAGRANGE );
+
+}
 
 /**
  *   Builds a simple structuer from the boundary configuration relating the
@@ -36,6 +45,14 @@ void SolverThermalExplicit::solve()
     if ( ! iequals ( dbc.vname , "T" ) ) continue;
     temperature_by_material[ material ] = dbc.value;
   }
+
+  // Do the projection
+  MeshBase & mesh = get_mesh();
+  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+  {
+    Material * mat = get_material( *elem );
+  }
+
 }
 
 /**
@@ -62,11 +79,11 @@ void SolverThermalExplicit::update_coupler( Solver & trg_solver )
 
   Coupler & coupler = trg_solver.coupler;
 
-  MeshBase * mesh = trg_solver.get_mesh();
+  MeshBase & mesh = trg_solver.get_mesh();
 
-  for (const auto & elem : mesh->active_element_ptr_range()) 
+  for (const auto & elem : mesh.active_element_ptr_range()) 
   {
-    if ( elem->processor_id() != mesh->processor_id() ) continue;  /// Only in the active processor. NOTE: if this requires an element search, that would be a collective task! The loops have to be synchronous.
+    if ( elem->processor_id() != mesh.processor_id() ) continue;  /// Only in the active processor. NOTE: if this requires an element search, that would be a collective task! The loops have to be synchronous.
 
     uint eid = elem->id();
                                                                    ///

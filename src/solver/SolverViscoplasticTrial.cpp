@@ -4,6 +4,7 @@
 #include "config/ModelConfig.h"
 #include "harpy/Timestep.h"
 #include "harpy/DirManager.h"
+#include "material/ViscoPlasticMaterial.h"
 #include "util/MeshUtils.h"
 #include "util/Messages.h"
 #include "util/OutputOperators.h"
@@ -30,7 +31,7 @@
  */
 SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep & ts_ ) : 
                    Solver( name_, ts_ ), 
-                   system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
+                   system(es.add_system<TransientNonlinearImplicitSystem> ( name )),
                    curr_bc( system )
 {
   dlog(1) << "SolverViscoplasticTrial: " << *config;
@@ -52,6 +53,43 @@ SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep &
 }
 
 /**
+ *   Creates all the needed materials for the solution (one per subdomain ID).
+ *   Initializes the material_by_sid structure.
+ */
+void SolverViscoplasticTrial::init_materials()
+{
+  SCOPELOG(1);
+  MeshBase & mesh = get_mesh();
+
+  set<MaterialConfig> & materials = MODEL->materials;
+
+  // ensures creation of all materials to the current mesh (local elems only)
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    uint sid = elem->subdomain_id();
+    if  ( material_by_sid.count( sid ) ) continue;
+
+    string sname = mesh.subdomain_name( sid );
+    SolverConfig & svr_config = *( this->config );
+    if ( ! svr_config.mat_config_by_name.count( sname ) ) flog << "Cannot find material configuration by name for subdomain '" << sname << "'. The model is inconsistent.";
+    auto & mat_conf_id = svr_config.mat_config_by_name.at( sname );
+
+    // Build material object
+    string mat_name = mat_conf_id.name, mat_cfg = mat_conf_id.cfg;
+    MaterialConfig mckey( mat_name, mat_cfg );
+    auto it = materials.find( mckey );
+    if ( it == materials.end() ) flog << "Cannot find material description for '" << sname << "'. The model is inconsistent.";
+
+    // This object has all physical properties (por, perm, alpha, ...)
+    const MaterialConfig & mat_conf = *it;
+
+    dlog(1) << "Resoved material:" << mat_conf;
+    material_by_sid[sid] = new ViscoPlasticMaterial( sid, mat_conf, system );
+  }
+}
+
+
+/**
  *
  */
 void SolverViscoplasticTrial::add_scalar_vars()
@@ -71,35 +109,15 @@ void SolverViscoplasticTrial::load_mesh()
 {
   string fn = config->mesh_filename;
   dlog(1) << "Reading mesh '" << fn << "'...";
+  MeshBase & mesh = get_mesh();
   mesh.read( fn );
   dump_mesh( mesh );
 }
 
 /**
- *   Deletes the owned data structure
- */
+  */
 SolverViscoplasticTrial::~SolverViscoplasticTrial() 
-{
-  for ( auto & [ sid, mat ] : material_by_sid ) delete( mat );
-  material_by_sid.clear();
-}
-
-/**
- *   Creates all the needed materials for the solution (one per subdomain ID).
- *   Initializes the material_by_sid structure.
- */
-void SolverViscoplasticTrial::init_materials()
-{
-  SCOPELOG(1);
-  // ensures creation of all materials to the current mesh (local elems only)
-  MeshBase & mesh = es.get_mesh();
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
-  {
-    uint sid = elem->subdomain_id();
-    if  ( ! material_by_sid.count( sid ) ) 
-      material_by_sid[sid] = Material::Factory( sid, es.get_mesh(), system, *this );
-  }
-}
+{ }
 
 /**
  *
@@ -108,7 +126,7 @@ void SolverViscoplasticTrial::set_dirichlet_bcs()
 {
   SCOPELOG1(1);
 
-  const MeshBase & mesh = es.get_mesh();
+  const MeshBase & mesh = get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
   DofMap & dof_map = system.get_dof_map();
   dof_map.get_dirichlet_boundaries()->clear();
@@ -172,7 +190,7 @@ void SolverViscoplasticTrial::set_scalar_bcs()
 {
   set_unassigned_scalars();
 
-  const MeshBase & mesh = system.get_mesh();
+  const MeshBase & mesh = get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
   DofMap & dof_map = system.get_dof_map();
 
@@ -278,7 +296,7 @@ void SolverViscoplasticTrial::jacobian
 {
   SCOPELOG(1);
 
-  MeshBase & mesh = es.get_mesh();
+  MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
@@ -308,7 +326,7 @@ void SolverViscoplasticTrial::residual
 {
   SCOPELOG(1);
 
-  MeshBase & mesh = es.get_mesh();
+  MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
@@ -345,6 +363,6 @@ void SolverViscoplasticTrial::export_exo()
   using namespace harpy_dirmanager;
   string fn = exo_filename( "vptrial", ts );
 
-  ExodusII_IO exo(es.get_mesh());
+  ExodusII_IO exo(get_mesh());
   exo.write_timestep_discontinuous ( fn, es, 1, ts.time );
 }

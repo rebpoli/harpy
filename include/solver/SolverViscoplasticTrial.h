@@ -48,9 +48,6 @@ class SolverViscoplasticTrial : public Solver,
     SolverViscoplasticTrial( string name, const Timestep & ts_ );
     ~SolverViscoplasticTrial();
 
-    void init_materials();
-    virtual MeshBase * get_mesh() { return &mesh; }
-
     void solve();
 
     // Interface to set up the trial system
@@ -62,17 +59,19 @@ class SolverViscoplasticTrial : public Solver,
                            NonlinearImplicitSystem & /*sys*/);
 
 
+    /// A specialized system object
+    TransientNonlinearImplicitSystem & system;
+
   private:
     
     void load_mesh();
     void set_dirichlet_bcs();
     void set_scalar_bcs() ;
     void set_unassigned_scalars();
+    void init_materials();
     void add_scalar_vars();
 
     void export_exo();
 
-    TransientNonlinearImplicitSystem & system;
     BC curr_bc;
-
 };

@@ -18,11 +18,11 @@
 /**
  *
  */
-ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_, const MaterialConfig & config, System & sys_ ) :
+ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
+                                            const MaterialConfig & config, 
+                                            TransientNonlinearImplicitSystem & sys_ ) :
   Material( sid_, config ), dof_indices_var(3),
-  system( dynamic_cast<TransientNonlinearImplicitSystem&>(sys_) ),
-  implicit(1),
-  bc_material(0)
+  system( sys_ ), implicit(1), bc_material(0)
 {
   // Lists the necessary properties to fetch from the config during init_coupler
   required_material_properties.assign({
@@ -57,7 +57,8 @@ Material * ViscoPlasticMaterial::get_bc_material()
 /**
  *
  */
-ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_, System & sys_ ) :
+ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
+                                                TransientNonlinearImplicitSystem & sys_ ) :
   ViscoPlasticMaterial( sid_, config_, sys_ )
 {
 }

@@ -38,13 +38,6 @@ class Material
     virtual ~Material() {};
 
 
-    /**
-     *   Creates a Material for the subdomain.
-     *
-     */
-    static Material * Factory( suint sid, const MeshBase & mesh, 
-                               System & system, const Solver & solver );
-
     // Common interface to the couplers
     void get_from_element_coupler( string vname, vector<double> & curr , vector<double> & old );
     void get_from_element_coupler( string vname, vector<double> & curr );
@@ -72,7 +65,6 @@ class Material
               { flog << "Must be redifined in the child classes.";  }
 
     // Shape functions, quadratures etc
-    QGauss qrule;
     vector<dof_id_type> dof_indices;
     unique_ptr<FEBase> fe;  /// The finite element object to hold shape funtions, jxw, etc
 
@@ -87,9 +79,11 @@ class Material
     DenseMatrix<Number> Ke; /// Jacobian for the element
     DenseVector<Number> Re; /// RHS vector for the element
 
+  public:
+
+    QGauss qrule;
     const ElemCoupler * elem_coupler;
 
-  public:
     /// Must be initialized in the constructor of the child class
     vector< string > required_material_properties; 
 };

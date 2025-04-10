@@ -23,7 +23,7 @@ class ViscoPlasticMaterialBC;
 class ViscoPlasticMaterial : public Material
 {
 public:
-  ViscoPlasticMaterial( suint sid_, const MaterialConfig & config, System & sys_ );
+  ViscoPlasticMaterial( suint sid_, const MaterialConfig & config, TransientNonlinearImplicitSystem & sys_ );
   virtual ~ViscoPlasticMaterial();
   virtual void init_fem();
 
@@ -71,7 +71,7 @@ protected:
 class ViscoPlasticMaterialBC : public ViscoPlasticMaterial
 {
 public:
-  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_, System & sys_ );
+  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_, TransientNonlinearImplicitSystem & sys_ );
 
   virtual bool is_bc() { return true; }
 

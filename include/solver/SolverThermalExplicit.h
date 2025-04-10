@@ -4,6 +4,8 @@
 #include "harpy/Solver.h"
 #include "util/String.h"
 #include <map>
+
+#include "libmesh/explicit_system.h"
 class BCConfig;
 
 /**
@@ -16,6 +18,7 @@ class BCConfig;
  */
 
 using harpy_string::CIMap;
+namespace libMesh { class ExplicitSystem; }
 
 class SolverThermalExplicit : public Solver 
 {
@@ -27,14 +30,16 @@ public:
   virtual void init_trg_coupler( Solver & trg_solver );
   virtual void update_coupler( Solver & trg_solver );
 
+  /// A specialized system object
+  ExplicitSystem & system;
+
 private:
-  string name;
-  BCConfig & bc_config;
 
   CIMap<double > temperature_by_material;
   CIMap<double > beta_e_by_material, beta_d_by_material;
 
   friend ostream& operator<<(ostream& os, const SolverThermalExplicit & m);
+
 };
 
 ostream& operator<<(ostream& os, const SolverThermalExplicit & m);
