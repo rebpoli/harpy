@@ -47,6 +47,8 @@ SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep &
 
   // Init FEM of the materials
   for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
+
+  init_coupler();
 }
 
 /**

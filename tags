@@ -5181,6 +5181,7 @@ bernstein_n_dofs_per_elem	/opt/libmesh/src/fe/fe_bernstein.C	/^unsigned int bern
 bernstein_nodal_soln	/opt/libmesh/src/fe/fe_bernstein.C	/^void bernstein_nodal_soln(const Elem * elem,$/;"	f	namespace:libMesh::__anon11
 best_fit_type_flag	/opt/libmesh/include/reduced_basis/rb_eim_construction.h	/^  BEST_FIT_TYPE best_fit_type_flag;$/;"	m	class:libMesh::RBEIMConstruction
 beta_d	include/config/MaterialConfig.h	/^  optional<double> beta_e, beta_d;$/;"	m	class:MaterialConfig
+beta_d	include/material/ViscoPlasticMaterial.h	/^  vector< double > temperature, beta_d;$/;"	m	class:ViscoPlasticMaterial
 beta_d_by_material	include/solver/SolverThermalExplicit.h	/^  CIMap<double > beta_e_by_material, beta_d_by_material;$/;"	m	class:SolverThermalExplicit
 beta_d_file	include/config/MaterialConfig.h	/^  optional<string> beta_e_file, beta_d_file;$/;"	m	class:MaterialConfig
 beta_e	include/config/MaterialConfig.h	/^  optional<double> beta_e, beta_d;$/;"	m	class:MaterialConfig
@@ -9031,8 +9032,7 @@ init_context	/opt/libmesh/src/error_estimation/kelly_error_estimator.C	/^KellyEr
 init_context	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^void RBEIMConstruction::init_context(FEMContext & c)$/;"	f	class:libMesh::RBEIMConstruction
 init_context	/opt/libmesh/src/systems/fem_system.C	/^void FEMSystem::init_context(DiffContext & c)$/;"	f	class:libMesh::FEMSystem
 init_conversion_map	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::init_conversion_map()$/;"	f	class:libMesh::ExodusII_IO_Helper
-init_coupler	include/harpy/Solver.h	/^    virtual void init_coupler( Solver & trg_solver )$/;"	f	class:Solver
-init_coupler	src/solver/SolverThermalExplicit.cpp	/^void SolverThermalExplicit::init_coupler( Solver & trg_solver )$/;"	f	class:SolverThermalExplicit
+init_coupler	src/harpy/Solver.cpp	/^void Solver::init_coupler()$/;"	f	class:Solver
 init_data	/opt/libmesh/src/apps/L2system.C	/^void HilbertSystem::init_data ()$/;"	f	class:HilbertSystem
 init_data	/opt/libmesh/src/reduced_basis/rb_construction_base.C	/^void RBConstructionBase<Base>::init_data ()$/;"	f	class:libMesh::RBConstructionBase
 init_data	/opt/libmesh/src/solvers/second_order_unsteady_solver.C	/^void SecondOrderUnsteadySolver::init_data()$/;"	f	class:libMesh::SecondOrderUnsteadySolver
@@ -9096,6 +9096,8 @@ init_shape_functions	/opt/libmesh/src/fe/inf_fe.C	/^void InfFE<Dim,T_radial,T_ma
 init_shell_mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^void init_shell_mat(Obj & obj)$/;"	f	namespace:libMesh
 init_shell_mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^void init_shell_mat(Obj & obj,$/;"	f	namespace:libMesh
 init_subdivision_matrix	/opt/libmesh/src/fe/fe_subdivision_2D.C	/^void FESubdivision::init_subdivision_matrix(DenseMatrix<Real> & A,$/;"	f	class:libMesh::FESubdivision
+init_trg_coupler	include/harpy/Solver.h	/^    virtual void init_trg_coupler( Solver & trg_solver )$/;"	f	class:Solver
+init_trg_coupler	src/solver/SolverThermalExplicit.cpp	/^void SolverThermalExplicit::init_trg_coupler( Solver & trg_solver )$/;"	f	class:SolverThermalExplicit
 initial_L2_error_all_N	/opt/libmesh/include/reduced_basis/transient_rb_evaluation.h	/^  std::vector<Real> initial_L2_error_all_N;$/;"	m	class:libMesh::TransientRBEvaluation
 initial_by_vname	include/config/BCConfig.h	/^    map< string, double > initial_by_vname;$/;"	m	class:BCConfig
 initial_conditions	/opt/libmesh/src/systems/newmark_system.C	/^void NewmarkSystem::initial_conditions ()$/;"	f	class:libMesh::NewmarkSystem
@@ -15695,6 +15697,7 @@ request_vector	/opt/libmesh/src/systems/system.C	/^const NumericVector<Number> *
 request_vector	/opt/libmesh/src/systems/system.C	/^const NumericVector<Number> * System::request_vector (std::string_view vec_name) const$/;"	f	class:libMesh::System
 require_finite_residual	/opt/libmesh/include/solvers/newton_solver.h	/^  bool require_finite_residual;$/;"	m	class:libMesh::NewtonSolver
 require_residual_reduction	/opt/libmesh/include/solvers/newton_solver.h	/^  bool require_residual_reduction;$/;"	m	class:libMesh::NewtonSolver
+required_material_properties	include/harpy/Material.h	/^    vector< string > required_material_properties; $/;"	m	class:Material
 requires_all_elem_center_data	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  bool requires_all_elem_center_data;$/;"	m	class:libMesh::RBParametrizedFunction
 requires_all_elem_qp_data	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  bool requires_all_elem_qp_data;$/;"	m	class:libMesh::RBParametrizedFunction
 requires_xyz_perturbations	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  bool requires_xyz_perturbations;$/;"	m	class:libMesh::RBParametrizedFunction
@@ -17707,6 +17710,7 @@ task_scheduler_init	/opt/libmesh/include/parallel/threads_tbb.h	/^typedef tbb::t
 teebuf	include/util/TeeBuff.h	/^class teebuf : public std::streambuf$/;"	c
 teebuf	src/util/TeeBuff.cpp	/^teebuf::teebuf(std::streambuf * sb1, std::streambuf * sb2)$/;"	f	class:teebuf
 tellp	/opt/libmesh/include/utils/ostream_proxy.h	/^  std::streampos tellp() { return _target->tellp(); }$/;"	f	class:libMesh::BasicOStreamProxy
+temperature	include/material/ViscoPlasticMaterial.h	/^  vector< double > temperature, beta_d;$/;"	m	class:ViscoPlasticMaterial
 temperature_by_material	include/solver/SolverThermalExplicit.h	/^  CIMap<double > temperature_by_material;$/;"	m	class:SolverThermalExplicit
 temporal_data	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::vector<std::unique_ptr<NumericVector<Number>>> temporal_data;$/;"	m	class:libMesh::TransientRBConstruction
 tensor_product_hex	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::tensor_product_hex(const QBase & q1D)$/;"	f	class:libMesh::QBase

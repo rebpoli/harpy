@@ -39,8 +39,11 @@ class Solver
     // using the target solver material gauss points
     virtual void update_coupler( Coupler & target )
       { flog << "Must be defined in the child class."; }
-    virtual void init_coupler( Solver & trg_solver )
+    virtual void init_trg_coupler( Solver & trg_solver )
       { flog << "Must be defined in the child class."; }
+  
+    // Initializes the coupler of this object from the material config
+    void init_coupler();
 
     // The material is the same across every solver.
     // Each solver gets its chunk of information as needed
@@ -53,9 +56,11 @@ class Solver
     string name;
     const Timestep & ts;
     map< uint, Material * > material_by_sid;
-    
+
   public:
     SolverConfig * config;
     Mesh mesh;
     EquationSystems es;
+
+  protected:
 };

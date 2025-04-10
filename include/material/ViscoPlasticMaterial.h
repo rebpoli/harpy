@@ -50,15 +50,12 @@ protected:
 
   // PARAMETERS
   double implicit;
-  inline double C_ijkl(uint i, uint j, uint k, uint l);
+  inline double C_ijkl(uint qp, uint i, uint j, uint k, uint l);
 
-  // These material parameters are constant for now.
-  // They must be imported from a Coupler.
-  double lame_mu, lame_lambda; /// Lame parameters
-  double poisson, young, bulk_modulus;
-
-  // Parameters from couplers
-  vector< double > temperature, beta_d;
+  // Parameters from couplers (from config)
+  vector<double> lame_mu, lame_lambda, alpha_d;
+  // Variables from couplers (external solvers)
+  vector< double > temperature;
 
   // THE CHILD MATERIAL
   ViscoPlasticMaterialBC * bc_material;
@@ -92,9 +89,9 @@ private:
 /**
  *
  */
-inline double ViscoPlasticMaterial::C_ijkl(uint i, uint j, uint k, uint l) {
+inline double ViscoPlasticMaterial::C_ijkl(uint qp, uint i, uint j, uint k, uint l) {
   const auto kd = Math::kronecker_delta;  // From Global
 
-  return lame_lambda * ( kd(i,j)*kd(k,l) ) 
-           + lame_mu * ( kd(i, k)*kd(j, l) + kd(i, l)*kd(j, k) );
+  return lame_lambda[qp] * ( kd(i,j)*kd(k,l) ) 
+           + lame_mu[qp] * ( kd(i, k)*kd(j, l) + kd(i, l)*kd(j, k) );
 }

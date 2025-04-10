@@ -18,6 +18,17 @@ MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_,
             model_dir(model_dir_), name(name_), cfg(cfg_) , filename( model_dir + "/" + name + "/" + to_upper_copy(cfg) )
 {
   MaterialReader( *this );
+  
+  // Compute the secondary properties
+  if ( poisson && young )
+  {
+    lame_mu =  *young / 2 / ( 1 + *poisson );
+    lame_lambda = *young * *poisson / (1 + *poisson) / (1 - 2 * (*poisson) );
+    bulk_modulus = *young / 3 / ( 1 - 2* *poisson );
+  }
+
+  if ( bulk_modulus && beta_d ) alpha_d = *bulk_modulus * (*beta_d);
+
 }
 
 /**
@@ -34,13 +45,14 @@ optional<string> & MaterialConfig::file_param( string & vname )
   if ( iequals( vname, "beta_e" ) )        return beta_e_file;
   if ( iequals( vname, "beta_d" ) )        return beta_d_file;
 
+
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
 }
 /**
  *
  */
-optional<double> & MaterialConfig::con_param( string & vname )
+optional<double> & MaterialConfig::con_param( string & vname ) 
 {
   if ( iequals( vname, "porosity" ) )      return porosity;
   if ( iequals( vname, "permeability" ) )  return permeability;
@@ -50,8 +62,33 @@ optional<double> & MaterialConfig::con_param( string & vname )
   if ( iequals( vname, "beta_e" ) )        return beta_e;
   if ( iequals( vname, "beta_d" ) )        return beta_d;
 
+  if ( iequals( vname, "lame_mu" ) )       return lame_mu;
+  if ( iequals( vname, "lame_lambda" ) )   return lame_lambda;
+  if ( iequals( vname, "bulk_modulus" ) )  return bulk_modulus;
+  if ( iequals( vname, "alpha_d" ) )       return alpha_d;
+
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity;
+} 
+/** **/
+const optional<double> & MaterialConfig::con_param( string & vname ) const
+{ return const_cast<optional<double>&>(const_cast<MaterialConfig*>(this)->con_param(vname)); }
+const optional<string> & MaterialConfig::file_param( string & vname ) const
+{ return const_cast<optional<string>&>(const_cast<MaterialConfig*>(this)->file_param(vname)); }
+
+/**
+ *  TODO: We do not support file parameters yet. Only constants.
+ */
+void MaterialConfig::get_property( vector<double> & ret, string pname, const vector<Point> & xyz ) const
+{
+  ret.clear();
+
+  const optional<double> & prop = con_param(pname);
+  if ( ! prop ) flog << "Property '" << prop << "' is not defined for material '" << name << "'.";
+
+  // TODO: support file and layer properties
+  for ( auto & p : xyz ) ret.push_back( *prop );
+
 }
 
 /**

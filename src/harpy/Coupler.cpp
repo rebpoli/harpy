@@ -22,7 +22,7 @@ ostream& operator<<(ostream& os, const Coupler & m)
  */
 ostream& operator<<(ostream& os, const ElemCoupler & m)
 {
-  os << "         (ElemCoupler) ";
+  os << "         (ElemCoupler) " << endl;
   for ( auto & [ vname, parbyqp ] : m.dbl_params)
     os << "             Var '" << vname << "': " << parbyqp << endl;
 

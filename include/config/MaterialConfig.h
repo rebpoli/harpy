@@ -3,6 +3,10 @@
 #include "base/Global.h"
 #include <optional>
 #include <map>
+#include <vector>
+
+#include "libmesh/point.h"
+using namespace libMesh;
 
 /**
  *
@@ -22,13 +26,18 @@ public:
   // Dummy constructor to serve as key for set search
   MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};
 
+  void get_property( vector<double> & ret, string pname, const vector<Point> & xyz ) const;
+
   string engine;   /// Poroelastic, viscoplastic, thermoporoelastic ...
 
   // Poroelastic
   optional<double> porosity, permeability;
   optional<double> biot, young, poisson;
   // Thermal
-  optional<double> beta_e, beta_d;
+  optional<double> beta_e, beta_d, alpha_d;
+
+  // Secondary variables (computed from the primary above)
+  optional<double> lame_mu, lame_lambda, bulk_modulus;
 
   // Files
   // Poroelastic
@@ -48,6 +57,8 @@ public:
   // Get param reference by name
   optional<string> & file_param( string & vname );
   optional<double> & con_param( string & vname );
+  const optional<string> & file_param( string & vname ) const;
+  const optional<double> & con_param( string & vname ) const;
 
   bool operator<(const MaterialConfig & other) const;
 
@@ -55,6 +66,7 @@ public:
   string model_dir ;
   string name, cfg;
   string filename;
+
 
 private:
 

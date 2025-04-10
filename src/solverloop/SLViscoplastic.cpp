@@ -12,7 +12,7 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
 {
 
   // Initialize structures
-  thermal.init_coupler( viscoplastic );
+  thermal.init_trg_coupler( viscoplastic );
 }
 
 /**

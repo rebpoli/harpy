@@ -87,6 +87,10 @@ class Material
     DenseVector<Number> Re; /// RHS vector for the element
 
     const ElemCoupler * elem_coupler;
+
+  public:
+    /// Must be initialized in the constructor of the child class
+    vector< string > required_material_properties; 
 };
 
 

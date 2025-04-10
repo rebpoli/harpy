@@ -1,6 +1,8 @@
 #include "harpy/Solver.h"
-#include "config/ModelConfig.h"
+
 #include "base/HarpyInit.h" // LIBMESH_COMMUNICATOR
+#include "config/ModelConfig.h"
+#include "harpy/Material.h"
 #include "libmesh/elem.h"
 
 /**
@@ -33,3 +35,35 @@ Material * Solver::get_material( const Elem & elem )
   return mat;
 }
 
+/**
+ *    Fetches information from the configuration and feeds the object coupler.
+ *
+ *    This function needs the FEBase member to be initialized in the Material to fetch the xyz.
+ */
+void Solver::init_coupler()
+{
+  SCOPELOG(1);
+  MeshBase & mesh = es.get_mesh();
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    Material * mat = get_material( *elem );
+
+    // Calc xyz
+    const std::vector<Point> & xyz = mat->fe->get_xyz();
+    mat->fe->reinit( elem );
+
+    // Create element in the coupler
+    uint eid = elem->id();
+    if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
+    ElemCoupler & ec = coupler.at( eid );
+
+    // Feed the coupler
+    for ( auto & pname : mat->required_material_properties )
+    {
+      const MaterialConfig & mconf = mat->config;
+      mat->config.get_property( ec.dbl_params[pname], pname, xyz );
+    }
+  }
+
+  dlog(1) << coupler;
+}

@@ -24,12 +24,12 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_, const MaterialConfig & c
   implicit(1),
   bc_material(0)
 {
-  young = *(config.young);
-  poisson = *(config.poisson);
-  lame_mu =  young / 2 / ( 1 + poisson );
-  lame_lambda = young * poisson / (1 + poisson) / (1 - 2*poisson );
-  bulk_modulus = young / 3 / ( 1 - 2* poisson );
+  // Lists the necessary properties to fetch from the config during init_coupler
+  required_material_properties.assign({
+      "alpha_d", "beta_e", "young", "poisson", "lame_mu", "lame_lambda", 
+  });
 
+  // Setup libmesh system variables
   setup_variables();
 }
 
@@ -112,6 +112,7 @@ void ViscoPlasticMaterial::init_fem()
   fe->get_JxW();
   fe->get_phi();
   fe->get_dphi();
+  fe->get_xyz();
 
   if ( is_bc() ) 
     fe->get_normals(); 
@@ -213,7 +214,9 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Cou
 
   // Fetch the needed parameters from the coupler
   get_from_element_coupler( "T", temperature ); 
-  get_from_element_coupler( "beta_d", beta_d  ); 
+  get_from_element_coupler( "alpha_d", alpha_d  ); 
+  get_from_element_coupler( "lame_mu", lame_mu  ); 
+  get_from_element_coupler( "lame_lambda", lame_lambda ); 
 }
 
 /**
@@ -238,7 +241,7 @@ void ViscoPlasticMaterial::jacobian (const NumericVector<Number> & soln, SparseM
   for (uint j=0; j<3; j++)
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Ke_var[i][k](B,M) += JxW[qp] * C_ijkl(i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
+    Ke_var[i][k](B,M) += JxW[qp] * C_ijkl(qp, i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
 //    Ke_var[i][k](B,M) += implicit * JxW[qp] * C_ijkl(i,j,k,l) * dphi[M][qp](l) * dphi[B][qp](j);
 
 //  dlog(1) << endl << Ke;
@@ -277,7 +280,7 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib[i][B] += JxW[qp] *  dphi[B][qp](j) * C_ijkl(i,j,k,l) * GRAD_U[qp](k,l) ;
+    Fib[i][B] += JxW[qp] *  dphi[B][qp](j) * C_ijkl(qp, i,j,k,l) * GRAD_U[qp](k,l) ;
 
   // Temperature
   //       alpha_d = beta_d * K_bulk
@@ -285,7 +288,7 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint qp=0; qp<qrule.n_points(); qp++   )
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0;  i<3;  i++)
-    Fib[i][B] -= JxW[qp] *  dphi[B][qp](i) * ( bulk_modulus * beta_d[qp] ) * temperature[qp];
+    Fib[i][B] -= JxW[qp] *  dphi[B][qp](i) * alpha_d[qp]  * temperature[qp];
 
   /*
   *    Build the Re vector and assemble in the global residual vector

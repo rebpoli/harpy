@@ -41,7 +41,7 @@ void SolverThermalExplicit::solve()
 /**
  *   Initialize the coupler for the target solver.
  */
-void SolverThermalExplicit::init_coupler( Solver & trg_solver )
+void SolverThermalExplicit::init_trg_coupler( Solver & trg_solver )
 {
   SCOPELOG(1);
 
@@ -100,17 +100,6 @@ void SolverThermalExplicit::update_coupler( Solver & trg_solver )
     for ( uint qp=0 ; qp<mat->qrule.n_points() ; qp++ )
       ec.dbl_params["T"].push_back( temperature );
 
-    // Save old beta_e and store the new one
-    ec.dbl_params_old["beta_e"] = ec.dbl_params["beta_e"];
-    ec.dbl_params["beta_e"].clear();
-    for ( uint qp=0 ; qp<mat->qrule.n_points() ; qp++ )
-      ec.dbl_params["beta_e"].push_back( beta_e );
-
-    // Save old beta_d and store the new one
-    ec.dbl_params_old["beta_d"] = ec.dbl_params["beta_d"];
-    ec.dbl_params["beta_d"].clear();
-    for ( uint qp=0 ; qp<mat->qrule.n_points() ; qp++ )
-      ec.dbl_params["beta_d"].push_back( beta_d );
   }
 }
 
