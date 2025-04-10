@@ -64,6 +64,4 @@ void Solver::init_coupler()
       mat->config.get_property( ec.dbl_params[pname], pname, xyz );
     }
   }
-
-  dlog(1) << coupler;
 }
