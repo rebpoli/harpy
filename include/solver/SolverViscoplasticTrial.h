@@ -48,6 +48,7 @@ class SolverViscoplasticTrial : public Solver,
     SolverViscoplasticTrial( string name, const Timestep & ts_ );
     ~SolverViscoplasticTrial();
 
+    void init();
     void solve();
 
     // Interface to set up the trial system
@@ -70,8 +71,6 @@ class SolverViscoplasticTrial : public Solver,
     void set_unassigned_scalars();
     void init_materials();
     void add_scalar_vars();
-
-    void export_exo();
 
     BC curr_bc;
 };

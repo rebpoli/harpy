@@ -4,8 +4,10 @@
 #include "config/BCConfig.h"
 #include "harpy/Timestep.h"
 #include "harpy/Material.h"
+#include "material/ThermalMaterial.h"
 #include "util/String.h"
 #include "util/OutputOperators.h"
+#include "solver/ElemProjection.h"
 
 #include "libmesh/mesh.h"
 #include "libmesh/explicit_system.h"
@@ -21,9 +23,59 @@ SolverThermalExplicit::SolverThermalExplicit( string name_, const Timestep & ts_
     system(es.add_system<ExplicitSystem>("thermal"))
 {
 
-  // Add a temperature across the whole mesh
-  system.add_variable( "T", SECOND, L2_LAGRANGE );
+  init_materials();
+}
 
+/*
+ *
+ */
+SolverThermalExplicit::SolverThermalExplicit( EquationSystems & es, string name_, const Timestep & ts_ ) :
+    Solver(es, name_, ts_ ),
+    system(es.add_system<ExplicitSystem>("thermal"))
+{
+  init_materials();
+}
+
+void SolverThermalExplicit::init() 
+{
+  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
+}
+
+/**
+ *   Creates all the needed materials for the solution (one per subdomain ID).
+ *   Initializes the material_by_sid structure.
+ */
+void SolverThermalExplicit::init_materials()
+{
+  SCOPELOG(1);
+  MeshBase & mesh = get_mesh();
+
+  set<MaterialConfig> & materials = MODEL->materials;
+
+  // ensures creation of all materials to the current mesh (local elems only)
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    suint sid = elem->subdomain_id();
+    dlog(1) << "Subdom:" << elem->subdomain_id() << "   /// sid:" << sid;
+    if  ( material_by_sid.count( sid ) ) continue;
+
+    string sname = mesh.subdomain_name( sid );
+    SolverConfig & svr_config = *( this->config );
+    if ( ! svr_config.mat_config_by_name.count( sname ) ) flog << "Cannot find material configuration by name for subdomain '" << sname << "'. The model is inconsistent.";
+    auto & mat_conf_id = svr_config.mat_config_by_name.at( sname );
+
+    // Build material object
+    string mat_name = mat_conf_id.name, mat_cfg = mat_conf_id.cfg;
+    MaterialConfig mckey( mat_name, mat_cfg );
+    auto it = materials.find( mckey );
+    if ( it == materials.end() ) flog << "Cannot find material description for '" << sname << "'. The model is inconsistent.";
+
+    // This object has all physical properties (por, perm, alpha, ...)
+    const MaterialConfig & mat_conf = *it;
+
+    dlog(1) << "Resoved material:" << mat_conf << " SID:" << sid;
+    material_by_sid[sid] = new ThermalMaterial( sid, mat_conf, system );
+  }
 }
 
 /**
@@ -46,13 +98,30 @@ void SolverThermalExplicit::solve()
     temperature_by_material[ material ] = dbc.value;
   }
 
+  // Feed the coupler of the current solver
+  update_coupler(*this);
+
   // Do the projection
+  //
+  // Explicit solvers do not have materials. It is all done manually.
+  //
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
-    Material * mat = get_material( *elem );
-  }
+    uint eid = elem->id();
+    if ( ! coupler.count(eid) ) flog << "Element '" << eid << "' mission in coupler";
+    ElemCoupler & ec = coupler.at( eid );
 
+    const vector<double> & temp_qp = ec.dbl_params["T"];
+
+    Material * mat = get_material( *elem );
+    mat->reinit( *elem );
+    mat->project( ec, "T" );
+
+  }
+  system.solution->close();
+
+  export_exo( "thermal" );
 }
 
 /**
@@ -96,16 +165,6 @@ void SolverThermalExplicit::update_coupler( Solver & trg_solver )
     double temperature = 0;
     if ( ! temperature_by_material.count( mname ) ) wlog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Using 0.";
     temperature = temperature_by_material[ mname ];
-
-    // Update beta_e
-    double beta_e = 0; 
-    if ( ! mat->config.beta_e ) wlog << "No beta_e defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Using 0.";
-    else beta_e = *(mat->config.beta_e);
-
-    // Update beta_d
-    double beta_d = 0; 
-    if ( ! mat->config.beta_d ) wlog << "No beta_d defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Using 0.";
-    else beta_d = *(mat->config.beta_d);
 
     if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
 

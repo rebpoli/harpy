@@ -63,6 +63,8 @@ class Material
     // Many types of BC can be set. These functions provide a standard interface to pass BCs to any material.
     virtual void set_bc( const RealTensor & value )
               { flog << "Must be redifined in the child classes.";  }
+    virtual void project( ElemCoupler & ec, string vname )
+              { flog << "Must be redifined in the child classes.";  }
 
     // Shape functions, quadratures etc
     vector<dof_id_type> dof_indices;

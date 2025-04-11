@@ -93,6 +93,7 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/material/ViscoPlasticMaterial.cpp
+  src/material/ThermalMaterial.cpp
   src/solver/BC.cpp
   src/solver/ElemProjection.cpp
   src/solver/SolverViscoplasticTrial.cpp

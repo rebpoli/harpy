@@ -16,7 +16,8 @@
 Material::Material( suint sid_, const MaterialConfig & config_ ) :
                           config(config_), name(config.name),
                           sid(sid_), qrule(3), elem_coupler(0)
-{ }
+{ 
+}
 
 
 /**

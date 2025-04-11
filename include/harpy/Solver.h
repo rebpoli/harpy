@@ -8,6 +8,8 @@
 #include "libmesh/nonlinear_implicit_system.h"
 #include "libmesh/system.h"
 
+#include "libmesh/exodusII_io.h"
+
 class Timestep;
 class SolverConfig;
 
@@ -53,6 +55,7 @@ class Solver
     // Each solver gets its chunk of information as needed
     Material * get_material( const Elem & elem );
     void init_materials();
+    void export_exo( string fn );
 
   protected:
     string name;

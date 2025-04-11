@@ -22,7 +22,6 @@
 #include "libmesh/enum_fe_family.h"
 #include "libmesh/enum_order.h"
 
-#include "libmesh/exodusII_io.h"
 
 /**
  *  Creates the system and the materials.
@@ -43,7 +42,13 @@ SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep &
 
   system.nonlinear_solver->residual_object = this;
   system.nonlinear_solver->jacobian_object = this;
+}
 
+/*
+ *
+ */
+void SolverViscoplasticTrial::init()
+{
   es.init();
 
   // Init FEM of the materials
@@ -285,7 +290,7 @@ void SolverViscoplasticTrial::solve()
   ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
     << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
 
-  export_exo();
+  export_exo( "vptrial" );
 }
 
 /**
@@ -355,14 +360,3 @@ void SolverViscoplasticTrial::residual
  *
  */
 
-/**
- *
- */
-void SolverViscoplasticTrial::export_exo()
-{
-  using namespace harpy_dirmanager;
-  string fn = exo_filename( "vptrial", ts );
-
-  ExodusII_IO exo(get_mesh());
-  exo.write_timestep_discontinuous ( fn, es, 1, ts.time );
-}

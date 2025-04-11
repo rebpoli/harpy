@@ -27,7 +27,7 @@ BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       XP               UX            0
 BOUNDARY       YP               UY            0
-DOMAIN         caprock          T             0
+DOMAIN         caprock          T             5
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL

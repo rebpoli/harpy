@@ -24,11 +24,14 @@ class SolverThermalExplicit : public Solver
 {
 public:
   SolverThermalExplicit( string name_, const Timestep & ts_ );
+  SolverThermalExplicit( EquationSystems & es, string name_, const Timestep & ts_ );
 
   virtual void solve();
 
   virtual void init_trg_coupler( Solver & trg_solver );
   virtual void update_coupler( Solver & trg_solver );
+  void init_materials();
+  void init();
 
   /// A specialized system object
   ExplicitSystem & system;

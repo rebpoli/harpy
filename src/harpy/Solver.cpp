@@ -3,6 +3,8 @@
 #include "base/HarpyInit.h" // LIBMESH_COMMUNICATOR
 #include "config/ModelConfig.h"
 #include "harpy/Material.h"
+#include "harpy/Timestep.h"
+#include "harpy/DirManager.h"
 
 #include "libmesh/system.h"
 #include "libmesh/mesh.h"
@@ -80,4 +82,17 @@ void Solver::init_coupler()
     ElemCoupler & ec = coupler.at( eid );
     mat->init_coupler( elem, ec );
   }
+}
+
+/**
+ *
+ *
+ */
+void Solver::export_exo( string fn )
+{
+  using namespace harpy_dirmanager;
+  fn = exo_filename( fn, ts );
+
+  ExodusII_IO exo(get_mesh());
+  exo.write_timestep_discontinuous ( fn, es, 1, ts.time );
 }

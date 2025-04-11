@@ -8,11 +8,15 @@
 
 
 SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic( "viscoplastic", ts ), thermal( "thermal", ts )
+  Solverloop(ts_), viscoplastic( "viscoplastic", ts ), thermal( viscoplastic.es, "thermal", ts )
 {
+
+  viscoplastic.init();
+  thermal.init();
 
   // Initialize structures
   thermal.init_trg_coupler( viscoplastic );
+
 }
 
 /**
