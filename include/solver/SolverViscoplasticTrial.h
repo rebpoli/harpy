@@ -48,8 +48,7 @@ class SolverViscoplasticTrial : public Solver,
     SolverViscoplasticTrial( string name, const Timestep & ts_ );
     ~SolverViscoplasticTrial();
 
-    void init();
-    void solve();
+    virtual void solve();
 
     // Interface to set up the trial system
     virtual void jacobian (const NumericVector<Number> & soln,

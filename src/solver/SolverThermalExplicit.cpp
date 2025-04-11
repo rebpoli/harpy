@@ -13,32 +13,12 @@
 
 using harpy_string::iequals;
 
-
-/**
- *
- */
-SolverThermalExplicit::SolverThermalExplicit( string name_, const Timestep & ts_ ) :
-    Solver(name_, ts_ ),
-    system(es.add_system<ExplicitSystem>("thermal"))
-{
-
-  init_materials();
-}
-
 /*
  *
  */
-SolverThermalExplicit::SolverThermalExplicit( EquationSystems & es, string name_, const Timestep & ts_ ) :
-    Solver(es, name_, ts_ ),
-    system(es.add_system<ExplicitSystem>("thermal"))
-{
-  init_materials();
-}
-
-void SolverThermalExplicit::init() 
-{
-  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
-}
+SolverThermalExplicit::SolverThermalExplicit( Solver & ref, string name_ ) :
+    Solver( ref, name_ ), system(es.add_system<ExplicitSystem>("thermal"))
+{ init_materials(); }
 
 /**
  *   Creates all the needed materials for the solution (one per subdomain ID).
@@ -55,7 +35,6 @@ void SolverThermalExplicit::init_materials()
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     suint sid = elem->subdomain_id();
-    dlog(1) << "Subdom:" << elem->subdomain_id() << "   /// sid:" << sid;
     if  ( material_by_sid.count( sid ) ) continue;
 
     string sname = mesh.subdomain_name( sid );
@@ -119,12 +98,11 @@ void SolverThermalExplicit::solve()
 
   }
   system.solution->close();
-
-  export_exo( "thermal" );
 }
 
 /**
- *   Initialize the coupler for the target solver.
+ *   Initialize the coupler for the target solver with the initial
+ *   temperature conditions.
  */
 void SolverThermalExplicit::init_trg_coupler( Solver & trg_solver )
 {
@@ -186,7 +164,5 @@ ostream& operator<<(ostream& os, const SolverThermalExplicit & m)
   os << "SolverThermalExplicit:" << endl;
   os << "       Name:                      " << m.name << endl;
   os << "       temperature_by_material:   " << m.temperature_by_material << endl;
-  os << "       beta_e_by_material:        " << m.beta_e_by_material << endl;
-  os << "       beta_d_by_material:        " << m.beta_d_by_material << endl;
   return os;
 }

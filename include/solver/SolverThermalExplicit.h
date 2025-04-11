@@ -23,23 +23,20 @@ namespace libMesh { class ExplicitSystem; }
 class SolverThermalExplicit : public Solver 
 {
 public:
-  SolverThermalExplicit( string name_, const Timestep & ts_ );
-  SolverThermalExplicit( EquationSystems & es, string name_, const Timestep & ts_ );
+  SolverThermalExplicit( Solver & ref, string name_ );
 
   virtual void solve();
 
   virtual void init_trg_coupler( Solver & trg_solver );
   virtual void update_coupler( Solver & trg_solver );
   void init_materials();
-  void init();
 
   /// A specialized system object
   ExplicitSystem & system;
 
 private:
 
-  CIMap<double > temperature_by_material;
-  CIMap<double > beta_e_by_material, beta_d_by_material;
+  CIMap<double> temperature_by_material;
 
   friend ostream& operator<<(ostream& os, const SolverThermalExplicit & m);
 

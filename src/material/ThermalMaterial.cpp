@@ -22,9 +22,14 @@ ThermalMaterial::ThermalMaterial( suint sid_,
                                   ExplicitSystem & sys_ ) :
   Material( sid_, config ), system( sys_ )
 {
+  SCOPELOG(1);
+  dlog(1) << config;
   setup_variables();
 }
 
+/**
+ *
+ */
 ThermalMaterial::~ThermalMaterial()
 { 
 SCOPELOG(1);

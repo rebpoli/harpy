@@ -44,19 +44,6 @@ SolverViscoplasticTrial::SolverViscoplasticTrial( string name_, const Timestep &
   system.nonlinear_solver->jacobian_object = this;
 }
 
-/*
- *
- */
-void SolverViscoplasticTrial::init()
-{
-  es.init();
-
-  // Init FEM of the materials
-  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
-
-  init_coupler();
-}
-
 /**
  *   Creates all the needed materials for the solution (one per subdomain ID).
  *   Initializes the material_by_sid structure.
@@ -289,8 +276,6 @@ void SolverViscoplasticTrial::solve()
 
   ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
     << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
-
-  export_exo( "vptrial" );
 }
 
 /**

@@ -32,7 +32,7 @@ class Solver
 {
   public:
     Solver( string name_, const Timestep & ts_ );
-    Solver( EquationSystems & es_, string name_, const Timestep & ts_ );
+    Solver( Solver & ref, string name_ );
     virtual ~Solver();
 
     inline MeshBase & get_mesh() { return es.get_mesh(); }
@@ -48,6 +48,8 @@ class Solver
     virtual void init_trg_coupler( Solver & trg_solver )
       { flog << "Must be defined in the child class."; }
 
+    virtual void init();
+
     // Initializes the coupler of this object from the material config
     void init_coupler();
 
@@ -57,13 +59,11 @@ class Solver
     void init_materials();
     void export_exo( string fn );
 
-  protected:
     string name;
     const Timestep & ts;
     map< uint, Material * > material_by_sid;
     bool own_es;
 
-  public:
     SolverConfig * config;
     BCConfig & bc_config;
 
@@ -72,5 +72,4 @@ class Solver
     // Directly accessible member. Be careful.
     Coupler coupler;
 
-  protected:
 };

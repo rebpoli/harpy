@@ -15,7 +15,7 @@
  */
 Solver::Solver( string name_, const Timestep & ts_ ) :
   name(name_), ts(ts_), own_es(1),
-  config (MODEL->solver_config( name ) ),
+  config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
   es( *(new EquationSystems( *(new Mesh(*LIBMESH_COMMUNICATOR)) ) ) ),
   coupler()
@@ -24,12 +24,11 @@ Solver::Solver( string name_, const Timestep & ts_ ) :
 /**
  *   When we want to share the ES with another solver (same mesh)
  */
-Solver::Solver( EquationSystems & es_, string name_, const Timestep & ts_ ) :
-  name(name_), ts(ts_), own_es(0),
-  config (MODEL->solver_config( name ) ),
+Solver::Solver( Solver & ref, string name_ ) :
+  name(name_), ts(ref.ts), own_es(0),
+  config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
-  es( es_ ),
-  coupler()
+  es( ref.es ), coupler()
 {}
 
 /**
@@ -41,6 +40,17 @@ Solver::~Solver() {
 
   for ( auto & [ sid, mat ] : material_by_sid ) delete( mat );
   material_by_sid.clear();
+}
+
+/*
+ *
+ */
+void Solver::init()
+{
+  // Init FEM of the materials
+  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
+
+  init_coupler();
 }
 
 
@@ -74,7 +84,6 @@ void Solver::init_coupler()
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
-
 
     // Create element in the coupler
     uint eid = elem->id();

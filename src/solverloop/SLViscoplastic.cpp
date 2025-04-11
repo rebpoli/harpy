@@ -7,21 +7,36 @@
 #include "libmesh/mesh.h"
 
 
+/**
+ *
+ * SolverLoop for viscoplastic workflow.
+ *
+ * This is a single mesh workflow. The viscoplastic solver is 
+ * the master solver, to load the mesh and the equation systems.
+ *
+ * The thermal is the slave solver, to use the ES and mesh from 
+ * the master.
+ *
+ */
 SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic( "viscoplastic", ts ), thermal( viscoplastic.es, "thermal", ts )
+  Solverloop(ts_), viscoplastic( "viscoplastic", ts ),
+  thermal( viscoplastic, "thermal" )
 {
+  // Initialize the ES
+  EquationSystems & es = viscoplastic.es;
+  es.init();
 
+  // Init the solvers (must be after the es.init)
   viscoplastic.init();
   thermal.init();
 
-  // Initialize structures
+  // Initialize couplers
   thermal.init_trg_coupler( viscoplastic );
-
 }
 
 /**
- *
- *
+ *   Loop around the solvers (within a single timeste) 
+ *   until convergence is reached.
  */
 void SLViscoplastic::solve() 
 {
@@ -33,12 +48,7 @@ void SLViscoplastic::solve()
 
   // Run the viscoplastic
   viscoplastic.solve();
+
+  viscoplastic.export_exo("viscoplastic");
 }
 
-/**
- *
- *
- */
-void SLViscoplastic::export_results() 
-{
-}

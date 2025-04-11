@@ -21,4 +21,7 @@ BETA_D        1e-6        # Thermal
 TYPE         U       CONTINUOUS
 FAMILY       U       LAGRANGE
 ORDER        U       FIRST
-IMPLICIT     U       0.5xx
+IMPLICIT     U       0.5
+TYPE         T       DISCONTINUOUS
+FAMILY       T       L2_LAGRANGE
+ORDER        T       FIRST
