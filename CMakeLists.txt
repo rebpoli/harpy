@@ -95,7 +95,6 @@ ADD_LIBRARY(Modules
   src/material/ViscoPlasticMaterial.cpp
   src/material/ThermalMaterial.cpp
   src/solver/BC.cpp
-  src/solver/ElemProjection.cpp
   src/solver/SolverViscoplasticTrial.cpp
   src/solver/SolverThermalExplicit.cpp
   src/solverloop/SLViscoplastic.cpp

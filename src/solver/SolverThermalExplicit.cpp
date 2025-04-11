@@ -7,7 +7,6 @@
 #include "material/ThermalMaterial.h"
 #include "util/String.h"
 #include "util/OutputOperators.h"
-#include "solver/ElemProjection.h"
 
 #include "libmesh/mesh.h"
 #include "libmesh/explicit_system.h"
