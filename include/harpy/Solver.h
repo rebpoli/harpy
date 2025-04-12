@@ -42,12 +42,6 @@ class Solver
     virtual void export_results( string basename )
       { flog << "Must be defined in the child class."; }
 
-    // Adds the products of the current solver to the Coupler, // using the target solver material gauss points
-    virtual void update_coupler( Coupler & target )
-      { flog << "Must be defined in the child class."; }
-    virtual void init_trg_coupler( Solver & trg_solver )
-      { flog << "Must be defined in the child class."; }
-
     virtual void init();
 
     // Initializes the coupler of this object from the material config
@@ -56,7 +50,8 @@ class Solver
     // The material is the same across every solver.
     // Each solver gets its chunk of information as needed
     Material * get_material( const Elem & elem );
-    void init_materials();
+    virtual void init_materials()
+      { flog << "Must be defined in the child class."; }
     void export_exo( string fn );
 
     string name;

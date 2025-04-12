@@ -19,6 +19,10 @@ Material::Material( suint sid_, const MaterialConfig & config_ ) :
 { 
 }
 
+/**
+ *
+ */
+Material::~Material() {};
 
 /**
  *
@@ -64,4 +68,24 @@ void Material::get_from_element_coupler( string vname, vector<double> & curr )
   }
 
   curr = elem_coupler->dbl_params.at( vname );
+}
+
+/**
+ *
+ */
+void Material::get_from_element_coupler( string vname, vector<RealVectorValue> & curr )
+{
+  if ( ! elem_coupler ) flog << "Element coupler not initialized! Something is wrong.";
+  if ( ! elem_coupler->dbl_params.count( vname ) ) flog << "Cannot find variable '" << vname << "' in element coupler. Cannot continue." ;
+  curr = elem_coupler->vector_params.at( vname );
+}
+
+/**
+ *
+ */
+void Material::get_from_element_coupler( string vname, vector<RealTensor> & curr )
+{
+  if ( ! elem_coupler ) flog << "Element coupler not initialized! Something is wrong.";
+  if ( ! elem_coupler->dbl_params.count( vname ) ) flog << "Cannot find variable '" << vname << "' in element coupler. Cannot continue." ;
+  curr = elem_coupler->tensor_params.at( vname );
 }

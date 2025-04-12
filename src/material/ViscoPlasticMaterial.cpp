@@ -172,6 +172,55 @@ void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
 }
 
 /**
+ *     Feeds the coupler with the solution U and its gradient.
+ */
+void ViscoPlasticMaterial::feed_coupler( const NumericVector<Number> & soln, ElemCoupler & ec, const Elem & elem )
+{
+  SCOPELOG(5);
+
+  /*
+   * Initializes the FEM structures, not depending on the solution
+   */
+  fe->reinit( &elem );
+  const vector<vector<Real>> & phi = fe->get_phi();
+  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+
+  const DofMap & dof_map = system.get_dof_map();
+  dof_map.dof_indices (&elem, dof_indices);
+  dof_map.dof_indices (&elem, dof_indices_var[0], 0);
+  uint n_dofsv = dof_indices_var[0].size();
+
+  vector<RealVectorValue> & Uqi  = ec.vector_params.at("U");
+  vector<RealTensor> & GRAD_Uqij = ec.tensor_params.at("GRAD_U");
+
+  uint nqp = qrule.n_points();
+
+  // Prepare the Uib vector for the automatic differentiation
+  Uib.clear();
+  for ( uint i=0; i<3; i++ )
+  {
+    vector<Number> row;
+    for ( uint B=0; B<n_dofsv; B++ )
+      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
+    Uib.push_back(row);
+  }
+
+  // Prepare the Uib vector for the automatic differentiation
+  Uqi.clear();
+  for ( uint qp=0; qp<nqp; qp++ )
+  for ( uint B=0; B<n_dofsv; B++ )
+  for ( uint i=0; i<3; i++ )
+    Uqi[qp](i) += phi[B][qp] * Uib[i][B];
+
+  GRAD_Uqij.clear();
+  for ( uint qp=0; qp<nqp; qp++ )
+  for ( uint B=0; B<n_dofsv; B++ )
+  for ( uint i=0; i<3; i++ )
+  for ( uint j=0; j<3; j++ )
+    GRAD_Uqij[qp](i,j) += dphi[B][qp](j) * Uib[i][B];
+}
+
+/**
  *  Init the DoF map and the element matrices.
  *
  *  Then, initializes the solution depending on soln.

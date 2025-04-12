@@ -17,7 +17,7 @@ using harpy_string::iequals;
  *
  */
 SolverThermalExplicit::SolverThermalExplicit( Solver & ref, string name_ ) :
-    Solver( ref, name_ ), system(es.add_system<ExplicitSystem>("thermal"))
+    Solver( ref, name_ ), system(es.add_system<ExplicitSystem>(name_))
 { init_materials(); }
 
 /**
@@ -87,7 +87,7 @@ void SolverThermalExplicit::solve()
   for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
     uint eid = elem->id();
-    if ( ! coupler.count(eid) ) flog << "Element '" << eid << "' mission in coupler";
+    if ( ! coupler.count(eid) ) flog << "Element '" << eid << "' missing in coupler";
     ElemCoupler & ec = coupler.at( eid );
 
     const vector<double> & temp_qp = ec.dbl_params["T"];

@@ -340,6 +340,33 @@ void SolverViscoplasticTrial::residual
 }
 
 /**
+ *    Feeds the target solver with U and GRAD_U
+ */
+void SolverViscoplasticTrial::update_coupler( Solver & trg_solver )
+{
+  Coupler & coupler = trg_solver.coupler;
+  MeshBase & mesh = trg_solver.get_mesh();
+
+  /// This mesh must be the same as mine!
+  if ( mesh.n_elem() != get_mesh().n_elem() ) flog << "It seems that the meshes are different! Revise.";
+
+  for (const auto & elem : mesh.active_element_ptr_range()) 
+  {
+    if ( elem->processor_id() != mesh.processor_id() ) continue;  /// Only in the active processor. NOTE: if this requires an element search, that would be a collective task! The loops have to be synchronous.
+    uint eid = elem->id();
+    Material * mat = trg_solver.get_material( *elem );
+    mat->reinit( *elem );
+    string mname = mat->name;
+
+    if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
+    ElemCoupler & ec = coupler.at( eid );
+
+    // Now we want to get the solution of THIS solver and insert it into the TARGET couler
+    mat->feed_coupler( *(system.solution), ec, *elem );
+  }
+}
+
+/**
  *   
  *   SUPPORT FUNCTIONS 
  *

@@ -1,17 +1,13 @@
 
 #include "material/ThermalMaterial.h"
+#include "harpy/Coupler.h"
 #include "config/MaterialConfig.h"
+#include "util/OutputOperators.h"
 
 #include "libmesh/system.h"
 #include "libmesh/equation_systems.h"
-
-#include "libmesh/string_to_enum.h"
-#include "libmesh/enum_fe_family.h"
-#include "libmesh/enum_order.h"
-
 #include "libmesh/explicit_system.h"
 
-#include "util/OutputOperators.h"
 
 
 /**

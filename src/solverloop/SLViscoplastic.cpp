@@ -20,7 +20,8 @@
  */
 SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
   Solverloop(ts_), viscoplastic( "viscoplastic", ts ),
-  thermal( viscoplastic, "thermal" )
+  thermal( viscoplastic, "thermal" ),
+  stress( viscoplastic, "stress" )
 {
   // Initialize the ES
   EquationSystems & es = viscoplastic.es;
@@ -29,9 +30,11 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
   // Init the solvers (must be after the es.init)
   viscoplastic.init();
   thermal.init();
+  stress.init();
 
   // Initialize couplers
   thermal.init_trg_coupler( viscoplastic );
+  stress.init_trg_coupler( viscoplastic );
 }
 
 /**
@@ -48,6 +51,10 @@ void SLViscoplastic::solve()
 
   // Run the viscoplastic
   viscoplastic.solve();
+  viscoplastic.update_coupler(stress);
+
+  stress.solve();
+  stress.update_coupler(viscoplastic);
 
   viscoplastic.export_exo("viscoplastic");
 }

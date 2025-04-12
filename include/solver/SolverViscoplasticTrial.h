@@ -58,6 +58,8 @@ class SolverViscoplasticTrial : public Solver,
                            NumericVector<Number> & residual,
                            NonlinearImplicitSystem & /*sys*/);
 
+    /// Provides 
+    void update_coupler( Solver & trg_solver );
 
     /// A specialized system object
     TransientNonlinearImplicitSystem & system;

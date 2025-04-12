@@ -94,9 +94,11 @@ ADD_LIBRARY(Modules
   src/main/harpy.cpp
   src/material/ViscoPlasticMaterial.cpp
   src/material/ThermalMaterial.cpp
+  src/material/StressMaterial.cpp
   src/solver/BC.cpp
   src/solver/SolverViscoplasticTrial.cpp
   src/solver/SolverThermalExplicit.cpp
+  src/solver/SolverStress.cpp
   src/solverloop/SLViscoplastic.cpp
 
 

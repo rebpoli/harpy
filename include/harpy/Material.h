@@ -35,12 +35,14 @@ class Material
 {
   public:
     Material( suint sid_, const MaterialConfig & config_ );
-    virtual ~Material() {};
+    virtual ~Material();
 
 
     // Common interface to the couplers
     void get_from_element_coupler( string vname, vector<double> & curr , vector<double> & old );
     void get_from_element_coupler( string vname, vector<double> & curr );
+    void get_from_element_coupler( string vname, vector<RealTensor> & curr );
+    void get_from_element_coupler( string vname, vector<RealVectorValue> & curr );
 
     void init_coupler( Elem * elem, ElemCoupler & ec );
 
@@ -58,13 +60,18 @@ class Material
               { flog << "Must be redifined in the child classes."; }
     virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual )
               { flog << "Must be redifined in the child classes."; }
-    virtual bool is_bc() 
-              { flog << "Must be redifined in the child classes."; return 0; }
     // Many types of BC can be set. These functions provide a standard interface to pass BCs to any material.
     virtual void set_bc( const RealTensor & value )
               { flog << "Must be redifined in the child classes.";  }
     virtual void project( ElemCoupler & ec, string vname )
               { flog << "Must be redifined in the child classes.";  }
+
+    virtual void feed_coupler( ElemCoupler & ec )
+              { flog << "Must be redifined in the child classes.";  }
+    virtual void feed_coupler( const NumericVector<Number> & soln, ElemCoupler & ec, const Elem & elem )
+              { flog << "Must be redifined in the child classes.";  }
+
+    virtual bool is_bc() { return 0; }  /// Defaults to false. Reimplement in the BC classes to return true;
 
     // Shape functions, quadratures etc
     vector<dof_id_type> dof_indices;

@@ -27,8 +27,8 @@ public:
 
   virtual void solve();
 
-  virtual void init_trg_coupler( Solver & trg_solver );
-  virtual void update_coupler( Solver & trg_solver );
+  void init_trg_coupler( Solver & trg_solver );
+  void update_coupler( Solver & trg_solver );
   void init_materials();
 
   /// A specialized system object

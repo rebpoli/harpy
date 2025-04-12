@@ -6,6 +6,7 @@
 
 #include "solver/SolverViscoplasticTrial.h"
 #include "solver/SolverThermalExplicit.h"
+#include "solver/SolverStress.h"
 
 class Timestep;
 
@@ -29,4 +30,5 @@ class SLViscoplastic : public Solverloop
 
     SolverViscoplasticTrial viscoplastic;
     SolverThermalExplicit thermal;
+    SolverStress stress;
 };

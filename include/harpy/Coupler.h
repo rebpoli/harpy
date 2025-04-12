@@ -5,6 +5,11 @@
 #include <vector>
 #include <map>
 
+#include "libmesh/vector_value.h"
+#include "libmesh/tensor_value.h"
+
+using namespace libMesh;
+
 using harpy_string::CIMap;
 
 /**
@@ -22,13 +27,16 @@ class Solver;
  *   The part of the coupler relevant to an element.
  *   To be used in the Material class.
  *
+ *   A bunch of vectors indexed by the qp of the FE realization.
+ *
  */
 struct ElemCoupler 
 {
-  template < typename T > struct Params : vector< T > { };
+  CIMap<vector<RealVectorValue>> vector_params;
+  CIMap<vector<RealTensor> > tensor_params;
 
-  CIMap<Params<double> > dbl_params;
-  CIMap<Params<double> > dbl_params_old;  // Data from previous timestep
+  CIMap<vector<double> > dbl_params;
+  CIMap<vector<double> > dbl_params_old;  // Data from previous timestep
 
   ElemCoupler( uint eid_ ) : eid(eid_) {} 
   uint eid;
