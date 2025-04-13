@@ -11,7 +11,7 @@ namespace libMesh { class System; }
  *
  *
  */
-class StressMaterial : public Material
+class StressMaterial : public MaterialExplicit
 {
 public:
   StressMaterial( suint sid_, const MaterialConfig & config, ExplicitSystem & sys_ );
@@ -19,18 +19,16 @@ public:
 
   virtual void init_fem();
 
-  virtual void feed_coupler( ElemCoupler & ec );
+  void feed_coupler( ElemCoupler & trg_ec );
+  virtual string hello() { return "StressMaterial."; }
 
   // Add to the system so that we can visualize in paraview
-  virtual void project( ElemCoupler & ec, string vname );
-  void reinit( const Elem & elem, uint side=255 );
+  void reinit( Coupler & coupler, const Elem & elem, uint side ) ;
 
   inline double C_ijkl(uint qp, uint i, uint j, uint k, uint l);
 
 protected:
   void setup_variables();
-
-  ExplicitSystem & system;
 
   // The information needed to compute the stresses, in every qp
   vector<double> lame_mu, lame_lambda, alpha_d;

@@ -92,7 +92,7 @@ void SolverThermalExplicit::solve()
 
     const vector<double> & temp_qp = ec.dbl_params["T"];
 
-    Material * mat = get_material( *elem );
+    MaterialExplicit * mat = get_explicit_material( *elem );
     mat->reinit( *elem );
     mat->project( ec, "T" );
 

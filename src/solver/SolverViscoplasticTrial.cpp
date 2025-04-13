@@ -340,29 +340,40 @@ void SolverViscoplasticTrial::residual
 }
 
 /**
- *    Feeds the target solver with U and GRAD_U
+ *    Feeds the target solver with U and GRAD_U.
+ *    The solvers may have different meshes.
+ *    The element lookup from one mesh to the other is a COLLECTIVE TASK (not done in parallel!).
+ *    All processors 
+ *
+ *    The information flows in this direction THIS_SOLVER => TRG_SOLVER
+ *
  */
 void SolverViscoplasticTrial::update_coupler( Solver & trg_solver )
 {
-  Coupler & coupler = trg_solver.coupler;
-  MeshBase & mesh = trg_solver.get_mesh();
+  SCOPELOG(1);
+  Coupler & trg_coupler = trg_solver.coupler;
 
-  /// This mesh must be the same as mine!
-  if ( mesh.n_elem() != get_mesh().n_elem() ) flog << "It seems that the meshes are different! Revise.";
-
-  for (const auto & elem : mesh.active_element_ptr_range()) 
+  MeshBase & src_mesh = get_mesh();
+  MeshBase & trg_mesh = trg_solver.get_mesh();
+  for (const auto & trg_elem : trg_mesh.active_element_ptr_range())  // This is a collective loop (no local here please!)
   {
-    if ( elem->processor_id() != mesh.processor_id() ) continue;  /// Only in the active processor. NOTE: if this requires an element search, that would be a collective task! The loops have to be synchronous.
-    uint eid = elem->id();
-    Material * mat = trg_solver.get_material( *elem );
-    mat->reinit( *elem );
-    string mname = mat->name;
+    Material * trg_mat = trg_solver.get_material( *trg_elem );
+    const std::vector<Point> & xyz = trg_mat->fe->get_xyz();
+    trg_mat->fe->reinit(trg_elem);
+    ElemCoupler & trg_ec = trg_solver.coupler.elem_coupler( trg_elem->id() );
+    trg_ec.clear( {"U", "GRAD_U" } );   
 
-    if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
-    ElemCoupler & ec = coupler.at( eid );
+    for ( uint qp=0; qp<xyz.size(); qp++ ) 
+    {
+      // Find the element in the target mesh ==> this is a collective task! 
+      // All processors must be in sync
+      unique_ptr<PointLocatorBase> plocator = src_mesh.sub_point_locator();
+      const Elem * src_elem = (*plocator)( xyz[qp] );
+      if ( ! src_elem ) flog << "Element not found in " << xyz[qp] << ". This should not happen for identical domains!";
 
-    // Now we want to get the solution of THIS solver and insert it into the TARGET couler
-    mat->feed_coupler( *(system.solution), ec, *elem );
+      Material * src_mat = get_material( *src_elem );
+      src_mat->feed_coupler( trg_ec, xyz[qp], trg_elem, *(system.solution) );
+    }
   }
 }
 

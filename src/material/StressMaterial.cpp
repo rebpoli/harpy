@@ -15,11 +15,11 @@
 StressMaterial::StressMaterial( suint sid_,
                                   const MaterialConfig & config, 
                                   ExplicitSystem & sys_ ) :
-  Material( sid_, config ), system( sys_ ), U(3)
+  MaterialExplicit( sid_, config, sys_ ), U(3)
 {
   SCOPELOG(1);
 
-  // Lists the necessary properties to fetch from the config during init_coupler
+  // Lists the necessary properties to fetch from the config during Materia::init_coupler
   required_material_properties.assign({
       "alpha_d", "young", "poisson", "lame_mu", "lame_lambda"
   });
@@ -35,92 +35,44 @@ StressMaterial::~StressMaterial()
 { SCOPELOG(1); }
 
 /**
- *   Do the actual stress calculations
+ *     We assume the src and target element couplers are in the same mesh.
+ *
+ *     In the future we may be interested in interpolating stresses, but not for now.
  */
 void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
 {
-  SCOPELOG(1);
-  vector<string> vnames = { "sigTOTXX", "sigTOTYY", "sigTOTZZ", "sigTOTXY", "sigTOTXZ", "sigTOTYZ" };
+  // Inputs
+  auto & U = elem_coupler->vector_params.at("U");
+  auto & GRAD_U = elem_coupler->tensor_params.at("GRAD_U");
 
-  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
-  const vector<vector<Real>> & phi = fe->get_phi();
-  const vector<Real> & jxw = fe->get_JxW();
-  DofMap & dof_map = system.get_dof_map();
-  
-  uint nqp = qrule.n_points();
-
-  // Initialize outputs in the ElementCoupler
+  // Outputs in the ElementCoupler
   auto & dbl_params = trg_ec.dbl_params;
   auto & vector_params = trg_ec.vector_params;
   auto & tensor_params = trg_ec.tensor_params;
-  vector<double> & von_mises    = dbl_params["von_mises"]; von_mises.clear();
-  vector<double> & epskk        = dbl_params["epsilon"]; epskk.clear();
-  vector<RealTensor> & sigeff   = tensor_params["sigeff"]; sigeff.clear();
+  vector<double> & von_mises    = dbl_params["von_mises"];  von_mises.clear();
+  vector<double> & epskk        = dbl_params["epsilon"];  epskk.clear();
+  vector<RealTensor> & sigeff   = tensor_params["sigeff"];  sigeff.clear(); 
   vector<RealTensor> & sigtot   = tensor_params["sigtot"]; sigtot.clear();
 
-  for (uint qp=0; qp<nqp; qp++) 
-  for (uint k=0; k<3; k++ )
-    epskk[qp] += GRAD_U[qp](k,k);
+
+  uint nqp = U.size();
 
   for (uint qp=0; qp<nqp; qp++) 
-  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
-  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff[qp](i,j) += C_ijkl(qp,i,j,k,l) * GRAD_U[qp](k,l);
-
-  const auto kd = Math::kronecker_delta;
-  for (uint qp=0; qp<nqp; qp++) 
-  for (uint i=0; i<3; i++)
-  for (uint j=0; j<3; j++) 
-    sigeff[qp](i,j) += sigeff[qp](i,j);
-}
-
-/**
- *
- */
-void StressMaterial::project( ElemCoupler & ec, string vname )
-{
-  const std::vector<std::vector<Real>> & phi = fe->get_phi();
-  const std::vector<Real> & jxw = fe->get_JxW();
-  const vector<double> & vals_qp = ec.dbl_params[vname];
-  uint vid = system.variable_number(vname);
-  Elem & elem = system.get_mesh().elem_ref( ec.eid );
-
-  //  M x = F
-  uint n_dofs = phi.size();
-  DenseMatrix<Real> MAT(n_dofs, n_dofs);
-  DenseVector<Number> F(n_dofs);
-
-  uint nqp = qrule.n_points();
-  for(uint qp=0; qp<nqp; qp++) 
-  for(uint B=0; B<n_dofs; B++) 
-    F(B) += jxw[qp] * vals_qp[qp] * phi[B][qp];
-
-  for(uint qp=0; qp<nqp; qp++) 
-  for(uint B=0; B<n_dofs; B++) 
-  for(uint M=0; M<n_dofs; M++) 
-    MAT(B,M) += jxw[qp] * phi[B][qp] * phi[M][qp];
-
-  for(uint B=0; B<n_dofs; B++) 
-    if ( std::abs(MAT(B,B)) < 1e-10 ) MAT(B,B) = 1;
-
-  DenseVector<Number> X;
-//  MAT.cholesky_solve(F, X);
-  MAT.lu_solve(F, X);
-
-  const DofMap & dof_map = system.get_dof_map();
-  std::vector<dof_id_type> dof_indices;
-  dof_map.dof_indices (&elem, dof_indices, vid);
-
-  // Cada processador seta os seus nos apenas
-  dof_id_type f = system.solution->first_local_index();
-  dof_id_type l = system.solution->last_local_index();
-  for(uint B=0; B<n_dofs; B++)
   {
-    dof_id_type dof_i = dof_indices[B];
-    if ((f <= dof_i) && (dof_i < l )) 
-      system.solution->set(dof_i, X(B));
+    double epskk_ = 0;
+    for (uint k=0; k<3; k++ ) epskk_ += GRAD_U[qp](k,k);
+
+    RealTensor sigeff_;
+    for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+    for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+      sigeff_(i,j) += C_ijkl(qp,i,j,k,l) * GRAD_U[qp](k,l);
+
+    epskk.push_back( epskk_ );
+    sigeff.push_back( sigeff_ );
   }
 }
+
+
 
 /**
  *
@@ -141,6 +93,13 @@ void StressMaterial::setup_variables()
   system.add_variable("sigTOTXY", order, fef, &sids);
   system.add_variable("sigTOTXZ", order, fef, &sids);
   system.add_variable("sigTOTYZ", order, fef, &sids);
+
+  system.add_variable("sigeffXX", order, fef, &sids);
+  system.add_variable("sigeffYY", order, fef, &sids);
+  system.add_variable("sigeffZZ", order, fef, &sids);
+  system.add_variable("sigeffXY", order, fef, &sids);
+  system.add_variable("sigeffXZ", order, fef, &sids);
+  system.add_variable("sigeffYZ", order, fef, &sids);
 }
 
 /**
@@ -167,12 +126,22 @@ void StressMaterial::init_fem()
 }
 
 /**
+ *    The reinit needs a coupler, that is the source of information
+ *    for the stress calculations.
  *
+ *    The StressSolver (and StressMaterial) operate between couplers:
+ *    
+ *    - the VPSolver feeds the StressSolver.coupler
+ *    - The Stress material copies the information from the coupler to its object
+ *    - The feed_coupler uses this information to feed the VPSolver coupler back with the stresses
  *
+ *    NOTE: the couplers are individualized for each solver because the mesh _might_ be different
  */
-void StressMaterial::reinit( const Elem & elem, uint side ) 
+void StressMaterial::reinit( Coupler & coupler, const Elem & elem, uint side ) 
 {
+  // Initialize FE and the element coupler (the inputs for the computations)
   fe->reinit( &elem );
+  elem_coupler = & ( coupler.elem_coupler( elem.id() ) );
 
   get_from_element_coupler(  "T",             temperature    ); 
   get_from_element_coupler(  "alpha_d",       alpha_d        ); 

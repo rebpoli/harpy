@@ -44,7 +44,7 @@ void SolverStress::init_materials()
     // This object has all physical properties (por, perm, alpha, ...)
     const MaterialConfig & mat_conf = *it;
 
-    dlog(1) << "Resoved material:" << mat_conf << " SID:" << sid;
+    dlog(1) << "Resoved Stress material:" << mat_conf << " SID:" << sid;
     material_by_sid[sid] = new StressMaterial( sid, mat_conf, system );
   }
 }
@@ -53,70 +53,43 @@ void SolverStress::init_materials()
  *   Builds a simple structuer from the boundary configuration relating the
  *   material to its current temperature.
  *
- *   This will be used in the update_coupler later.
  */
 void SolverStress::solve()
 {
+  // Auto-feed our coupler to calculate the stresses
+  update_coupler( *this );
+
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
-    uint eid = elem->id();
-    if ( ! coupler.count(eid) ) flog << "Element '" << eid << "' missing in coupler";
-    ElemCoupler & ec = coupler.at( eid );
+    MaterialExplicit * mat = get_explicit_material( *elem );
 
-    const vector<double> & temp_qp = ec.dbl_params["T"];
-
-    Material * mat = get_material( *elem );
-    mat->reinit( *elem );
-
-    // Feeds my own coupler (needed?? normally we would just feed internal vars)
-    mat->feed_coupler( ec );
-
-    // TODO --- DO THE PROJECTIONS HERE
+    mat->reinit( coupler, *elem );
+    ElemCoupler & ec = coupler.elem_coupler( elem->id() );
+    mat->project_tensor( ec, "sigeff" );
   }
 
 }
 
 /**
- *   Initialize the coupler for the target solver with the initial
- *   temperature conditions.
- */
-void SolverStress::init_trg_coupler( Solver & trg_solver )
-{
-  SCOPELOG(1);
-
-  // For now, the Initial condition is just t=-1
-  // So we should be safe by running 2 dry updates so that the we have an identicalk
-  // current and old solution for the first timestep
-  solve();
-  update_coupler( trg_solver ) ;  
-  update_coupler( trg_solver ) ;  
-}
-
-/**
+ *    Feeds the target solver with the stress measurements.
+ *
+ *    The information flows in this direction THIS_SOLVER => TRG_SOLVER
  *
  */
 void SolverStress::update_coupler( Solver & trg_solver )
 {
   SCOPELOG(1);
+  assert_same_mesh( trg_solver );
 
-  Coupler & coupler = trg_solver.coupler;
-
-  // Iterate over the elements and materials of the target solver
-  MeshBase & mesh = trg_solver.get_mesh();
-  for (const auto & elem : mesh.active_element_ptr_range()) 
+  MeshBase & trg_mesh = trg_solver.get_mesh();
+  for (const auto & src_elem : trg_mesh.active_element_ptr_range())  // This is a collective loop (no local here please!)
   {
-    if ( elem->processor_id() != mesh.processor_id() ) continue;  /// Only in the active processor. NOTE: if this requires an element search, that would be a collective task! The loops have to be synchronous.
-
-    uint eid = elem->id();
-                                                                   ///
-    Material * mat = trg_solver.get_material( *elem );
-    mat->reinit( *elem );
-    string mname = mat->name;
-
-    if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
-    ElemCoupler & ec = coupler.at( eid );
-
-    mat->feed_coupler( ec );
+    uint eid = src_elem->id();
+    ElemCoupler & trg_ec = trg_solver.coupler.elem_coupler( eid );
+    ElemCoupler & src_ec = coupler.elem_coupler( eid );
+    Material * src_mat = get_material( *src_elem );
+    src_mat->reinit( coupler, *src_elem );
+    src_mat->feed_coupler( trg_ec );
   }
 }

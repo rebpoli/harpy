@@ -15,7 +15,5 @@ public:
   virtual void init_materials();
 
   void update_coupler( Solver & trg_solver );
-  void init_trg_coupler( Solver & trg_solver );
-
 };
 

@@ -25,6 +25,17 @@ ostream& operator<<(ostream& os, const ElemCoupler & m)
   os << "         (ElemCoupler) " << endl;
   for ( auto & [ vname, parbyqp ] : m.dbl_params)
     os << "             Var '" << vname << "': " << parbyqp << endl;
+  for ( auto & [ vname, parbyqp ] : m.vector_params)
+    os << "             Var '" << vname << "': " << parbyqp << endl;
+  for ( auto & [ vname, parbyqp ] : m.tensor_params)
+    os << "             Var '" << vname << "': " << parbyqp << endl;
 
+  return os;
+}
+
+ostream& operator<<(ostream& os, const vector<RealTensor> & m)
+{
+  os << endl;
+  for ( auto & v : m ) os << v << " , " << endl;
   return os;
 }

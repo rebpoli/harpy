@@ -172,28 +172,28 @@ void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
 }
 
 /**
- *     Feeds the coupler with the solution U and its gradient.
+ *     Calculates the output information at a single point in this material.
+ *     Pushes the results into the trg_coupler
+ *     _elem_ is the element in this mesh where the point lies
  */
-void ViscoPlasticMaterial::feed_coupler( const NumericVector<Number> & soln, ElemCoupler & ec, const Elem & elem )
+void ViscoPlasticMaterial::feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt,
+                                         const Elem * elem, const NumericVector<Number> & soln )
 {
   SCOPELOG(5);
 
-  /*
-   * Initializes the FEM structures, not depending on the solution
-   */
-  fe->reinit( &elem );
+  // Interpolators are the ones from this material.
+  // However, they must be initialized with the xyz of the gauss points of the target
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
-
   const DofMap & dof_map = system.get_dof_map();
-  dof_map.dof_indices (&elem, dof_indices);
-  dof_map.dof_indices (&elem, dof_indices_var[0], 0);
+  dof_map.dof_indices (elem, dof_indices);
+  dof_map.dof_indices (elem, dof_indices_var[0], 0);
   uint n_dofsv = dof_indices_var[0].size();
 
-  vector<RealVectorValue> & Uqi  = ec.vector_params.at("U");
-  vector<RealTensor> & GRAD_Uqij = ec.tensor_params.at("GRAD_U");
-
-  uint nqp = qrule.n_points();
+  std::vector<Point> pts_from = { trg_pt };
+  std::vector<Point> pts_to;
+  FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
+  fe->reinit( elem, & pts_to );
 
   // Prepare the Uib vector for the automatic differentiation
   Uib.clear();
@@ -205,19 +205,23 @@ void ViscoPlasticMaterial::feed_coupler( const NumericVector<Number> & soln, Ele
     Uib.push_back(row);
   }
 
-  // Prepare the Uib vector for the automatic differentiation
-  Uqi.clear();
-  for ( uint qp=0; qp<nqp; qp++ )
+  RealVectorValue U = 0;
   for ( uint B=0; B<n_dofsv; B++ )
   for ( uint i=0; i<3; i++ )
-    Uqi[qp](i) += phi[B][qp] * Uib[i][B];
+    U(i) += phi[B][0] * Uib[i][B];
 
-  GRAD_Uqij.clear();
-  for ( uint qp=0; qp<nqp; qp++ )
+  RealTensor GRAD;
   for ( uint B=0; B<n_dofsv; B++ )
   for ( uint i=0; i<3; i++ )
   for ( uint j=0; j<3; j++ )
-    GRAD_Uqij[qp](i,j) += dphi[B][qp](j) * Uib[i][B];
+    GRAD(i,j) += dphi[B][0](j) * Uib[i][B];
+
+  // Feed the coupler in this point
+  vector<RealVectorValue> & trg_Uqi  = trg_ec.vector_params["U"];
+  trg_Uqi.push_back( U );
+
+  vector<RealTensor> & trg_GRAD_Uqij = trg_ec.tensor_params["GRAD_U"];
+  trg_GRAD_Uqij.push_back( GRAD );
 }
 
 /**

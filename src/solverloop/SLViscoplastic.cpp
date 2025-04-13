@@ -32,9 +32,18 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
   thermal.init();
   stress.init();
 
-  // Initialize couplers
-  thermal.init_trg_coupler( viscoplastic );
-  stress.init_trg_coupler( viscoplastic );
+  // Initialize thermal solver. 
+  thermal.solve();
+
+  // Updates the stress
+  thermal.update_coupler( stress );
+  viscoplastic.update_coupler( stress );
+
+  // Updates VP 2x to make sure the initial old solution is also updated in the coupler.
+  thermal.update_coupler( viscoplastic );
+  thermal.update_coupler( viscoplastic );
+
+  stress.update_coupler( viscoplastic );
 }
 
 /**

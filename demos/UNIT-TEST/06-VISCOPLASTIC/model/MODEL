@@ -4,6 +4,7 @@
 .SYSTEMLOOP VISCOPLASTIC
 VISCOPLASTIC BASE
 THERMAL BASE
+STRESS BASE
 
 .TIMESTEP 
 DT0           1
@@ -27,11 +28,11 @@ BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       XP               UX            0
 BOUNDARY       YP               UY            0
-DOMAIN         caprock          T             5
+DOMAIN         caprock          T             0
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
-.TIME   1
+.TIME   0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
@@ -39,7 +40,7 @@ BOUNDARY       XP               UX            0
 BOUNDARY       YP               UY            0
 DOMAIN         caprock          T             100
 
-.TIME   2
+.TIME   1
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0

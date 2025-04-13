@@ -74,6 +74,13 @@ Material * Solver::get_material( const Elem & elem )
 }
 
 /**
+ *    TODO: add more consistency here. Maybe define a subclass SolverExplicit to
+ *          hold this stuff.
+ */
+MaterialExplicit * Solver::get_explicit_material( const Elem & elem )
+{ Material * mat = get_material( elem ) ; return dynamic_cast<MaterialExplicit *>(mat); }
+
+/**
  *    Fetches information from the configuration and feeds the object coupler.
  *
  */

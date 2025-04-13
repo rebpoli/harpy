@@ -19,6 +19,7 @@ class SolverConfig;
  */
 
 class Material;
+class MaterialExplicit;
 class BCConfig;
 
 namespace libMesh { class Elem ; class MeshBase; } 
@@ -36,6 +37,10 @@ class Solver
     virtual ~Solver();
 
     inline MeshBase & get_mesh() { return es.get_mesh(); }
+    inline const MeshBase & get_mesh() const { return es.get_mesh(); }
+
+    bool same_mesh( const Solver & b ) const { return &get_mesh() == &(b.get_mesh()); }
+    void assert_same_mesh( const Solver & b ) const { if ( ! same_mesh(b) ) flog << "Meshes must be equal to continue. TODO: support multimesh."; }
 
     virtual void solve()
       { flog << "Must be defined in the child class."; }
@@ -50,6 +55,7 @@ class Solver
     // The material is the same across every solver.
     // Each solver gets its chunk of information as needed
     Material * get_material( const Elem & elem );
+    MaterialExplicit * get_explicit_material( const Elem & elem );
     virtual void init_materials()
       { flog << "Must be defined in the child class."; }
     void export_exo( string fn );
@@ -66,5 +72,4 @@ class Solver
 
     // Directly accessible member. Be careful.
     Coupler coupler;
-
 };

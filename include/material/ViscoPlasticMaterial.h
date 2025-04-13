@@ -29,10 +29,14 @@ public:
 
   void reinit( const Elem & elem, uint side=255 );
   void reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side=255 );
-  virtual void feed_coupler( const NumericVector<Number> & soln, ElemCoupler & ec, const Elem & elem );
+
+  void feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt, const Elem * elem, const NumericVector<Number> & soln );
+
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
 
+
+  string hello() { return "ViscoPlasticMaterial"; }
   virtual Material * get_bc_material();
 
   virtual bool is_bc() { return false; }
