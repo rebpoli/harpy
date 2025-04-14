@@ -399,7 +399,7 @@ void ViscoPlasticMaterialBC::residual (const NumericVector<Number> & soln, Numer
   for (uint B=0; B<n_dofsv; B++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++) 
-    Fib[i][B] += JxW[qp] * (*sigtot)(i,j) * normals[qp](j) * phi[B][qp];
+    Fib[i][B] -= JxW[qp] * (*sigtot)(i,j) * normals[qp](j) * phi[B][qp];
 //    Re_var[i](B) += (1-implicit) * JxW_face[qp] * (*sigtot)(i,j) * normals[qp](j) * phi_u_face[B][qp];
 
   // Build the Re vector

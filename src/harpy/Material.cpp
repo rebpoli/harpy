@@ -157,7 +157,8 @@ void MaterialExplicit::project_tensor( ElemCoupler & ec, string vname_coupler, s
   vector<string> sufvec =         { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
   vector<pair<uint,uint>> ijvec = { {0,0}, {1,1}, {2,2}, {0,1}, {0,2}, {1,2} };
 
-  if ( vals_qp.size() != qrule.n_points() ) flog << "These quantities should be the same. Something went wrong.";
+  if ( vals_qp.size() != qrule.n_points() ) 
+    flog << "These quantities should be the same. Something went wrong (vname:" << vname_coupler << ", qp!=qr.n_points(): " << vals_qp.size() << "!=" << qrule.n_points() << ")";
 //  dlog(1) << "EC vs QRULE: " << vals_qp.size() << " vs " << qrule.n_points(); 
 
   for ( uint a=0; a<sufvec.size(); a++ )

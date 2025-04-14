@@ -44,6 +44,11 @@ void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
   // Inputs
   auto & U = elem_coupler->vector_params.at("U");
   auto & GRAD_U = elem_coupler->tensor_params.at("GRAD_U");
+  auto & T = elem_coupler->dbl_params.at("T");
+  auto & alpha_d = elem_coupler->dbl_params.at("alpha_d");
+
+  dlog(1) << "Tempearture at feed_coupler: " << T;
+  dlog(1) << "alpha_d at feed_coupler: " << alpha_d;
 
   // Outputs in the ElementCoupler
   auto & dbl_params = trg_ec.dbl_params;
@@ -53,7 +58,6 @@ void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
   vector<double> & epskk        = dbl_params["epsilon"];  epskk.clear();
   vector<RealTensor> & sigeff   = tensor_params["sigeff"];  sigeff.clear(); 
   vector<RealTensor> & sigtot   = tensor_params["sigtot"]; sigtot.clear();
-
 
   uint nqp = U.size();
 
@@ -67,8 +71,13 @@ void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
     for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
       sigeff_(i,j) += C_ijkl(qp,i,j,k,l) * GRAD_U[qp](k,l);
 
+    // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
+    RealTensor sigtot_ = sigeff_;
+    for (uint k=0; k<3; k++ ) sigtot_(k,k) -= alpha_d[qp] * T[qp];
+
     epskk.push_back( epskk_ );
     sigeff.push_back( sigeff_ );
+    sigtot.push_back( sigtot_ );
   }
 }
 
@@ -86,20 +95,13 @@ void StressMaterial::setup_variables()
   FEFamily fef = L2_LAGRANGE;
 //  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-  set<subdomain_id_type> sids = { sid };
-  system.add_variable("sigTOTXX", order, fef, &sids);
-  system.add_variable("sigTOTYY", order, fef, &sids);
-  system.add_variable("sigTOTZZ", order, fef, &sids);
-  system.add_variable("sigTOTXY", order, fef, &sids);
-  system.add_variable("sigTOTXZ", order, fef, &sids);
-  system.add_variable("sigTOTYZ", order, fef, &sids);
+  vector<string> sname = { "sigeff", "sigtot" };
+  vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
-  system.add_variable("sigeffXX", order, fef, &sids);
-  system.add_variable("sigeffYY", order, fef, &sids);
-  system.add_variable("sigeffZZ", order, fef, &sids);
-  system.add_variable("sigeffXY", order, fef, &sids);
-  system.add_variable("sigeffXZ", order, fef, &sids);
-  system.add_variable("sigeffYZ", order, fef, &sids);
+  set<subdomain_id_type> sids = { sid };
+  for ( auto sn : sname ) 
+  for ( auto sd : sdir )
+    system.add_variable(sn+sd, order, fef, &sids);
 }
 
 /**
@@ -108,7 +110,7 @@ void StressMaterial::setup_variables()
 void StressMaterial::init_fem()
 {
   SCOPELOG(1);
-  uint vid = system.variable_number( "sigTOTXX" );
+  uint vid = system.variable_number( "sigtotXX" );
   DofMap & dof_map = system.get_dof_map();
   FEType fe_type = dof_map.variable_type(vid);
 

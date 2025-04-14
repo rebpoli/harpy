@@ -56,6 +56,7 @@ void SolverStress::init_materials()
  */
 void SolverStress::solve()
 {
+  SCOPELOG(1);
   // Auto-feed our coupler to calculate the stresses
   update_coupler( *this );
 
@@ -67,6 +68,7 @@ void SolverStress::solve()
     mat->reinit( coupler, *elem );
     ElemCoupler & ec = coupler.elem_coupler( elem->id() );
     mat->project_tensor( ec, "sigeff" );
+    mat->project_tensor( ec, "sigtot" );
   }
 
 }

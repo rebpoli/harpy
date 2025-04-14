@@ -8,6 +8,7 @@
 #include "util/MeshUtils.h"
 #include "util/Messages.h"
 #include "util/OutputOperators.h"
+#include "util/Stopwatch.h"
 
 #include "libmesh/boundary_info.h"
 #include "libmesh/elem.h"
@@ -103,6 +104,13 @@ void SolverViscoplasticTrial::load_mesh()
   dlog(1) << "Reading mesh '" << fn << "'...";
   MeshBase & mesh = get_mesh();
   mesh.read( fn );
+
+  // Wee need a second order mesh 
+  {
+    Stopwatch sw("mesh.all_second_order()");
+    mesh.all_second_order();
+  }
+
   dump_mesh( mesh );
 }
 

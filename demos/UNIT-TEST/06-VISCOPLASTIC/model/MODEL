@@ -34,32 +34,15 @@ DOMAIN         caprock          T             0
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   0
 BOUNDARY       XN               UX            0
-BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
-BOUNDARY       XP               UX            0
-BOUNDARY       YP               UY            0
-DOMAIN         caprock          T             100
+BOUNDARY       YN               UY            0
+BOUNDARY       ZP               SZZ           1e6
+DOMAIN         caprock          T             0
 
+# Increase temperature
 .TIME   1
 BOUNDARY       XN               UX            0
-BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
-BOUNDARY       XP               UX            0
-BOUNDARY       YP               UY            0
-DOMAIN         caprock          T             200
-
-# .TIME   2
-# BOUNDARY       XP        UX    400
-# DOMAIN         RES       T     500
-# .TIME   3
-# BOUNDARY       XP        UX    400
-# DOMAIN         RES       T     500
-# .TIME   4
-# BOUNDARY       XP        UX    400
-# DOMAIN         RES       T     500
-# .TIME   5
-# BOUNDARY       XP        UX    400
-# DOMAIN         RES       T     500
-# .TIME   6
-# BOUNDARY       XP        UX    400
-# DOMAIN         RES       T     500
+BOUNDARY       YN               UY            0
+BOUNDARY       ZP               SZZ           1e6
+DOMAIN         caprock          T             100

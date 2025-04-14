@@ -56,14 +56,15 @@ void SLViscoplastic::solve()
   
   // Update the temperature, sync the coupler
   thermal.solve(); 
-  thermal.update_coupler( viscoplastic );
 
   // Run the viscoplastic
+  thermal.update_coupler( viscoplastic );
+  stress.update_coupler( viscoplastic );
   viscoplastic.solve();
-  viscoplastic.update_coupler(stress);
 
+  viscoplastic.update_coupler( stress );
+  thermal.update_coupler( stress );
   stress.solve();
-  stress.update_coupler(viscoplastic);
 
   viscoplastic.export_exo("viscoplastic");
 }
