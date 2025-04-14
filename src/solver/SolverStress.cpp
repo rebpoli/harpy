@@ -69,6 +69,8 @@ void SolverStress::solve()
     ElemCoupler & ec = coupler.elem_coupler( elem->id() );
     mat->project_tensor( ec, "sigeff" );
     mat->project_tensor( ec, "sigtot" );
+    mat->project_tensor( ec, "deviatoric" );
+    mat->project( ec, "von_mises" );
   }
 
 }

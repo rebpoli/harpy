@@ -21,10 +21,15 @@ StressMaterial::StressMaterial( suint sid_,
 
   // Lists the necessary properties to fetch from the config during Materia::init_coupler
   required_material_properties.assign({
-      "alpha_d", "young", "poisson", "lame_mu", "lame_lambda"
+      "porothermoelastic.alpha_d",
+      "porothermoelastic.young",
+      "porothermoelastic.poisson",
+      "porothermoelastic.lame_mu",
+      "porothermoelastic.lame_lambda"
   });
 
   dlog(1) << config;
+
   setup_variables();
 }
 
@@ -41,23 +46,15 @@ StressMaterial::~StressMaterial()
  */
 void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
 {
-  // Inputs
-  auto & U = elem_coupler->vector_params.at("U");
-  auto & GRAD_U = elem_coupler->tensor_params.at("GRAD_U");
-  auto & T = elem_coupler->dbl_params.at("T");
-  auto & alpha_d = elem_coupler->dbl_params.at("alpha_d");
-
-  dlog(1) << "Tempearture at feed_coupler: " << T;
-  dlog(1) << "alpha_d at feed_coupler: " << alpha_d;
-
   // Outputs in the ElementCoupler
   auto & dbl_params = trg_ec.dbl_params;
   auto & vector_params = trg_ec.vector_params;
   auto & tensor_params = trg_ec.tensor_params;
-  vector<double> & von_mises    = dbl_params["von_mises"];  von_mises.clear();
-  vector<double> & epskk        = dbl_params["epsilon"];  epskk.clear();
-  vector<RealTensor> & sigeff   = tensor_params["sigeff"];  sigeff.clear(); 
-  vector<RealTensor> & sigtot   = tensor_params["sigtot"]; sigtot.clear();
+  vector<double> & von_mises      = dbl_params["von_mises"];     von_mises.clear();
+  vector<double> & epskk          = dbl_params["epsilon"];       epskk.clear();
+  vector<RealTensor> & sigeff     = tensor_params["sigeff"];     sigeff.clear(); 
+  vector<RealTensor> & sigtot     = tensor_params["sigtot"];     sigtot.clear();
+  vector<RealTensor> & deviatoric = tensor_params["deviatoric"]; deviatoric.clear();
 
   uint nqp = U.size();
 
@@ -73,8 +70,22 @@ void StressMaterial::feed_coupler( ElemCoupler & trg_ec )
 
     // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
     RealTensor sigtot_ = sigeff_;
-    for (uint k=0; k<3; k++ ) sigtot_(k,k) -= alpha_d[qp] * T[qp];
+    for (uint k=0; k<3; k++ ) sigtot_(k,k) -= alpha_d[qp] * temperature[qp];
 
+    // dev_ij = sig_ij - 1/3 \delta_ij \sigma_kk
+    RealTensor deviatoric_ = sigtot_;
+    for (uint i=0; i<3; i++ )
+    for (uint k=0; k<3; k++ ) 
+      deviatoric_(i,i) -= (1./3.) * sigtot_(k,k);
+
+    double J2=0;
+    for (uint i=0; i<3; i++ )
+    for (uint j=0; j<3; j++ ) 
+      J2 += (1./2.) * deviatoric_(i,j) * deviatoric_(i,j);
+    double von_mises_ = sqrt( 3 * J2 );
+
+    von_mises.push_back( von_mises_ );
+    deviatoric.push_back( deviatoric_ );
     epskk.push_back( epskk_ );
     sigeff.push_back( sigeff_ );
     sigtot.push_back( sigtot_ );
@@ -95,13 +106,15 @@ void StressMaterial::setup_variables()
   FEFamily fef = L2_LAGRANGE;
 //  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-  vector<string> sname = { "sigeff", "sigtot" };
+  vector<string> sname = { "sigeff", "sigtot", "deviatoric" };
   vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
   set<subdomain_id_type> sids = { sid };
   for ( auto sn : sname ) 
   for ( auto sd : sdir )
     system.add_variable(sn+sd, order, fef, &sids);
+
+  system.add_variable("von_mises", order, fef, &sids);
 }
 
 /**
@@ -145,10 +158,12 @@ void StressMaterial::reinit( Coupler & coupler, const Elem & elem, uint side )
   fe->reinit( &elem );
   elem_coupler = & ( coupler.elem_coupler( elem.id() ) );
 
+  get_from_element_coupler(  "porothermoelastic.alpha_d",       alpha_d        ); 
+  get_from_element_coupler(  "porothermoelastic.lame_mu",       lame_mu        ); 
+  get_from_element_coupler(  "porothermoelastic.lame_lambda",   lame_lambda    ); 
+
+  // From the solvers
   get_from_element_coupler(  "T",             temperature    ); 
-  get_from_element_coupler(  "alpha_d",       alpha_d        ); 
-  get_from_element_coupler(  "lame_mu",       lame_mu        ); 
-  get_from_element_coupler(  "lame_lambda",   lame_lambda    ); 
   get_from_element_coupler(  "U",             U              ); 
   get_from_element_coupler(  "GRAD_U",        GRAD_U         ); 
 }

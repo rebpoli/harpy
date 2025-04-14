@@ -28,13 +28,16 @@ public:
   virtual void init_fem();
 
   void reinit( const Elem & elem, uint side=255 );
-  void reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side=255 );
+  void reinit( Coupler & coupler, const Elem & elem, uint side=255 );
+  void reinit( const NumericVector<Number> & soln, Coupler & coupler, const Elem & elem, uint side=255 );
 
   void feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt, const Elem * elem, const NumericVector<Number> & soln );
+  void fetch_from_coupler();
 
   virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian );
   virtual void residual (const NumericVector<Number> & soln, NumericVector<Number> & residual );
 
+  virtual void update_plastic_strain();
 
   string hello() { return "ViscoPlasticMaterial"; }
   virtual Material * get_bc_material();
@@ -59,8 +62,10 @@ protected:
 
   // Parameters from couplers (from config)
   vector<double> lame_mu, lame_lambda, alpha_d;
+  vector<double> creep_carter_a, creep_carter_q, creep_carter_n;
   // Variables from couplers (external solvers)
-  vector< double > temperature;
+  vector< double > temperature, von_mises;
+  vector< RealTensor > deviatoric, plastic_strain, plastic_strain_rate;
 
   // THE CHILD MATERIAL
   ViscoPlasticMaterialBC * bc_material;

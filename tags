@@ -5676,6 +5676,7 @@ clear	/opt/libmesh/src/utils/perf_log.C	/^void PerfLog::clear()$/;"	f	class:libM
 clear	/opt/libmesh/src/utils/plt_loader.C	/^void PltLoader::clear ()$/;"	f	class:libMesh::PltLoader
 clear	/opt/libmesh/src/utils/point_locator_nanoflann.C	/^PointLocatorNanoflann::clear ()$/;"	f	class:libMesh::PointLocatorNanoflann
 clear	/opt/libmesh/src/utils/point_locator_tree.C	/^void PointLocatorTree::clear ()$/;"	f	class:libMesh::PointLocatorTree
+clear	include/harpy/Coupler.h	/^  void clear( vector<string> vnames ) {$/;"	f	struct:ElemCoupler
 clear_all	/opt/libmesh/src/systems/frequency_system.C	/^void FrequencySystem::clear_all ()$/;"	f	class:libMesh::FrequencySystem
 clear_boundary_node_ids	/opt/libmesh/src/mesh/boundary_info.C	/^void BoundaryInfo::clear_boundary_node_ids()$/;"	f	class:libMesh::BoundaryInfo
 clear_dofs	/opt/libmesh/include/base/dof_object.h	/^void DofObject::clear_dofs ()$/;"	f	class:libMesh::DofObject
@@ -7168,7 +7169,9 @@ fe_type	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  const FEType 
 fe_vector_scalar_error_switch	/opt/libmesh/src/fe/fe_interface.C	229;"	d	file:
 fe_vector_scalar_error_switch	/opt/libmesh/src/fe/fe_interface.C	390;"	d	file:
 fe_with_vec_switch	/opt/libmesh/src/fe/fe_interface.C	449;"	d	file:
-feed_coupler	include/harpy/Material.h	/^    void feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt, const Elem * elem, const NumericVector<Number> & soln )$/;"	f	class:Material
+feed_coupler	include/harpy/Material.h	/^    virtual void feed_coupler( ElemCoupler & trg_ec )$/;"	f	class:Material
+feed_coupler	include/harpy/Material.h	/^    virtual void feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt, const Elem * elem, const NumericVector<Number> & soln )$/;"	f	class:Material
+feed_coupler	src/material/StressMaterial.cpp	/^void StressMaterial::feed_coupler( ElemCoupler & trg_ec )$/;"	f	class:StressMaterial
 feed_coupler	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt,$/;"	f	class:ViscoPlasticMaterial
 fem_by_var	include/config/MaterialConfig.h	/^  map<string,FEMSpec> fem_by_var;$/;"	m	class:MaterialConfig
 fem_state	src/config/reader/MaterialReader.cpp	/^void MaterialReader::fem_state() $/;"	f	class:MaterialReader
@@ -12895,6 +12898,7 @@ operator <<	src/config/reader/SpatialDataReader.cpp	/^ostream& operator<<(ostrea
 operator <<	src/config/reader/SpatialDataReader.cpp	/^ostream& operator<<(ostream& os, const SpatialDataReader::Pt & m)$/;"	f
 operator <<	src/harpy/Coupler.cpp	/^ostream& operator<<(ostream& os, const Coupler & m)$/;"	f
 operator <<	src/harpy/Coupler.cpp	/^ostream& operator<<(ostream& os, const ElemCoupler & m)$/;"	f
+operator <<	src/harpy/Coupler.cpp	/^ostream& operator<<(ostream& os, const vector<RealTensor> & m)$/;"	f
 operator <<	src/harpy/Timestep.cpp	/^ostream& operator<<(ostream& os, const Timestep & ts)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const BC & m)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const BC::DirichletItem & m)$/;"	f
@@ -15258,6 +15262,7 @@ project_solution	/opt/libmesh/src/systems/system_projection.C	/^void System::pro
 project_solution	/opt/libmesh/src/systems/system_projection.C	/^void System::project_solution (ValueFunctionPointer fptr,$/;"	f	class:libMesh::System
 project_solution_on_reinit	/opt/libmesh/include/systems/system.h	/^  bool & project_solution_on_reinit (void)$/;"	f	class:libMesh::System
 project_system_vectors	/opt/libmesh/src/systems/inter_mesh_projection.C	/^void InterMeshProjection::project_system_vectors()$/;"	f	class:libMesh::InterMeshProjection
+project_tensor	src/harpy/Material.cpp	/^void MaterialExplicit::project_tensor( ElemCoupler & ec, string vname_coupler, string vname_system )$/;"	f	class:MaterialExplicit
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (NumericVector<Number> & new_vector,$/;"	f	class:libMesh::System
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (NumericVector<Number> & vector,$/;"	f	class:libMesh::System
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (ValueFunctionPointer fptr,$/;"	f	class:libMesh::System

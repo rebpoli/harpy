@@ -63,7 +63,8 @@ void MaterialReader::parse_material_file()
 
     switch (current_state)
     {
-      case State::ENGINE: { engine_state(); break; }
+      case State::POROTHERMOELASTIC: { porothermoelastic_state(); break; }
+      case State::CREEP_CARTER: { creep_carter_state(); break; }
       case State::FEM: { fem_state(); break; }
       default: { wlog << "Ignoring line " << ln << " >> " << line; break; }
     }
@@ -78,18 +79,17 @@ bool MaterialReader::next_state()
 {
   SCOPELOG(1);
 
-  dlog(1) << "Line>>" << line;
-
   smatch match;
 
   CIMap<State> nextState = {
-    { "engine",    State::ENGINE  },
-    { "fem",       State::FEM     }
+    { "engine",                  State::INITIAL  },
+    { "porothermoelastic",       State::POROTHERMOELASTIC     },
+    { "fem",                     State::FEM     },
+    { "creep",                   State::CREEP     }
   };
 
   // Resets the state
   if (regex_match(line, RE_EMPTY)) { 
-    dlog(1) << "NEXT STATE: INITIAL";
     current_state = State::INITIAL;
     return true; 
   }
@@ -104,27 +104,61 @@ bool MaterialReader::next_state()
   // Save
   current_state  = nextState[ sec ];
 
+  if ( regex_search(line, match, RE_SEC_NAME) ) 
+  {
+    string sname = match[2];
+    /**/
+    if ( iequals( sec, "engine" ) ) config.engine = sname;
+
+    /**/
+    if ( current_state == State::CREEP ) 
+    {
+      if ( iequals( sname , "carter" ) ) current_state = State::CREEP_CARTER;
+      else flog << "Unknown creep model '" << sname << "'";
+    }
+  }
+
   dlog(1) << "NEXT STATE: " << current_state;
 
   return true;
+
 }
 
 /**
  *
  */
-void MaterialReader::engine_state() 
+void MaterialReader::creep_carter_state() 
 {
   SCOPELOG(1);
   smatch match;
   string vname;
   if ( regex_search( line, match, RE_STR_STR_STR ) ) 
-    reg_param_str( match[1], match[2], match[3] );
+    reg_param_str( match[1], match[2], match[3], "creep_carter" );
 
   else if ( regex_search( line, match, RE_STR_NUM ) ) 
-    reg_param_dbl( match[1], "CON", stod(match[2]) );
+    reg_param_dbl( match[1], "CON", stod(match[2]), "creep_carter" );
 
   else if ( regex_search( line, match, RE_STR_STR_NUM ) ) 
-    reg_param_dbl( match[1], match[2], stod(match[3]) );
+    reg_param_dbl( match[1], match[2], stod(match[3]), "creep_carter" );
+
+}
+
+/**
+ *
+ */
+void MaterialReader::porothermoelastic_state() 
+{
+  SCOPELOG(1);
+  smatch match;
+  string vname;
+  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
+    reg_param_str( match[1], match[2], match[3], "porothermoelastic" );
+
+  else if ( regex_search( line, match, RE_STR_NUM ) ) 
+    reg_param_dbl( match[1], "CON", stod(match[2]), "porothermoelastic" );
+
+  else if ( regex_search( line, match, RE_STR_STR_NUM ) ) 
+    reg_param_dbl( match[1], match[2], stod(match[3]), "porothermoelastic" );
 
 }
 
@@ -157,16 +191,16 @@ void MaterialReader::fem_state()
 /**
  *
  */
-void MaterialReader::reg_param_str( string vname, string type, string val )
+void MaterialReader::reg_param_str( string vname, string type, string val, string context )
 {
   if ( ! KNOWN_VAR_TYPES.count(type) ) flog << "Unkwown variable type at '" << filename << "' (" << ln << "): " << type;
-  if ( iequals( type, "file" ) ) config.file_param( vname ) = val;
+  if ( iequals( type, "file" ) ) config.file_param( vname, context ) = val;
 }
 
 /**
  *
  */
-void MaterialReader::reg_param_dbl( string vname, string type, double val )
+void MaterialReader::reg_param_dbl( string vname, string type, double val, string context )
 {
-  if ( iequals( type, "con" ) )  config.con_param(vname) = val ;
+  if ( iequals( type, "con" ) )  config.con_param(vname, context) = val ;
 }

@@ -57,7 +57,7 @@ class Material
               { if ( is_bc() ) fe->reinit(&elem, side); else fe->reinit(&elem); }
     virtual void reinit( Coupler & coupler, const Elem & elem, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side=255 )
+    virtual void reinit( const NumericVector<Number> & soln, Coupler & coupler, const Elem & elem, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
     virtual void jacobian (const NumericVector<Number> & soln, SparseMatrix<Number> & jacobian )
               { flog << "Must be redifined in the child classes."; }
@@ -70,6 +70,9 @@ class Material
     virtual void feed_coupler( ElemCoupler & trg_ec )
               { flog << "Must be redifined in the child classes.";  }
     virtual void feed_coupler( ElemCoupler & trg_ec, const Point & trg_pt, const Elem * elem, const NumericVector<Number> & soln )
+              { flog << "Must be redifined in the child classes.";  }
+
+    virtual void update_plastic_strain()
               { flog << "Must be redifined in the child classes.";  }
 
     virtual bool is_bc() { return 0; }  /// Defaults to false. Reimplement in the BC classes to return true;
@@ -93,7 +96,7 @@ class Material
   public:
 
     QGauss qrule;
-    const ElemCoupler * elem_coupler;
+    ElemCoupler * elem_coupler;
 
     /// Must be initialized in the constructor of the child class
     vector< string > required_material_properties; 

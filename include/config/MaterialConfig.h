@@ -26,18 +26,22 @@ public:
   // Dummy constructor to serve as key for set search
   MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};
 
-  void get_property( vector<double> & ret, string pname, const vector<Point> & xyz ) const;
+  void get_property( vector<double> & ret, string pname, const vector<Point> & xyz, string context ) const;
 
-  string engine;   /// Poroelastic, viscoplastic, thermoporoelastic ...
+  string engine;   /// Poroelastic, viscoplastic, porothermoelastic ...
 
   // Poroelastic
   optional<double> porosity, permeability;
   optional<double> biot, young, poisson;
   // Thermal
   optional<double> beta_e, beta_d, alpha_d;
+  // Creep (Carter Model)
+  optional<double> creep_carter_a, creep_carter_q, creep_carter_n;
+
 
   // Secondary variables (computed from the primary above)
   optional<double> lame_mu, lame_lambda, bulk_modulus;
+
 
   // Files
   // Poroelastic
@@ -55,10 +59,10 @@ public:
   map<string,FEMSpec> fem_by_var;
 
   // Get param reference by name
-  optional<string> & file_param( string & vname );
-  optional<double> & con_param( string & vname );
-  const optional<string> & file_param( string & vname ) const;
-  const optional<double> & con_param( string & vname ) const;
+  optional<string> & file_param( string & vname, string context );
+  optional<double> & con_param( string & vname, string context );
+  const optional<string> & file_param( string & vname, string context ) const;
+  const optional<double> & con_param( string & vname, string context ) const;
 
   bool operator<(const MaterialConfig & other) const;
 

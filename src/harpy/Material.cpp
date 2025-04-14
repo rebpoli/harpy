@@ -9,6 +9,13 @@
 #include "libmesh/mesh.h"
 #include "libmesh/explicit_system.h"
 
+#include <regex>
+
+
+// Some local Regex
+const string prop_name = R"(([-a-zA-Z_0-9]+))";
+const regex RE_PROPERTY ( R"(^)" + prop_name + R"(\.)" + prop_name + R"($)");
+
 /**
  *
  *
@@ -35,10 +42,14 @@ void Material::init_coupler( Elem * elem, ElemCoupler & ec )
   fe->reinit( elem );
 
   // Feed the coupler
-  for ( auto & pname : required_material_properties )
+  for ( auto & ctx_pname : required_material_properties )
   {
+    smatch match;
+    if ( ! regex_search( ctx_pname, match, RE_PROPERTY ) ) flog << "Invalid property name: " << ctx_pname;
+    string context = match[1], pname = match[2];
+
     const MaterialConfig & mconf = config;
-    config.get_property( ec.dbl_params[pname], pname, xyz );
+    config.get_property( ec.dbl_params[ctx_pname], pname, xyz, context );
   }
 }
 

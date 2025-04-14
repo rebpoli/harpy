@@ -26,7 +26,15 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
 {
   // Lists the necessary properties to fetch from the config during init_coupler
   required_material_properties.assign({
-      "alpha_d", "beta_e", "young", "poisson", "lame_mu", "lame_lambda", 
+      "porothermoelastic.alpha_d",
+      "porothermoelastic.beta_e",
+      "porothermoelastic.young",
+      "porothermoelastic.poisson",
+      "porothermoelastic.lame_mu",
+      "porothermoelastic.lame_lambda",
+      "creep_carter.a",
+      "creep_carter.q",
+      "creep_carter.n"
   });
 
   // Setup libmesh system variables
@@ -167,9 +175,106 @@ void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
     Ke_var[vi][vj].reposition ( vi*n_dofsv, vj*n_dofsv, n_dofsv, n_dofsv );
 
   Re.resize (n_dofs);
-//  for (uint vi=0; vi<3; vi++)
-//    Re_var[vi].reposition ( vi*n_dofsv, n_dofsv );
 }
+
+/**
+ *  Init the DoF map and the element matrices.
+ *
+ */
+void ViscoPlasticMaterial::reinit( Coupler & coupler, const Elem & elem, uint side )
+{
+  SCOPELOG(5);
+
+  /*
+   * Initializes the FEM structures, not depending on the solution
+   */
+  reinit( elem, side );
+
+  uint eid = elem.id();
+  if ( ! coupler.count( eid ) ) flog << "Coupler has not been initialized for element '" << eid << "'. Something is terribly wrong.";
+  elem_coupler = & ( coupler.at(eid) );
+
+  fetch_from_coupler();
+}
+
+/**
+ *
+ */
+void ViscoPlasticMaterial::fetch_from_coupler()
+{
+  // Makes sure our own stuff is there
+  auto & tensor_params = elem_coupler->tensor_params;
+  vector<RealTensor> & plastic_strain = tensor_params["plastic_strain"]; 
+  vector<RealTensor> & plastic_strain_rate = tensor_params["plastic_strain_rate"]; 
+
+  // Fetch the needed parameters from the coupler
+  // From the configuration file
+  get_from_element_coupler(  "porothermoelastic.alpha_d",       alpha_d        ); 
+  get_from_element_coupler(  "porothermoelastic.lame_mu",       lame_mu        ); 
+  get_from_element_coupler(  "porothermoelastic.lame_lambda",   lame_lambda    ); 
+
+  // Creep: Carter model
+  get_from_element_coupler(  "creep_carter.a",   creep_carter_a    ); 
+  get_from_element_coupler(  "creep_carter.q",   creep_carter_q    ); 
+  get_from_element_coupler(  "creep_carter.n",   creep_carter_n    ); 
+
+  // From the thermal solver
+  get_from_element_coupler(  "T",             temperature    ); 
+
+  // From the stress solver
+  get_from_element_coupler(  "von_mises",     von_mises      ); 
+  get_from_element_coupler(  "deviatoric",    deviatoric     ); 
+
+  // From update_plastic_strain
+  get_from_element_coupler(  "plastic_strain",      plastic_strain       ); 
+  get_from_element_coupler(  "plastic_strain_rate", plastic_strain_rate  ); 
+}
+
+/**
+ *  Init the DoF map and the element matrices.
+ *
+ *  Then, initializes the solution depending on soln.
+ */
+void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, Coupler & coupler, const Elem & elem, uint side )
+{
+  SCOPELOG(5);
+
+  /*
+   * Initializes the FEM structures, not depending on the solution
+   */
+  reinit( elem, side );
+
+  /*
+   * Now initializes the structures depending on the solution vector
+   */
+  uint n_dofsv = dof_indices_var[0].size();
+
+  // Prepare the Uib vector for the automatic differentiation
+  Uib.clear();
+  for ( uint i=0; i<3; i++ )
+  {
+    vector<Number> row;
+    for ( uint B=0; B<n_dofsv; B++ )
+      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
+    Uib.push_back(row);
+  }
+
+  // Prepare Fib vector for the automatic differentiation
+  Fib.clear();
+  for ( uint i=0; i<3; i++ )
+  {
+    vector<Number> row;
+    for ( uint B=0; B<n_dofsv; B++ ) row.push_back( 0 );
+    Fib.push_back(row);
+  }
+
+  uint eid = elem.id();
+  if ( ! coupler.count( eid ) ) flog << "Coupler has not been initialized for element '" << eid << "'. Something is terribly wrong.";
+  elem_coupler = & ( coupler.at(eid) );
+
+  fetch_from_coupler();
+}
+
 
 /**
  *     Calculates the output information at a single point in this material.
@@ -225,52 +330,20 @@ void ViscoPlasticMaterial::feed_coupler( ElemCoupler & trg_ec, const Point & trg
 }
 
 /**
- *  Init the DoF map and the element matrices.
  *
- *  Then, initializes the solution depending on soln.
  */
-void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Coupler & coupler, const Elem & elem, uint side )
+void ViscoPlasticMaterial::update_plastic_strain()
 {
-  SCOPELOG(5);
+  SCOPELOG(1) ;
 
-  /*
-   * Initializes the FEM structures, not depending on the solution
-   */
-  reinit( elem, side );
+  auto & dbl_params = elem_coupler->dbl_params;
+  auto & tensor_params = elem_coupler->tensor_params;
 
-  /*
-   * Now initializes the structures depending on the solution vector
-   */
-  uint n_dofsv = dof_indices_var[0].size();
+  vector<RealTensor> & deviatoric = tensor_params["deviatoric"]; deviatoric.clear();
+  vector<RealTensor> & plastic_strain = tensor_params["plastic_strain"]; plastic_strain.clear();
+  vector<RealTensor> & plastic_strain_rate = tensor_params["plastic_strain_rate"]; plastic_strain_rate.clear();
 
-  // Prepare the Uib vector for the automatic differentiation
-  Uib.clear();
-  for ( uint i=0; i<3; i++ )
-  {
-    vector<Number> row;
-    for ( uint B=0; B<n_dofsv; B++ )
-      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
-    Uib.push_back(row);
-  }
-
-  // Prepare Fib vector for the automatic differentiation
-  Fib.clear();
-  for ( uint i=0; i<3; i++ )
-  {
-    vector<Number> row;
-    for ( uint B=0; B<n_dofsv; B++ ) row.push_back( 0 );
-    Fib.push_back(row);
-  }
-
-  uint eid = elem.id();
-  if ( ! coupler.count( eid ) ) flog << "Coupler has not been initialized for element '" << eid << "'. Something is terribly wrong.";
-  elem_coupler = & ( coupler.at(eid) );
-
-  // Fetch the needed parameters from the coupler
-  get_from_element_coupler(  "T",             temperature    ); 
-  get_from_element_coupler(  "alpha_d",       alpha_d        ); 
-  get_from_element_coupler(  "lame_mu",       lame_mu        ); 
-  get_from_element_coupler(  "lame_lambda",   lame_lambda    ); 
+  // TODO!
 }
 
 /**

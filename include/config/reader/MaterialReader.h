@@ -23,7 +23,7 @@ private:
   void parse_material_file();
 
   // State machine
-  enum State { INITIAL, ENGINE, FEM };
+  enum State { INITIAL, POROTHERMOELASTIC, CREEP, CREEP_CARTER, FEM };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine
@@ -31,8 +31,9 @@ private:
                          
   bool next_state();
   void fem_state();
-  void engine_state();
+  void porothermoelastic_state();
+  void creep_carter_state();
 
-  void reg_param_str( string vname, string type, string val );
-  void reg_param_dbl( string vname, string type, double val );
+  void reg_param_str( string vname, string type, string val, string context );
+  void reg_param_dbl( string vname, string type, double val, string context );
 };

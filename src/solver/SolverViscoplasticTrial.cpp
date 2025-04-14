@@ -261,6 +261,21 @@ void SolverViscoplasticTrial::set_scalar_bcs()
 }
 
 /**
+ *   Updates the plastic strain in the coupler using the material engine.
+ */
+void SolverViscoplasticTrial::update_plastic_strain()
+{
+  MeshBase & mesh = get_mesh();
+  for (const auto & elem : mesh.active_element_ptr_range())  
+  {
+    ElemCoupler & ec = coupler.elem_coupler( elem->id() );
+    Material * mat = get_material( *elem );
+    mat->reinit( coupler, *elem );
+    mat->update_plastic_strain();
+  }
+}
+
+/**
  *   Implements the workflow of the system solution.
  *         1. Update dirichlet and rigid constraints
  *         2. call system.solve
@@ -277,9 +292,17 @@ void SolverViscoplasticTrial::solve()
     set_dirichlet_bcs();
     set_scalar_bcs();
   }
+  
+  es.reinit(); // Maybe only needed if the curr_bc was updated?
+  
+  // Feed the coupler with the updated plastic strain, using the solution from the previous TS (explicit)
+  update_plastic_strain();
 
-  es.reinit();
+  /** ** ** ** **/
   system.solve();
+  /** ** ** ** **/
+
+  // Deal with heterogeneous dirichlet boundary constraints
   system.get_dof_map().enforce_constraints_exactly(system);
 
   ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()

@@ -34,7 +34,7 @@ MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_,
 /**
  *
  */
-optional<string> & MaterialConfig::file_param( string & vname )
+optional<string> & MaterialConfig::file_param( string & vname, string context )
 {
   dlog(1) << "File param: " << vname;
   if ( iequals( vname, "porosity" ) )      return porosity_file;
@@ -45,45 +45,56 @@ optional<string> & MaterialConfig::file_param( string & vname )
   if ( iequals( vname, "beta_e" ) )        return beta_e_file;
   if ( iequals( vname, "beta_d" ) )        return beta_d_file;
 
-
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
 }
 /**
  *
  */
-optional<double> & MaterialConfig::con_param( string & vname ) 
+optional<double> & MaterialConfig::con_param( string & vname, string context ) 
 {
-  if ( iequals( vname, "porosity" ) )      return porosity;
-  if ( iequals( vname, "permeability" ) )  return permeability;
-  if ( iequals( vname, "biot" ) )          return biot;
-  if ( iequals( vname, "young" ) )         return young;
-  if ( iequals( vname, "poisson" ) )       return poisson;
-  if ( iequals( vname, "beta_e" ) )        return beta_e;
-  if ( iequals( vname, "beta_d" ) )        return beta_d;
+  /** ** ** **/
+  if ( context == "porothermoelastic" )
+  {
+    if ( iequals( vname, "porosity" ) )      return porosity;
+    if ( iequals( vname, "permeability" ) )  return permeability;
+    if ( iequals( vname, "biot" ) )          return biot;
+    if ( iequals( vname, "young" ) )         return young;
+    if ( iequals( vname, "poisson" ) )       return poisson;
+    if ( iequals( vname, "beta_e" ) )        return beta_e;
+    if ( iequals( vname, "beta_d" ) )        return beta_d;
+    // secondary vars
+    if ( iequals( vname, "lame_mu" ) )       return lame_mu;
+    if ( iequals( vname, "lame_lambda" ) )   return lame_lambda;
+    if ( iequals( vname, "bulk_modulus" ) )  return bulk_modulus;
+    if ( iequals( vname, "alpha_d" ) )       return alpha_d;
+  }
 
-  if ( iequals( vname, "lame_mu" ) )       return lame_mu;
-  if ( iequals( vname, "lame_lambda" ) )   return lame_lambda;
-  if ( iequals( vname, "bulk_modulus" ) )  return bulk_modulus;
-  if ( iequals( vname, "alpha_d" ) )       return alpha_d;
+  /** ** ** **/
+  if ( context == "creep_carter" )
+  {
+    if ( iequals( vname, "a" ) ) return creep_carter_a;
+    if ( iequals( vname, "q" ) ) return creep_carter_q;
+    if ( iequals( vname, "n" ) ) return creep_carter_n;
+  }
 
-  flog << "Variable name in Material '" << name << "', " << filename;
+  flog << "Unknown variable name in Material '" << name << "': " << context << " . " << vname;
   return porosity;
 } 
 /** **/
-const optional<double> & MaterialConfig::con_param( string & vname ) const
-{ return const_cast<optional<double>&>(const_cast<MaterialConfig*>(this)->con_param(vname)); }
-const optional<string> & MaterialConfig::file_param( string & vname ) const
-{ return const_cast<optional<string>&>(const_cast<MaterialConfig*>(this)->file_param(vname)); }
+const optional<double> & MaterialConfig::con_param( string & vname, string context ) const
+{ return const_cast<optional<double>&>(const_cast<MaterialConfig*>(this)->con_param(vname,context)); }
+const optional<string> & MaterialConfig::file_param( string & vname, string context ) const
+{ return const_cast<optional<string>&>(const_cast<MaterialConfig*>(this)->file_param(vname,context)); }
 
 /**
  *  TODO: We do not support file parameters yet. Only constants.
  */
-void MaterialConfig::get_property( vector<double> & ret, string pname, const vector<Point> & xyz ) const
+void MaterialConfig::get_property( vector<double> & ret, string pname, const vector<Point> & xyz, string context ) const
 {
   ret.clear();
 
-  const optional<double> & prop = con_param(pname);
+  const optional<double> & prop = con_param(pname, context);
   if ( ! prop ) flog << "Property '" << prop << "' is not defined for material '" << name << "'.";
 
   // TODO: support file and layer properties
@@ -101,12 +112,18 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                            MaterialConfig for '" << m.name  << "'/ '" << m.cfg << "'" << endl;
   os << "                                 Filename '" << m.filename << "'" << endl;
 
-  os << "                                 Poroelastic:" << endl ;
+  os << "                                 Thermoporoelastic:" << endl ;
   os << "                                    Por:              " << setw(15) << m.porosity     << setw(15) << m.porosity_file << endl;
   os << "                                    Permeability:     " << setw(15) << m.permeability << setw(15) << m.permeability_file << endl;
   os << "                                    Biot:             " << setw(15) << m.biot         << setw(15) << m.biot_file << endl;
   os << "                                    Young Modulus:    " << setw(15) << m.young        << setw(15) << m.young_file << endl;
   os << "                                    Poisson Coef:     " << setw(15) << m.poisson      << setw(15) << m.poisson_file << endl;
+  os << "                                    Lame_mu:          " << setw(15) << m.lame_mu << endl;
+  os << "                                    Lame_lambda:      " << setw(15) << m.lame_lambda << endl;
+  os << "                                 Creep Model (Carter):" << endl ;
+  os << "                                    A:                " << setw(15) << m.creep_carter_a << endl;
+  os << "                                    Q:                " << setw(15) << m.creep_carter_q << endl;
+  os << "                                    N:                " << setw(15) << m.creep_carter_n << endl;
 
   for ( auto & [ v, fem ] : m.fem_by_var ) 
   {
