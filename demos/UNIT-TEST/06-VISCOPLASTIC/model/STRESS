@@ -1,0 +1,4 @@
+.MESH mesh.e
+
+.CONFIG     BASE                # Material collection for the BASE sys_cfg
+TEST_FRAME caprock      BASE    # We can ommit the configuration if Mat_cfg = sys_cfgg
