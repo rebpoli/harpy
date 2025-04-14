@@ -102,7 +102,7 @@ void StressMaterial::setup_variables()
   SCOPELOG(1);
 
   // TODO: fetch this info from configuration
-  Order order = FIRST;
+  Order order = SECOND;
   FEFamily fef = L2_LAGRANGE;
 //  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 

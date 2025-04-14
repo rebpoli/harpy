@@ -12,6 +12,7 @@
 
 namespace libMesh { class System; }
 class ViscoPlasticMaterialBC;
+class Timestep;
 
 #include "libmesh/transient_system.h"
 
@@ -23,7 +24,9 @@ class ViscoPlasticMaterialBC;
 class ViscoPlasticMaterial : public Material
 {
 public:
-  ViscoPlasticMaterial( suint sid_, const MaterialConfig & config, TransientNonlinearImplicitSystem & sys_ );
+  ViscoPlasticMaterial( suint sid_, const MaterialConfig & config,
+                        TransientNonlinearImplicitSystem & sys_, const Timestep & ts_ );
+
   virtual ~ViscoPlasticMaterial();
   virtual void init_fem();
 
@@ -69,6 +72,8 @@ protected:
 
   // THE CHILD MATERIAL
   ViscoPlasticMaterialBC * bc_material;
+
+  const Timestep & ts;
 };
 
 /**
@@ -81,7 +86,8 @@ protected:
 class ViscoPlasticMaterialBC : public ViscoPlasticMaterial
 {
 public:
-  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_, TransientNonlinearImplicitSystem & sys_ );
+  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
+                          TransientNonlinearImplicitSystem & sys_, const Timestep & ts_);
 
   virtual bool is_bc() { return true; }
 

@@ -77,7 +77,7 @@ void SolverViscoplasticTrial::init_materials()
     const MaterialConfig & mat_conf = *it;
 
     dlog(1) << "Resoved material:" << mat_conf;
-    material_by_sid[sid] = new ViscoPlasticMaterial( sid, mat_conf, system );
+    material_by_sid[sid] = new ViscoPlasticMaterial( sid, mat_conf, system, ts );
   }
 }
 
@@ -265,9 +265,11 @@ void SolverViscoplasticTrial::set_scalar_bcs()
  */
 void SolverViscoplasticTrial::update_plastic_strain()
 {
+  SCOPELOG(1);
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_element_ptr_range())  
   {
+    dlog(1) << "Processing element " << elem->id() << "";
     ElemCoupler & ec = coupler.elem_coupler( elem->id() );
     Material * mat = get_material( *elem );
     mat->reinit( coupler, *elem );

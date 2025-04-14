@@ -26,23 +26,20 @@ K0    1e15    0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
-BOUNDARY       XP               UX            0
-BOUNDARY       YP               UY            0
-DOMAIN         caprock          T             0
+DOMAIN         caprock          T             450
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   0
 BOUNDARY       XN               UX            0
-BOUNDARY       ZN               UZ            0
-BOUNDARY       YN               UY            0
-BOUNDARY       ZP               SZZ           1e6
-DOMAIN         caprock          T             0
+BOUNDARY       YN               UZ            0
+BOUNDARY       ZN               UY            0
+DOMAIN         caprock          T             450
 
-# Increase temperature
-.TIME   1
-BOUNDARY       XN               UX            0
-BOUNDARY       ZN               UZ            0
-BOUNDARY       YN               UY            0
-BOUNDARY       ZP               SZZ           1e6
-DOMAIN         caprock          T             100
+# # Increase temperature
+# .TIME   1
+# BOUNDARY       XN               UX            0
+# BOUNDARY       ZN               UZ            0
+# BOUNDARY       YN               UY            0
+# BOUNDARY       ZP               SZZ           1e6
+# DOMAIN         caprock          T             100

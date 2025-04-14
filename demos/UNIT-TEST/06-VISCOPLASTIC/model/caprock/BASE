@@ -20,9 +20,9 @@ BETA_D        1e-6        # Thermal
 
 # Defines the creep model
 .CREEP CARTER
-A             1
-Q             2
-N             3
+A             1e-15 # 8.1e-5   # MPa^-n s^-1
+Q             51.6e-3  # J/mol
+N             3.5 
 
 ## Defines finite element stuff
 .FEM

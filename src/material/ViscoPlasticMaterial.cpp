@@ -13,6 +13,7 @@
 #include "libmesh/transient_system.h"
 
 #include "util/OutputOperators.h"
+#include "harpy/Timestep.h"
 
 
 /**
@@ -20,9 +21,10 @@
  */
 ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
                                             const MaterialConfig & config, 
-                                            TransientNonlinearImplicitSystem & sys_ ) :
+                                            TransientNonlinearImplicitSystem & sys_,
+                                            const Timestep & ts_) :
   Material( sid_, config ), dof_indices_var(3),
-  system( sys_ ), implicit(1), bc_material(0)
+  system( sys_ ), implicit(1), bc_material(0), ts(ts_)
 {
   // Lists the necessary properties to fetch from the config during init_coupler
   required_material_properties.assign({
@@ -55,7 +57,7 @@ Material * ViscoPlasticMaterial::get_bc_material()
   SCOPELOG(5);
   if ( ! bc_material ) 
   {
-    bc_material = new ViscoPlasticMaterialBC( sid, config, system );
+    bc_material = new ViscoPlasticMaterialBC( sid, config, system, ts );
     bc_material->init_fem();
   }
 
@@ -66,8 +68,9 @@ Material * ViscoPlasticMaterial::get_bc_material()
  *
  */
 ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
-                                                TransientNonlinearImplicitSystem & sys_ ) :
-  ViscoPlasticMaterial( sid_, config_, sys_ )
+                                                TransientNonlinearImplicitSystem & sys_,
+                                                const Timestep & ts_) :
+  ViscoPlasticMaterial( sid_, config_, sys_, ts_ )
 {
 }
 
@@ -183,16 +186,14 @@ void ViscoPlasticMaterial::reinit( const Elem & elem, uint side )
  */
 void ViscoPlasticMaterial::reinit( Coupler & coupler, const Elem & elem, uint side )
 {
-  SCOPELOG(5);
+  SCOPELOG(3);
 
   /*
    * Initializes the FEM structures, not depending on the solution
    */
   reinit( elem, side );
 
-  uint eid = elem.id();
-  if ( ! coupler.count( eid ) ) flog << "Coupler has not been initialized for element '" << eid << "'. Something is terribly wrong.";
-  elem_coupler = & ( coupler.at(eid) );
+  elem_coupler = & ( coupler.elem_coupler(elem.id()) );
 
   fetch_from_coupler();
 }
@@ -202,10 +203,7 @@ void ViscoPlasticMaterial::reinit( Coupler & coupler, const Elem & elem, uint si
  */
 void ViscoPlasticMaterial::fetch_from_coupler()
 {
-  // Makes sure our own stuff is there
-  auto & tensor_params = elem_coupler->tensor_params;
-  vector<RealTensor> & plastic_strain = tensor_params["plastic_strain"]; 
-  vector<RealTensor> & plastic_strain_rate = tensor_params["plastic_strain_rate"]; 
+  SCOPELOG(5);
 
   // Fetch the needed parameters from the coupler
   // From the configuration file
@@ -225,9 +223,17 @@ void ViscoPlasticMaterial::fetch_from_coupler()
   get_from_element_coupler(  "von_mises",     von_mises      ); 
   get_from_element_coupler(  "deviatoric",    deviatoric     ); 
 
-  // From update_plastic_strain
-  get_from_element_coupler(  "plastic_strain",      plastic_strain       ); 
-  get_from_element_coupler(  "plastic_strain_rate", plastic_strain_rate  ); 
+  // Direct access to makes sure our plastic_strain is initialized in the coupler 
+  // Makes sure it has zeros for each qp if not initialized
+  auto & ec_plastic_strain = elem_coupler->tensor_params["plastic_strain"]; 
+  if  ( ! ec_plastic_strain.size() ) 
+  for ( uint qp=0; qp<qrule.n_points() ; qp++ )
+    ec_plastic_strain.push_back(RealTensor());
+
+  // Direct access to makes sure our plastic_strain is initialized in the coupler 
+  // This is only an intermediate calculation, important for debugging and visualization only
+  plastic_strain = elem_coupler->tensor_params["plastic_strain"]; 
+  plastic_strain_rate = elem_coupler->tensor_params["plastic_strain_rate"]; 
 }
 
 /**
@@ -336,14 +342,49 @@ void ViscoPlasticMaterial::update_plastic_strain()
 {
   SCOPELOG(1) ;
 
-  auto & dbl_params = elem_coupler->dbl_params;
-  auto & tensor_params = elem_coupler->tensor_params;
+//  dlog(1) << "Update Plastic Strain data:";
+//  dlog(1) << "    Von Mises:                 " << von_mises;
+//  dlog(1) << "    Deviatoric:                " << deviatoric;
+//  dlog(1) << "    Plastic Strain (t):        " << plastic_strain;
+//  dlog(1) << "    Delta t:                   " << ts.dt;
 
-  vector<RealTensor> & deviatoric = tensor_params["deviatoric"]; deviatoric.clear();
-  vector<RealTensor> & plastic_strain = tensor_params["plastic_strain"]; plastic_strain.clear();
-  vector<RealTensor> & plastic_strain_rate = tensor_params["plastic_strain_rate"]; plastic_strain_rate.clear();
+//  dlog(1) << "    Creep (Carter):" << ts.dt;
+//  dlog(1) << "          A:                   " << creep_carter_a;
+//  dlog(1) << "          Q:                   " << creep_carter_q;
+//  dlog(1) << "          N:                   " << creep_carter_n;
 
-  // TODO!
+  // Update the values in the coupler (not in this object!)
+  auto & ec_plastic_strain = elem_coupler->tensor_params["plastic_strain"];
+  auto & ec_plastic_strain_rate = elem_coupler->tensor_params["plastic_strain_rate"];
+
+
+  // Some validation
+  uint nqp = qrule.n_points();
+  if ( deviatoric.size() != nqp )      flog << "Vector sizes do not match [deviatoric.size(" << deviatoric.size() << ") != nqp(" << nqp << ")]";
+  if ( ec_plastic_strain.size() != nqp )  flog << "Vector sizes do not match [plastic_strain.size(" << ec_plastic_strain.size() << ") != nqp(" << nqp << ")]";
+  if ( creep_carter_a.size() != nqp )  flog << "Vector sizes do not match [creep_carter_a.size(" << creep_carter_a.size() << ") != nqp(" << nqp << ")]";
+  if ( creep_carter_q.size() != nqp )  flog << "Vector sizes do not match [creep_carter_q.size(" << creep_carter_q.size() << ") != nqp(" << nqp << ")]";
+  if ( creep_carter_n.size() != nqp )  flog << "Vector sizes do not match [creep_carter_n.size(" << creep_carter_n.size() << ") != nqp(" << nqp << ")]";
+  if ( von_mises.size() != nqp )       flog << "Vector sizes do not match [von_mises.size(" << von_mises.size() << ") != nqp(" << nqp << ")]";
+  if ( temperature.size() != nqp )     flog << "Vector sizes do not match [temperature.size(" << temperature.size() << ") != nqp(" << nqp << ")]";
+
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+  ec_plastic_strain_rate.clear();
+  for ( uint qp=0; qp<qrule.n_points() ; qp++ )
+  {
+    double A_ = creep_carter_a[qp], Q_=creep_carter_q[qp], N_=creep_carter_n[qp];
+
+    RealTensor psr = 3./2. * A_ * exp( - Q_ / R_ / temperature[qp] ) * 
+                     pow( von_mises[qp]/1e6 , N_-1 ) *
+                     deviatoric[qp];
+
+    dlog(1) << "PSR: " << psr;
+    ec_plastic_strain_rate.push_back( psr );
+    ec_plastic_strain[qp] += psr * ts.dt;
+  }
+//  dlog(1) << "    Plastic Strain rate:        " << plastic_strain_rate;
+//  dlog(1) << "    Plastic Strain:             " << ec_plastic_strain;
+//  dlog(1) << "    dt :                        " << ts.dt;
 }
 
 /**
@@ -409,6 +450,19 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint l=0; l<3; l++) 
     Fib[i][B] += JxW[qp] *  dphi[B][qp](j) * C_ijkl(qp, i,j,k,l) * GRAD_U[qp](k,l) ;
 
+  // Subtract the plastic strain as a body force
+  //
+  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
+  for (uint qp=0; qp<qrule.n_points(); qp++   )
+  for (uint B=0;  B<n_dofsv;  B++)
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) 
+  for (uint l=0; l<3; l++) 
+    Fib[i][B] -= JxW[qp] *  dphi[B][qp](j) * C_ijkl(qp, i,j,k,l) * plastic_strain[qp](k,l) ;
+
+//  dlog(1) << "VPM::residual plastic_strain: " << plastic_strain;
+
   // Temperature
   //       alpha_d = beta_d * K_bulk
   //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
@@ -416,6 +470,7 @@ void ViscoPlasticMaterial::residual (const NumericVector<Number> & soln, Numeric
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0;  i<3;  i++)
     Fib[i][B] -= JxW[qp] *  dphi[B][qp](i) * alpha_d[qp]  * temperature[qp];
+
 
   /*
   *    Build the Re vector and assemble in the global residual vector
