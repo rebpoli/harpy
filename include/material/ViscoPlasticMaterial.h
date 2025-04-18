@@ -68,7 +68,6 @@ protected:
   vector<double> creep_carter_a, creep_carter_q, creep_carter_n;
   // Variables from couplers (external solvers)
   vector< double > temperature, von_mises;
-  vector< RealTensor > deviatoric, plastic_strain, plastic_strain_rate;
 
   // THE CHILD MATERIAL
   ViscoPlasticMaterialBC * bc_material;

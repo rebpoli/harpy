@@ -333,6 +333,7 @@ void ViscoPlasticMaterial::feed_coupler( ElemCoupler & trg_ec, const Point & trg
 
   vector<RealTensor> & trg_GRAD_Uqij = trg_ec.tensor_params["GRAD_U"];
   trg_GRAD_Uqij.push_back( GRAD );
+
 }
 
 /**
@@ -340,7 +341,7 @@ void ViscoPlasticMaterial::feed_coupler( ElemCoupler & trg_ec, const Point & trg
  */
 void ViscoPlasticMaterial::update_plastic_strain()
 {
-  SCOPELOG(1) ;
+  SCOPELOG(5) ;
 
 //  dlog(1) << "Update Plastic Strain data:";
 //  dlog(1) << "    Von Mises:                 " << von_mises;
@@ -376,9 +377,15 @@ void ViscoPlasticMaterial::update_plastic_strain()
 
     RealTensor psr = 3./2. * A_ * exp( - Q_ / R_ / temperature[qp] ) * 
                      pow( von_mises[qp]/1e6 , N_-1 ) *
-                     deviatoric[qp];
+                     deviatoric[qp]/1e6;
 
-    dlog(1) << "PSR: " << psr;
+//    dlog(1) << "COEF1:" << 3./2. * A_;
+//    dlog(1) << "COEF2:" << Q_ / R_ / temperature[qp];
+//    dlog(1) << "COEF3:" << exp( - Q_ / R_ / temperature[qp] );
+//    dlog(1) << "TEMP:" <<   temperature[qp];
+//    dlog(1) << "POW VM:" << pow( von_mises[qp]/1e6 , N_-1 );
+//    dlog(1) << "DEVIATORIC (MPa):" << deviatoric[qp]/1e6;
+//    dlog(1) << "PSR: " << psr;
     ec_plastic_strain_rate.push_back( psr );
     ec_plastic_strain[qp] += psr * ts.dt;
   }

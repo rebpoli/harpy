@@ -100,6 +100,9 @@ class Material
 
     /// Must be initialized in the constructor of the child class
     vector< string > required_material_properties; 
+
+    /// TODO: This should only be in the viscoplastic. Gambiarra emergencial.
+    vector< RealTensor > deviatoric, plastic_strain, plastic_strain_rate;
 };
 
 /**

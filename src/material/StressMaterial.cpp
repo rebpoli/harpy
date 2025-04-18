@@ -106,7 +106,7 @@ void StressMaterial::setup_variables()
   FEFamily fef = L2_LAGRANGE;
 //  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-  vector<string> sname = { "sigeff", "sigtot", "deviatoric" };
+  vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain" };
   vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
   set<subdomain_id_type> sids = { sid };

@@ -149,6 +149,9 @@ target_link_libraries(Modules "-lboost_stacktrace_backtrace -ldl -lbacktrace" )
 add_executable( harpy src/main/harpy.cpp  )
 target_link_libraries( harpy Modules )
 
+add_executable( msh2exo src/main/msh2exo.cpp  )
+target_link_libraries( msh2exo Modules )
+
 set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 
 # Tests

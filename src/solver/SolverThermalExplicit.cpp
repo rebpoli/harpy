@@ -32,7 +32,7 @@ void SolverThermalExplicit::init_materials()
   set<MaterialConfig> & materials = MODEL->materials;
 
   // ensures creation of all materials to the current mesh (local elems only)
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  for ( const auto & elem : mesh.active_element_ptr_range() )
   {
     suint sid = elem->subdomain_id();
     if  ( material_by_sid.count( sid ) ) continue;
@@ -84,7 +84,7 @@ void SolverThermalExplicit::solve()
   // Explicit solvers do not have materials. It is all done manually.
   //
   MeshBase & mesh = get_mesh();
-  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+  for (const auto & elem : mesh.active_element_ptr_range()) 
   {
     uint eid = elem->id();
     if ( ! coupler.count(eid) ) flog << "Element '" << eid << "' missing in coupler";

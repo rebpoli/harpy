@@ -7,10 +7,11 @@ THERMAL BASE
 STRESS BASE
 
 .TIMESTEP 
-DT0           1
-DTK           1.2
-TMAX         100  
-MAX_STEPS    5
+DT0           10
+DTK           2
+DTMAX         1e5
+TMAX          1e8
+MAX_STEPS    50
 
 # List of scalar variables
 .SCALAR
@@ -32,8 +33,11 @@ DOMAIN         caprock          T             450
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   0
 BOUNDARY       XN               UX            0
-BOUNDARY       YN               UZ            0
-BOUNDARY       ZN               UY            0
+BOUNDARY       YN               UY            0
+BOUNDARY       XP               UX            0
+BOUNDARY       YP               SYY           1000
+BOUNDARY       ZN               UZ            0
+BOUNDARY       ZP               UZ            0
 DOMAIN         caprock          T             450
 
 # # Increase temperature

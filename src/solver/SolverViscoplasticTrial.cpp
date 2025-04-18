@@ -57,7 +57,7 @@ void SolverViscoplasticTrial::init_materials()
   set<MaterialConfig> & materials = MODEL->materials;
 
   // ensures creation of all materials to the current mesh (local elems only)
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  for ( const auto & elem : mesh.active_element_ptr_range() )
   {
     uint sid = elem->subdomain_id();
     if  ( material_by_sid.count( sid ) ) continue;
@@ -269,12 +269,12 @@ void SolverViscoplasticTrial::update_plastic_strain()
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_element_ptr_range())  
   {
-    dlog(1) << "Processing element " << elem->id() << "";
     ElemCoupler & ec = coupler.elem_coupler( elem->id() );
     Material * mat = get_material( *elem );
     mat->reinit( coupler, *elem );
     mat->update_plastic_strain();
   }
+
 }
 
 /**
@@ -301,6 +301,7 @@ void SolverViscoplasticTrial::solve()
   update_plastic_strain();
 
   /** ** ** ** **/
+  *system.old_local_solution = *system.current_local_solution;
   system.solve();
   /** ** ** ** **/
 
@@ -386,6 +387,7 @@ void SolverViscoplasticTrial::update_coupler( Solver & trg_solver )
   SCOPELOG(1);
   Coupler & trg_coupler = trg_solver.coupler;
 
+
   MeshBase & src_mesh = get_mesh();
   MeshBase & trg_mesh = trg_solver.get_mesh();
   for (const auto & trg_elem : trg_mesh.active_element_ptr_range())  // This is a collective loop (no local here please!)
@@ -395,6 +397,7 @@ void SolverViscoplasticTrial::update_coupler( Solver & trg_solver )
     trg_mat->fe->reinit(trg_elem);
     ElemCoupler & trg_ec = trg_solver.coupler.elem_coupler( trg_elem->id() );
     trg_ec.clear( {"U", "GRAD_U" } );   
+    trg_ec.tensor_params["plastic_strain"].clear(); // isso ta um horror
 
     for ( uint qp=0; qp<xyz.size(); qp++ ) 
     {
@@ -406,6 +409,11 @@ void SolverViscoplasticTrial::update_coupler( Solver & trg_solver )
 
       Material * src_mat = get_material( *src_elem );
       src_mat->feed_coupler( trg_ec, xyz[qp], trg_elem, *(system.solution) );
+      RealTensor ps;
+      if ( src_mat->plastic_strain.size() ) 
+        ps = src_mat->plastic_strain[qp];
+
+      trg_ec.tensor_params["plastic_strain"].push_back( ps ); // isso ta um horror
     }
   }
 }

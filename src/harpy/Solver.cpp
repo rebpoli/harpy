@@ -88,7 +88,7 @@ void Solver::init_coupler()
 {
   SCOPELOG(1);
   MeshBase & mesh = get_mesh();
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  for ( const auto & elem : mesh.active_element_ptr_range() )
   {
     Material * mat = get_material( *elem );
 

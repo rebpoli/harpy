@@ -25,7 +25,7 @@ void SolverStress::init_materials()
   set<MaterialConfig> & materials = MODEL->materials;
 
   // ensures creation of all materials to the current mesh (local elems only)
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  for ( const auto & elem : mesh.active_element_ptr_range() )
   {
     suint sid = elem->subdomain_id();
     if  ( material_by_sid.count( sid ) ) continue;
@@ -61,7 +61,7 @@ void SolverStress::solve()
   update_coupler( *this );
 
   MeshBase & mesh = get_mesh();
-  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+  for (const auto & elem : mesh.active_element_ptr_range()) 
   {
     MaterialExplicit * mat = get_explicit_material( *elem );
 
@@ -71,6 +71,7 @@ void SolverStress::solve()
     mat->project_tensor( ec, "sigtot" );
     mat->project_tensor( ec, "deviatoric" );
     mat->project( ec, "von_mises" );
+    mat->project_tensor( ec, "plastic_strain" );
   }
 
 }
