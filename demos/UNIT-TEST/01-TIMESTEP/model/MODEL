@@ -1,0 +1,20 @@
+
+# Define the system loop 
+# Then the configuration of each system
+.SYSTEMLOOP VISCOPLASTIC
+
+.TIMESTEP 
+DT0           10
+DTK           2
+DTMAX         1e5
+TMAX          1e8
+MAX_STEPS    50
+
+.INITIAL 
+BOUNDARY       XN               UX            0
+
+.TIME   0
+BOUNDARY       XN               UX            0
+
+.TIME   2e6
+BOUNDARY       XN               UX            0

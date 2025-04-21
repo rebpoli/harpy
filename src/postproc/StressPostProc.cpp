@@ -1,0 +1,75 @@
+
+#include "postproc/StressPostProc.h"
+
+#include "config/MaterialConfig.h"
+#include "util/OutputOperators.h"
+
+#include "libmesh/system.h"
+#include "libmesh/equation_systems.h"
+#include "libmesh/explicit_system.h"
+
+/**
+ *
+ */
+StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :
+  ExplicitMaterial( refmat, sys_ )
+{
+  SCOPELOG(1);
+
+  name = sys_.name();
+
+  dlog(1) << config;
+}
+
+/**
+ *
+ */
+StressPostProc::~StressPostProc()
+{ SCOPELOG(1); }
+
+
+/**
+ *   _sid_ is the subdomain id
+ */
+void StressPostProc::setup_variables()
+{
+  SCOPELOG(1);
+
+  // TODO: fetch this info from configuration
+  Order order = SECOND;
+  FEFamily fef = L2_LAGRANGE;
+//  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
+
+  vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain" };
+  vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
+
+  set<subdomain_id_type> sids = { sid };
+  for ( auto sn : sname ) 
+  for ( auto sd : sdir )
+    system.add_variable(sn+sd, order, fef, &sids);
+
+  system.add_variable("von_mises", order, fef, &sids);
+}
+
+/**
+ *
+ */
+void StressPostProc::init_fem()
+{
+  SCOPELOG(1);
+  uint vid = system.variable_number( "sigtotXX" );
+  DofMap & dof_map = system.get_dof_map();
+  FEType fe_type = dof_map.variable_type(vid);
+
+  fe = move( FEBase::build(3, fe_type) );
+
+  qrule = QGauss( 3, fe_type.default_quadrature_order() );
+
+  fe->attach_quadrature_rule (&qrule);
+
+  // Enable calculations calculations
+  fe->get_JxW();
+  fe->get_phi();
+  fe->get_dphi();
+  fe->get_xyz();
+}
