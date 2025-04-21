@@ -29,6 +29,7 @@ T assert_argument (GetPot & cl,
                    const char * progname,
                    const T & defaultarg)
 {
+  UNUSED( progname );
   if (!cl.search(argname))
     {
       elog << ("No " + argname + " argument found!") << std::endl;

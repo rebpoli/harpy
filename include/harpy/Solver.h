@@ -1,7 +1,6 @@
 #pragma once
 
 #include "base/Global.h"
-#include "harpy/Coupler.h"
 
 #include "libmesh/equation_systems.h"
 #include "libmesh/transient_system.h"
@@ -19,7 +18,7 @@ class SolverConfig;
  */
 
 class Material;
-class MaterialExplicit;
+class ExplicitMaterial;
 class BCConfig;
 
 namespace libMesh { class Elem ; class MeshBase; } 
@@ -45,17 +44,10 @@ class Solver
     virtual void solve()
       { flog << "Must be defined in the child class."; }
     virtual void export_results( string basename )
-      { flog << "Must be defined in the child class."; }
+      { UNUSED(basename); flog << "Must be defined in the child class."; }
 
     virtual void init();
 
-    // Initializes the coupler of this object from the material config
-    void init_coupler();
-
-    // The material is the same across every solver.
-    // Each solver gets its chunk of information as needed
-    Material * get_material( const Elem & elem );
-    MaterialExplicit * get_explicit_material( const Elem & elem );
     virtual void init_materials()
       { flog << "Must be defined in the child class."; }
     void export_exo( string fn );
@@ -69,7 +61,4 @@ class Solver
     BCConfig & bc_config;
 
     EquationSystems & es;
-
-    // Directly accessible member. Be careful.
-    Coupler coupler;
 };

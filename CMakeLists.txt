@@ -65,9 +65,9 @@ include_directories(include)
 
 # Compilar arquivos-fonte dentro da biblioteca estática libModules.a
 ADD_LIBRARY(Modules
-  src/harpy/Coupler.cpp
   src/harpy/Material.cpp
   src/harpy/DirManager.cpp
+  src/harpy/ExplicitMaterial.cpp
   src/harpy/Solver.cpp
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp
@@ -93,12 +93,11 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/material/ViscoPlasticMaterial.cpp
-  src/material/ThermalMaterial.cpp
-  src/material/StressMaterial.cpp
+  src/postproc/ThermalPostProc.cpp
+  src/postproc/StressPostProc.cpp
   src/solver/BC.cpp
-  src/solver/SolverViscoplasticTrial.cpp
-  src/solver/SolverThermalExplicit.cpp
-  src/solver/SolverStress.cpp
+  src/solver/ViscoplasticSolver.cpp
+  src/solver/ThermalSolverExplicit.cpp
   src/solverloop/SLViscoplastic.cpp
 
 

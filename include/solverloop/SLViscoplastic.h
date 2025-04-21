@@ -4,9 +4,8 @@
 
 #include "harpy/Solverloop.h"
 
-#include "solver/SolverViscoplasticTrial.h"
-#include "solver/SolverThermalExplicit.h"
-#include "solver/SolverStress.h"
+#include "solver/ViscoplasticSolver.h"
+#include "solver/ThermalSolverExplicit.h"
 
 class Timestep;
 
@@ -28,7 +27,6 @@ class SLViscoplastic : public Solverloop
 
   private:
 
-    SolverViscoplasticTrial viscoplastic;
-    SolverThermalExplicit thermal;
-    SolverStress stress;
+    ViscoplasticSolver viscoplastic;
+    ThermalSolverExplicit thermal;
 };

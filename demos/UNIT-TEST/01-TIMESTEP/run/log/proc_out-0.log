@@ -1,39 +1,272 @@
-# Info:     Starting Unit test
-# Info:     Timestep 0s (dt=0s)
-# Info:     Timestep 50s (dt=50s)
-# Info:     Timestep 110s (dt=60s)
-# Info:     Timestep 182s (dt=72s)
-# Info:     Timestep 251.534s (dt=69.534s)
-# Info:     Timestep 334.975s (dt=83.4408s)
-# Info:     Timestep 435.104s (dt=100.129s)
-# Info:     Timestep 555.259s (dt=120.155s)
-# Info:     Timestep 699.444s (dt=144.186s)
-# Info:     Timestep 872.467s (dt=173.023s)
-# Info:     Timestep 1006.14s (dt=133.671s)
-# Info:     Timestep 1166.54s (dt=160.405s)
-# Info:     Timestep 1359.03s (dt=192.486s)
-# Info:     Timestep 1590.01s (dt=230.983s)
-# Info:     Timestep 1867.19s (dt=277.18s)
-# Info:     Timestep 2199.81s (dt=332.616s)
-# Info:     Timestep 2598.95s (dt=399.139s)
-# Info:     Timestep 3077.92s (dt=478.967s)
-# Info:     Timestep 3652.68s (dt=574.761s)
-# Info:     Timestep 4342.39s (dt=689.713s)
-# Info:     Timestep 5030.69s (dt=688.305s)
-# Info:     Timestep 5856.66s (dt=825.967s)
-# Info:     Timestep 6847.82s (dt=991.16s)
-# Info:     Timestep 8037.21s (dt=1189.39s)
-# Info:     Timestep 9464.48s (dt=1427.27s)
-# Info:     Timestep 10061.4s (dt=596.906s)
-# Info:     Timestep 10777.7s (dt=716.287s)
-# Info:     Timestep 11637.2s (dt=859.544s)
-# Info:     Timestep 12668.7s (dt=1031.45s)
-# Info:     Timestep 13906.4s (dt=1237.74s)
-# Info:     Timestep 15391.7s (dt=1485.29s)
-# Info:     Timestep 17174.1s (dt=1782.35s)
-# Info:     Timestep 19312.9s (dt=2138.82s)
-# Info:     Timestep 21879.5s (dt=2566.59s)
-# Info:     Timestep 24959.4s (dt=3079.9s)
-# Info:     Timestep 25153.5s (dt=194.102s)
-# Info:     Timestep 25386.4s (dt=232.922s)
-# Info:     Timestep 25665.9s (dt=279.507s)
+# Deb[1:0]: Model directory and file ok! We are good to go! (model/, model//MODEL)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:55
+# Deb[1:0]: 
+ModelConfig: 
+      systemloop          : VISCOPLASTIC
+      model_dir           : model/
+      model file          : model//MODEL
+      Timestep:
+TimestepConfig: 
+           dt0:10        
+           dtk:2         
+        dt_min:1e-05     
+        dt_max:100000    
+         t_max:1e+08     
+     max_steps:50        
+      SYSTEM / Config:
+      MATERIAL / Config:
+      Boundary  Config:
+
+|-----------------------------------------------
+|   BOUNDARY CONDITIONS     
+|-----------------------------------------------
+| SCALARS: 
+       Name                Family              Order               
+
+|----------------------------------------------
+| INITIAL_BY_VNAME: 
+[] (0)
+|----------------------------------------------
+| PENALTY: 
+All penalties (Map): {
+}
+
+|----------------------------------------------
+| ENTRY_BY_TIME: 
+|---------------------------
+| Time=-1
+|---------------------------
+DOMAIN BCS:
+DBL BCS:
+    XN: 'UX'=0
+STR BCS:
+STOT BCS:
+
+|---------------------------
+|---------------------------
+| Time=0
+|---------------------------
+DOMAIN BCS:
+DBL BCS:
+    XN: 'UX'=0
+STR BCS:
+STOT BCS:
+
+|---------------------------
+|---------------------------
+| Time=2e+06
+|---------------------------
+DOMAIN BCS:
+DBL BCS:
+    XN: 'UX'=0
+STR BCS:
+STOT BCS:
+
+|---------------------------
+
+|----------------------------------------------
+     @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:14
+# Info:     Starting Unit test                                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:16
+# Deb[1:0]: --- build tsqueue: 2e+06                                            @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:25
+# Info:     Timestep -1s (dt=10s)                                               @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 0s (dt=10s)                                                @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=2, dt=20, time=        2.000000e+01)      @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 20s (dt=20s)                                               @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=3, dt=40, time=        6.000000e+01)      @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 60s (dt=40s)                                               @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=4, dt=80, time=        1.400000e+02)      @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 140s (dt=80s)                                              @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=5, dt=160, time=        3.000000e+02)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 300s (dt=160s)                                             @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=6, dt=320, time=        6.200000e+02)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 620s (dt=320s)                                             @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=7, dt=640, time=        1.260000e+03)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1260s (dt=640s)                                            @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=8, dt=1280, time=        2.540000e+03)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2540s (dt=1280s)                                           @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=9, dt=2560, time=        5.100000e+03)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 5100s (dt=2560s)                                           @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=10, dt=5120, time=        1.022000e+04)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 10220s (dt=5120s)                                          @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=11, dt=10240, time=        2.046000e+04)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 20460s (dt=10240s)                                         @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=12, dt=20480, time=        4.094000e+04)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 40940s (dt=20480s)                                         @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=13, dt=40960, time=        8.190000e+04)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 81900s (dt=40960s)                                         @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=14, dt=81920, time=        1.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 163820s (dt=81920s)                                        @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=15, dt=100000, time=        2.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 263820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=16, dt=100000, time=        3.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 363820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=17, dt=100000, time=        4.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 463820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=18, dt=100000, time=        5.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 563820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=19, dt=100000, time=        6.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 663820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=20, dt=100000, time=        7.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 763820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=21, dt=100000, time=        8.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 863820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=22, dt=100000, time=        9.638200e+05)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 963820s (dt=100000s)                                       @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=23, dt=100000, time=        1.063820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.06382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=24, dt=100000, time=        1.163820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.16382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=25, dt=100000, time=        1.263820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.26382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=26, dt=100000, time=        1.363820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.36382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=27, dt=100000, time=        1.463820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.46382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=28, dt=100000, time=        1.563820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.56382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=29, dt=100000, time=        1.663820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.66382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=30, dt=100000, time=        1.763820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.76382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=31, dt=100000, time=        1.863820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.86382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=32, dt=100000, time=        1.963820e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 1.96382e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=33, dt=36180, time=        2.000000e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2e+06s (dt=36180s)                                         @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=34, dt=72360, time=        2.072360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.07236e+06s (dt=72360s)                                   @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=35, dt=100000, time=        2.172360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.17236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=36, dt=100000, time=        2.272360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.27236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=37, dt=100000, time=        2.372360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.37236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=38, dt=100000, time=        2.472360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.47236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=39, dt=100000, time=        2.572360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.57236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=40, dt=100000, time=        2.672360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.67236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=41, dt=100000, time=        2.772360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.77236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=42, dt=100000, time=        2.872360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.87236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=43, dt=100000, time=        2.972360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 2.97236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=44, dt=100000, time=        3.072360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.07236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=45, dt=100000, time=        3.172360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.17236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=46, dt=100000, time=        3.272360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.27236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=47, dt=100000, time=        3.372360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.37236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=48, dt=100000, time=        3.472360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.47236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=49, dt=100000, time=        3.572360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.57236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=50, dt=100000, time=        3.672360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Timestep 3.67236e+06s (dt=100000s)                                  @ /lm23_hdd/harpy/demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp:20
+# Deb[1:0]: ScopeLog @ Timestep::next() @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:47     @ /lm23_hdd/harpy/src/base/Log.cpp:198
+# Deb[1:0]: __ Timestep::next: t_step=51, dt=100000, time=        3.772360e+06)     @ /lm23_hdd/harpy/src/harpy/Timestep.cpp:102
+# Deb[1:0]: ~ScopeLog @ Timestep::next()                                        @ /lm23_hdd/harpy/src/base/Log.cpp:216

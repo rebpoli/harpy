@@ -3,6 +3,7 @@
 #include "base/HarpyInit.h" // LIBMESH_COMMUNICATOR
 #include "config/ModelConfig.h"
 #include "harpy/Material.h"
+#include "harpy/ExplicitMaterial.h"
 #include "harpy/Timestep.h"
 #include "harpy/DirManager.h"
 
@@ -17,8 +18,7 @@ Solver::Solver( string name_, const Timestep & ts_ ) :
   name(name_), ts(ts_), own_es(1),
   config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
-  es( *(new EquationSystems( *(new Mesh(*LIBMESH_COMMUNICATOR)) ) ) ),
-  coupler()
+  es( *(new EquationSystems( *(new Mesh(*LIBMESH_COMMUNICATOR)) ) ) )
 {}
 
 /**
@@ -28,7 +28,7 @@ Solver::Solver( Solver & ref, string name_ ) :
   name(name_), ts(ref.ts), own_es(0),
   config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
-  es( ref.es ), coupler()
+  es( ref.es )
 {}
 
 /**
@@ -48,57 +48,10 @@ Solver::~Solver() {
 void Solver::init()
 {
   // Init FEM of the materials
-  for ( auto & [ sid, mat ] : material_by_sid ) mat->init_fem();
-
-  init_coupler();
+  for ( auto & [ sid, mat ] : material_by_sid )
+    mat->init_fem();
 }
 
-
-/**
- *   Returns the material for a given element.
- *   Fails if not existing.
- */
-Material * Solver::get_material( const Elem & elem )
-{
-  uint sid = elem.subdomain_id();
-  // Consistency check
-  if  ( ! material_by_sid.count( sid ) ) 
-  {
-    string sname = get_mesh().subdomain_name( sid );
-    flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
-  }
-
-  Material * mat = material_by_sid.at(sid);
-
-  return mat;
-}
-
-/**
- *    TODO: add more consistency here. Maybe define a subclass SolverExplicit to
- *          hold this stuff.
- */
-MaterialExplicit * Solver::get_explicit_material( const Elem & elem )
-{ Material * mat = get_material( elem ) ; return dynamic_cast<MaterialExplicit *>(mat); }
-
-/**
- *    Fetches information from the configuration and feeds the object coupler.
- *
- */
-void Solver::init_coupler()
-{
-  SCOPELOG(1);
-  MeshBase & mesh = get_mesh();
-  for ( const auto & elem : mesh.active_element_ptr_range() )
-  {
-    Material * mat = get_material( *elem );
-
-    // Create element in the coupler
-    uint eid = elem->id();
-    if ( ! coupler.count(eid) ) coupler.emplace(eid, ElemCoupler(eid));
-    ElemCoupler & ec = coupler.at( eid );
-    mat->init_coupler( elem, ec );
-  }
-}
 
 /**
  *

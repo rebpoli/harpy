@@ -27,6 +27,7 @@ public:
   MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};
 
   void get_property( vector<double> & ret, string pname, const vector<Point> & xyz, string context ) const;
+  double get_property( string pname, const Point & xyz, string context ) const;
 
   string engine;   /// Poroelastic, viscoplastic, porothermoelastic ...
 

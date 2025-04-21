@@ -28,7 +28,6 @@ MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_,
   }
 
   if ( bulk_modulus && beta_d ) alpha_d = *bulk_modulus * (*beta_d);
-
 }
 
 /**
@@ -37,13 +36,21 @@ MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_,
 optional<string> & MaterialConfig::file_param( string & vname, string context )
 {
   dlog(1) << "File param: " << vname;
-  if ( iequals( vname, "porosity" ) )      return porosity_file;
-  if ( iequals( vname, "permeability" ) )  return permeability_file;
-  if ( iequals( vname, "biot" ) )          return biot_file;
-  if ( iequals( vname, "young" ) )         return young_file;
-  if ( iequals( vname, "poisson" ) )       return poisson_file;
-  if ( iequals( vname, "beta_e" ) )        return beta_e_file;
-  if ( iequals( vname, "beta_d" ) )        return beta_d_file;
+  if ( context == "porothermoelastic") 
+  {
+    if ( iequals( vname, "porosity" ) )      return porosity_file;
+    if ( iequals( vname, "permeability" ) )  return permeability_file;
+    if ( iequals( vname, "biot" ) )          return biot_file;
+    if ( iequals( vname, "young" ) )         return young_file;
+    if ( iequals( vname, "poisson" ) )       return poisson_file;
+    if ( iequals( vname, "beta_e" ) )        return beta_e_file;
+    if ( iequals( vname, "beta_d" ) )        return beta_d_file;
+  }
+
+  if ( context == "creep_carter" )
+  {
+    // ...
+  }
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
@@ -93,13 +100,20 @@ const optional<string> & MaterialConfig::file_param( string & vname, string cont
 void MaterialConfig::get_property( vector<double> & ret, string pname, const vector<Point> & xyz, string context ) const
 {
   ret.clear();
+  for ( auto & p : xyz ) 
+    ret.push_back( get_property( pname, p, context ) );
+}
 
+/**
+ *   TODO: support file and layer properties
+ */
+double MaterialConfig::get_property( string pname, const Point & xyz, string context ) const
+{
+  UNUSED(xyz);
   const optional<double> & prop = con_param(pname, context);
   if ( ! prop ) flog << "Property '" << prop << "' is not defined for material '" << name << "'.";
 
-  // TODO: support file and layer properties
-  for ( auto & p : xyz ) ret.push_back( *prop );
-
+  return *prop;
 }
 
 /**
