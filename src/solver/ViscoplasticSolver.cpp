@@ -32,10 +32,11 @@
  */
 ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) : 
                    Solver( name_, ts_ ), 
-                   system(es.add_system<TransientNonlinearImplicitSystem> ( name )),
-                   stress_system(es.add_system<TransientNonlinearImplicitSystem> ( name+"-stress" )),
+                   system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
+                   stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
                    curr_bc( system )
 {
+  SCOPELOG(1);
   dlog(1) << "ViscoplasticSolver: " << *config;
 
   // Init equationsystems flow
@@ -306,6 +307,8 @@ void ViscoplasticSolver::set_scalar_bcs()
 void ViscoplasticSolver::solve()
 {
   SCOPELOG(1);
+  for ( uint i=0; i<1000 ; i++ )
+  dlog(1) << "OLD <= LOCAL";
 
   // Shall we update BCs? 
   if ( curr_bc.update( ts ) ) 
@@ -320,7 +323,9 @@ void ViscoplasticSolver::solve()
 //  update_plastic_strain();
 
   /** ** ** ** **/
+  dlog(1) << "OLD <= LOCAL";
   *system.old_local_solution = *system.current_local_solution;
+  dlog(1) << "SOLVE";
   system.solve();
   /** ** ** ** **/
 

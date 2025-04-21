@@ -5,7 +5,6 @@
 VISCOPLASTIC BASE
 
 .TIMESTEP 
-T0           -1
 DT0           1
 DTK           1
 TMAX         10  

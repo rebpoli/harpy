@@ -20,7 +20,18 @@ using harpy_string::iequals;
  */
 ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, string name_ ) :
     Solver( ref_solver_, name_ ), system(es.add_system<ExplicitSystem>(name_)), ref_solver(&ref_solver_)
-{ init_materials(); }
+{ 
+  SCOPELOG(1);
+//  init_materials(); 
+}
+
+/**
+ *
+ */
+ThermalSolverExplicit::~ThermalSolverExplicit()
+{
+  SCOPELOG(1);
+}
 
 /**
  *   Creates all the needed materials for the solution (one per subdomain ID).

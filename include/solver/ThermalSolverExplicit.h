@@ -27,6 +27,7 @@ class ThermalSolverExplicit : public Solver
 {
 public:
   ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, string name_ );
+  virtual ~ThermalSolverExplicit();
 
   /// Init explicit materials (the ones to do the projections)
   void init_materials();

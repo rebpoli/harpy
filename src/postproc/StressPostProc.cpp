@@ -19,6 +19,7 @@ StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :
   name = sys_.name();
 
   dlog(1) << config;
+  setup_variables();
 }
 
 /**

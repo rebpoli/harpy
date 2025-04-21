@@ -61,6 +61,10 @@ void ViscoPlasticMaterial::init_properties()
   for ( auto & pt : xyz )
   {
     auto & prop = vp_ifc.get( qp );
+    prop.alpha_d=0;
+
+
+
     prop.alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
     prop.beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
     prop.lame_mu          = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
@@ -201,8 +205,12 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
 
   // Update the current element in the interfacse
   uint eid = elem->id();
-  vp_ifc.reinit( eid );
-  th_ifc.reinit( eid );
+  uint nqp = qrule.size();
+
+  vp_ifc.reinit( eid, nqp );
+  th_ifc.reinit( eid, nqp );
+  
+  next_qp(0);
 
   /// Init properties from confguration file if needed. Updates material_properties_by_qp
   init_properties();
@@ -295,7 +303,7 @@ void ViscoPlasticMaterial::update_ifc_qp()
 void ViscoPlasticMaterial::project_stress()
 {
   stress_postproc.reinit( *elem );
-  vp_ifc.reinit( elem->id() );
+  vp_ifc.reinit( elem->id(), qrule.n_points() );
 
   ViscoPlasticIFC::PropsTranspose Pt( vp_ifc.by_qp );
   stress_postproc.project_tensor( Pt.sigtot, "sigtot" );

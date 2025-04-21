@@ -21,7 +21,11 @@ void ExplicitMaterial::project( vector<double> & vals_qp, string vname )
   const std::vector<std::vector<Real>> & phi = fe->get_phi();
   const std::vector<Real> & jxw = fe->get_JxW();
 
-  system.variable_number(vname);
+  // Update DOF INDICES
+  uint vid = system.variable_number(vname);
+  const DofMap & dof_map = system.get_dof_map();
+  std::vector<dof_id_type> dof_indices;
+  dof_map.dof_indices ( elem, dof_indices, vid);
 
   //  M x = F
   uint n_dofs = phi.size();
@@ -78,6 +82,13 @@ void ExplicitMaterial::project_tensor( vector<RealTensor> & vals_qp, string vnam
     string suf = sufvec[a];
     auto [i,j] = ijvec[a];
 
+    // Update DOF INDICES
+    string trg_vname = vname + suf;
+    uint vid = system.variable_number(trg_vname);
+    const DofMap & dof_map = system.get_dof_map();
+    std::vector<dof_id_type> dof_indices;
+    dof_map.dof_indices ( elem, dof_indices, vid);
+
     //  M x = F
     uint n_dofs = phi.size();
     DenseMatrix<Real> MAT(n_dofs, n_dofs);
@@ -99,13 +110,6 @@ void ExplicitMaterial::project_tensor( vector<RealTensor> & vals_qp, string vnam
     DenseVector<Number> X;
     MAT.cholesky_solve(F, X);
 //    MAT.lu_solve(F, X);
-
-    string trg_vname = vname + suf;
-    uint vid = system.variable_number(trg_vname);
-
-    const DofMap & dof_map = system.get_dof_map();
-    std::vector<dof_id_type> dof_indices;
-    dof_map.dof_indices ( elem, dof_indices, vid);
 
     // Cada processador seta os seus nos apenas
     dof_id_type f = system.solution->first_local_index();

@@ -60,5 +60,6 @@ class Solver
     SolverConfig * config;
     BCConfig & bc_config;
 
+    MeshBase & mesh;
     EquationSystems & es;
 };

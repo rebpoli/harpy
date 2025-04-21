@@ -18,7 +18,8 @@ Solver::Solver( string name_, const Timestep & ts_ ) :
   name(name_), ts(ts_), own_es(1),
   config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
-  es( *(new EquationSystems( *(new Mesh(*LIBMESH_COMMUNICATOR)) ) ) )
+  mesh( *(new Mesh(*LIBMESH_COMMUNICATOR)) ),
+  es( *(new EquationSystems(mesh) ) )
 {}
 
 /**
@@ -26,17 +27,26 @@ Solver::Solver( string name_, const Timestep & ts_ ) :
  */
 Solver::Solver( Solver & ref, string name_ ) :
   name(name_), ts(ref.ts), own_es(0),
-  config (MODEL->solver_config( name_ ) ),
+  config ( MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),
+  mesh( ref.es.get_mesh() ),
   es( ref.es )
-{}
+{
+SCOPELOG(1);
+}
 
 /**
  *   Deletes the equationsystem if it is owned by this object.
  *   Deletes the owned data structure.
  */
 Solver::~Solver() {
-  if ( own_es ) delete( &es ); 
+  SCOPELOG(1);
+
+  if ( own_es ) 
+  {
+    delete( &es ); 
+    delete( &mesh ) ;
+  }
 
   for ( auto & [ sid, mat ] : material_by_sid ) delete( mat );
   material_by_sid.clear();
@@ -47,6 +57,7 @@ Solver::~Solver() {
  */
 void Solver::init()
 {
+  SCOPELOG(1);
   // Init FEM of the materials
   for ( auto & [ sid, mat ] : material_by_sid )
     mat->init_fem();

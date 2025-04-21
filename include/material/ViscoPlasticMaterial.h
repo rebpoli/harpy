@@ -52,7 +52,10 @@ struct ViscoPlasticIFC
   map< uint, vector<Props> > by_elem;
   vector<Props> * by_qp;  // By qp
   // Helpers
-  void reinit( uint eid ) { by_qp = &( by_elem[eid] ); }
+  void reinit( uint eid, uint nqp ) { 
+    by_qp = &( by_elem[eid] );
+    if ( ! by_qp->size() ) by_qp->resize(nqp); 
+  }
   Props & get( uint qp ) { return (*by_qp)[qp]; }
   uint size() { return by_qp->size(); }
 };
@@ -70,7 +73,10 @@ struct ThermalIFC
   vector<Props> * by_qp;  // By qp
 
   // Helpers
-  void reinit( uint eid ) { by_qp = &( by_elem[eid] ); }
+  void reinit( uint eid, uint nqp ) {
+    by_qp = &( by_elem[eid] );
+    if ( ! by_qp->size() ) by_qp->resize(nqp); 
+  }
   Props & get( uint qp ) { return (*by_qp)[qp]; }
   uint size() { return by_qp->size(); }
 };
@@ -126,7 +132,9 @@ private:
   inline double C_ijkl(uint i, uint j, uint k, uint l);   /// Material stuff
 
 protected:
-  inline bool next_qp(); // Advances the quadrature point during an integration
+  // Advances the quadrature point during an integration. 
+  // For initialization purposes, inc can be false so that the first time we see QP=0
+  inline bool next_qp( bool inc = true);
   uint QP;  /// The current quadrature point during integration
             
   void setup_variables();
@@ -199,9 +207,10 @@ inline double ViscoPlasticMaterial::C_ijkl( uint i, uint j, uint k, uint l) {
  *  Advances in the quadrature integration point.
  *  Updates the Properties and temperature coupler pointer.
  */
-inline bool ViscoPlasticMaterial::next_qp()
+inline bool ViscoPlasticMaterial::next_qp( bool inc )
 { 
-  if ( ++QP == qrule.n_points() ) return false;
+  if ( inc ) 
+    if ( ++QP == qrule.n_points() ) return false;
 
   P = & ( vp_ifc.get(QP) );
   T = & ( th_ifc.get(QP) );

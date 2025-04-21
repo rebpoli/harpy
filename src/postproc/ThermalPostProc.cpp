@@ -13,19 +13,11 @@
 /**
  *
  */
-ThermalPostProc::ThermalPostProc( suint sid_,
-                                  const MaterialConfig & config, 
-                                  ExplicitSystem & sys_ ) :
-  ExplicitMaterial( sid_, config, sys_ )
-{
-  SCOPELOG(1);
-  dlog(1) << config;
-  setup_variables();
-}
-
 ThermalPostProc::ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ ) :
   ExplicitMaterial( ref_material, sys_ )
-{}
+{
+  setup_variables();
+}
 
 /**
  *
@@ -40,6 +32,7 @@ SCOPELOG(1);
  */
 void ThermalPostProc::setup_variables()
 {
+  SCOPELOG(1);
   set<subdomain_id_type> sids = { sid };
   uint vid = system.add_variable( "T", SECOND, L2_LAGRANGE, &sids );
   dlog(1) << "Adding variable T (" << vid << ") to subdomains " << sid << "";
@@ -51,6 +44,7 @@ void ThermalPostProc::setup_variables()
 void ThermalPostProc::init_fem()
 {
   SCOPELOG(1);
+  system.print_info();
   uint vid = system.variable_number( "T" );
   DofMap & dof_map = system.get_dof_map();
   FEType fe_type = dof_map.variable_type(vid);

@@ -23,6 +23,7 @@ ModelConfig::ModelConfig( string model_dir_ ) :
  */
 SolverConfig * ModelConfig::solver_config( string name )
 {
+  SCOPELOG(1);
   if ( ! solvers.count(name) ) 
   {
     string str; for ( auto & [ k, v ] : solvers ) { str += k + ", "; }
