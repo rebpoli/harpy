@@ -165,5 +165,3 @@ inline bool ViscoPlasticMaterial::next_qp( bool inc )
   return true; 
 }
 
-/** OUTPUT STREAMS **/
-ostream& operator<<(ostream& os, const ViscoplasticIFC & m);

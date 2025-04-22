@@ -52,3 +52,6 @@ struct ViscoplasticIFC
   /// Getters
   Props & get( uint qp ) { return (*by_qp)[qp]; }
 };
+
+/** OUTPUT STREAMS **/
+ostream& operator<<(ostream& os, const ViscoplasticIFC & m);

@@ -32,7 +32,7 @@ SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
 
   // Init the solvers (must be after the es.init)
   viscoplastic.init();
-//  thermal.init();
+  thermal.init();
 }
 
 /**
@@ -44,7 +44,7 @@ void SLViscoplastic::solve()
   SCOPELOG(1);
   
   // Update the temperature, sync the coupler
-//  thermal.solve(); 
+  thermal.solve(); 
 
   // Run the viscoplastic
   viscoplastic.solve();

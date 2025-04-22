@@ -34,9 +34,9 @@ DOMAIN         caprock          T             0
 .TIME   0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               SYY           1000
+BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         caprock          T             0
+DOMAIN         caprock          T             100
 
 # # Increase temperature
 # .TIME   1

@@ -261,7 +261,7 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
  */
 void ViscoPlasticMaterial::update_ifc_qp()
 {
-  SCOPELOG(1);
+  SCOPELOG(10);
   uint n_dofsv = dof_indices_var[0].size();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
@@ -304,7 +304,7 @@ void ViscoPlasticMaterial::update_ifc_qp()
  */
 void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 {
-  SCOPELOG(1);
+  SCOPELOG(10);
   /// Update the stresses in the interface
   reinit( *(system.solution), elem_ );
   do { update_ifc_qp(); } while ( next_qp() );
@@ -314,7 +314,6 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   vp_ifc.reinit( elem->id(), qrule.n_points() );
 
   ViscoplasticIFC::PropsTranspose Pt( vp_ifc.by_qp );
-  dlog(1) << "sigtot: " << Pt.sigtot;
   stress_postproc.project_tensor( Pt.sigtot, "sigtot" );
   stress_postproc.project_tensor( Pt.sigeff, "sigeff" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
@@ -472,24 +471,3 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem, uint side,
   }
 }
 
-
-/**
- *
- */
-ostream& operator<<(ostream& os, const ViscoplasticIFC & m)
-{
-  os << "VISCOPLASTIC INTERFACE:" << endl;
-
-  for ( auto & [ eid, pvec ] : m.by_elem )
-  {
-    os << "    EID:" << eid;
-    os << "          [" << endl;
-    for ( auto & p : pvec ) {
-      os << "             lame_mu:" << setw(15) << p.lame_mu << endl;
-      os << "         lame_lambda:" << setw(15) << p.lame_lambda << endl;
-    }
-    os << "          ]" << endl;
-  }
-
-  return os;
-}

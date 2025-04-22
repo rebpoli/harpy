@@ -33,4 +33,4 @@ struct ThermalIFC
 };
 
 
-
+ostream& operator<<(ostream& os, const ThermalIFC & m);

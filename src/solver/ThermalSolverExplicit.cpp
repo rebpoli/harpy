@@ -22,7 +22,7 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
     Solver( ref_solver_, name_ ), system(es.add_system<ExplicitSystem>(name_)), ref_solver(&ref_solver_)
 { 
   SCOPELOG(1);
-//  init_materials(); 
+  init_materials(); 
 }
 
 /**
@@ -98,6 +98,7 @@ ThermalPostProc * ThermalSolverExplicit::get_postproc( const Elem & elem )
  */
 void ThermalSolverExplicit::solve()
 {
+  SCOPELOG(1);
   temperature_by_material.clear();
   double reftime = bc_config.get_reftime( ts.time ) ;
   if ( ! bc_config.entry_by_time.count( reftime ) ) flog << "Inconsistency in BCConfig. All _reftime_ must have an entry in entry_by_time.";
@@ -108,6 +109,7 @@ void ThermalSolverExplicit::solve()
   {
     if ( ! iequals ( dbc.vname , "T" ) ) continue;
     temperature_by_material[ material ] = dbc.value;
+    dlog(1) << "Temperature for '" << material << "': " << dbc.value; 
   }
 
   // Feed the element solver with the temperatures
@@ -120,6 +122,7 @@ void ThermalSolverExplicit::solve()
  */
 void ThermalSolverExplicit::project_to_system()
 {
+  SCOPELOG(1);
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_element_ptr_range()) 
   {
@@ -174,8 +177,18 @@ void ThermalSolverExplicit::update_reference_solver()
     temperature = temperature_by_material[ mname ];
 
     uint nqp = mat->qrule.n_points();
+    dlog(1) << "nqp:" << nqp;
+    props.resize(nqp);
     for ( uint qp=0 ; qp< nqp ; qp++ )
       props[qp].temperature = temperature;
+  }
+
+  // Debugging
+  for (const auto & elem : mesh.active_element_ptr_range()) 
+  {
+    ViscoPlasticMaterial * mat = ref_solver->get_material( *elem );
+    dlog(1) << mat->get_thermal_interface();
+    break;
   }
 }
 

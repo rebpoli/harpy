@@ -29,7 +29,7 @@ Material::Material( suint sid_, const MaterialConfig & config_ ) :
  *  Builds a material inheriting most properties from the reference.
  */
 Material::Material( Material & refmat ) :
-                          config(refmat.config), name(refmat.name+"-derived"),
+                          config(refmat.config), name(refmat.name),
                           sid(refmat.sid), qrule(refmat.qrule), elem(0)
 { }
 
