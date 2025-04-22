@@ -11,6 +11,10 @@ all: build/opt build/devel build/dbg
 build/%: .force cmake-%
 	$(MAKE) -C $@
 
+submodules:
+	git submodule init
+	git submodule update
+
 cmake: cmake-opt cmake-devel cmake-dbg
 cmake-%: 
 	mkdir -p build/$*
