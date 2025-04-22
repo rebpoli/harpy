@@ -332,27 +332,27 @@ void ViscoplasticSolver::solve()
   // Deal with heterogeneous dirichlet boundary constraints
   system.get_dof_map().enforce_constraints_exactly(system);
 
-  ilog << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
+  ilog1 << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
     << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
 
   /** Project the stresses **/
-  posproc();
+  posproc_stresses();
 }
 
 /**
  *
  */
-void ViscoplasticSolver::posproc()
+void ViscoplasticSolver::posproc_stresses()
 {
+  SCOPELOG(1);
   /// Project the stresses into the stress system
   MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     ViscoPlasticMaterial * mat = get_material( *elem );
-    mat->project_stress();
+    mat->project_stress( *elem );
   }
   stress_system.solution->close();
-
 }
 
 /**
@@ -362,52 +362,27 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
                             SparseMatrix<Number> * jacobian, NonlinearImplicitSystem & sys)
 {
   UNUSED(sys);
-  SCOPELOG(1);
+  SCOPELOG(5);
 
   MeshBase & mesh = get_mesh();
 
-  if ( jacobian ) 
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    for ( const auto & elem : mesh.active_local_element_ptr_range() )
-    {
-      ViscoPlasticMaterial * mat = get_material( *elem );
-      mat->residual_and_jacobian( *elem, soln, jacobian, residual );
-    }
-
-    // Add STOT Boundary Conditions 
-    for ( auto & [ elemside, stotitem ] : curr_bc.stot )
-    {
-      Elem & elem = mesh.elem_ref(elemside.eid);
-      // Only on the current processor.
-      if ( elem.processor_id() != mesh.processor_id() ) continue;
-
-      ViscoPlasticMaterial * mat = get_material( elem );
-      ViscoPlasticMaterialBC * bcmat = mat->get_bc_material();
-      bcmat->set_bc( stotitem->val );   // /Make this better! 
-      mat->residual_and_jacobian( elem, soln, jacobian, residual );
-    }
+    ViscoPlasticMaterial * mat = get_material( *elem );
+    mat->residual_and_jacobian( *elem, soln, jacobian, residual );
   }
 
-  if ( residual ) 
+  // Add STOT Boundary Conditions 
+  for ( auto & [ elemside, stotitem ] : curr_bc.stot )
   {
-    for ( const auto & elem : mesh.active_local_element_ptr_range() )
-    {
-      ViscoPlasticMaterial * mat = get_material( *elem );
-      mat->residual_and_jacobian( *elem, soln, jacobian, residual );
-    }
+    Elem & elem = mesh.elem_ref(elemside.eid);
+    // Only on the current processor.
+    if ( elem.processor_id() != mesh.processor_id() ) continue;
 
-    // Add STOT Boundary Conditions 
-    for ( auto & [ elemside, stotitem ] : curr_bc.stot )
-    {
-      Elem & elem = mesh.elem_ref(elemside.eid);
-      // Only on the current processor.
-      if ( elem.processor_id() != mesh.processor_id() ) continue;
-
-      ViscoPlasticMaterial * mat = get_material( elem );
-      ViscoPlasticMaterialBC * bcmat = mat->get_bc_material();
-      bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
-      bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
-    }
+    ViscoPlasticMaterial * mat = get_material( elem );
+    ViscoPlasticMaterialBC * bcmat = mat->get_bc_material();
+    bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
+    bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
   }
 }
 

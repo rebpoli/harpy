@@ -3,6 +3,7 @@
 #include "base/Global.h"
 
 #include "libmesh/vector_value.h"
+#include "libmesh/tensor_value.h"
 #include "util/String.h"
 
 #include <vector>
@@ -12,6 +13,7 @@
 namespace libMesh { class Point; }
 ostream& operator<<(ostream& os, const vector<libMesh::Point> & m);
 ostream& operator<<(ostream& os, const vector<libMesh::Gradient> & m);
+ostream& operator<<(ostream& os, const vector<libMesh::RealTensor> & m);
 ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m);
 ostream& operator<<(ostream& os, const vector<double> & m);
 ostream& operator<<(ostream& os, const set<double> & m);

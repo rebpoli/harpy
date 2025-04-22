@@ -93,6 +93,8 @@ ADD_LIBRARY(Modules
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
   src/material/ViscoPlasticMaterial.cpp
+  src/material/ViscoplasticIFC.cpp
+  src/material/ThermalIFC.cpp
   src/postproc/ThermalPostProc.cpp
   src/postproc/StressPostProc.cpp
   src/solver/BC.cpp

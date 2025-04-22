@@ -13,6 +13,17 @@ ostream& operator<<(ostream& os, const vector<libMesh::Point> & m) {
   return os;
 }
 
+ostream& operator<<(ostream& os, const vector<libMesh::RealTensor> & m) {
+  os << "[";
+  for ( uint i=0; i<m.size() ; i++) {
+    const libMesh::RealTensor & t = m[i];
+    if ( i ) os << " ";
+    os << t;
+  }
+  os << "] ("<< m.size() <<")";
+  return os;
+}
+
 ostream& operator<<(ostream& os, const vector<libMesh::Gradient> & m) {
   os << "[";
   for ( uint i=0; i<m.size() ; i++) {

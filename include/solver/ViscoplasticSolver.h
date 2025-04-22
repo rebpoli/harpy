@@ -45,10 +45,12 @@ class ViscoplasticSolver : public Solver,
 {
   public:
     ViscoplasticSolver( string name, const Timestep & ts_ );
-    ~ViscoplasticSolver();
+    virtual ~ViscoplasticSolver();
 
+    /// Solution workflow
     virtual void solve();
 
+    /// Builds the linearized system of equations
     virtual void residual_and_jacobian (const NumericVector<Number> & soln,
                                         NumericVector<Number> * residual,
                                         SparseMatrix<Number> * jacobian, NonlinearImplicitSystem  & sys);
@@ -66,18 +68,18 @@ class ViscoplasticSolver : public Solver,
     /// The material can be provided for the dependent solvers
     ViscoPlasticMaterial * get_material( const Elem & elem );
 
-    void posproc();
-
   private:
 
     /// Material properties loaded once from configuration
     void load_mesh();
+
     void set_dirichlet_bcs();
     void set_scalar_bcs() ;
     void set_unassigned_scalars();
     void init_materials();
     void add_scalar_vars();
+    void posproc_stresses();
 
+    /// Boundary conditions for the current timetep
     BC curr_bc;
-
 };
