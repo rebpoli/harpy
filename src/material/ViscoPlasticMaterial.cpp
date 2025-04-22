@@ -51,19 +51,17 @@ ViscoPlasticMaterial::~ViscoPlasticMaterial()
  */
 void ViscoPlasticMaterial::init_properties()
 {
+  SCOPELOG(1);
   // Calc xyz (fe must have already been initialized)
   const std::vector<Point> & xyz = fe->get_xyz();
 
   // We have it in cache? Return;
-  if ( vp_ifc.size() )  return; 
+  if ( vp_ifc.valid )  return; 
 
   uint qp = 0;
   for ( auto & pt : xyz )
   {
     auto & prop = vp_ifc.get( qp );
-    prop.alpha_d=0;
-
-
 
     prop.alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
     prop.beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
@@ -74,6 +72,7 @@ void ViscoPlasticMaterial::init_properties()
     prop.creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
     qp++;
   }
+  vp_ifc.valid = 1;
 }
 
 
@@ -176,7 +175,7 @@ void ViscoPlasticMaterial::init_fem()
  */
 void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
 {
-  SCOPELOG(5);
+  SCOPELOG(1);
 
   QP = 0;
   elem = &elem_;
@@ -223,7 +222,7 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
  */
 void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem, uint side )
 {
-  SCOPELOG(5);
+  SCOPELOG(1);
 
   /*
    * Initializes the FEM structures, not depending on the solution
@@ -431,7 +430,7 @@ void ViscoPlasticMaterial::project_stress()
  */
 void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 {
-  SCOPELOG(5);
+  dlog(1) << "QP=" << QP;
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
   uint n_dofsv = dof_indices_var[0].size();
@@ -453,7 +452,9 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   for (uint j=0; j<3; j++)
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
+  {
     Ke_var[i][k](B,M) += JxW[QP] * C_ijkl(i,j,k,l) * dphi[M][QP](l) * dphi[B][QP](j);
+  }
 
   /** RESIDUAL **/
 
@@ -491,6 +492,7 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
  */
 void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )
 {
+  SCOPELOG(1);
   
   // Reinit the object
   reinit( soln, elem );
@@ -510,6 +512,7 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem, const NumericVect
 
   if ( residual ) 
   {
+//    dlog(1) << "Adding vector to residual ..." << Re;
     dof_map.constrain_element_vector ( Re, dof_indices );
     residual->add_vector ( Re, dof_indices );
   }
@@ -517,6 +520,7 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem, const NumericVect
   // Add the the global matrix
   if ( jacobian ) 
   {
+//    dlog(1) << "Adding matrix to jacobian ..." << Ke;
     dof_map.constrain_element_matrix (Ke, dof_indices);
     jacobian->add_matrix (Ke, dof_indices);
   }
@@ -576,3 +580,23 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem, uint side,
 }
 
 
+/**
+ *
+ */
+ostream& operator<<(ostream& os, const ViscoPlasticIFC & m)
+{
+  os << "VISCOPLASTIC INTERFACE:" << endl;
+
+  for ( auto & [ eid, pvec ] : m.by_elem )
+  {
+    os << "    EID:" << eid;
+    os << "          [" << endl;
+    for ( auto & p : pvec ) {
+      os << "             lame_mu:" << setw(15) << p.lame_mu << endl;
+      os << "         lame_lambda:" << setw(15) << p.lame_lambda << endl;
+    }
+    os << "          ]" << endl;
+  }
+
+  return os;
+}

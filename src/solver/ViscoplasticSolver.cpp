@@ -209,6 +209,7 @@ void ViscoplasticSolver::set_unassigned_scalars()
  */
 void ViscoplasticSolver::set_scalar_bcs() 
 {
+  SCOPELOG(1);
   set_unassigned_scalars();
 
   const MeshBase & mesh = get_mesh();
@@ -307,9 +308,6 @@ void ViscoplasticSolver::set_scalar_bcs()
 void ViscoplasticSolver::solve()
 {
   SCOPELOG(1);
-  for ( uint i=0; i<1000 ; i++ )
-  dlog(1) << "OLD <= LOCAL";
-
   // Shall we update BCs? 
   if ( curr_bc.update( ts ) ) 
   {
@@ -317,15 +315,17 @@ void ViscoplasticSolver::solve()
     set_scalar_bcs();
   }
   
+  dlog(1) << "ES.reinit ...";
   es.reinit(); // Maybe only needed if the curr_bc was updated?
+  dlog(1) << "Done!";
   
   // Feed the coupler with the updated plastic strain, using the solution from the previous TS (explicit)
 //  update_plastic_strain();
 
   /** ** ** ** **/
-  dlog(1) << "OLD <= LOCAL";
+//  dlog(1) << "OLD <= LOCAL";
   *system.old_local_solution = *system.current_local_solution;
-  dlog(1) << "SOLVE";
+//  dlog(1) << "SOLVE";
   system.solve();
   /** ** ** ** **/
 
@@ -344,12 +344,15 @@ void ViscoplasticSolver::solve()
  */
 void ViscoplasticSolver::posproc()
 {
+  /// Project the stresses into the stress system
   MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     ViscoPlasticMaterial * mat = get_material( *elem );
     mat->project_stress();
   }
+  stress_system.solution->close();
+
 }
 
 /**

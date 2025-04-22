@@ -12,7 +12,8 @@ PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -ksp_monitor -pc_type lu
 
 run-%: set-% .force
 	rm -rf run/
-	mpirun -n $(N) $(topdir)/build/$*/ut-viscoplastic $(PETSC_OPT)
+	mpirun -n $(N) $(topdir)/build/$*/ut-viscoplastic $(PETSC_OPT) 
+#     mpiexec -np $(N) xterm -e gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/dbg/ut-viscoplastic $(PETSC_OPT)
 
 gdb-dbg: set-dbg .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/dbg/ut-viscoplastic $(PETSC_OPT)

@@ -51,13 +51,15 @@ struct ViscoPlasticIFC
   // Data
   map< uint, vector<Props> > by_elem;
   vector<Props> * by_qp;  // By qp
+  bool valid;
   // Helpers
   void reinit( uint eid, uint nqp ) { 
     by_qp = &( by_elem[eid] );
-    if ( ! by_qp->size() ) by_qp->resize(nqp); 
+    if ( ! by_qp->size() ) { by_qp->resize(nqp); valid=0; }
   }
   Props & get( uint qp ) { return (*by_qp)[qp]; }
   uint size() { return by_qp->size(); }
+
 };
 
 /**  Holds the data to feed temperature into the material **/
@@ -217,3 +219,6 @@ inline bool ViscoPlasticMaterial::next_qp( bool inc )
 
   return true; 
 }
+
+/** OUTPUT STREAMS **/
+ostream& operator<<(ostream& os, const ViscoPlasticIFC & m);
