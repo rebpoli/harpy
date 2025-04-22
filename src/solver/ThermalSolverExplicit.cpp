@@ -177,18 +177,9 @@ void ThermalSolverExplicit::update_reference_solver()
     temperature = temperature_by_material[ mname ];
 
     uint nqp = mat->qrule.n_points();
-    dlog(1) << "nqp:" << nqp;
     props.resize(nqp);
     for ( uint qp=0 ; qp< nqp ; qp++ )
       props[qp].temperature = temperature;
-  }
-
-  // Debugging
-  for (const auto & elem : mesh.active_element_ptr_range()) 
-  {
-    ViscoPlasticMaterial * mat = ref_solver->get_material( *elem );
-    dlog(1) << mat->get_thermal_interface();
-    break;
   }
 }
 

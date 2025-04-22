@@ -18,12 +18,13 @@
 
 
 /**
- *
+ *    BC_OBJECT is true when this is being called from the children constructor
  */
 ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
                                             const MaterialConfig & config, 
                                             TransientNonlinearImplicitSystem & sys_,
-                                            ViscoplasticSolver & vpsolver_ ) :
+                                            ViscoplasticSolver & vpsolver_,
+                                            bool called_from_bc_constructor ) :
   Material( sid_, config ),
   dof_indices_var(3),
   P( 0 ), T(0), bc_material(0),
@@ -31,7 +32,14 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   stress_system( vpsolver.stress_system ),
   stress_postproc( *this, stress_system )
 {
-  setup_variables();
+  // Setup cariables only if on the parent
+  if (! called_from_bc_constructor ) 
+  {
+    setup_variables(); /// Only the parent material need to setup the variables
+
+    // Setup the BC material only on the parent
+    bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
+  }
 }
 
 /**
@@ -82,11 +90,7 @@ void ViscoPlasticMaterial::init_properties()
 ViscoPlasticMaterialBC * ViscoPlasticMaterial::get_bc_material()
 {
   SCOPELOG(5);
-  if ( ! bc_material ) 
-  {
-    bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
-    bc_material->init_fem();
-  }
+  if ( ! bc_material ) flog << "BC material not set? It should have been set in the constructor of the parent class, for all materials.";
 
   return bc_material;
 }
@@ -97,7 +101,7 @@ ViscoPlasticMaterialBC * ViscoPlasticMaterial::get_bc_material()
 ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
                                                 TransientNonlinearImplicitSystem & sys_,
                                                 ViscoplasticSolver & vpsolver_ ) :
-  ViscoPlasticMaterial( sid_, config_, sys_, vpsolver_ )
+  ViscoPlasticMaterial( sid_, config_, sys_, vpsolver_, true )
 {
 }
 
@@ -163,6 +167,8 @@ void ViscoPlasticMaterial::init_fem()
   }
 
   stress_postproc.init_fem();
+
+  if ( bc_material ) bc_material->init_fem();
 }
 
 /**
@@ -220,14 +226,14 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
  *
  *  Then, initializes the solution depending on soln.
  */
-void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem, uint side )
+void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side )
 {
   SCOPELOG(5);
 
   /*
    * Initializes the FEM structures, not depending on the solution
    */
-  reinit( elem, side );
+  reinit( elem_, side );
 
   /*
    * Now initializes the structures depending on the solution vector
@@ -240,7 +246,12 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
   {
     vector<Number> row;
     for ( uint B=0; B<n_dofsv; B++ )
-      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
+    {
+      uint index = i*n_dofsv + B;
+      uint dofi = dof_indices[index];
+      double val = soln(dofi);
+      row.push_back( val );
+    }
 
     Uib.push_back(row);
   }
@@ -306,7 +317,7 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 {
   SCOPELOG(10);
   /// Update the stresses in the interface
-  reinit( *(system.solution), elem_ );
+  reinit( *(system.current_local_solution), elem_ );
   do { update_ifc_qp(); } while ( next_qp() );
 
   ///  Project into the stress system
@@ -333,12 +344,7 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   // Computes grad_u  ==> this must be a AD variable. Needs to have the right type.
   RealTensor grad_u;
   for (uint i=0; i<3; i++)
-  for (uint j=0; j<3; j++)
-  for (uint M=0;  M<n_dofsv;  M++)
-    grad_u(i, j) += dphi[M][QP](j) * Uib[i][M];
-
-  /** Jacobian **/
-  // ****
+  for (uint j=0; j<3; j++) for (uint M=0;  M<n_dofsv;  M++) grad_u(i, j) += dphi[M][QP](j) * Uib[i][M]; /** Jacobian **/ // ****
   // Effective mechanics
   //       ( \phi_i,j , C_ijkl u_k,l )   ok
   for (uint B=0; B<n_dofsv;  B++)
@@ -382,12 +388,12 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 /**
  *     Builds the RHS of the element and assembles in the global _residual_ and _jacobian_.
  */
-void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )
+void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )
 {
   SCOPELOG(5);
   
   // Reinit the object
-  reinit( soln, elem );
+  reinit( soln, elem_ );
 
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );
@@ -429,7 +435,8 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem, const NumericVect
  */
 void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
 {
-  SCOPELOG(5);
+  SCOPELOG(1);
+  dlog(1) << "QP:" << QP;
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<Point> & normals = fe->get_normals(); 
@@ -445,14 +452,14 @@ void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
 /**
  *     Builds the RHS of the element and assembles in the global _residual_.
  */
-void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem, uint side, 
+void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side, 
                                                      const NumericVector<Number> & soln, 
                                                      SparseMatrix<Number> * jacobian ,
                                                      NumericVector<Number> * residual )
 {
   UNUSED(jacobian);
   // Reinit the object
-  reinit( soln, elem, side );
+  reinit( soln, elem_, side );
 
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );

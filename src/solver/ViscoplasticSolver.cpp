@@ -282,21 +282,6 @@ void ViscoplasticSolver::set_scalar_bcs()
   //
 }
 
-///**
-// *   Updates the plastic strain in the coupler using the material engine.
-// */
-//void ViscoplasticSolver::update_plastic_strain()
-//{
-//  SCOPELOG(1);
-//  MeshBase & mesh = get_mesh();
-//  for (const auto & elem : mesh.active_element_ptr_range())  
-//  {
-//    ElemCoupler & ec = coupler.elem_coupler( elem->id() );
-//    Material * mat = get_material( *elem );
-//    mat->reinit( *elem );
-//    mat->update_plastic_strain();
-//  }
-//}
 
 /**
  *   Implements the workflow of the system solution.
@@ -331,6 +316,7 @@ void ViscoplasticSolver::solve()
 
   // Deal with heterogeneous dirichlet boundary constraints
   system.get_dof_map().enforce_constraints_exactly(system);
+  system.update();
 
   ilog1 << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
     << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
@@ -372,11 +358,14 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
     mat->residual_and_jacobian( *elem, soln, jacobian, residual );
   }
 
+  harpy_sync_check();
+
   // Add STOT Boundary Conditions 
   for ( auto & [ elemside, stotitem ] : curr_bc.stot )
   {
     Elem & elem = mesh.elem_ref(elemside.eid);
     // Only on the current processor.
+    if ( ! elem.active() ) continue;
     if ( elem.processor_id() != mesh.processor_id() ) continue;
 
     ViscoPlasticMaterial * mat = get_material( elem );
@@ -384,6 +373,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
     bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
     bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
   }
+  harpy_sync_check();
 }
 
 /**

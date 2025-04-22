@@ -28,7 +28,8 @@ class ViscoPlasticMaterial : public Material
 public:
   ViscoPlasticMaterial( suint sid_, const MaterialConfig & config,
                         TransientNonlinearImplicitSystem & sys_,
-                        ViscoplasticSolver & vpsolver_ );
+                        ViscoplasticSolver & vpsolver_,
+                        bool called_from_bc_constructor = false);
   virtual ~ViscoPlasticMaterial();
   
   /// Initializes the FE objects. Assign quadrature to FEBase etc.
@@ -41,7 +42,7 @@ public:
 
   /// Applies an element (and side?) to the FE objects.
   void reinit( const Elem & elem_, uint side=255 );
-  void reinit( const NumericVector<Number> & soln, const Elem & elem, uint side=255 );
+  void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side=255 );
 
   // Add res and jac to the element Ke and Re
   virtual void residual_and_jacobian_qp ();
