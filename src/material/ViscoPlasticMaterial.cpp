@@ -56,7 +56,10 @@ void ViscoPlasticMaterial::init_properties()
   const std::vector<Point> & xyz = fe->get_xyz();
 
   // We have it in cache? Return;
-  if ( vp_ifc.valid )  return; 
+  if ( vp_ifc.valid )  {
+    dlog(1) << "Skipping...";
+    return; 
+  }
 
   uint qp = 0;
   for ( auto & pt : xyz )
