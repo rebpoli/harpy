@@ -13,6 +13,11 @@
 #include "libmesh/transient_system.h"
 #include <optional>
 
+// Autodiff stuff
+#include <autodiff/forward/real.hpp>
+#include <autodiff/forward/real/eigen.hpp>
+namespace ad = autodiff;
+
 /**
  *
  */
@@ -87,8 +92,21 @@ protected:
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
 
   /// Autodiff variables!
-  vector<vector<Number>> Uib; /// first index is the dimention i, the second is the node B
-  vector<vector<Number>> Fib;
+  ad::VectorXreal _ad_Uib, _ad_grad_uij, _ad_Fib; // Flattened autodiff stuff
+  Eigen::MatrixXd _ad_Jijbm;
+  inline void _init_autodiff( uint nB ) 
+  { 
+    _ad_Uib.resize( nB * 3 );  _ad_Uib.setZero();
+    _ad_Fib.resize( nB * 3 ); _ad_Fib.setZero();
+    _ad_grad_uij.resize( 3 * 3 );  _ad_grad_uij.setZero();
+    _ad_Jijbm.resize( nB*3, nB*3); _ad_Jijbm.setZero();
+  }
+  inline ad::real & Uib( uint i, uint B ) { return _ad_Uib[ 3*B + i ]; }
+  inline ad::real & Fib( uint i, uint B ) { return _ad_Fib[ 3*B + i ]; }
+  inline ad::real & grad_u( uint i, uint j ) { return _ad_grad_uij[ 3*i + j ]; }
+  inline void set_Jijbm( uint i, uint j, uint B, uint M, double val) { _ad_Jijbm(3*B + i, 3*M +j) = val; }
+
+  ad::VectorXreal residual_qp( const ad::VectorXreal & /* _ad_Uib */ );
  
   /// Interface to hold the viscoplastic properties (in and out)
   ViscoplasticIFC vp_ifc;

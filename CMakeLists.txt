@@ -29,10 +29,11 @@ add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS)
 
 # Compiladores MPI
 set(CMAKE_C_COMPILER mpicc)
-set(CMAKE_CXX_COMPILER mpicxx)
+set(CMAKE_CXX_COMPILER /usr/bin/mpicxx)
 
 # execute_process(COMMAND ${LIBMESH_CONFIG} --cc  OUTPUT_VARIABLE CMAKE_C_COMPILER OUTPUT_STRIP_TRAILING_WHITESPACE)
 # execute_process(COMMAND ${LIBMESH_CONFIG} --cxx OUTPUT_VARIABLE CMAKE_CXX_COMPILER OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 
 # gmsh
 
@@ -40,6 +41,7 @@ find_library(BOOST_FS boost_filesystem)
 find_library(GMSH_LIB gmsh)
 find_path(GMSH_INC gmsh.h)
 include_directories(${GMSH_INC})
+
 
 # libMesh
 
@@ -51,14 +53,29 @@ execute_process(COMMAND ${LIBMESH_CONFIG} --libs OUTPUT_VARIABLE LIBMESH_LIBS OU
 
 execute_process(COMMAND ${LIBMESH_CONFIG} --version OUTPUT_VARIABLE LIBMESH_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # libmesh compiler flags
-set( CMAKE_CXX_FLAGS " -std=gnu++17 -D BOOST_STACKTRACE_LINK ${CMAKE_CXX_FLAGS} ${LIBMESH_CPPFLAGS} ${LIBMESH_CXXFLAGS} ${LIBMESH_INCLUDE}" )
+set( CMAKE_CXX_FLAGS " -D BOOST_STACKTRACE_LINK ${CMAKE_CXX_FLAGS} ${LIBMESH_CPPFLAGS} ${LIBMESH_CXXFLAGS} ${LIBMESH_INCLUDE}" )
 
 message(CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS})
 message(LIBMESH_VERSION: ${LIBMESH_VERSION})
 message(LIBMESH_CPPFLAGS: ${LIBMESH_CPPFLAGS})
 message(LIBMESH_CXXFLAGS: ${LIBMESH_CXXFLAGS})
 message(LIBMESH_LIBS: ${LIBMESH_LIBS})
+
+# Setup Autodiff
+find_package(Eigen3 REQUIRED)
+set(AUTODIFF_BUILD_TESTS OFF)
+set(AUTODIFF_BUILD_PYTHON OFF)
+if(Eigen3_FOUND)
+    message(STATUS "Eigen library has been found.")
+    add_definitions(-DAUTODIFF_EIGEN_FOUND)
+else()
+    message(STATUS "Eigen was not found.")
+endif()
+include_directories(external/autodiff)
 
 # Headers
 include_directories(include)
@@ -158,6 +175,9 @@ set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 # Tests
 add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
 target_link_libraries( ut-timestep Modules )
+
+add_executable( ut-autodiff-jac demos/UNIT-TEST/07-JACOBIAN-AUTODIFF/autodiff-jac.cpp )
+target_link_libraries( ut-autodiff-jac Modules )
 
 add_executable( ut-bcconfig demos/UNIT-TEST/02-BCCONFIG/bcconfig-main.cpp  )
 target_link_libraries( ut-bcconfig Modules )
