@@ -67,18 +67,17 @@ message(LIBMESH_LIBS: ${LIBMESH_LIBS})
 
 # Setup Autodiff
 find_package(Eigen3 REQUIRED)
-set(AUTODIFF_BUILD_TESTS OFF)
-set(AUTODIFF_BUILD_PYTHON OFF)
 if(Eigen3_FOUND)
     message(STATUS "Eigen library has been found.")
     add_definitions(-DAUTODIFF_EIGEN_FOUND)
 else()
     message(STATUS "Eigen was not found.")
 endif()
-include_directories(external/autodiff)
 
 # Headers
 include_directories(include)
+
+add_compile_options(-Wno-parentheses)   # Avoid stupid warnings
 
 # Compilar arquivos-fonte dentro da biblioteca estática libModules.a
 ADD_LIBRARY(Modules

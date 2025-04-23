@@ -198,8 +198,9 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
   dof_map.dof_indices (elem, dof_indices_var[1], 1);
   dof_map.dof_indices (elem, dof_indices_var[2], 2);
 
-  uint n_dofs = dof_indices.size();
-  uint n_dofsv = dof_indices_var[0].size();
+  n_dofs = dof_indices.size();
+  n_dofsv = dof_indices_var[0].size();
+
   Ke.resize (n_dofs, n_dofs);
 
   for (uint vi=0; vi<3; vi++)
@@ -239,10 +240,8 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
   /*
    * Now initializes the structures depending on the solution vector
    */
-  uint n_dofsv = dof_indices_var[0].size();
-
   // Initialize the flattened containers
-  _init_autodiff( n_dofsv );
+  _init_autodiff();
 
   // Feed Uib with current solution
   for ( uint i=0; i<3; i++ )
@@ -256,42 +255,41 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
  */
 void ViscoPlasticMaterial::update_ifc_qp()
 {
-//  SCOPELOG(10);
-//  uint n_dofsv = dof_indices_var[0].size();
-//  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+  SCOPELOG(10);
+  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
-//  // Computes grad_u  ==> move to reinit, and to the interface (?)
-//  P->grad_u = 0;
-//  for (uint i=0; i<3; i++)
-//  for (uint j=0; j<3; j++)
-//  for (uint M=0;  M<n_dofsv;  M++)
-//    P->grad_u(i, j) += dphi[M][QP](j) * Uib[i][M];
+  // Computes grad_u  ==> move to reinit, and to the interface (?)
+  P->grad_u = 0;
+  for (uint i=0; i<3; i++)
+  for (uint j=0; j<3; j++)
+  for (uint M=0;  M<n_dofsv;  M++)
+    P->grad_u(i, j) += dphi[M][QP](j) * val( Uib(i,M) );
 
-//  double epskk_ = 0;
-//  for (uint k=0; k<3; k++ ) epskk_ += P->grad_u(k,k);
+  double epskk_ = 0;
+  for (uint k=0; k<3; k++ ) epskk_ += P->grad_u(k,k);
 
-//  P->sigeff = 0;
-//  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
-//  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-//    P->sigeff(i,j) += C_ijkl(i,j,k,l) * P->grad_u(k,l);
+  P->sigeff = 0;
+  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+    P->sigeff(i,j) += C_ijkl(i,j,k,l) * P->grad_u(k,l);
 
-//  // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
-//  P->sigtot = P->sigeff;
-//  for (uint k=0; k<3; k++ ) 
-//    P->sigtot(k,k) -= P->alpha_d * T->temperature;
+  // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
+  P->sigtot = P->sigeff;
+  for (uint k=0; k<3; k++ ) 
+    P->sigtot(k,k) -= P->alpha_d * T->temperature;
 
-//  // dev_ij = sig_ij - 1/3 \delta_ij \sigma_kk
-//  P->deviatoric = P->sigtot;
-//  for (uint i=0; i<3; i++ )
-//  for (uint k=0; k<3; k++ ) 
-//    P->deviatoric(i,i) -= (1./3.) * P->sigtot(k,k);
+  // dev_ij = sig_ij - 1/3 \delta_ij \sigma_kk
+  P->deviatoric = P->sigtot;
+  for (uint i=0; i<3; i++ )
+  for (uint k=0; k<3; k++ ) 
+    P->deviatoric(i,i) -= (1./3.) * P->sigtot(k,k);
 
-//  double J2=0;
-//  for (uint i=0; i<3; i++ )
-//  for (uint j=0; j<3; j++ ) 
-//    J2 += (1./2.) * P->deviatoric(i,j) * P->deviatoric(i,j);
+  double J2=0;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    J2 += (1./2.) * P->deviatoric(i,j) * P->deviatoric(i,j);
 
-//  P->von_mises = sqrt( 3 * J2 );
+  P->von_mises = sqrt( 3 * J2 );
 }
 
 /**
@@ -316,14 +314,17 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 
 
 /**
- *
+ * 
+ * This is the actual calculation of the residual using the AutoDiff types.
  *
  */
-ad::VectorXreal ViscoPlasticMaterial::residual_qp( const ad::VectorXreal & /* _ad_Uib */ )
+AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 {
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
-  uint n_dofsv = dof_indices_var[0].size();
+
+  ad_Fib.setZero(); 
+  ad_grad_uij.setZero();
 
   for (uint i=0; i<3; i++)
   for (uint j=0; j<3; j++) 
@@ -355,14 +356,7 @@ ad::VectorXreal ViscoPlasticMaterial::residual_qp( const ad::VectorXreal & /* _a
 //  for (uint l=0; l<3; l++) 
 //    Fib(i,B) -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
 
-  return _ad_Fib;
-}
-
-ad::VectorXreal foo( const ad::VectorXreal & x )
-{
-  ad::VectorXreal out(2); 
-  out << x[0], 5; 
-  return out;
+  return ad_Fib;
 }
 
 /**
@@ -372,15 +366,27 @@ ad::VectorXreal foo( const ad::VectorXreal & x )
  */
 void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 {
+  // Lambda function to compatibilize stuff
+  auto f = [this](const AD::Vec & x) { return this->residual_qp(x);  };
 
-//  auto f = [&](const ad::VectorXreal & x) -> ad::VectorXreal
-//  { return this->residual_qp(x);  };
-//  ad::VectorXreal x;
-//  ad::VectorXreal F;
-//  double y[20];
-//  Eigen::MatrixXd JAC = ad::jacobian( foo, ad::wrt(x), ad::at(x), F );
+  AD::Vec F;
+  ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
 
+  for (uint B=0; B<n_dofsv;  B++)
+  for (uint M=0; M<n_dofsv;  M++)
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++)
+    Ke_var[i][j](B,M) += Jijbm(i,j,B,M);
+
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    Re( i*n_dofsv + B ) += val( Fib(i,B) );
+
+//  residual_and_jacobian_qp_0(); /// Debugging
 }
+
+
+
 
 /**
  *     Builds the RHS of the element and assembles in the global _residual_ and _jacobian_.
@@ -395,19 +401,10 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );
 
-  /*
-  *    Build the Re vector and assemble in the global residual vector
-  */
-//  uint n_dofsv = dof_indices_var[0].size();
-//  for (uint i=0; i<3; i++) 
-//  for (uint B=0;  B<n_dofsv;  B++)
-//    Re( i*n_dofsv + B ) = Fib(i,B);
-
-  const DofMap & dof_map = system.get_dof_map();
 
   if ( residual ) 
   {
-//    dlog(1) << "Adding vector to residual ..." << Re;
+    const DofMap & dof_map = system.get_dof_map();
     dof_map.constrain_element_vector ( Re, dof_indices );
     residual->add_vector ( Re, dof_indices );
   }
@@ -415,7 +412,7 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
   // Add the the global matrix
   if ( jacobian ) 
   {
-//    dlog(1) << "Adding matrix to jacobian ..." << Ke;
+    const DofMap & dof_map = system.get_dof_map();
     dof_map.constrain_element_matrix (Ke, dof_indices);
     jacobian->add_matrix (Ke, dof_indices);
   }
@@ -432,13 +429,15 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
  */
 void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
 {
-  SCOPELOG(1);
-  dlog(1) << "QP:" << QP;
+  SCOPELOG(5);
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<Point> & normals = fe->get_normals(); 
   uint n_dofsv = dof_indices_var[0].size();
 
+  // Note: as the sigtot is constant, we dont need the jacobian
+  //     : Keeping the variable as a AUTODIFF for parallelism
+  //     : with the parent object. 
   if ( sigtot )
   for (uint B=0; B<n_dofsv; B++)
   for (uint i=0; i<3; i++) 
@@ -460,12 +459,10 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
 
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );
-  uint n_dofsv = dof_indices_var[0].size();
 
-//  // Build the Re vector
-//  for (uint i=0; i<3; i++) 
-//  for (uint B=0;  B<n_dofsv;  B++)
-//    Re( i*n_dofsv + B ) = Fib[i][B];
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    Re( i*n_dofsv + B ) += val( Fib(i,B) );
 
   if ( residual )
   {
@@ -475,3 +472,107 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
   }
 }
 
+
+
+
+
+
+
+
+
+
+///**
+// *
+// *  DEBUGGING ... 
+// *
+// */
+//void ViscoPlasticMaterial::residual_and_jacobian_qp_0 ()
+//{
+//  const vector<Real> & JxW = fe->get_JxW();
+//  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+
+//  vector<vector<double>> Fib(3, vector<double>(3,0));
+//  Ke.zero();
+
+//  // Computes grad_u  ==> this must be a AD variable. Needs to have the right type.
+//  RealTensor grad_u;
+//  for (uint i=0; i<3; i++)
+//  for (uint j=0; j<3; j++) 
+//  for (uint M=0;  M<n_dofsv;  M++) 
+//    grad_u(i, j) += dphi[M][QP](j) * val(Uib(i,M)); /** Jacobian **/ // ****
+
+//  // Effective mechanics
+//  //       ( \phi_i,j , C_ijkl u_k,l )   ok
+//  for (uint B=0; B<n_dofsv;  B++)
+//  for (uint M=0; M<n_dofsv;  M++)
+//  for (uint i=0; i<3; i++) 
+//  for (uint j=0; j<3; j++)
+//  for (uint k=0; k<3; k++) 
+//  for (uint l=0; l<3; l++) 
+//  {
+//    Ke_var[i][k](B,M) += JxW[QP] * C_ijkl(i,j,k,l) * dphi[M][QP](l) * dphi[B][QP](j);
+//  }
+
+//  /** RESIDUAL **/
+
+//  // ( \phi_j , Cijkl U_k,l ) 
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0; i<3; i++) 
+//  for (uint j=0; j<3; j++) 
+//  for (uint k=0; k<3; k++) 
+//  for (uint l=0; l<3; l++) 
+//    Fib[i][B] += JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * grad_u(k,l) ;
+
+//  // Subtract the plastic strain as a body force
+//  //
+//  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
+////  for (uint B=0;  B<n_dofsv;  B++)
+////  for (uint i=0; i<3; i++) 
+////  for (uint j=0; j<3; j++) 
+////  for (uint k=0; k<3; k++) 
+////  for (uint l=0; l<3; l++) 
+////    Fib[i][B] -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
+
+//  // Temperature
+//  //       alpha_d = beta_d * K_bulk
+//  //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0;  i<3;  i++)
+//    Fib[i][B] -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * T->temperature;
+
+//  {
+//    ostringstream os;
+//    os << "Fib: [ " << endl;
+//    for (uint i=0;  i<3;  i++)
+//    {
+//      os << "  [ ";
+//      for (uint B=0;  B<n_dofsv;  B++)
+//      {
+//        os << Fib[i][B] << " ";
+//      }
+//      os << "]" << endl;
+//    }
+//    os << "]" << endl;
+//    dlog(1) << os.str();
+//  }
+//  {
+//    ostringstream os;
+//    os << "Ke: [ " << endl;
+//    for (uint i=0; i<3; i++) 
+//    for (uint B=0; B<n_dofsv;  B++)
+//    {
+//      os << "  [ ";
+//      for (uint j=0; j<3; j++)
+//      for (uint M=0; M<n_dofsv;  M++)
+//      {
+//        double err = Ke_var[i][j](B,M) - Jijbm(i,j,B,M);
+//        os << "(i,j,B,M) = (" << i << ", " << j << ", " << B << ", " << M << ") = " << setw(15); 
+//        os << Ke_var[i][j](B,M) << setw(15) <<  Jijbm(i,j,B,M) << setw(15) << err << endl ;
+//      }
+//      os << "]" << endl;
+//    }
+//    os << "]" << endl;
+//    dlog(1) << os.str();
+//    dlog(1) << "n_dofsv:" << n_dofsv;
+//  }
+//}

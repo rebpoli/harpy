@@ -14,9 +14,7 @@
 #include <optional>
 
 // Autodiff stuff
-#include <autodiff/forward/real.hpp>
-#include <autodiff/forward/real/eigen.hpp>
-namespace ad = autodiff;
+#include "util/Autodiff.h"
 
 /**
  *
@@ -51,6 +49,7 @@ public:
 
   // Add res and jac to the element Ke and Re
   virtual void residual_and_jacobian_qp ();
+//  virtual void residual_and_jacobian_qp_0 ();
   // Add the element contribution to the global jac and res
   void residual_and_jacobian (  Elem & elem,
                                 const NumericVector<Number> & soln,
@@ -92,21 +91,23 @@ protected:
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
 
   /// Autodiff variables!
-  ad::VectorXreal _ad_Uib, _ad_grad_uij, _ad_Fib; // Flattened autodiff stuff
-  Eigen::MatrixXd _ad_Jijbm;
-  inline void _init_autodiff( uint nB ) 
+  AD::Vec ad_Uib, ad_grad_uij, ad_Fib; // Flattened autodiff stuff
+  AD::Mat ad_Jijbm;
+  inline void _init_autodiff() 
   { 
-    _ad_Uib.resize( nB * 3 );  _ad_Uib.setZero();
-    _ad_Fib.resize( nB * 3 ); _ad_Fib.setZero();
-    _ad_grad_uij.resize( 3 * 3 );  _ad_grad_uij.setZero();
-    _ad_Jijbm.resize( nB*3, nB*3); _ad_Jijbm.setZero();
+    ad_Uib.resize( n_dofsv * 3 );  ad_Uib.setZero();
+    ad_Fib.resize( n_dofsv * 3 ); ad_Fib.setZero();
+    ad_grad_uij.resize( 3 * 3 );  ad_grad_uij.setZero();
+    ad_Jijbm.resize( n_dofsv*3, n_dofsv*3); ad_Jijbm.setZero();
   }
-  inline ad::real & Uib( uint i, uint B ) { return _ad_Uib[ 3*B + i ]; }
-  inline ad::real & Fib( uint i, uint B ) { return _ad_Fib[ 3*B + i ]; }
-  inline ad::real & grad_u( uint i, uint j ) { return _ad_grad_uij[ 3*i + j ]; }
-  inline void set_Jijbm( uint i, uint j, uint B, uint M, double val) { _ad_Jijbm(3*B + i, 3*M +j) = val; }
-
-  ad::VectorXreal residual_qp( const ad::VectorXreal & /* _ad_Uib */ );
+  inline AD::real & Uib( uint i, uint B ) { return ad_Uib[ i*n_dofsv + B ]; }
+  inline AD::real & Fib( uint i, uint B ) { return ad_Fib[ i*n_dofsv + B ]; }
+  inline AD::real & grad_u( uint i, uint j ) { return ad_grad_uij[ 3*i + j ]; }
+  inline double Jijbm( uint i, uint j, uint B, uint M)
+  { return ad_Jijbm(i*n_dofsv + B, j*n_dofsv + M); }
+  // The residual function
+  AD::Vec residual_qp( const AD::Vec & /* ad_Uib */ );
+  //////
  
   /// Interface to hold the viscoplastic properties (in and out)
   ViscoplasticIFC vp_ifc;
@@ -128,6 +129,8 @@ protected:
 
   /// The stress engine
   StressPostProc stress_postproc;
+
+  uint n_dofs, n_dofsv;
 
 };
 

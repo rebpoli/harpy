@@ -33,7 +33,7 @@ class Material
 {
   public:
     Material( suint sid_, const MaterialConfig & config_ );
-    Material( Material & refmat );
+    Material( Material & refmat_ );
     virtual ~Material();
 
     // Interface to any material
@@ -47,6 +47,8 @@ class Material
     // Shape functions, quadratures etc
     vector<dof_id_type> dof_indices;
     unique_ptr<FEBase> fe;  /// The finite element object to hold shape funtions, jxw, etc
+
+    Material * refmat;
 
     const MaterialConfig & config;
     string name;

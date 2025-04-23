@@ -4,6 +4,8 @@
 #include "config/MaterialConfig.h"
 #include "util/OutputOperators.h"
 
+#include "libmesh/string_to_enum.h"
+
 #include "libmesh/system.h"
 #include "libmesh/equation_systems.h"
 #include "libmesh/explicit_system.h"
@@ -36,10 +38,14 @@ void StressPostProc::setup_variables()
 {
   SCOPELOG(1);
 
+  // Stress variable order is one under U
+  if (! config.fem_by_var.count( "U" ) ) flog << "Undefined var setup for variable 'U'. Please revise model material.FEM section.";
+  auto & femspec = config.fem_by_var.at("U");
+
   // TODO: fetch this info from configuration
-  Order order = SECOND;
+  Order order = Utility::string_to_enum<Order>( femspec.order ) - 1;
   FEFamily fef = L2_LAGRANGE;
-//  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
+  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
   vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain" };
   vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
@@ -64,8 +70,8 @@ void StressPostProc::init_fem()
 
   fe = move( FEBase::build(3, fe_type) );
 
-  qrule = QGauss( 3, fe_type.default_quadrature_order() );
-
+  // Qrule is imported from the referncematerial
+  qrule = refmat->qrule;
   fe->attach_quadrature_rule (&qrule);
 
   // Enable calculations calculations

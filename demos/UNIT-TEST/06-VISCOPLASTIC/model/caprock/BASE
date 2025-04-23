@@ -28,7 +28,7 @@ N             3.5
 .FEM
 TYPE         U       CONTINUOUS
 FAMILY       U       LAGRANGE
-ORDER        U       SECOND
+ORDER        U       FIRST
 IMPLICIT     U       0.5
 TYPE         T       DISCONTINUOUS
 FAMILY       T       L2_LAGRANGE

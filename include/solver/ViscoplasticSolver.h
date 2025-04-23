@@ -5,6 +5,8 @@
 #include "harpy/Material.h"
 #include "solver/BC.h"
 
+#include "base/HarpyInit.h"
+
 #include "libmesh/mesh.h"
 #include "libmesh/transient_system.h"
 #include "libmesh/nonlinear_implicit_system.h"

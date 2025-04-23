@@ -21,16 +21,17 @@ const regex RE_PROPERTY ( R"(^)" + prop_name + R"(\.)" + prop_name + R"($)");
  *
  */
 Material::Material( suint sid_, const MaterialConfig & config_ ) :
-                          config(config_), name(config.name),
+                          refmat(0), config(config_), name(config.name),
                           sid(sid_), qrule(3), elem(0)
 { }
 
 /**
  *  Builds a material inheriting most properties from the reference.
  */
-Material::Material( Material & refmat ) :
-                          config(refmat.config), name(refmat.name),
-                          sid(refmat.sid), qrule(refmat.qrule), elem(0)
+Material::Material( Material & refmat_ ) :
+                          refmat(&refmat_),
+                          config(refmat_.config), name(refmat_.name),
+                          sid(refmat_.sid), qrule(refmat_.qrule), elem(0)
 { }
 
 /**
