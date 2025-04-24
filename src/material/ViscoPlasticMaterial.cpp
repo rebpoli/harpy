@@ -166,8 +166,9 @@ void ViscoPlasticMaterial::init_fem()
     Ke_var.push_back(kk);
   }
 
-  stress_postproc.init_fem();
+  // Initialize the dependent materials/posprocs
 
+  stress_postproc.init_fem();
   if ( bc_material ) bc_material->init_fem();
 }
 
@@ -372,12 +373,14 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
 
+  // Map from the AD variable to libmesh datastructures
   for (uint B=0; B<n_dofsv;  B++)
   for (uint M=0; M<n_dofsv;  M++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++)
     Ke_var[i][j](B,M) += Jijbm(i,j,B,M);
 
+  // Map from the AD variable to libmesh datastructures
   for (uint i=0; i<3; i++) 
   for (uint B=0;  B<n_dofsv;  B++)
     Re( i*n_dofsv + B ) += val( Fib(i,B) );
@@ -443,6 +446,12 @@ void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++) 
     Fib(i,B) -= JxW[QP] * (*sigtot)(i,j) * normals[QP](j) * phi[B][QP];
+
+  // Map from the AD variable to libmesh datastructures
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    Re( i*n_dofsv + B ) += val( Fib(i,B) );
+
 }
 
 /**
@@ -460,10 +469,7 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );
 
-  for (uint i=0; i<3; i++) 
-  for (uint B=0;  B<n_dofsv;  B++)
-    Re( i*n_dofsv + B ) += val( Fib(i,B) );
-
+  // Add to the global residual vector
   if ( residual )
   {
     const DofMap & dof_map = system.get_dof_map();
