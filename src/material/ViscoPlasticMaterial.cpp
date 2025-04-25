@@ -260,37 +260,52 @@ void ViscoPlasticMaterial::update_ifc_qp()
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
   // Computes grad_u  ==> move to reinit, and to the interface (?)
-  P->grad_u = 0;
+  AD::Mat grad_u(3,3);
   for (uint i=0; i<3; i++)
   for (uint j=0; j<3; j++)
   for (uint M=0;  M<n_dofsv;  M++)
-    P->grad_u(i, j) += dphi[M][QP](j) * val( Uib(i,M) );
+    grad_u(i, j) += dphi[M][QP](j) * Uib(i,M);
 
-  double epskk_ = 0;
-  for (uint k=0; k<3; k++ ) epskk_ += P->grad_u(k,k);
+  AD::real epskk_ = 0;
+  for (uint k=0; k<3; k++ ) epskk_ += grad_u(k,k);
 
-  P->sigeff = 0;
+  AD::Mat sigeff(3,3);
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    P->sigeff(i,j) += C_ijkl(i,j,k,l) * P->grad_u(k,l);
+    sigeff(i,j) += C_ijkl(i,j,k,l) * grad_u(k,l);
 
   // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
-  P->sigtot = P->sigeff;
+  AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
-    P->sigtot(k,k) -= P->alpha_d * T->temperature;
+    sigtot(k,k) -= P->alpha_d * T->temperature;
 
   // dev_ij = sig_ij - 1/3 \delta_ij \sigma_kk
-  P->deviatoric = P->sigtot;
+  AD::Mat deviatoric = sigtot;
   for (uint i=0; i<3; i++ )
   for (uint k=0; k<3; k++ ) 
-    P->deviatoric(i,i) -= (1./3.) * P->sigtot(k,k);
+    deviatoric(i,i) -= (1./3.) * sigtot(k,k);
 
-  double J2=0;
+  AD::real J2=0;
   for (uint i=0; i<3; i++ )
   for (uint j=0; j<3; j++ ) 
-    J2 += (1./2.) * P->deviatoric(i,j) * P->deviatoric(i,j);
+    J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
 
-  P->von_mises = sqrt( 3 * J2 );
+  AD::real von_mises = sqrt( 3 * J2 );
+
+  // Compute plastic strain rate
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+  AD::Mat plastic_strain_rate = deviatoric;
+  plastic_strain_rate *= 3./2. * P->creep_carter_a;
+  plastic_strain_rate *= exp( - P->creep_carter_q / R_ / T->temperature );
+  plastic_strain_rate *= pow( von_mises/1e6 , P->creep_carter_n-1 );
+  plastic_strain_rate /= 1e6;
+
+  /// Set the results into the quadrature point
+  AD::dump( sigtot, P->sigtot );
+  AD::dump( sigeff, P->sigeff );
+  AD::dump( deviatoric, P->deviatoric );
+  AD::dump( plastic_strain_rate, P->plastic_strain_rate );
+  P->von_mises = val(von_mises);
 }
 
 /**
@@ -325,8 +340,8 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
   ad_Fib.setZero(); 
-  ad_grad_uij.setZero();
 
+  AD::Mat grad_u(3,3);
   for (uint i=0; i<3; i++)
   for (uint j=0; j<3; j++) 
   for (uint M=0;  M<n_dofsv;  M++) 
@@ -347,15 +362,18 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint i=0;  i<3;  i++)
     Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * T->temperature;
 
-//  // Subtract the plastic strain as a body force
-//  //
-//  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
-//  for (uint B=0;  B<n_dofsv;  B++)
-//  for (uint i=0; i<3; i++) 
-//  for (uint j=0; j<3; j++) 
-//  for (uint k=0; k<3; k++) 
-//  for (uint l=0; l<3; l++) 
-//    Fib(i,B) -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
+  // Update plastic strain
+  update_ifc_qp();
+
+  // Subtract the plastic strain as a body force
+  //
+  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
+  for (uint B=0;  B<n_dofsv;  B++)
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) 
+  for (uint l=0; l<3; l++) 
+    Fib(i,B) -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
 
   return ad_Fib;
 }
@@ -378,7 +396,7 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   for (uint M=0; M<n_dofsv;  M++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++)
-    Ke_var[i][j](B,M) += Jijbm(i,j,B,M);
+    Ke_var[i][j](B,M) += val( Jijbm(i,j,B,M) );
 
   // Map from the AD variable to libmesh datastructures
   for (uint i=0; i<3; i++) 
@@ -437,6 +455,8 @@ void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
   const vector<vector<Real>> & phi = fe->get_phi();
   const vector<Point> & normals = fe->get_normals(); 
   uint n_dofsv = dof_indices_var[0].size();
+
+  ad_Fib.setZero(); 
 
   // Note: as the sigtot is constant, we dont need the jacobian
   //     : Keeping the variable as a AUTODIFF for parallelism

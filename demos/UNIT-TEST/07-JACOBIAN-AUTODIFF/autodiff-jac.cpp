@@ -1,7 +1,10 @@
 // C++ includes
 #include <iostream>
 
+#ifndef AUTODIFF_EIGEN_FOUND 
 #define AUTODIFF_EIGEN_FOUND ON
+#endif
+
 #include "util/Autodiff.h"
 
 using namespace std;
@@ -10,7 +13,10 @@ using namespace std;
 AD::Vec f(const AD::Vec & x)
 {
   std::cout << endl << "f. x=" << endl << x << std::endl;
-  return x * x.sum();
+  AD::Mat A(5,5);
+
+  A.row(1) = x * x.sum();
+  return A.row(2); // x*x.sum(); // A(1,1);
 }
 
 namespace TEST 

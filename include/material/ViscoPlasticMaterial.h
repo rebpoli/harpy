@@ -91,19 +91,17 @@ protected:
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
 
   /// Autodiff variables!
-  AD::Vec ad_Uib, ad_grad_uij, ad_Fib; // Flattened autodiff stuff
+  AD::Vec ad_Uib, ad_Fib; // Flattened autodiff stuff
   AD::Mat ad_Jijbm;
   inline void _init_autodiff() 
   { 
     ad_Uib.resize( n_dofsv * 3 );  ad_Uib.setZero();
     ad_Fib.resize( n_dofsv * 3 ); ad_Fib.setZero();
-    ad_grad_uij.resize( 3 * 3 );  ad_grad_uij.setZero();
     ad_Jijbm.resize( n_dofsv*3, n_dofsv*3); ad_Jijbm.setZero();
   }
   inline AD::real & Uib( uint i, uint B ) { return ad_Uib[ i*n_dofsv + B ]; }
   inline AD::real & Fib( uint i, uint B ) { return ad_Fib[ i*n_dofsv + B ]; }
-  inline AD::real & grad_u( uint i, uint j ) { return ad_grad_uij[ 3*i + j ]; }
-  inline double Jijbm( uint i, uint j, uint B, uint M)
+  inline AD::real Jijbm( uint i, uint j, uint B, uint M)
   { return ad_Jijbm(i*n_dofsv + B, j*n_dofsv + M); }
   // The residual function
   AD::Vec residual_qp( const AD::Vec & /* ad_Uib */ );

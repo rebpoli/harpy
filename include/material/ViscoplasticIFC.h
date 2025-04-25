@@ -17,16 +17,13 @@ struct ViscoplasticIFC
     double lame_mu, lame_lambda, alpha_d, beta_e;
     double creep_carter_a, creep_carter_q, creep_carter_n;
 
-    // Gradient of the displacement
-    RealTensor grad_u;
-
     // Stresses
     RealTensor sigtot, sigeff, deviatoric;
     double von_mises;
 
     // Plasticity
     RealTensor plastic_strain;
-    double plastic_strain_rate;
+    RealTensor plastic_strain_rate;
   };
 
   /// Transposed version of the properties
