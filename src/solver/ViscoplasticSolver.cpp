@@ -45,12 +45,23 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
   add_scalar_vars();
 
   system.nonlinear_solver->residual_and_jacobian_object = this;
+  system.attach_constraint_object( *this );
 }
 
 /**
  *
  */
 ViscoplasticSolver::~ViscoplasticSolver() {}
+
+/**
+ *
+ *
+ */
+void ViscoplasticSolver::constrain()
+{
+  SCOPELOG(1);
+  set_scalar_bcs();
+}
 
 /**
  *   Creates all the needed materials for the solution (one per subdomain ID).
@@ -261,6 +272,7 @@ void ViscoplasticSolver::set_scalar_bcs()
 
             DofConstraintRow cr;
             cr.insert( make_pair(rdofi[0], 1) );
+            dlog(1) << "Adding constraint row: vid:" << vid << " rvid:" << rvid << " dofi:" << dofi << " rdofi:" << rdofi << "";
             dof_map.add_constraint_row(dofi[c], cr, 0, true);
             
             n_dofs_by_rvid[rvid]++; // Some reporting information
@@ -297,7 +309,7 @@ void ViscoplasticSolver::solve()
   if ( curr_bc.update( ts ) ) 
   {
     set_dirichlet_bcs();
-    set_scalar_bcs();
+//    set_scalar_bcs();
   }
   
   dlog(1) << "ES.reinit ...";

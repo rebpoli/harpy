@@ -43,7 +43,8 @@ namespace libMesh {
 using namespace libMesh;
 
 class ViscoplasticSolver : public Solver, 
-                                public NonlinearImplicitSystem::ComputeResidualandJacobian
+                                public NonlinearImplicitSystem::ComputeResidualandJacobian,
+                                public System::Constraint
 {
   public:
     ViscoplasticSolver( string name, const Timestep & ts_ );
@@ -51,6 +52,8 @@ class ViscoplasticSolver : public Solver,
 
     /// Solution workflow
     virtual void solve();
+
+    void constrain();
 
     /// Builds the linearized system of equations
     virtual void residual_and_jacobian (const NumericVector<Number> & soln,

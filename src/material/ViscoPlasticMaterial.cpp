@@ -78,6 +78,8 @@ void ViscoPlasticMaterial::init_properties()
     prop.creep_carter_a   = config.get_property( "a",               pt,     "creep_carter" );
     prop.creep_carter_q   = config.get_property( "q",               pt,     "creep_carter" );
     prop.creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
+    prop.plastic_strain_n = RealTensor();
+    prop.plastic_strain   = RealTensor();
     qp++;
   }
   vp_ifc.valid = 1;
@@ -314,18 +316,33 @@ void ViscoPlasticMaterial::update_ifc_qp()
 void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 {
   SCOPELOG(10);
-  /// Update the stresses in the interface
-  reinit( *(system.current_local_solution), elem_ );
-  do { update_ifc_qp(); } while ( next_qp() );
+
+
+/// Update the stresses in the interface
+/// --- This must always be up to date 
+///
+//  reinit( *(system.current_local_solution), elem_ );
+//  do { update_ifc_qp(); } while ( next_qp() );
+
+  // Update plastic strain history -- we could make it blindly in the interface,
+  // without element awareness
+  reinit(elem_);
+  do { 
+    P->plastic_strain_n = P->plastic_strain;
+  } while ( next_qp() );
 
   ///  Project into the stress system
-  stress_postproc.reinit( *elem );
-  vp_ifc.reinit( elem->id(), qrule.n_points() );
+  stress_postproc.reinit( elem_ );
+  vp_ifc.reinit( elem_.id(), qrule.n_points() );
 
   ViscoplasticIFC::PropsTranspose Pt( vp_ifc.by_qp );
   stress_postproc.project_tensor( Pt.sigtot, "sigtot" );
   stress_postproc.project_tensor( Pt.sigeff, "sigeff" );
+  stress_postproc.project_tensor( Pt.deviatoric, "deviatoric" );
+  stress_postproc.project_tensor( Pt.plastic_strain, "plastic_strain" );
+  stress_postproc.project_tensor( Pt.plastic_strain_rate, "plastic_strain_rate" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
+  stress_postproc.project( Pt.epskk, "epskk" );
 }
 
 
@@ -362,9 +379,54 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint i=0;  i<3;  i++)
     Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * T->temperature;
 
-  // Update plastic strain
-  update_ifc_qp();
+  // For visualization and debugging
+  AD::real epskk = 0;
+  for (uint k=0; k<3; k++ ) epskk += grad_u(k,k);
 
+  // Update stresses and plastic strain
+  AD::Mat sigeff(3,3);
+  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+    sigeff(i,j) += C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain(k,l) );
+
+  AD::Mat sigtot = sigeff;
+  for (uint k=0; k<3; k++ ) 
+    sigtot(k,k) -= P->alpha_d * T->temperature;
+
+  AD::Mat deviatoric = sigtot;
+  for (uint i=0; i<3; i++ )
+  for (uint k=0; k<3; k++ ) 
+    deviatoric(i,i) -= (1./3.) * sigtot(k,k);
+
+  AD::real J2=0;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
+
+  AD::real von_mises = sqrt( 3 * J2 );
+
+  // Compute plastic strain rate
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+  AD::Mat plastic_strain_rate = deviatoric * 3./2. * P->creep_carter_a *
+                                exp( - P->creep_carter_q / R_ / T->temperature ) *
+                                pow( von_mises/1e6 , P->creep_carter_n-1 ) / 1e6;
+
+  // Update the plasteic strain
+  AD::Mat plastic_strain = vpsolver.ts.dt * plastic_strain_rate;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    plastic_strain(i,j) += P->plastic_strain_n(i,j);
+
+  /// Set the results into the quadrature point
+  AD::dump( sigtot, P->sigtot );
+  AD::dump( sigeff, P->sigeff );
+  AD::dump( deviatoric, P->deviatoric );
+  AD::dump( plastic_strain_rate, P->plastic_strain_rate );
+  AD::dump( plastic_strain, P->plastic_strain);
+  P->von_mises = val(von_mises);
+  P->epskk = val(epskk);
+
+  // 
   // Subtract the plastic strain as a body force
   //
   // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
@@ -373,7 +435,8 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
+    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * C_ijkl(i,j,k,l) * plastic_strain(k,l) ;   // using the plastic strain from previous newton K
+ 
 
   return ad_Fib;
 }

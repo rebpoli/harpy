@@ -47,7 +47,7 @@ void StressPostProc::setup_variables()
   FEFamily fef = L2_LAGRANGE;
   if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-  vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain" };
+  vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate" };
   vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
   set<subdomain_id_type> sids = { sid };
@@ -56,6 +56,7 @@ void StressPostProc::setup_variables()
     system.add_variable(sn+sd, order, fef, &sids);
 
   system.add_variable("von_mises", order, fef, &sids);
+  system.add_variable("epskk", order, fef, &sids);
 }
 
 /**

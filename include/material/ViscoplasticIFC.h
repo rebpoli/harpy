@@ -19,10 +19,10 @@ struct ViscoplasticIFC
 
     // Stresses
     RealTensor sigtot, sigeff, deviatoric;
-    double von_mises;
+    double von_mises, epskk;
 
     // Plasticity
-    RealTensor plastic_strain;
+    RealTensor plastic_strain, plastic_strain_n;
     RealTensor plastic_strain_rate;
   };
 
@@ -31,8 +31,8 @@ struct ViscoplasticIFC
   {
     PropsTranspose( vector<Props> * by_qp ) ;
 
-    vector<RealTensor> sigtot, sigeff, deviatoric;
-    vector<double> von_mises;
+    vector<RealTensor> sigtot, sigeff, deviatoric, plastic_strain, plastic_strain_rate;
+    vector<double> von_mises, epskk;
   };
 
   /// Data storage. By element, By Qp
@@ -52,3 +52,4 @@ struct ViscoplasticIFC
 
 /** OUTPUT STREAMS **/
 ostream& operator<<(ostream& os, const ViscoplasticIFC & m);
+ostream& operator<<(ostream& os, const ViscoplasticIFC::Props & m);
