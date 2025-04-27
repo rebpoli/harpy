@@ -23,14 +23,13 @@ private:
   void parse_material_file();
 
   // State machine
-  enum State { INITIAL, POROTHERMOELASTIC, CREEP, CREEP_CARTER, FEM };
+  enum State { INITIAL, POROTHERMOELASTIC, CREEP, CREEP_CARTER };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine
   string curr_sys_cfg;   /// System configuration being read
                          
   bool next_state();
-  void fem_state();
   void porothermoelastic_state();
   void creep_carter_state();
 

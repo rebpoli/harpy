@@ -51,14 +51,6 @@ public:
   // Thermal
   optional<string> beta_e_file, beta_d_file;
 
-  // FEM Stuff
-  struct FEMSpec { 
-    FEMSpec() : order("FIRST"), family("LAGRANGE"), type("CONTINUOUS") {};
-    string order, family, type ;
-    double implicit;
-  };
-  map<string,FEMSpec> fem_by_var;
-
   // Get param reference by name
   optional<string> & file_param( string & vname, string context );
   optional<double> & con_param( string & vname, string context );

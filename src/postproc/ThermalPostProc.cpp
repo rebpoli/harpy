@@ -15,28 +15,8 @@
  */
 ThermalPostProc::ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ ) :
   ExplicitMaterial( ref_material, sys_ )
-{
-  setup_variables();
-}
+{ }
 
-/**
- *
- */
-ThermalPostProc::~ThermalPostProc()
-{ 
-SCOPELOG(1);
-}
-
-/**
- *
- */
-void ThermalPostProc::setup_variables()
-{
-  SCOPELOG(1);
-  set<subdomain_id_type> sids = { sid };
-  uint vid = system.add_variable( "T", SECOND, L2_LAGRANGE, &sids );
-  dlog(1) << "Adding variable T (" << vid << ") to subdomains " << sid << "";
-}
 
 /**
  *

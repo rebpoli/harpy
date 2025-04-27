@@ -77,6 +77,7 @@ class ViscoplasticSolver : public Solver,
 
     /// Material properties loaded once from configuration
     void load_mesh();
+    void setup_variables();
 
     void set_dirichlet_bcs();
     void set_scalar_bcs() ;

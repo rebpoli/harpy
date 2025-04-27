@@ -65,11 +65,5 @@ class Material
 
     QGauss qrule;
     const Elem * elem;   /// The element that the material has been reinit'ed to
-
-    /// Must be initialized in the constructor of the child class
-    vector< string > required_material_properties; 
-
-    /// TODO: This should only be in the viscoplastic. Gambiarra emergencial.
-    vector< RealTensor > deviatoric, plastic_strain, plastic_strain_rate;
 };
 

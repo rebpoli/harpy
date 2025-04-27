@@ -34,12 +34,7 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
 {
   // Setup cariables only if on the parent
   if (! called_from_bc_constructor ) 
-  {
-    setup_variables(); /// Only the parent material need to setup the variables
-
-    // Setup the BC material only on the parent
     bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
-  }
 }
 
 /**
@@ -107,26 +102,6 @@ ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig
 {
 }
 
-/**
- *
- */
-void ViscoPlasticMaterial::setup_variables()
-{
-  // Add displacements variables to the current subdomain ID
-  if (! config.fem_by_var.count( "U" ) ) flog << "Undefined var setup for variable 'U'. Please revise model material.FEM section.";
-  auto & femspec = config.fem_by_var.at("U");
-  Order order = Utility::string_to_enum<Order>( femspec.order ) ;
-  FEFamily fe_family = Utility::string_to_enum<FEFamily>( femspec.family );
-
-  dlog(1) << "Setting up variable 'U' for ViscoPlasticMaterial (sid=" << sid << ") ...";
-  dlog(1) << "     Order:" << order;
-  dlog(1) << "     FEFamily:" << fe_family;
-
-  set<subdomain_id_type> sids = { sid };
-  system.add_variable( "UX", order, fe_family, &sids );
-  system.add_variable( "UY", order, fe_family, &sids );
-  system.add_variable( "UZ", order, fe_family, &sids );
-}
 
 /**
  *  This can only be done after EquationSystems init.

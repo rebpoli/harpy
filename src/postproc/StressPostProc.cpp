@@ -21,7 +21,6 @@ StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :
   name = sys_.name();
 
 //  dlog(1) << config;
-  setup_variables();
 }
 
 /**
@@ -30,34 +29,6 @@ StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :
 StressPostProc::~StressPostProc()
 { SCOPELOG(1); }
 
-
-/**
- *   _sid_ is the subdomain id
- */
-void StressPostProc::setup_variables()
-{
-  SCOPELOG(1);
-
-  // Stress variable order is one under U
-  if (! config.fem_by_var.count( "U" ) ) flog << "Undefined var setup for variable 'U'. Please revise model material.FEM section.";
-  auto & femspec = config.fem_by_var.at("U");
-
-  // TODO: fetch this info from configuration
-  Order order = Utility::string_to_enum<Order>( femspec.order ) - 1;
-  FEFamily fef = L2_LAGRANGE;
-  if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
-
-  vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate" };
-  vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
-
-  set<subdomain_id_type> sids = { sid };
-  for ( auto sn : sname ) 
-  for ( auto sd : sdir )
-    system.add_variable(sn+sd, order, fef, &sids);
-
-  system.add_variable("von_mises", order, fef, &sids);
-  system.add_variable("epskk", order, fef, &sids);
-}
 
 /**
  *

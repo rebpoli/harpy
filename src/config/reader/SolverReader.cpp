@@ -73,8 +73,9 @@ void SolverReader::parse_sys_file()
     // Machine. This is the last part of the loop
     switch (current_state) 
     {
-      case State::CONFIG: { config_state(); break; }
-      case State::NUMERICAL: { numerical_state(); break; }
+      case State::CONFIG:    {   config_state();      break;    }
+      case State::NUMERICAL: {   numerical_state();   break;    }
+      case State::FEM:       {   fem_state();         break;    }
       default: break;
     } 
 
@@ -88,27 +89,44 @@ void SolverReader::parse_sys_file()
  */
 bool SolverReader::next_state() 
 {
+  SCOPELOG(1);
+  dlog(1) << "... line:" << line;
   smatch match;
 
   CIMap<State> nextState = {
     { "config", State::CONFIG },
     { "mesh",   State::MESH },
-//    { "system", State::SYSTEM },
+    { "fem",   State::FEM },
+    { "numerical",   State::NUMERICAL }
   };
+
+  set<State> namedStates = { State::CONFIG, State::MESH }; // These require a name following the section
+
+  dlog(1) << "_0_";
 
   // Resets the state
   if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
+  dlog(1) << "_a_";
 
   // New section. Changes the state
-  if ( ! regex_search(line, match, RE_SEC_NAME) ) return false;
+  if ( ! regex_search(line, match, RE_SEC_NAMEOPT) ) return false;
+  dlog(1) << "_b_";
 
   string sec = match[1];
-
   if ( ! nextState.count(sec) ) flog << "Cannot find next state for section key '" << sec << "' (line " << ln << ").";
+  current_state  = nextState[ sec ];
+
+  // New section. Changes the state
+  if ( ! regex_search(line, match, RE_SEC_NAME) ) {
+    if ( ! namedStates.count( current_state ) ) return true; // all good
+    else flog << "Keyword '" << sec << "' requires a name at solver definition (line " << ln << ").";
+  }
 
   // Save
-  current_state  = nextState[ sec ];
   string name = match[2];
+
+  dlog(1) << line;
+  dlog(1) << "_c_ " << name;
 
   // Register as needed
   if ( current_state == State::CONFIG ) {
@@ -184,6 +202,30 @@ void SolverReader::numerical_state()
 
   flog << "Unrecognized format at " << config.sys_file << "(" << ln << "), MATERIAL section. Line: " << line;
 
+}
+
+/**
+ *
+ */
+void SolverReader::fem_state() 
+{
+  SCOPELOG(1);
+  smatch match;
+  string vname;
+  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
+  {
+    string key = match[1], var = match[2], val = match[3];
+    using FEMSpec = SolverConfig::FEMSpec;
+    FEMSpec & fem = config.fem_by_var[var];
+    if ( iequals( key, "type" ) )          fem.type = val;
+    else if ( iequals( key, "family") )    fem.family = val;
+    else if ( iequals( key, "order") )     fem.order = val;
+    else if ( iequals( key, "implicit") )  {
+      if ( ! regex_search( val, match, RE_NUM ) ) flog << "Invalid value for IMPLICIT. Must be a number.";
+      fem.implicit = stod(val);
+    }
+    else flog << "Unknown key '" << key << "' in material parsing, FEM section.";
+  }
 }
 
 

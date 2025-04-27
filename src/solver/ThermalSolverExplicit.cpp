@@ -22,15 +22,18 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
     Solver( ref_solver_, name_ ), system(es.add_system<ExplicitSystem>(name_)), ref_solver(&ref_solver_)
 { 
   SCOPELOG(1);
+
+  setup_variables();
   init_materials(); 
 }
 
 /**
  *
  */
-ThermalSolverExplicit::~ThermalSolverExplicit()
+void ThermalSolverExplicit::setup_variables()
 {
-  SCOPELOG(1);
+  dlog(1) << "Adding variable T ...";
+  system.add_variable( "T", SECOND, L2_LAGRANGE );
 }
 
 /**

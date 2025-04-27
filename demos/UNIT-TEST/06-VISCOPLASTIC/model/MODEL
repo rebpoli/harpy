@@ -17,7 +17,6 @@ MAX_STEPS    20000
 .SCALAR
 tri_dy
 
-
 # List of penalty variables
 # VNAME    PENALTY   VALUE
 .PENALTY
@@ -28,9 +27,9 @@ K0    1e15    0
 .INITIAL 
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               UY            tri_dy
 BOUNDARY       ZN               UZ            0
 DOMAIN         caprock          T             400
+DOMAIN         reservoir        T             400
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
@@ -38,11 +37,12 @@ DOMAIN         caprock          T             400
 BOUNDARY       XN               UX            0
 BOUNDARY       XP               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               UY            tri_dy
-BOUNDARY       YP               SYY           1e6
+BOUNDARY       YP               UY            0
+BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       ZP               UZ            0
 DOMAIN         caprock          T             400
+DOMAIN         reservoir        T             350
 
 # # Increase temperature
 # .TIME   1

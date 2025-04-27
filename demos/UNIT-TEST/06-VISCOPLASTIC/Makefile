@@ -18,8 +18,8 @@ run-%: set-% .force
 gdb-mpi: set-devel
 	mpiexec -np $(N) xterm -e gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/ut-viscoplastic $(PETSC_OPT)
 
-gdb-dbg: set-dbg .force
-	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/dbg/ut-viscoplastic $(PETSC_OPT)
+gdb-%: set-% .force
+	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/$*/ut-viscoplastic $(PETSC_OPT)
 
 ## MESH
 mesh: model/cube-hole.e
@@ -27,6 +27,12 @@ model/cube-hole.e: model/cube-hole.msh set-opt .force
 	$(topdir)/build/opt/msh2exo --in model/cube-hole.msh --out model/cube-hole.e
 model/cube-hole.msh: model/mesh_single_well.py
 	model/mesh_single_well.py 
+
+model/cube-sphere.msh: model/cube-sphere.py
+	model/cube-sphere.py 
+
+model/cube-sphere.e: model/cube-sphere.msh
+	$(topdir)/build/opt/msh2exo --in model/cube-sphere.msh --out model/cube-sphere.e
 
 gdb: gdb-dbg
 

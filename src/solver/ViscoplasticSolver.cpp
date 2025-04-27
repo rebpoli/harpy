@@ -42,7 +42,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
   // Init equationsystems flow
   load_mesh();
   init_materials();
-  add_scalar_vars();
+  setup_variables();
 
   system.nonlinear_solver->residual_and_jacobian_object = this;
   system.attach_constraint_object( *this );
@@ -52,6 +52,53 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
  *
  */
 ViscoplasticSolver::~ViscoplasticSolver() {}
+
+/**
+ *    Adds all variables needed for the solver and its children (stresses, for example)
+ *    
+ *    Note: Variables are added for the whole mesh. If a material do not use them,
+ *          Dirichlet BCs should be added to all nodes to prevent their solution.
+ */
+void ViscoplasticSolver::setup_variables()
+{
+  // Add displacements variables to the current subdomain ID
+  if (! config->fem_by_var.count( "U" ) ) flog << "Undefined var setup for variable 'U'. Please revise model material.FEM section.";
+  auto & femspec = config->fem_by_var.at("U");
+
+  {
+    Order order = Utility::string_to_enum<Order>( femspec.order ) ;
+    FEFamily fe_family = Utility::string_to_enum<FEFamily>( femspec.family );
+
+    dlog(1) << "Setting up variable 'U' for ViscoplasticSolver ...";
+    dlog(1) << "     Order:" << order;
+    dlog(1) << "     FEFamily:" << fe_family;
+
+    system.add_variable( "UX", order, fe_family );
+    system.add_variable( "UY", order, fe_family );
+    system.add_variable( "UZ", order, fe_family );
+  }
+
+  // Stresses
+  {
+    Order order = Utility::string_to_enum<Order>( femspec.order ) - 1;
+    FEFamily fef = L2_LAGRANGE;
+    if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
+
+    vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate" };
+    vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
+
+    dlog(1) << "Adding variables in stress post proc ...";
+    for ( auto sn : sname ) 
+    for ( auto sd : sdir )
+      stress_system.add_variable( sn+sd, order, fef );
+
+    stress_system.add_variable( "von_mises", order, fef);
+    stress_system.add_variable( "epskk", order, fef );
+  }
+
+  // Scalars and penalties
+  add_scalar_vars();
+}
 
 /**
  *

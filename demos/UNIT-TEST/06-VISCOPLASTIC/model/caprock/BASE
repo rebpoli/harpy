@@ -23,13 +23,3 @@ BETA_D        1e-6        # Thermal
 A             8.1e-6   # MPa^-n s^-1
 Q             51.6e3  # J/mol
 N             3.5 
-
-## Defines finite element stuff
-.FEM
-TYPE         U       CONTINUOUS
-FAMILY       U       LAGRANGE
-ORDER        U       FIRST
-IMPLICIT     U       0.5
-TYPE         T       DISCONTINUOUS
-FAMILY       T       L2_LAGRANGE
-ORDER        T       FIRST

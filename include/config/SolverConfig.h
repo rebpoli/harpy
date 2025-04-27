@@ -46,6 +46,14 @@ public:
     double ls_rtol; /// linear solver absolute tolerance
   };
 
+  /* FEM Stuff - variable order, family etc. */
+  struct FEMSpec { 
+    FEMSpec() : order("FIRST"), family("LAGRANGE"), type("CONTINUOUS") {};
+    string order, family, type ;
+    double implicit;
+  };
+  map<string,FEMSpec> fem_by_var;
+
   /** Data structure to the outside **/
   MatConfigMap mat_config_by_name; /// the chosen configuration for this run
   Numerical numerical;

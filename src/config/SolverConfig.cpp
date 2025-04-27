@@ -29,6 +29,16 @@ ostream& operator<<(ostream& os, const SolverConfig & m)
   for ( auto [ s, mconf ] : m.mat_config_by_name )
     os << "           " << setw(15) << left << s << ": " << mconf << endl;
 
+  for ( auto & [ v, fem ] : m.fem_by_var ) 
+  {
+    os << "    FEM (var: " << v << "):" << endl ;
+    os << "       type:              " << setw(15) << fem.type     << endl;
+    os << "       family:            " << setw(15) << fem.family   << endl;
+    os << "       order:             " << setw(15) << fem.order    << endl;
+    os << "       implicit:          " << setw(15) << fem.implicit     << endl;
+  }
+
+
   return os;
 }
 

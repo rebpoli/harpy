@@ -21,7 +21,5 @@ public:
   virtual void init_fem();
 
   virtual string hello() { return "StressPostProc."; }
-
-  void setup_variables();
 };
 

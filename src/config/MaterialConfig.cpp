@@ -139,15 +139,6 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Q:                " << setw(15) << m.creep_carter_q << endl;
   os << "                                    N:                " << setw(15) << m.creep_carter_n << endl;
 
-  for ( auto & [ v, fem ] : m.fem_by_var ) 
-  {
-    os << "                                 FEM (var: " << v << "):" << endl ;
-    os << "                                    type:              " << setw(15) << fem.type     << endl;
-    os << "                                    family:            " << setw(15) << fem.family   << endl;
-    os << "                                    order:             " << setw(15) << fem.order    << endl;
-    os << "                                    implicit:          " << setw(15) << fem.implicit     << endl;
-  }
-
   return os;
 }
 

@@ -27,7 +27,7 @@ class ThermalSolverExplicit : public Solver
 {
 public:
   ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, string name_ );
-  virtual ~ThermalSolverExplicit();
+  virtual ~ThermalSolverExplicit() {};
 
   /// Init explicit materials (the ones to do the projections)
   void init_materials();
@@ -43,6 +43,7 @@ private:
 
   void project_to_system();
   void update_reference_solver();
+  void setup_variables();
 
   /// Data organized from configuration
   CIMap<double> temperature_by_material;

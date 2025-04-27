@@ -65,7 +65,6 @@ void MaterialReader::parse_material_file()
     {
       case State::POROTHERMOELASTIC: { porothermoelastic_state(); break; }
       case State::CREEP_CARTER: { creep_carter_state(); break; }
-      case State::FEM: { fem_state(); break; }
       default: { wlog << "Ignoring line " << ln << " >> " << line; break; }
     }
   }
@@ -84,7 +83,6 @@ bool MaterialReader::next_state()
   CIMap<State> nextState = {
     { "engine",                  State::INITIAL  },
     { "porothermoelastic",       State::POROTHERMOELASTIC     },
-    { "fem",                     State::FEM     },
     { "creep",                   State::CREEP     }
   };
 
@@ -159,31 +157,6 @@ void MaterialReader::porothermoelastic_state()
 
   else if ( regex_search( line, match, RE_STR_STR_NUM ) ) 
     reg_param_dbl( match[1], match[2], stod(match[3]), "porothermoelastic" );
-
-}
-
-/**
- *
- */
-void MaterialReader::fem_state() 
-{
-  SCOPELOG(1);
-  smatch match;
-  string vname;
-  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
-  {
-    string key = match[1], var = match[2], val = match[3];
-    using FEMSpec = MaterialConfig::FEMSpec;
-    FEMSpec & fem = config.fem_by_var[var];
-    if ( iequals( key, "type" ) )          fem.type = val;
-    else if ( iequals( key, "family") )    fem.family = val;
-    else if ( iequals( key, "order") )     fem.order = val;
-    else if ( iequals( key, "implicit") )  {
-      if ( ! regex_search( val, match, RE_NUM ) ) flog << "Invalid value for IMPLICIT. Must be a number.";
-      fem.implicit = stod(val);
-    }
-    else flog << "Unknown key '" << key << "' in material parsing, FEM section.";
-  }
 
 }
 
