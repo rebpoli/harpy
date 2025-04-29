@@ -2,18 +2,19 @@
 # The probes to extract information
 .PROBE gauss
 TYPE GAUSS
-ORDER 1
+ORDER FIRST
 BOUNDARY XP
 BOUNDARY XN
 
 .PROBE rad_0
 TYPE RADIAL
-RADIUS 1
-DTHETA 10
+RADIUS 0.2
+DTHETA 30
 CENTER 0 0 0
+NORMAL 1 0 0
 
 .PROBE lin_0
 TYPE LINEAR
-FROM     -1 0 0
-TO        1 0 0
+FROM     -0.1 -0.5 -0.5
+TO        0.1  0.5  0.5
 NPTS      10

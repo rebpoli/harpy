@@ -6,6 +6,7 @@
 #include "libmesh/system.h"
 
 #include "config/InoutConfig.h"
+#include "harpy/Solver.h"
 
 using namespace libMesh;
 
@@ -24,12 +25,14 @@ public:
   virtual void print( ostream & os ) const { UNUSED(os); };
   static Probe * Factory( vector<Probe *> & ret, ProbeConfig & config );
 
-//  virtual void eval( System & sys, vector<string> vars = {} );
+  virtual void eval( Solver & solver );
+
+  virtual bool is_gauss() { return false; }
 
   string name, filename;
   string header;
 
-  vector<Point> _pts;
+  vector<Point> points;
 };
 
 
@@ -65,6 +68,7 @@ struct GaussProbe : public Probe
 //  void eval( System & sys, vector<string> vars = {} );
 
   void print( ostream & os ) const;
+  virtual bool is_gauss() { return true; }
 
   vector<string> boundaries;
   libMesh::Order order;
@@ -75,7 +79,7 @@ struct GaussProbe : public Probe
  */
 struct ProbeCol : public vector<Probe *>
 { 
-  ProbeCol( InoutConfig & config ); 
+  ProbeCol(); 
   ~ProbeCol() { for ( auto p : *this ) delete(p); this->clear(); }
 };
 

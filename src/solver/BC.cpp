@@ -42,8 +42,6 @@ bool BC::update( double t )
 {
   SCOPELOG(1);
 
-  dlog(1) << "BC::update - t=" << t;
-
   time = t;
 
   /** Test if the reference time has changed for the new time **/
@@ -160,8 +158,6 @@ void BC::_update_dirichlet()
   const MeshBase & mesh = system.get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
 
-  dlog(1) << "Updating Dirichlet: " << timeentry;
-
   for ( auto & [ bname, vec ] : timeentry.dbl_bcs )
   for ( auto & item : vec )
   {
@@ -181,7 +177,6 @@ void BC::_update_dirichlet()
 
     DirichletItem di( bid, vid, val, vname, bname );
     dirichlet.push_back( di );
-    dlog(1) << "Pushing back dirichlet " << di;
   }
 }
 

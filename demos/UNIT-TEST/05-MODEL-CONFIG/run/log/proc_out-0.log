@@ -141,7 +141,7 @@ SolverConfig:
        type:              CONTINUOUS     
        family:            LAGRANGE       
        order:             SECOND         
-       implicit:          6.95294e-310   
+       implicit:          6.95297e-310   
 
       MATERIAL / Config:
            
@@ -316,13 +316,57 @@ Probe 'lin_0' :
                   To                    (  1,   0,   0)
                 Npts                    3
      @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:20
-# Deb[1:0]:          GaussProbe:
+# Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//INOUT)     @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:35
+# Deb[1:0]: ScopeLog @ InoutReader::parse_inout_file() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:43     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: ____ match NUM - >RADIUS 1<                                         @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: ____ match NUM - >DTHETA 90<                                        @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
+# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: ~ScopeLog @ InoutReader::parse_inout_file()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Info:     Probe Collection (ProbeCol):
+         GaussProbe:
                          Order          FIRST
-                    Boundaries         ['XP' 'XN'] (2) {vec}
-     @ /lm23_hdd/harpy/src/postproc/Probe.cpp:20
-# Deb[1:0]:         RadialProbe:                    ['(  0,   1,   0)' '(  0, 6.12323e-17,   1)' '(  0,  -1, 1.22465e-16)' '(  0, -1.83697e-16,  -1)'] (4) {vec}     @ /lm23_hdd/harpy/src/postproc/Probe.cpp:20
-# Deb[1:0]:         LinearProbe:                    ['( -1,   0,   0)' '(  0,   0,   0)' '(  1,   0,   0)'] (3) {vec}     @ /lm23_hdd/harpy/src/postproc/Probe.cpp:20
-# Info:              GaussProbe:
-                         Order          FIRST
-                    Boundaries         ['XP' 'XN'] (2) {vec}
-        RadialProbe:                    ['(  0,   1,   0)' '(  0, 6.12323e-17,   1)' '(  0,  -1, 1.22465e-16)' '(  0, -1.83697e-16,  -1)'] (4) {vec}        LinearProbe:                    ['( -1,   0,   0)' '(  0,   0,   0)' '(  1,   0,   0)'] (3) {vec}     @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:23
+                    Boundaries          ['XP' 'XN'] (2) {vec}
+        RadialProbe:                    ['(  0,   1,   0)' '(  0, 6.12323e-17,   1)' '(  0,  -1, 1.22465e-16)' '(  0, -1.83697e-16,  -1)'] (4) {vec}
+        LinearProbe:                    ['( -1,   0,   0)' '(  0,   0,   0)' '(  1,   0,   0)'] (3) {vec}
+     @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:23

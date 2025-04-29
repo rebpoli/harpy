@@ -47,6 +47,7 @@ class Solver
 
     virtual void init_materials()
       { flog << "Must be defined in the child class."; }
+
     void export_exo( string fn );
 
     string name;

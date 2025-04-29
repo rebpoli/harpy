@@ -199,7 +199,6 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
 
   /// Init properties from confguration file if needed. Updates material_properties_by_qp
   init_properties();
-
 }
 
 /**
@@ -293,19 +292,10 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 {
   SCOPELOG(10);
 
-
-/// Update the stresses in the interface
-/// --- This must always be up to date 
-///
-//  reinit( *(system.current_local_solution), elem_ );
-//  do { update_ifc_qp(); } while ( next_qp() );
-
   // Update plastic strain history -- we could make it blindly in the interface,
   // without element awareness
   reinit(elem_);
-  do { 
-    P->plastic_strain_n = P->plastic_strain;
-  } while ( next_qp() );
+  do { P->plastic_strain_n = P->plastic_strain; } while ( next_qp() );
 
   ///  Project into the stress system
   stress_postproc.reinit( elem_ );
@@ -539,105 +529,54 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
 
 
 
-
-
-
-
-
-
-
 ///**
-// *
-// *  DEBUGGING ... 
-// *
+// *     Calculates the output information at a single point in this material.
+// *     Pushes the results into the trg_coupler
+// *     _elem_ is the element in this mesh where the point lies
 // */
-//void ViscoPlasticMaterial::residual_and_jacobian_qp_0 ()
+//void ViscoPlasticMaterial::value_at( const Point & pt, const Elem * elem )
 //{
-//  const vector<Real> & JxW = fe->get_JxW();
+//  SCOPELOG(5);
+
+//  // Interpolators are the ones from this material.
+//  // However, they must be initialized with the xyz of the gauss points of the target
+//  const vector<vector<Real>> & phi = fe->get_phi();
 //  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+//  const DofMap & dof_map = system.get_dof_map();
 
-//  vector<vector<double>> Fib(3, vector<double>(3,0));
-//  Ke.zero();
+//  std::vector<Point> pts_from = { pt };
+//  std::vector<Point> pts_to;
+//  FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
+//  fe->reinit( elem, & pts_to );
 
-//  // Computes grad_u  ==> this must be a AD variable. Needs to have the right type.
-//  RealTensor grad_u;
-//  for (uint i=0; i<3; i++)
-//  for (uint j=0; j<3; j++) 
-//  for (uint M=0;  M<n_dofsv;  M++) 
-//    grad_u(i, j) += dphi[M][QP](j) * val(Uib(i,M)); /** Jacobian **/ // ****
-
-//  // Effective mechanics
-//  //       ( \phi_i,j , C_ijkl u_k,l )   ok
-//  for (uint B=0; B<n_dofsv;  B++)
-//  for (uint M=0; M<n_dofsv;  M++)
-//  for (uint i=0; i<3; i++) 
-//  for (uint j=0; j<3; j++)
-//  for (uint k=0; k<3; k++) 
-//  for (uint l=0; l<3; l++) 
+//  // Prepare the Uib vector for the automatic differentiation
+//  Uib.clear();
+//  for ( uint i=0; i<3; i++ )
 //  {
-//    Ke_var[i][k](B,M) += JxW[QP] * C_ijkl(i,j,k,l) * dphi[M][QP](l) * dphi[B][QP](j);
+//    vector<Number> row;
+//    for ( uint B=0; B<n_dofsv; B++ )
+//      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
+//    Uib.push_back(row);
 //  }
 
-//  /** RESIDUAL **/
+//  RealVectorValue U = 0;
+//  for ( uint B=0; B<n_dofsv; B++ )
+//  for ( uint i=0; i<3; i++ )
+//    U(i) += phi[B][0] * Uib[i][B];
 
-//  // ( \phi_j , Cijkl U_k,l ) 
-//  for (uint B=0;  B<n_dofsv;  B++)
-//  for (uint i=0; i<3; i++) 
-//  for (uint j=0; j<3; j++) 
-//  for (uint k=0; k<3; k++) 
-//  for (uint l=0; l<3; l++) 
-//    Fib[i][B] += JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * grad_u(k,l) ;
+//  RealTensor GRAD;
+//  for ( uint B=0; B<n_dofsv; B++ )
+//  for ( uint i=0; i<3; i++ )
+//  for ( uint j=0; j<3; j++ )
+//    GRAD(i,j) += dphi[B][0](j) * Uib[i][B];
 
-//  // Subtract the plastic strain as a body force
-//  //
-//  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
-////  for (uint B=0;  B<n_dofsv;  B++)
-////  for (uint i=0; i<3; i++) 
-////  for (uint j=0; j<3; j++) 
-////  for (uint k=0; k<3; k++) 
-////  for (uint l=0; l<3; l++) 
-////    Fib[i][B] -= JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * P->plastic_strain(k,l) ;
+//  // Feed the coupler in this point
+//  vector<RealVectorValue> & trg_Uqi  = trg_ec.vector_params["U"];
+//  trg_Uqi.push_back( U );
 
-//  // Temperature
-//  //       alpha_d = beta_d * K_bulk
-//  //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
-//  for (uint B=0;  B<n_dofsv;  B++)
-//  for (uint i=0;  i<3;  i++)
-//    Fib[i][B] -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * T->temperature;
-
-//  {
-//    ostringstream os;
-//    os << "Fib: [ " << endl;
-//    for (uint i=0;  i<3;  i++)
-//    {
-//      os << "  [ ";
-//      for (uint B=0;  B<n_dofsv;  B++)
-//      {
-//        os << Fib[i][B] << " ";
-//      }
-//      os << "]" << endl;
-//    }
-//    os << "]" << endl;
-//    dlog(1) << os.str();
-//  }
-//  {
-//    ostringstream os;
-//    os << "Ke: [ " << endl;
-//    for (uint i=0; i<3; i++) 
-//    for (uint B=0; B<n_dofsv;  B++)
-//    {
-//      os << "  [ ";
-//      for (uint j=0; j<3; j++)
-//      for (uint M=0; M<n_dofsv;  M++)
-//      {
-//        double err = Ke_var[i][j](B,M) - Jijbm(i,j,B,M);
-//        os << "(i,j,B,M) = (" << i << ", " << j << ", " << B << ", " << M << ") = " << setw(15); 
-//        os << Ke_var[i][j](B,M) << setw(15) <<  Jijbm(i,j,B,M) << setw(15) << err << endl ;
-//      }
-//      os << "]" << endl;
-//    }
-//    os << "]" << endl;
-//    dlog(1) << os.str();
-//    dlog(1) << "n_dofsv:" << n_dofsv;
-//  }
+//  vector<RealTensor> & trg_GRAD_Uqij = trg_ec.tensor_params["GRAD_U"];
+//  trg_GRAD_Uqij.push_back( GRAD );
 //}
+
+
+

@@ -12,12 +12,11 @@ using namespace harpy_string;
  *
  *
  */
-ProbeCol::ProbeCol( InoutConfig & config ) 
+ProbeCol::ProbeCol() 
 {
+  InoutConfig config;
   for ( auto & pconf : config.probes )
     Probe::Factory( *this, pconf  );
-
-  for ( auto & m : *this ) dlog(1) << *m;
 }
 
 /**
@@ -53,31 +52,25 @@ Probe::Probe( ProbeConfig & config ) : name(config.name)
   ofile << "Time" << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
 }
 
-///**
-// *
-// *
-// */
-//void Probe::eval( System & sys, vector<string> vars ) 
-//{
-//  dlog1(1) << "Evaluating probe to file '"<< filename <<"' ... - System:" << sys.name();
-//  CsvFile1 ofile(filename);
+/**
+ *
+ *
+ */
+void Probe::eval( Solver & solver ) 
+{
+  dlog1(1) << "Evaluating probe to file '"<< filename <<"' ...";
+  CsvFile1 ofile(filename);
 
-//  FECalc fecalc(sys,0);
+  for ( Point & pt : points )
+  {
+ //      unique_ptr<PointLocatorBase> plocator = src_mesh.sub_point_locator();
+//      const Elem * src_elem = (*plocator)( xyz[qp] );
+//      if ( ! src_elem ) flog << "Element not found in " << xyz[qp] << ". This should not happen for identical domains!";
 
-//  vector<uint> ivars = get_ivars(sys, vars);
-//  for ( uint vari : ivars ) {
-//    fecalc.set_var(vari);
-
-//    vector<double> vals;
-//    fecalc.eval(vals,_pts);
-//    for ( uint i=0; i<_pts.size(); i++ )
-//    {
-//      const Point & pt = _pts.at(i);
-//      double v = vals[i];
-//      ofile << time << sys.variable_name(vari) << pt(0) << pt(1) << pt(2) << v << endrow;
-//    }
-//  }
-//}
+//      Material * src_mat = get_material( *src_elem );
+//  ofile << time << sys.variable_name(vari) << pt(0) << pt(1) << pt(2) << v << endrow;
+  }
+}
 
 
 /**
@@ -111,7 +104,7 @@ RadialProbe::RadialProbe( ProbeConfig & config ) : Probe(config)
               r * std::cos(th) * u + 
               r * std::sin(th) * v;
 
-    _pts.push_back( p );
+    points.push_back( p );
   }
 }
 
@@ -131,7 +124,7 @@ LinearProbe::LinearProbe( ProbeConfig & config ) : Probe(config)
   Point dp = ( to - from ) / double(n-1);
   Point curr = from;
   for ( uint i = 0 ; i < n ; i++ ) {
-    _pts.push_back( curr );
+    points.push_back( curr );
     curr = curr + dp;
   }
 }
@@ -263,20 +256,21 @@ GaussProbe::GaussProbe( ProbeConfig & config ):
  *
  */
 void RadialProbe::print( ostream& os ) const
-{ os << setw(20) << "RadialProbe:" << setw(20) << " " << Print(_pts); }
+{ os << setw(20) << "RadialProbe:" << setw(20) << "" << Print(points) << endl; }
 //
 void LinearProbe::print( ostream& os ) const
-{ os << setw(20) << "LinearProbe:" << setw(20) << " " << Print(_pts); }
+{ os << setw(20) << "LinearProbe:" << setw(20) << "" << Print(points) << endl; }
 //
 void GaussProbe::print( ostream& os ) const
 { 
   os << setw(20) << "GaussProbe:" << endl;
-  os << setw(30) << "Order" << setw(10) << " " <<  Utility::enum_to_string(order) << endl;
-  os << setw(30) << "Boundaries" << setw(10) << boundaries << endl;
+  os << setw(30) << "Order" << setw(10) << "" <<  Utility::enum_to_string(order) << endl;
+  os << setw(30) << "Boundaries" << setw(10) << "" << boundaries << endl;
 }
 //
 ostream& operator<<(ostream& os, const ProbeCol & m)
 {
+  os << "Probe Collection (ProbeCol):"<< endl;
   for ( auto & p : m ) os << *p ; 
   return os;
 }

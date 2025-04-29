@@ -38,7 +38,7 @@ public:
 
 struct InoutConfig 
 {
-    InoutConfig( string model_dir_ );
+    InoutConfig();
     ~InoutConfig();
 
     vector<ProbeConfig> probes;

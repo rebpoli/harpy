@@ -34,7 +34,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
-                   curr_bc( system ), inout_config( MODEL->model_dir )
+                   curr_bc( system ), report(*this)
 {
   SCOPELOG(1);
   dlog(1) << "ViscoplasticSolver: " << *config;
@@ -194,8 +194,6 @@ void ViscoplasticSolver::load_mesh()
     Stopwatch sw("mesh.all_second_order()");
     mesh.all_second_order();
   }
-
-  dump_mesh( mesh );
 }
 
 /**
@@ -353,23 +351,12 @@ void ViscoplasticSolver::solve()
 {
   SCOPELOG(1);
   // Shall we update BCs? 
-  if ( curr_bc.update( ts ) ) 
-  {
-    set_dirichlet_bcs();
-//    set_scalar_bcs();
-  }
+  if ( curr_bc.update( ts ) ) set_dirichlet_bcs();
   
-  dlog(1) << "ES.reinit ...";
   es.reinit(); // Maybe only needed if the curr_bc was updated?
-  dlog(1) << "Done!";
   
-  // Feed the coupler with the updated plastic strain, using the solution from the previous TS (explicit)
-//  update_plastic_strain();
-
   /** ** ** ** **/
-//  dlog(1) << "OLD <= LOCAL";
   *system.old_local_solution = *system.current_local_solution;
-//  dlog(1) << "SOLVE";
   system.solve();
   /** ** ** ** **/
 
@@ -447,6 +434,8 @@ void ViscoplasticSolver::export_results()
   SCOPELOG(1);
   
   MeshBase & mesh = get_mesh();
+
+  report.do_export();
 
 //  probes.export_results( system        );
 //  probes.export_results( stress_system );

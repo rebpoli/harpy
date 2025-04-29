@@ -1,6 +1,9 @@
 
 #include "config/InoutConfig.h"
 #include "config/reader/InoutReader.h"
+
+#include "config/ModelConfig.h"
+
 #include "util/OutputOperators.h"
 #include "util/String.h"
 
@@ -10,7 +13,7 @@ using namespace harpy_string;
 /**
  *   Calls the reader to fill in this object.
  */
-InoutConfig::InoutConfig( string model_dir_ ) : model_dir(model_dir_) 
+InoutConfig::InoutConfig() : model_dir(MODEL->model_dir) 
 {
   InoutReader reader(*this);
 }

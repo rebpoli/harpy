@@ -16,10 +16,11 @@ int main (int argc, char ** argv)
   MODEL = new ModelConfig( "model/" );
   ilog << *MODEL;
 
-  InoutConfig inout( "model/" );
+  InoutConfig inout;
   ilog << inout;
 
-  ProbeCol probes( inout );
+  ProbeCol probes;
   ilog << probes;
+
   return 0;
 }

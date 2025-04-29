@@ -6,6 +6,7 @@
 
 #include "harpy/Solver.h"
 #include "harpy/Material.h"
+#include "postproc/ViscoplasticReport.h"
 #include "solver/BC.h"
 
 #include "base/HarpyInit.h"
@@ -91,8 +92,8 @@ class ViscoplasticSolver : public Solver,
     // Post processing
     void posproc_stresses();
     void export_results();
+    ViscoplasticReport report;
 
     /// Boundary conditions for the current timetep
     BC curr_bc;
-    InoutConfig inout_config;
 };

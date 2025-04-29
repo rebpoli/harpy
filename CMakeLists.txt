@@ -113,9 +113,10 @@ ADD_LIBRARY(Modules
   src/material/ViscoPlasticMaterial.cpp
   src/material/ViscoplasticIFC.cpp
   src/material/ThermalIFC.cpp
-  src/postproc/ThermalPostProc.cpp
-  src/postproc/StressPostProc.cpp
   src/postproc/Probe.cpp
+  src/postproc/ViscoplasticReport.cpp
+  src/postproc/StressPostProc.cpp
+  src/postproc/ThermalPostProc.cpp
   src/solver/BC.cpp
   src/solver/ViscoplasticSolver.cpp
   src/solver/ThermalSolverExplicit.cpp

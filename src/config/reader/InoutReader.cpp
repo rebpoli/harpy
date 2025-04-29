@@ -40,7 +40,7 @@ void InoutReader::check_files()
  */
 void InoutReader::parse_inout_file()
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
 
   ifstream file(filename);
   if ( !file.is_open() ) flog << "Cannot open file " << filename << ". Should have been resolved in check_files. What's wrong?";
@@ -54,7 +54,6 @@ void InoutReader::parse_inout_file()
     line = remove_comments_and_trim( line );
 
     if ( next_state() ) continue;
-    dlog(1) << "Parsing state: " << current_state;
 
     switch (current_state)
     {
@@ -102,8 +101,6 @@ bool InoutReader::next_state()
 
   }
 
-  dlog(1) << "NEXT STATE: " << current_state;
-
   return true;
 }
 
@@ -112,7 +109,7 @@ bool InoutReader::next_state()
  */
 void InoutReader::probe_state() 
 {
-  SCOPELOG(1);
+  SCOPELOG(5);
   smatch match;
   string vname;
 
@@ -155,8 +152,8 @@ void InoutReader::probe_state()
   if ( DBL_PROPS.count(k) )
   {
     if ( ! regex_search( line, match, RE_STR_NUM) ) flog << "Wrong format at line " << ln << ": [" << line << "]";
-    dlog(1) << "match NUM - >" << line << "<";
-     double v = stod(match[2]);
+
+    double v = stod(match[2]);
     if ( iequals( k, "radius" ) ) curr_probe_config->radius = v;
     if ( iequals( k, "dtheta" ) ) curr_probe_config->dtheta = v;
     return;
@@ -166,6 +163,7 @@ void InoutReader::probe_state()
   if ( STR_PROPS.count(k) )
   {
     if ( ! regex_search( line, match, RE_STR_STR) ) flog << "Wrong format at line " << ln << ": [" << line << "]";
+
     string v = match[2];
     if ( iequals( k, "type" ) )      curr_probe_config->type = v;
     if ( iequals( k, "boundary" ) )  curr_probe_config->boundaries.push_back(v);
