@@ -39,7 +39,7 @@ void MaterialReader::check_files()
 }
 
 /**
- *  Reads the MATERIAL file. No need for a state machine as this is a linear file.
+ *  Reads the MATERIAL file.
  */
 void MaterialReader::parse_material_file()
 {

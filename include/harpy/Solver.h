@@ -38,9 +38,6 @@ class Solver
     inline MeshBase & get_mesh() { return es.get_mesh(); }
     inline const MeshBase & get_mesh() const { return es.get_mesh(); }
 
-    bool same_mesh( const Solver & b ) const { return &get_mesh() == &(b.get_mesh()); }
-    void assert_same_mesh( const Solver & b ) const { if ( ! same_mesh(b) ) flog << "Meshes must be equal to continue. TODO: support multimesh."; }
-
     virtual void solve()
       { flog << "Must be defined in the child class."; }
     virtual void export_results( string basename )

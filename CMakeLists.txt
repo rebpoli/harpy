@@ -90,9 +90,11 @@ ADD_LIBRARY(Modules
   src/config/ConfigValidate.cpp
   src/config/Config.cpp
   src/config/BCConfig.cpp
+  src/config/InoutConfig.cpp
   src/config/ModelConfig.cpp
   src/config/MaterialConfig.cpp
   src/config/SolverConfig.cpp
+  src/config/reader/InoutReader.cpp
   src/config/reader/MaterialReader.cpp
   src/config/reader/ModelReader.cpp
   src/config/reader/SolverReader.cpp
@@ -113,6 +115,7 @@ ADD_LIBRARY(Modules
   src/material/ThermalIFC.cpp
   src/postproc/ThermalPostProc.cpp
   src/postproc/StressPostProc.cpp
+  src/postproc/Probe.cpp
   src/solver/BC.cpp
   src/solver/ViscoplasticSolver.cpp
   src/solver/ThermalSolverExplicit.cpp

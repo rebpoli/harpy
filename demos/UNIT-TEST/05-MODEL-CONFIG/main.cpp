@@ -1,5 +1,7 @@
 
 #include "config/ModelConfig.h"
+#include "config/InoutConfig.h"
+#include "postproc/Probe.h"
 #include "base/HarpyInit.h"
 
 int main (int argc, char ** argv)
@@ -14,5 +16,10 @@ int main (int argc, char ** argv)
   MODEL = new ModelConfig( "model/" );
   ilog << *MODEL;
 
+  InoutConfig inout( "model/" );
+  ilog << inout;
+
+  ProbeCol probes( inout );
+  ilog << probes;
   return 0;
 }

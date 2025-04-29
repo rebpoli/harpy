@@ -14,6 +14,7 @@
 #include "libmesh/transient_system.h"
 
 #include "util/OutputOperators.h"
+#include "util/Stopwatch.h"
 #include "harpy/Timestep.h"
 
 

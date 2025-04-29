@@ -90,7 +90,6 @@ void SolverReader::parse_sys_file()
 bool SolverReader::next_state() 
 {
   SCOPELOG(1);
-  dlog(1) << "... line:" << line;
   smatch match;
 
   CIMap<State> nextState = {
@@ -102,22 +101,19 @@ bool SolverReader::next_state()
 
   set<State> namedStates = { State::CONFIG, State::MESH }; // These require a name following the section
 
-  dlog(1) << "_0_";
-
   // Resets the state
   if (regex_match(line, RE_EMPTY)) { current_state = State::INITIAL; return true; }
-  dlog(1) << "_a_";
 
   // New section. Changes the state
   if ( ! regex_search(line, match, RE_SEC_NAMEOPT) ) return false;
-  dlog(1) << "_b_";
 
   string sec = match[1];
   if ( ! nextState.count(sec) ) flog << "Cannot find next state for section key '" << sec << "' (line " << ln << ").";
   current_state  = nextState[ sec ];
 
   // New section. Changes the state
-  if ( ! regex_search(line, match, RE_SEC_NAME) ) {
+  if ( ! regex_search(line, match, RE_SEC_NAME) ) 
+  {
     if ( ! namedStates.count( current_state ) ) return true; // all good
     else flog << "Keyword '" << sec << "' requires a name at solver definition (line " << ln << ").";
   }
@@ -125,15 +121,11 @@ bool SolverReader::next_state()
   // Save
   string name = match[2];
 
-  dlog(1) << line;
-  dlog(1) << "_c_ " << name;
-
   // Register as needed
-  if ( current_state == State::CONFIG ) {
-    curr_sys_cfg = name;
-  }
+  if ( current_state == State::CONFIG ) curr_sys_cfg = name;
 
-  if ( current_state == State::MESH ) {
+  if ( current_state == State::MESH ) 
+  {
     // Single line state.
     config.mesh_filename = config.model_dir + "/" + name;
     current_state = State::INITIAL;

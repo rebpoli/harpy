@@ -1,6 +1,9 @@
 #pragma once
 
 #include "base/Global.h"
+
+#include "config/InoutConfig.h"
+
 #include "harpy/Solver.h"
 #include "harpy/Material.h"
 #include "solver/BC.h"
@@ -84,8 +87,12 @@ class ViscoplasticSolver : public Solver,
     void set_unassigned_scalars();
     void init_materials();
     void add_scalar_vars();
+
+    // Post processing
     void posproc_stresses();
+    void export_results();
 
     /// Boundary conditions for the current timetep
     BC curr_bc;
+    InoutConfig inout_config;
 };

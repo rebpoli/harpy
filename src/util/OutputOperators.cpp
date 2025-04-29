@@ -2,49 +2,6 @@
 
 #include "libmesh/system.h"
 #include "libmesh/point.h"
-ostream& operator<<(ostream& os, const vector<libMesh::Point> & m) {
-  os << "[";
-  for ( uint i=0; i<m.size() ; i++) {
-    const libMesh::Point & p = m[i];
-    if ( i ) os << " ";
-    os << "(" << p(0) << "," << p(1) << "," << p(2) << ")";
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}
-
-ostream& operator<<(ostream& os, const vector<libMesh::RealTensor> & m) {
-  os << "[";
-  for ( uint i=0; i<m.size() ; i++) {
-    const libMesh::RealTensor & t = m[i];
-    if ( i ) os << " ";
-    os << t;
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}
-
-ostream& operator<<(ostream& os, const vector<libMesh::Gradient> & m) {
-  os << "[";
-  for ( uint i=0; i<m.size() ; i++) {
-    const libMesh::Point & p = m[i];
-    if ( i ) os << " ";
-    os << p;
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}
-
-
-ostream& operator<<(ostream& os, const vector<double> & m) {
-  os << "[";
-  for ( uint i=0; i<m.size() ; i++) {
-    if ( i ) os << " ";
-    os << m[i];
-  }
-  os << "] ("<< m.size() <<") {vec}";
-  return os;
-}
 
 ostream& operator<<(ostream& os, const set<double> & m) {
   os << "[";
@@ -64,16 +21,6 @@ ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m)
   for ( uint i=0; i<m.size() ; i++) {
     if ( i ) os << " ";
     os << m[i].first << "->" << m[i].second;
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}
-
-ostream& operator<<(ostream& os, const vector<uint> & m) {
-  os << "[";
-  for ( uint i=0; i<m.size() ; i++) {
-    if ( i ) os << " ";
-    os << m[i];
   }
   os << "] ("<< m.size() <<")";
   return os;

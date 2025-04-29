@@ -1,5 +1,6 @@
 # Each system is associated with a mesh
-.MESH mesh.e
+.MESH cube-sphere.e
+#.MESH cube-hole.e
 
 #
 # Configuration list: 
@@ -9,7 +10,8 @@
 
 # subdomain   material   configuration (opt)
 .CONFIG     BASE                # Material collection for the BASE sys_cfg
-TEST_FRAME caprock      BASE    # We can ommit the configuration if Mat_cfg = sys_cfgg
+TEST_FRAME reservoir    BASE   
+SIDEBURDEN caprock      BASE    
 
 # CONFIGURE THE NUMERICS OF THE SYSTEM SOLUTION HERE
 .NUMERICAL
@@ -18,3 +20,9 @@ LS_SOLVER     bcgsl
 LS_ATOL       1e-15
 LS_RTOL       1e-6
 
+# Variable definitions must be defined in the solver scope
+# Solvers and materials should follow.
+.FEM
+TYPE         U       CONTINUOUS
+FAMILY       U       LAGRANGE
+ORDER        U       SECOND

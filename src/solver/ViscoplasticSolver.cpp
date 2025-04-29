@@ -34,7 +34,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
-                   curr_bc( system )
+                   curr_bc( system ), inout_config( MODEL->model_dir )
 {
   SCOPELOG(1);
   dlog(1) << "ViscoplasticSolver: " << *config;
@@ -382,22 +382,9 @@ void ViscoplasticSolver::solve()
 
   /** Project the stresses **/
   posproc_stresses();
-}
 
-/**
- *
- */
-void ViscoplasticSolver::posproc_stresses()
-{
-  SCOPELOG(1);
-  /// Project the stresses into the stress system
-  MeshBase & mesh = get_mesh();
-  for ( const auto & elem : mesh.active_local_element_ptr_range() )
-  {
-    ViscoPlasticMaterial * mat = get_material( *elem );
-    mat->project_stress( *elem );
-  }
-  stress_system.solution->close();
+  /** Export information of the timestep **/
+  export_results();
 }
 
 /**
@@ -408,6 +395,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
 {
   UNUSED(sys);
   SCOPELOG(5);
+  Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
 
   MeshBase & mesh = get_mesh();
 
@@ -436,53 +424,32 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
 }
 
 /**
- *    Feeds the target solver with U and GRAD_U.
- *    The solvers may have different meshes.
- *    The element lookup from one mesh to the other is a COLLECTIVE TASK (not done in parallel!).
- *    All processors 
- *
- *    The information flows in this direction THIS_SOLVER => TRG_SOLVER
  *
  */
-//void ViscoplasticSolver::update_coupler( Solver & trg_solver )
-//{
-//  SCOPELOG(1);
-//  Coupler & trg_coupler = trg_solver.coupler;
-
-
-//  MeshBase & src_mesh = get_mesh();
-//  MeshBase & trg_mesh = trg_solver.get_mesh();
-//  for (const auto & trg_elem : trg_mesh.active_element_ptr_range())  // This is a collective loop (no local here please!)
-//  {
-//    Material * trg_mat = trg_solver.get_material( *trg_elem );
-//    const std::vector<Point> & xyz = trg_mat->fe->get_xyz();
-//    trg_mat->fe->reinit(trg_elem);
-//    ElemCoupler & trg_ec = trg_solver.coupler.elem_coupler( trg_elem->id() );
-//    trg_ec.clear( {"U", "GRAD_U" } );   
-//    trg_ec.tensor_params["plastic_strain"].clear(); // isso ta um horror
-
-//    for ( uint qp=0; qp<xyz.size(); qp++ ) 
-//    {
-//      // Find the element in the target mesh ==> this is a collective task! 
-//      // All processors must be in sync
-//      unique_ptr<PointLocatorBase> plocator = src_mesh.sub_point_locator();
-//      const Elem * src_elem = (*plocator)( xyz[qp] );
-//      if ( ! src_elem ) flog << "Element not found in " << xyz[qp] << ". This should not happen for identical domains!";
-
-//      Material * src_mat = get_material( *src_elem );
-//      src_mat->feed_coupler( trg_ec, xyz[qp], trg_elem, *(system.solution) );
-//      RealTensor ps;
-//      if ( src_mat->plastic_strain.size() ) 
-//        ps = src_mat->plastic_strain[qp];
-
-//      trg_ec.tensor_params["plastic_strain"].push_back( ps ); // isso ta um horror
-//    }
-//  }
-//}
+void ViscoplasticSolver::posproc_stresses()
+{
+  SCOPELOG(1);
+  /// Project the stresses into the stress system
+  MeshBase & mesh = get_mesh();
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    ViscoPlasticMaterial * mat = get_material( *elem );
+    mat->project_stress( *elem );
+  }
+  stress_system.solution->close();
+}
 
 /**
- *   
- *   SUPPORT FUNCTIONS 
  *
  */
+void ViscoplasticSolver::export_results()
+{
+  SCOPELOG(1);
+  
+  MeshBase & mesh = get_mesh();
+
+//  probes.export_results( system        );
+//  probes.export_results( stress_system );
+
+}
 

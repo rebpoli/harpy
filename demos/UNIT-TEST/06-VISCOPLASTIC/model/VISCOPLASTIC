@@ -25,4 +25,4 @@ LS_RTOL       1e-6
 .FEM
 TYPE         U       CONTINUOUS
 FAMILY       U       LAGRANGE
-ORDER        U       FIRST
+ORDER        U       SECOND
