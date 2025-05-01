@@ -43,6 +43,8 @@ class Material
 
     virtual bool is_bc() { return 0; }  /// Defaults to false. Reimplement in the BC classes to return true;
     virtual string hello() { return "Material."; }
+    virtual void update_probes() 
+              { flog << "Must be redifined in the child classes."; }
 
     // Shape functions, quadratures etc
     vector<dof_id_type> dof_indices;

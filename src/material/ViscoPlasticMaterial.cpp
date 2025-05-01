@@ -28,7 +28,7 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
                                             bool called_from_bc_constructor ) :
   Material( sid_, config ),
   dof_indices_var(3),
-  P( 0 ), T(0), bc_material(0),
+  P( 0 ), bc_material(0),
   vpsolver(vpsolver_), system( sys_ ), 
   stress_system( vpsolver.stress_system ),
   stress_postproc( *this, stress_system )
@@ -55,7 +55,6 @@ ViscoPlasticMaterial::~ViscoPlasticMaterial()
  */
 void ViscoPlasticMaterial::init_properties()
 {
-  SCOPELOG(5);
   // Calc xyz (fe must have already been initialized)
   const std::vector<Point> & xyz = fe->get_xyz();
 
@@ -65,18 +64,18 @@ void ViscoPlasticMaterial::init_properties()
   uint qp = 0;
   for ( auto & pt : xyz )
   {
-    auto & prop = vp_ifc.get( qp );
+    auto & prop = vp_ifc.get( qp++ );
 
-    prop.alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
-    prop.beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
-    prop.lame_mu          = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
-    prop.lame_lambda      = config.get_property( "lame_lambda",     pt,     "porothermoelastic" );
-    prop.creep_carter_a   = config.get_property( "a",               pt,     "creep_carter" );
-    prop.creep_carter_q   = config.get_property( "q",               pt,     "creep_carter" );
-    prop.creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
-    prop.plastic_strain_n = RealTensor();
-    prop.plastic_strain   = RealTensor();
-    qp++;
+    prop.init_from_config( config, pt );
+//    prop.alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
+//    prop.beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
+//    prop.lame_mu          = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
+//    prop.lame_lambda      = config.get_property( "lame_lambda",     pt,     "porothermoelastic" );
+//    prop.creep_carter_a   = config.get_property( "a",               pt,     "creep_carter" );
+//    prop.creep_carter_q   = config.get_property( "q",               pt,     "creep_carter" );
+//    prop.creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
+//    prop.plastic_strain_n = RealTensor();
+//    prop.plastic_strain   = RealTensor();
   }
   vp_ifc.valid = 1;
 }
@@ -194,7 +193,7 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
 
   // Initialize interfacse
   vp_ifc.reinit( eid, nqp );
-  th_ifc.reinit( eid, nqp );
+
   next_qp(0);
 
   /// Init properties from confguration file if needed. Updates material_properties_by_qp
@@ -229,63 +228,6 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
 }
 
 /**
- *     Updates the interface based on the current Uib solution
- */
-void ViscoPlasticMaterial::update_ifc_qp()
-{
-  SCOPELOG(10);
-  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
-
-  // Computes grad_u  ==> move to reinit, and to the interface (?)
-  AD::Mat grad_u(3,3);
-  for (uint i=0; i<3; i++)
-  for (uint j=0; j<3; j++)
-  for (uint M=0;  M<n_dofsv;  M++)
-    grad_u(i, j) += dphi[M][QP](j) * Uib(i,M);
-
-  AD::real epskk_ = 0;
-  for (uint k=0; k<3; k++ ) epskk_ += grad_u(k,k);
-
-  AD::Mat sigeff(3,3);
-  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
-  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += C_ijkl(i,j,k,l) * grad_u(k,l);
-
-  // \sig_tot = sig_eff - \alpha_d * T * \delta_ij
-  AD::Mat sigtot = sigeff;
-  for (uint k=0; k<3; k++ ) 
-    sigtot(k,k) -= P->alpha_d * T->temperature;
-
-  // dev_ij = sig_ij - 1/3 \delta_ij \sigma_kk
-  AD::Mat deviatoric = sigtot;
-  for (uint i=0; i<3; i++ )
-  for (uint k=0; k<3; k++ ) 
-    deviatoric(i,i) -= (1./3.) * sigtot(k,k);
-
-  AD::real J2=0;
-  for (uint i=0; i<3; i++ )
-  for (uint j=0; j<3; j++ ) 
-    J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
-
-  AD::real von_mises = sqrt( 3 * J2 );
-
-  // Compute plastic strain rate
-  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
-  AD::Mat plastic_strain_rate = deviatoric;
-  plastic_strain_rate *= 3./2. * P->creep_carter_a;
-  plastic_strain_rate *= exp( - P->creep_carter_q / R_ / T->temperature );
-  plastic_strain_rate *= pow( von_mises/1e6 , P->creep_carter_n-1 );
-  plastic_strain_rate /= 1e6;
-
-  /// Set the results into the quadrature point
-  AD::dump( sigtot, P->sigtot );
-  AD::dump( sigeff, P->sigeff );
-  AD::dump( deviatoric, P->deviatoric );
-  AD::dump( plastic_strain_rate, P->plastic_strain_rate );
-  P->von_mises = val(von_mises);
-}
-
-/**
  *
  */
 void ViscoPlasticMaterial::project_stress( Elem & elem_ )
@@ -296,6 +238,14 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   // without element awareness
   reinit(elem_);
   do { P->plastic_strain_n = P->plastic_strain; } while ( next_qp() );
+
+  // Update the probes accordingly   ////PROBE
+  auto & vec = vp_ifc.probes_by_elem[elem->id()];
+  for ( auto & probe_ifc : vec ) 
+  {
+    auto & p = probe_ifc->props;
+    p.plastic_strain_n = p.plastic_strain;
+  }
 
   ///  Project into the stress system
   stress_postproc.reinit( elem_ );
@@ -311,7 +261,6 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   stress_postproc.project( Pt.epskk, "epskk" );
 }
 
-
 /**
  * 
  * This is the actual calculation of the residual using the AutoDiff types.
@@ -319,6 +268,8 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
  */
 AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 {
+  if ( ! P->lame_mu ) flog << "Null lame_mu? Elem:" << elem->id() << "  Qp:" << QP;
+
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
@@ -343,7 +294,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0;  i<3;  i++)
-    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * T->temperature;
+    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * P->temperature;
 
   // For visualization and debugging
   AD::real epskk = 0;
@@ -357,7 +308,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
-    sigtot(k,k) -= P->alpha_d * T->temperature;
+    sigtot(k,k) -= P->alpha_d * P->temperature;
 
   AD::Mat deviatoric = sigtot;
   for (uint i=0; i<3; i++ )
@@ -374,7 +325,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
   AD::Mat plastic_strain_rate = deviatoric * 3./2. * P->creep_carter_a *
-                                exp( - P->creep_carter_q / R_ / T->temperature ) *
+                                exp( - P->creep_carter_q / R_ / P->temperature ) *
                                 pow( von_mises/1e6 , P->creep_carter_n-1 ) / 1e6;
 
   // Update the plasteic strain
@@ -403,7 +354,6 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint l=0; l<3; l++) 
     Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * C_ijkl(i,j,k,l) * plastic_strain(k,l) ;   // using the plastic strain from previous newton K
  
-
   return ad_Fib;
 }
 
@@ -431,8 +381,6 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   for (uint i=0; i<3; i++) 
   for (uint B=0;  B<n_dofsv;  B++)
     Re( i*n_dofsv + B ) += val( Fib(i,B) );
-
-//  residual_and_jacobian_qp_0(); /// Debugging
 }
 
 
@@ -443,7 +391,7 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
  */
 void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )
 {
-  SCOPELOG(5);
+  SCOPELOG(10);
   
   // Reinit the object
   reinit( soln, elem_ );
@@ -451,7 +399,7 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
   // Build the element jacobian and residual for each quadrature point _qp_.
   do { residual_and_jacobian_qp(); } while ( next_qp() );
 
-
+  // Add to the residual 
   if ( residual ) 
   {
     const DofMap & dof_map = system.get_dof_map();
@@ -466,6 +414,9 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
     dof_map.constrain_element_matrix (Ke, dof_indices);
     jacobian->add_matrix (Ke, dof_indices);
   }
+
+  // Keep the probes in sync with the solution
+  update_probes();  ///PROBE
 }
 
 /**
@@ -529,54 +480,94 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
 
 
 
-///**
-// *     Calculates the output information at a single point in this material.
-// *     Pushes the results into the trg_coupler
-// *     _elem_ is the element in this mesh where the point lies
-// */
-//void ViscoPlasticMaterial::value_at( const Point & pt, const Elem * elem )
-//{
-//  SCOPELOG(5);
+/**
+ *  This should be called before the probes export data.
+ *
+ */
+void ViscoPlasticMaterial::update_probes()
+{
+  uint eid = elem->id();
+  auto & vec = vp_ifc.probes_by_elem[eid];
+  for ( auto & probe_ifc : vec ) 
+  {
+    const Point & pt = probe_ifc->pt;
+    auto & props = probe_ifc->props;
+    props_at( props, pt, elem );
+  }
+}
 
-//  // Interpolators are the ones from this material.
-//  // However, they must be initialized with the xyz of the gauss points of the target
-//  const vector<vector<Real>> & phi = fe->get_phi();
-//  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
-//  const DofMap & dof_map = system.get_dof_map();
+/**
+ *     Calculates the output information at a single point in this material.
+ *     Pushes the results into the trg_coupler
+ *     _elem_ is the element in this mesh where the point lies
+ */
+void ViscoPlasticMaterial::props_at( ViscoplasticIFC::Props & p, 
+                                     const Point & pt, const Elem * elem )
+{
+  SCOPELOG(5);
+  const DofMap & dof_map = system.get_dof_map();
+  const vector<vector<Real>> & phi = fe->get_phi();
+  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
-//  std::vector<Point> pts_from = { pt };
-//  std::vector<Point> pts_to;
-//  FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
-//  fe->reinit( elem, & pts_to );
+  // Calculate Uib (avoiding reusage to reduce coupling)
+  dof_map.dof_indices (elem, dof_indices_var[0], 0);
+  dof_map.dof_indices (elem, dof_indices_var[1], 1);
+  dof_map.dof_indices (elem, dof_indices_var[2], 2);
+  n_dofsv = dof_indices_var[0].size();
+  vector< vector<double> > _Uib(3, vector<double>(n_dofsv,0));
 
-//  // Prepare the Uib vector for the automatic differentiation
-//  Uib.clear();
-//  for ( uint i=0; i<3; i++ )
-//  {
-//    vector<Number> row;
-//    for ( uint B=0; B<n_dofsv; B++ )
-//      row.push_back( soln( dof_indices[i*n_dofsv + B] ) );
-//    Uib.push_back(row);
-//  }
+  // Reinit FE in the point we want
+  std::vector<Point> pts_from = { pt };
+  std::vector<Point> pts_to;
+  FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
+  fe->reinit( elem, & pts_to );
 
-//  RealVectorValue U = 0;
-//  for ( uint B=0; B<n_dofsv; B++ )
-//  for ( uint i=0; i<3; i++ )
-//    U(i) += phi[B][0] * Uib[i][B];
+  // Compute stuff in the point
+  p.U = 0;
+  for ( uint B=0; B<n_dofsv; B++ )
+  for ( uint i=0; i<3; i++ )
+    p.U(i) += phi[B][0] * val( Uib(i,B) );
 
-//  RealTensor GRAD;
-//  for ( uint B=0; B<n_dofsv; B++ )
-//  for ( uint i=0; i<3; i++ )
-//  for ( uint j=0; j<3; j++ )
-//    GRAD(i,j) += dphi[B][0](j) * Uib[i][B];
+  p.GRAD_U = 0;
+  for ( uint B=0; B<n_dofsv; B++ )
+  for ( uint i=0; i<3; i++ )
+  for ( uint j=0; j<3; j++ )
+    p.GRAD_U(i,j) += dphi[B][0](j) * val( Uib(i,B) );
 
-//  // Feed the coupler in this point
-//  vector<RealVectorValue> & trg_Uqi  = trg_ec.vector_params["U"];
-//  trg_Uqi.push_back( U );
+  RealTensor sigeff;
+  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+    sigeff(i,j) += p.C_ijkl(i,j,k,l) * ( p.GRAD_U(k,l) - p.plastic_strain(k,l) );
 
-//  vector<RealTensor> & trg_GRAD_Uqij = trg_ec.tensor_params["GRAD_U"];
-//  trg_GRAD_Uqij.push_back( GRAD );
-//}
+  p.sigtot = sigeff;
+  for (uint k=0; k<3; k++ ) 
+    p.sigtot(k,k) -= p.alpha_d * p.temperature;
+
+  p.deviatoric = p.sigtot;
+  for (uint i=0; i<3; i++ )
+  for (uint k=0; k<3; k++ ) 
+    p.deviatoric(i,i) -= (1./3.) * p.sigtot(k,k);
+
+  double J2=0;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    J2 += (1./2.) * p.deviatoric(i,j) * p.deviatoric(i,j);
+
+  p.von_mises = sqrt( 3 * J2 );
+  //
+  // Compute plastic strain rate
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+  p.plastic_strain_rate = p.deviatoric;
+  p.plastic_strain_rate *= 3./2. * p.creep_carter_a;
+  p.plastic_strain_rate *= exp( - p.creep_carter_q / R_ / p.temperature );
+  p.plastic_strain_rate *= pow( p.von_mises/1e6 , p.creep_carter_n-1 );
+  p.plastic_strain_rate /= 1e6;
+
+  p.plastic_strain = vpsolver.ts.dt * p.plastic_strain_rate;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    p.plastic_strain(i,j) += p.plastic_strain_n(i,j);
+}
 
 
 

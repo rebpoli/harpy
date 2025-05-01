@@ -156,6 +156,9 @@ void ThermalSolverExplicit::update_reference_solver()
   // The mesh is the same as the reference coupler
   MeshBase & mesh = get_mesh();
 
+  /**
+   *   Update the quadrature points
+   */
   for (const auto & elem : mesh.active_element_ptr_range()) 
   {
     uint eid = elem->id();
@@ -166,13 +169,9 @@ void ThermalSolverExplicit::update_reference_solver()
     // init the fe
     mat->reinit( *elem ); 
 
-// we could ge the xyz coord to interpolate the temperature
-//    const std::vector<Point> & xyz = mat->fe->get_xyz(); 
-
     // We need to feed this interface
-    ThermalIFC & th_ifc = mat->get_thermal_interface();
-    auto & props = th_ifc.by_elem[eid];
-    props.clear();
+    auto & vp_ifc = mat->vp_ifc;
+    auto & props = vp_ifc.by_elem[eid];
 
     // Find the temperature of the material
     double temperature = 0;
@@ -183,8 +182,13 @@ void ThermalSolverExplicit::update_reference_solver()
     props.resize(nqp);
     for ( uint qp=0 ; qp< nqp ; qp++ )
       props[qp].temperature = temperature;
+
+    /// Updates the probes
+    for ( auto & p : vp_ifc.probes_by_elem[eid] ) 
+      p->props.temperature = temperature;
   }
 }
+
 
 /**
  *    DUMPERS

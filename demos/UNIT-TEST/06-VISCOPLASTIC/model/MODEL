@@ -11,7 +11,7 @@ DT0           100
 DTK           2
 DTMAX         85400  # 1 day
 TMAX          1e8
-MAX_STEPS    20000
+MAX_STEPS     5
 
 # List of scalar variables
 .SCALAR

@@ -56,18 +56,18 @@ public:
                                 SparseMatrix<Number> * jacobian , 
                                 NumericVector<Number> * residual );
 
-  /// Updates the interface Qp. Consider if this should be done inside the interface (?)
-  void update_ifc_qp();
+  /// Updates the interface data at the probe points
+  void update_probes();
 
   /// Calculate the stress_system stuff
   void project_stress( Elem & elem_ );
+  void props_at( ViscoplasticIFC::Props & props, const Point & pt, const Elem * elem );
 
   /// Differentiates ViscoPlasticMaterial and ViscoPlasticMaterialBC in runtime
   virtual bool is_bc() { return false; }
 
   /// Provide pointers to the outside to feed the material with properties
   ViscoplasticIFC & get_viscoplastic_interface() { return vp_ifc; }
-  ThermalIFC & get_thermal_interface() { return th_ifc; }
 
   // Debugging
   string hello() { return "ViscoPlasticMaterial"; }
@@ -108,12 +108,10 @@ protected:
   //////
  
   /// Interface to hold the viscoplastic properties (in and out)
+public:
   ViscoplasticIFC vp_ifc;
+protected:
   ViscoplasticIFC::Props * P;   
-
-  /// Interface to hold the thermal properties (in and out)
-  ThermalIFC th_ifc;
-  ThermalIFC::Props * T;   // The viscoplastic properties from the configuration
 
   /// Child boundary condition material. Owned by this object because it inherits all its properties
   ViscoPlasticMaterialBC * bc_material;
@@ -125,10 +123,11 @@ protected:
   /// The stress system to export
   ExplicitSystem & stress_system;
 
+  uint n_dofs, n_dofsv;
+
+public:
   /// The stress engine
   StressPostProc stress_postproc;
-
-  uint n_dofs, n_dofsv;
 
 };
 
@@ -180,7 +179,6 @@ inline bool ViscoPlasticMaterial::next_qp( bool inc )
     if ( ++QP == qrule.n_points() ) return false;
 
   P = & ( vp_ifc.get(QP) );
-  T = & ( th_ifc.get(QP) );
 
   return true; 
 }

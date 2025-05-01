@@ -76,8 +76,6 @@ void MaterialReader::parse_material_file()
  */
 bool MaterialReader::next_state() 
 {
-  SCOPELOG(1);
-
   smatch match;
 
   CIMap<State> nextState = {

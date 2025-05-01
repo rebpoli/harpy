@@ -2,7 +2,6 @@
 #pragma once
 
 #include "base/Global.h"
-#include "util/CsvFile.h"
 #include "libmesh/system.h"
 
 #include "config/InoutConfig.h"
@@ -25,14 +24,15 @@ public:
   virtual void print( ostream & os ) const { UNUSED(os); };
   static Probe * Factory( vector<Probe *> & ret, ProbeConfig & config );
 
-  virtual void eval( Solver & solver );
-
   virtual bool is_gauss() { return false; }
 
   string name, filename;
   string header;
 
   vector<Point> points;
+
+  // Element id of each point
+  vector<uint> elem_by_point;
 };
 
 

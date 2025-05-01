@@ -89,7 +89,6 @@ void SolverReader::parse_sys_file()
  */
 bool SolverReader::next_state() 
 {
-  SCOPELOG(1);
   smatch match;
 
   CIMap<State> nextState = {

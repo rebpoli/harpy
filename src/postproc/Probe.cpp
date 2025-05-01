@@ -45,33 +45,8 @@ Probe * Probe::Factory( vector<Probe *> & ret, ProbeConfig & config )
  *
  *
  */
-Probe::Probe( ProbeConfig & config ) : name(config.name) 
-{
-  filename = "run/csv/" + name + ".csv";
-  CsvFile1 ofile(filename, "\t", false);
-  ofile << "Time" << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
-}
-
-/**
- *
- *
- */
-void Probe::eval( Solver & solver ) 
-{
-  dlog1(1) << "Evaluating probe to file '"<< filename <<"' ...";
-  CsvFile1 ofile(filename);
-
-  for ( Point & pt : points )
-  {
- //      unique_ptr<PointLocatorBase> plocator = src_mesh.sub_point_locator();
-//      const Elem * src_elem = (*plocator)( xyz[qp] );
-//      if ( ! src_elem ) flog << "Element not found in " << xyz[qp] << ". This should not happen for identical domains!";
-
-//      Material * src_mat = get_material( *src_elem );
-//  ofile << time << sys.variable_name(vari) << pt(0) << pt(1) << pt(2) << v << endrow;
-  }
-}
-
+Probe::Probe( ProbeConfig & config ) : name(config.name), filename("run/csv/" + name + ".csv")
+{ }
 
 /**
  *

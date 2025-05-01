@@ -76,6 +76,7 @@ class ViscoplasticSolver : public Solver,
 
     /// The material can be provided for the dependent solvers
     ViscoPlasticMaterial * get_material( const Elem & elem );
+    ViscoPlasticMaterial * get_material( uint sid );
 
   private:
 

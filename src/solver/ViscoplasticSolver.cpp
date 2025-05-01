@@ -43,6 +43,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) :
   load_mesh();
   init_materials();
   setup_variables();
+  report.init();
 
   system.nonlinear_solver->residual_and_jacobian_object = this;
   system.attach_constraint_object( *this );
@@ -155,6 +156,13 @@ void ViscoplasticSolver::init_materials()
 ViscoPlasticMaterial * ViscoplasticSolver::get_material( const Elem & elem )
 {
   uint sid = elem.subdomain_id();
+  return get_material( sid );
+}
+/**
+ *   Returns a material by subdomain id
+ */
+ViscoPlasticMaterial * ViscoplasticSolver::get_material( uint sid )
+{
   // Consistency check
   if  ( ! material_by_sid.count( sid ) ) 
   {
@@ -162,8 +170,7 @@ ViscoPlasticMaterial * ViscoplasticSolver::get_material( const Elem & elem )
     flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
   }
 
-  return 
-    dynamic_cast<ViscoPlasticMaterial *> ( material_by_sid.at(sid) );
+  return dynamic_cast<ViscoPlasticMaterial *> ( material_by_sid.at(sid) );
 }
 
 /**
@@ -381,7 +388,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
                             SparseMatrix<Number> * jacobian, NonlinearImplicitSystem & sys)
 {
   UNUSED(sys);
-  SCOPELOG(5);
+  SCOPELOG(1);
   Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
 
   MeshBase & mesh = get_mesh();
@@ -436,9 +443,5 @@ void ViscoplasticSolver::export_results()
   MeshBase & mesh = get_mesh();
 
   report.do_export();
-
-//  probes.export_results( system        );
-//  probes.export_results( stress_system );
-
 }
 
