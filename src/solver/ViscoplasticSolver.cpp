@@ -388,7 +388,6 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
                             SparseMatrix<Number> * jacobian, NonlinearImplicitSystem & sys)
 {
   UNUSED(sys);
-  SCOPELOG(1);
   Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
 
   MeshBase & mesh = get_mesh();

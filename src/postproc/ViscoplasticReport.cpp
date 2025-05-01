@@ -73,43 +73,44 @@ void ViscoplasticReport::do_export()
  */
 void ViscoplasticReport::export_by_point( Probe & probe )
 {
-//  SCOPELOG(1);
+  SCOPELOG(1);
 
-//  dlog(1) << "Processing probe '" << probe.name << "' ...";
-//  CsvFile1 ofile(probe.filename);
+  dlog(1) << "Processing probe '" << probe.name << "' ...";
+  CsvFile1 ofile(probe.filename);
 
-//  double time = solver.ts.time;
-//  double t_step = solver.ts.t_step;
+  double time = solver.ts.time;
+  double t_step = solver.ts.t_step;
 
-//  // Export the probe points stored in the material interfaces
-//  for ( auto & [ sid, _ ] : solver.material_by_sid )
-//  {
-//    ViscoPlasticMaterial * mat = solver.get_material(sid);
-//    if ( ! mat->vp_ifc.probes_by_pname.count(probe.name) ) continue;
+  // Export the probe points stored in the material interfaces
+  for ( auto & [ sid, _ ] : solver.material_by_sid )
+  {
+    ViscoPlasticMaterial * mat = solver.get_material(sid);
+    if ( ! mat->vp_ifc.probes_by_pname.count(probe.name) ) continue;
 
-//    auto & vec = mat->vp_ifc.probes_by_pname.at( probe.name ) ;
-//    for ( auto & probe_ifc : vec ) 
-//    {
-//      auto & pt = probe_ifc.pt;
-//      auto & p = probe_ifc.props;
+    auto & vec = mat->vp_ifc.probes_by_pname.at( probe.name ) ;
+    for ( auto & probe_ifc : vec ) 
+    {
+      auto & pt = probe_ifc->pt;
+      auto & p = probe_ifc->props;
 
-//      auto & U = p.U;
-//      ofile << t_step << time << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
-//      ofile << t_step << time << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
-//      ofile << t_step << time << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
+      auto & U = p.U;
+      ofile << t_step << time << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
+      ofile << t_step << time << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
+      ofile << t_step << time << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
 
-//      auto & stot = p.sigtot;
-//      ofile << t_step << time << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
-//      ofile << t_step << time << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
-//      ofile << t_step << time << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
-//      ofile << t_step << time << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
-//      ofile << t_step << time << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
-//      ofile << t_step << time << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
+      auto & stot = p.sigtot;
+      ofile << t_step << time << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
+      ofile << t_step << time << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
+      ofile << t_step << time << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
+      ofile << t_step << time << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
+      ofile << t_step << time << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
+      ofile << t_step << time << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
 
-//      auto & T = p.temperature;
-//      ofile << t_step << time << "T" << pt(0) << pt(1) << pt(2) << T << endrow;
-//    }
-//  }
+      auto & T = p.temperature;
+      ofile << t_step << time << "T" << pt(0) << pt(1) << pt(2) << T << endrow;
+      ofile << t_step << time << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
+    }
+  }
 }
 
 /**

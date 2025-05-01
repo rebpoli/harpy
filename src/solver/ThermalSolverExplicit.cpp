@@ -103,16 +103,35 @@ void ThermalSolverExplicit::solve()
 {
   SCOPELOG(1);
   temperature_by_material.clear();
+  initial_temperature_by_material.clear();
+
+
+
+  ///
   double reftime = bc_config.get_reftime( ts.time ) ;
   if ( ! bc_config.entry_by_time.count( reftime ) ) flog << "Inconsistency in BCConfig. All _reftime_ must have an entry in entry_by_time.";
-
   const BCConfig::TimeEntry & timeentry = bc_config.entry_by_time.at( reftime );
+  ///
   for ( auto & [ material, dbcs ] : timeentry.domain_bcs )
   for ( auto & dbc : dbcs )
   {
     if ( ! iequals ( dbc.vname , "T" ) ) continue;
     temperature_by_material[ material ] = dbc.value;
     dlog(1) << "Temperature for '" << material << "': " << dbc.value; 
+  }
+
+  /// Fetch the initial (reference) time, where the equilibrium temperature is set
+  const auto & mapit = bc_config.entry_by_time.cbegin();
+  if ( mapit == bc_config.entry_by_time.end() ) flog << "No time entry? Cannot continue.";
+  if ( mapit->first >=0 ) flog << "The initial timeentry should be negative, indicating thne initial condition!";
+  const BCConfig::TimeEntry & init_timeentry = mapit->second;
+  ///
+  for ( auto & [ material, dbcs ] : init_timeentry.domain_bcs )
+  for ( auto & dbc : dbcs )
+  {
+    if ( ! iequals ( dbc.vname , "T" ) ) continue;
+    initial_temperature_by_material[ material ] = dbc.value;
+    dlog(1) << "Initial Temperature for '" << material << "': " << dbc.value; 
   }
 
   // Feed the element solver with the temperatures
@@ -175,17 +194,27 @@ void ThermalSolverExplicit::update_reference_solver()
 
     // Find the temperature of the material
     double temperature = 0;
-    if ( ! temperature_by_material.count( mname ) ) wlog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Using 0.";
+    if ( ! temperature_by_material.count( mname ) ) flog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Cannot continue.";
     temperature = temperature_by_material[ mname ];
+    
+    double initial_temperature = 0;
+    if ( ! initial_temperature_by_material.count( mname ) ) flog << "No initial temperature defined for material '" << mname << "'.";
+    initial_temperature = initial_temperature_by_material[ mname ];
 
     uint nqp = mat->qrule.n_points();
     props.resize(nqp);
     for ( uint qp=0 ; qp< nqp ; qp++ )
+    {
       props[qp].temperature = temperature;
+      props[qp].initial_temperature = initial_temperature;
+    }
 
     /// Updates the probes
     for ( auto & p : vp_ifc.probes_by_elem[eid] ) 
+    {
       p->props.temperature = temperature;
+      p->props.initial_temperature = initial_temperature;
+    }
   }
 }
 

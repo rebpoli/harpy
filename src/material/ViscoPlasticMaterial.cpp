@@ -65,18 +65,9 @@ void ViscoPlasticMaterial::init_properties()
   for ( auto & pt : xyz )
   {
     auto & prop = vp_ifc.get( qp++ );
-
     prop.init_from_config( config, pt );
-//    prop.alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
-//    prop.beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
-//    prop.lame_mu          = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
-//    prop.lame_lambda      = config.get_property( "lame_lambda",     pt,     "porothermoelastic" );
-//    prop.creep_carter_a   = config.get_property( "a",               pt,     "creep_carter" );
-//    prop.creep_carter_q   = config.get_property( "q",               pt,     "creep_carter" );
-//    prop.creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
-//    prop.plastic_strain_n = RealTensor();
-//    prop.plastic_strain   = RealTensor();
   }
+
   vp_ifc.valid = 1;
 }
 
@@ -294,7 +285,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0;  i<3;  i++)
-    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * P->temperature;
+    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * ( P->temperature - P->initial_temperature );
 
   // For visualization and debugging
   AD::real epskk = 0;
@@ -308,7 +299,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
-    sigtot(k,k) -= P->alpha_d * P->temperature;
+    sigtot(k,k) -= P->alpha_d * ( P->temperature - P->initial_temperature );
 
   AD::Mat deviatoric = sigtot;
   for (uint i=0; i<3; i++ )
@@ -541,7 +532,7 @@ void ViscoPlasticMaterial::props_at( ViscoplasticIFC::Props & p,
 
   p.sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
-    p.sigtot(k,k) -= p.alpha_d * p.temperature;
+    p.sigtot(k,k) -= p.alpha_d * ( p.temperature - p.initial_temperature );
 
   p.deviatoric = p.sigtot;
   for (uint i=0; i<3; i++ )

@@ -21,7 +21,8 @@
 class Timestep;
 using namespace libMesh;
 
-class BC {
+class BC 
+{
   public:
     /** A class to index the BC map **/
     class ElemSide {

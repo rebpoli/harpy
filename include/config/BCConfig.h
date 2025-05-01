@@ -81,6 +81,7 @@ class BCConfig
     void build_initial() ;
     void build_bcs() ;
 
+    double get_inittime() {return -1;}
     double get_reftime( double time ) ;
 
     string sys_name;

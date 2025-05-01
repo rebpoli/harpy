@@ -29,7 +29,7 @@ struct ViscoplasticIFC
     // State variables
     RealTensor GRAD_U;
     RealVectorValue U;
-    double temperature;
+    double temperature, initial_temperature;
 
     // Stresses
     RealTensor sigtot, sigeff, deviatoric;

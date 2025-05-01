@@ -42,7 +42,7 @@ BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       ZP               UZ            0
 DOMAIN         caprock          T             400
-DOMAIN         reservoir        T             350
+DOMAIN         reservoir        T             400
 
 # # Increase temperature
 # .TIME   1

@@ -39,7 +39,6 @@ public:
   // Creep (Carter Model)
   optional<double> creep_carter_a, creep_carter_q, creep_carter_n;
 
-
   // Secondary variables (computed from the primary above)
   optional<double> lame_mu, lame_lambda, bulk_modulus;
 

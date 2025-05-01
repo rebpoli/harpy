@@ -47,6 +47,7 @@ private:
 
   /// Data organized from configuration
   CIMap<double> temperature_by_material;
+  CIMap<double> initial_temperature_by_material;
 
   friend ostream& operator<<(ostream& os, const ThermalSolverExplicit & m);
 
