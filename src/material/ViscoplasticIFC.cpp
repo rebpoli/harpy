@@ -4,7 +4,8 @@
 
 ViscoplasticIFC::~ViscoplasticIFC()
 {
-  for ( auto & [ _, vec ] : probes_by_pname )
+  for ( auto & [ _, m1 ] : probes_by_pname_by_elem )
+  for ( auto & [ _, vec ] : m1 )
   for ( auto p : vec ) delete(p);
 }
 
@@ -26,7 +27,7 @@ void ViscoplasticIFC::reinit( uint eid, uint nqp )
 /**
  *   Creates a transposed datastructure from a by_qp vector.
  */
-ViscoplasticIFC::PropsTranspose::PropsTranspose( vector<Props> * by_qp )
+PropsTranspose::PropsTranspose( vector<VPProps> * by_qp )
 {
   for ( auto & p : *by_qp ) {
     sigtot.push_back( p.sigtot );
@@ -44,7 +45,7 @@ ViscoplasticIFC::PropsTranspose::PropsTranspose( vector<Props> * by_qp )
  */
 void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt )
 {
-  Props props;
+  VPProps props;
   props.init_from_config (config, pt );
 
   ProbeIFC * probe_ifc = new ProbeIFC() ;
@@ -52,10 +53,8 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
   probe_ifc->pt = pt;
   probe_ifc->props = props;
 
-  vector<ProbeIFC *> & vec = probes_by_pname[name];
-  vec.push_back( probe_ifc );
-
-  auto & vec_e = probes_by_elem[eid];
+  auto & m1 = probes_by_pname_by_elem[name];
+  auto & vec_e = m1[eid];
   vec_e.push_back( probe_ifc );   ///PROBE
 };
 
@@ -63,7 +62,7 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
  *
  *
  */
-void ViscoplasticIFC::Props::init_from_config( const MaterialConfig & config, const Point & pt )
+void VPProps::init_from_config( const MaterialConfig & config, const Point & pt )
 {
   alpha_d          = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
   beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
@@ -102,7 +101,7 @@ ostream& operator<<(ostream& os, const ViscoplasticIFC & m)
 /**
  *
  */
-ostream& operator<<(ostream& os, const ViscoplasticIFC::Props & p)
+ostream& operator<<(ostream& os, const VPProps & p)
 {
   os << "VISCOPLASTIC PROPERTIES:" << endl;
 

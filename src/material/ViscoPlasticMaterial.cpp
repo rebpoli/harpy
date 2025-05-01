@@ -231,18 +231,16 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   do { P->plastic_strain_n = P->plastic_strain; } while ( next_qp() );
 
   // Update the probes accordingly   ////PROBE
-  auto & vec = vp_ifc.probes_by_elem[elem->id()];
-  for ( auto & probe_ifc : vec ) 
-  {
-    auto & p = probe_ifc->props;
-    p.plastic_strain_n = p.plastic_strain;
-  }
+  // This can go into the IFC interface...
+  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+  for ( auto & probe_ifc : m1[elem->id()] ) 
+    probe_ifc->props.plastic_strain_n = probe_ifc->props.plastic_strain;
 
   ///  Project into the stress system
   stress_postproc.reinit( elem_ );
   vp_ifc.reinit( elem_.id(), qrule.n_points() );
 
-  ViscoplasticIFC::PropsTranspose Pt( vp_ifc.by_qp );
+  PropsTranspose Pt( vp_ifc.by_qp );
   stress_postproc.project_tensor( Pt.sigtot, "sigtot" );
   stress_postproc.project_tensor( Pt.sigeff, "sigeff" );
   stress_postproc.project_tensor( Pt.deviatoric, "deviatoric" );
@@ -477,9 +475,8 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
  */
 void ViscoPlasticMaterial::update_probes()
 {
-  uint eid = elem->id();
-  auto & vec = vp_ifc.probes_by_elem[eid];
-  for ( auto & probe_ifc : vec ) 
+  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+  for ( auto & probe_ifc : m1[elem->id()] ) 
   {
     const Point & pt = probe_ifc->pt;
     auto & props = probe_ifc->props;
@@ -492,7 +489,7 @@ void ViscoPlasticMaterial::update_probes()
  *     Pushes the results into the trg_coupler
  *     _elem_ is the element in this mesh where the point lies
  */
-void ViscoPlasticMaterial::props_at( ViscoplasticIFC::Props & p, 
+void ViscoPlasticMaterial::props_at( VPProps & p, 
                                      const Point & pt, const Elem * elem )
 {
   SCOPELOG(5);

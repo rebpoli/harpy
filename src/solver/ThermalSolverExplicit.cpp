@@ -210,7 +210,8 @@ void ThermalSolverExplicit::update_reference_solver()
     }
 
     /// Updates the probes
-    for ( auto & p : vp_ifc.probes_by_elem[eid] ) 
+    for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+    for ( auto & p : m1[eid] ) 
     {
       p->props.temperature = temperature;
       p->props.initial_temperature = initial_temperature;

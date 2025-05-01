@@ -82,6 +82,53 @@ inline ostream& operator<<(ostream& os, const Print<libMesh::Point>& printer)
 }
 
 template<> 
+inline ostream& operator<<(ostream& os, const Print<libMesh::RealVectorValue>& printer)
+{
+  const libMesh::RealVectorValue & p = printer.ref;
+  os << "(";
+  os << setw(3) << p(0) << ", ";
+  os << setw(3) << p(1) << ", ";
+  os << setw(3) << p(2) ;
+  os << ")";
+  return os;
+}
+
+
+template<> 
+inline ostream& operator<<(ostream& os, const Print<libMesh::RealTensor>& printer)
+{
+  const libMesh::RealTensor & p = printer.ref;
+  os << "(";
+  os << " ( ";
+  os << setw(3) << p(0,0) << ", ";
+  os << setw(3) << p(0,1) << ", ";
+  os << setw(3) << p(0,2) ;
+  os << "), ( ";
+  os << setw(3) << p(1,0) << ", ";
+  os << setw(3) << p(1,1) << ", ";
+  os << setw(3) << p(1,2) ;
+  os << "), ( ";
+  os << setw(3) << p(2,0) << ", ";
+  os << setw(3) << p(2,1) << ", ";
+  os << setw(3) << p(2,2) ;
+  os << ") )";
+  return os;
+}
+
+template<> 
+inline ostream& operator<<(ostream& os, const Print<vector<libMesh::RealVectorValue>> & printer)
+{
+  os << "[";
+  uint i=0;
+  for ( auto v : printer.ref ) {
+    if ( i++ ) os << " ";
+    os << "'" << Print(v) << "'";
+  }
+  os << "] ("<< printer.ref.size() <<") {vec}";
+  return os;
+}
+
+template<> 
 inline ostream& operator<<(ostream& os, const Print<vector<libMesh::Point>> & printer)
 {
   os << "[";

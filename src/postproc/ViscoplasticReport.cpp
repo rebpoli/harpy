@@ -46,6 +46,10 @@ void ViscoplasticReport::init_material( Probe & probe  )
     const Elem * elem = (*plocator)(pt);
     if ( ! elem ) { wlog << "Element not found in " << Print(pt) << "."; continue; }
 
+    // The probes only exist in the element processor
+    if ( ! elem->active() ) continue;
+    if ( elem->processor_id() != mesh.processor_id() ) continue;
+
     dlog(1) << "> Element found at " << Print(pt) << ": " << elem->id();
 
     ViscoPlasticMaterial * mat = solver.get_material( *elem );
@@ -85,9 +89,14 @@ void ViscoplasticReport::export_by_point( Probe & probe )
   for ( auto & [ sid, _ ] : solver.material_by_sid )
   {
     ViscoPlasticMaterial * mat = solver.get_material(sid);
-    if ( ! mat->vp_ifc.probes_by_pname.count(probe.name) ) continue;
 
-    auto & vec = mat->vp_ifc.probes_by_pname.at( probe.name ) ;
+    ProbeByElemMap & local_map = mat->vp_ifc.probes_by_pname_by_elem[probe.name];
+
+    // It only returns something in processor rank=0 (root)
+    ProbeByElemMap global_map;
+    local_map.localize_to_one( global_map );
+
+    for ( auto & [ eid, vec ] : global_map ) 
     for ( auto & probe_ifc : vec ) 
     {
       auto & pt = probe_ifc->pt;

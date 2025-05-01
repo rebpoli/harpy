@@ -37,7 +37,7 @@ set(CMAKE_CXX_COMPILER /usr/bin/mpicxx)
 
 # gmsh
 
-find_library(BOOST_FS boost_filesystem)
+find_library(BOOST boost_filesystem)
 find_library(GMSH_LIB gmsh)
 find_path(GMSH_INC gmsh.h)
 include_directories(${GMSH_INC})
@@ -163,8 +163,7 @@ target_link_libraries(Modules ${BOOST_FS})
 target_link_libraries(Modules ${LIBMESH_LIBS})
 
 # To enable stack traces on fail using boost
-target_link_libraries(Modules "-lboost_stacktrace_backtrace -ldl -lbacktrace" )
-
+target_link_libraries(Modules "-lboost_stacktrace_backtrace -ldl -lbacktrace -lboost_serialization -lboost_mpi" )
 
 # Compilar e lincar executável final
 add_executable( harpy src/main/harpy.cpp  )
@@ -196,6 +195,9 @@ target_link_libraries( ut-model-config Modules )
 
 add_executable( ut-viscoplastic demos/UNIT-TEST/06-VISCOPLASTIC/main.cpp  )
 target_link_libraries( ut-viscoplastic Modules )
+
+add_executable( map-mpi-localize demos/UNIT-TEST/08-MAP-MPI-LOCALIZE/map-mpi-localize.cpp  )
+target_link_libraries( map-mpi-localize Modules )
 
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )

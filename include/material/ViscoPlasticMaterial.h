@@ -61,7 +61,7 @@ public:
 
   /// Calculate the stress_system stuff
   void project_stress( Elem & elem_ );
-  void props_at( ViscoplasticIFC::Props & props, const Point & pt, const Elem * elem );
+  void props_at( VPProps & props, const Point & pt, const Elem * elem );
 
   /// Differentiates ViscoPlasticMaterial and ViscoPlasticMaterialBC in runtime
   virtual bool is_bc() { return false; }
@@ -111,7 +111,7 @@ protected:
 public:
   ViscoplasticIFC vp_ifc;
 protected:
-  ViscoplasticIFC::Props * P;   
+  VPProps * P;   
 
   /// Child boundary condition material. Owned by this object because it inherits all its properties
   ViscoPlasticMaterialBC * bc_material;
