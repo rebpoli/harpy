@@ -4,6 +4,7 @@
 #include "material/ViscoPlasticMaterial.h"
 #include "harpy/Timestep.h"
 #include "util/OutputOperators.h"
+#include "util/String.h"
 
 #include "libmesh/mesh.h"
 
@@ -11,7 +12,8 @@
 /**
  *
  */
-ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) : solver(solver_) 
+ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) :
+  solver(solver_) , scalars_fn("run/csv/scalars.csv")
 { }
 
 /**
@@ -19,12 +21,18 @@ ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) : solver(
  */
 void ViscoplasticReport::init()
 {
+  /// PROBE CSV FILES
   for ( Probe * probe : probes ) 
   {
     CsvFile1 ofile(probe->filename, "\t", false);
     ofile << "Time" << "Timestep" << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
-
     init_material( *probe );
+  }
+
+  /// SCALAR CSV FILE
+  {
+    CsvFile1 ofile(scalars_fn, "\t", false);
+    ofile << "Time" << "Timestep" << "Var" << "Value" << endrow;
   }
 }
 
@@ -70,8 +78,36 @@ void ViscoplasticReport::do_export()
     else
       export_by_point( *probe );
   }
+
+  export_scalars();
 }
 
+/**
+ *   Export scalars from the ViscoPlastic System
+ */
+void ViscoplasticReport::export_scalars()
+{
+  double time = solver.ts.time;
+  double t_step = solver.ts.t_step;
+  auto & system = solver.system;
+
+  CsvFile1 ofile(scalars_fn);
+
+  for ( auto & sv : MODEL->boundary_config.scalars )
+  {
+    uint vid = system.variable_number(sv.name);
+    vector<dof_id_type> dofi;
+    system.get_dof_map().SCALAR_dof_indices (dofi, vid);
+    if ( dofi.size() > 1 ) flog << "Scalar variable should have only one DOF.";
+
+    // I assume that the scalars are in all processors ...
+    double val = (*system.current_local_solution)(dofi[0]);
+    using namespace harpy_string;
+
+    ofile << t_step << time << sv.name << CSVSci(val) << endrow;
+  }
+}
+  
 /**
  *
  */

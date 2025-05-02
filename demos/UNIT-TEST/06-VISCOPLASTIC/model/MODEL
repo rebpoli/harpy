@@ -11,10 +11,11 @@ DT0           100
 DTK           2
 DTMAX         85400  # 1 day
 TMAX          1e8
-MAX_STEPS     5
+MAX_STEPS     50000
 
 # List of scalar variables
 .SCALAR
+tri_dy
 
 # List of penalty variables
 # VNAME    PENALTY   VALUE
@@ -36,11 +37,12 @@ DOMAIN         reservoir        T             400
 BOUNDARY       XN               UX            0
 BOUNDARY       XP               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               SYY           -1e6
+BOUNDARY       YP               UY            0
+BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       ZP               UZ            0
-DOMAIN         caprock          T             0
-DOMAIN         reservoir        T             0
+DOMAIN         caprock          T             400
+DOMAIN         reservoir        T             350
 
 # # Increase temperature
 # .TIME   1

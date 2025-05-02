@@ -1,6 +1,6 @@
 # Each system is associated with a mesh
-#.MESH cube-sphere.e
-.MESH cube-hole.e
+.MESH cube-sphere.e
+#.MESH cube-hole.e
 
 #
 # Configuration list: 

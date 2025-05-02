@@ -25,9 +25,12 @@ public:
   void do_export();
   void export_by_point( Probe & probe );
   void export_by_face( GaussProbe & probe );
+  void export_scalars();
 
 private:
 
   ViscoplasticSolver & solver;
   ProbeCol probes;
+
+  string scalars_fn;
 };

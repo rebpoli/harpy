@@ -48,4 +48,5 @@ namespace harpy_string {
   template<typename T>
   using CIMap = map<string, T, ci_cmp>;
 
+  inline string sci_fmt( double dbl ) { ostringstream ss; ss << scientific << dbl; return ss.str(); }
 }

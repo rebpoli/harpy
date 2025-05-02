@@ -253,9 +253,11 @@ void ViscoplasticSolver::set_unassigned_scalars()
   {
     dlog(1) << "Unassigned VID: " << vid;
     dof_map.SCALAR_dof_indices (dofi, vid);
-    for ( uint di : dofi ) {
+    for ( uint di : dofi ) 
+    {
+      dlog(1) << "Added constraint row (di=" << di << ").";
       DofConstraintRow cr;
-      dof_map.add_constraint_row(di, cr, -999, true);
+      dof_map.add_constraint_row(di, cr, 0, true);
     }
   }
 
@@ -263,7 +265,7 @@ void ViscoplasticSolver::set_unassigned_scalars()
   { // Message 
     ostringstream os; 
     for ( auto vid : unassigned_scalars ) os << system.variable_name(vid) << "(" << vid << ")"; 
-    dlog(1) << "Unassigned scalars will be forced to -999: " << os.str();
+    dlog(1) << "Unassigned scalars will be forced to 0: " << os.str();
   }
 }
 
