@@ -9,7 +9,7 @@ STRESS BASE
 .TIMESTEP 
 DT0           100
 DTK           2
-DTMAX         85400  # 1 day
+DTMAX         3000  # 1 day
 TMAX          1e8
 MAX_STEPS     50000
 
@@ -27,9 +27,11 @@ K0    1e15    0
 .INITIAL 
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
+BOUNDARY       YP               UY            0
+BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         caprock          T             400
-DOMAIN         reservoir        T             400
+DOMAIN         SIDEBURDEN          T          400
+DOMAIN         TEST_FRAME        T            400
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
@@ -41,15 +43,7 @@ BOUNDARY       YP               UY            0
 BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
 BOUNDARY       ZP               UZ            0
-DOMAIN         caprock          T             400
-DOMAIN         reservoir        T             350
-
-# # Increase temperature
-# .TIME   1
-# BOUNDARY       XN               UX            0
-# BOUNDARY       ZN               UZ            0
-# BOUNDARY       YN               UY            0
-# BOUNDARY       ZP               SZZ           1e6
-# DOMAIN         caprock          T             100
+DOMAIN         SIDEBURDEN        T            400
+DOMAIN         TEST_FRAME        T            350
 
 

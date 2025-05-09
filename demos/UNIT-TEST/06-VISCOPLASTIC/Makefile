@@ -8,7 +8,7 @@ export CHDEBUG=1
 export N=1
 
 # PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 
-PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 
+PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 50 -ksp_rtol 1e-15 -snes_linesearch_type basic -snes_atol 1e-7 -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 
 
 # PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -ksp_monitor -pc_type lu -ksp_type gmres -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20
 # PETSC_OPT=-snes_monitor -log_view -ksp_monitor -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7
@@ -24,7 +24,9 @@ gdb-%: set-% .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/$*/ut-viscoplastic $(PETSC_OPT)
 
 ## MESH
-mesh: model/cube-hole.e
+mesh: model/cube.e
+
+# Mesh targets
 model/cube-hole.e: model/cube-hole.msh set-opt .force
 	$(topdir)/build/opt/msh2exo --in model/cube-hole.msh --out model/cube-hole.e
 model/cube-hole.msh: model/mesh_single_well.py
@@ -32,9 +34,13 @@ model/cube-hole.msh: model/mesh_single_well.py
 
 model/cube-sphere.msh: model/cube-sphere.py
 	model/cube-sphere.py 
-
 model/cube-sphere.e: model/cube-sphere.msh
 	$(topdir)/build/opt/msh2exo --in model/cube-sphere.msh --out model/cube-sphere.e
+
+model/cube.e: model/cube.msh set-opt .force
+	$(topdir)/build/opt/msh2exo --in model/cube.msh --out model/cube.e
+model/cube.msh: model/cube.py
+	model/cube.py 
 
 gdb: gdb-dbg
 

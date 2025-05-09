@@ -16,12 +16,10 @@ ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m);
 ostream& operator<<(ostream& os, const set<double> & m);
 
 
-ostream& operator<<(ostream& os, const map<string, double> & m);
 ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m);
 
 ostream& operator<<(ostream& os, const pair<uint,uint> & m);
 ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m);
-ostream& operator<<(ostream& os, const map<uint,uint> & m);
 
 
 /**
@@ -152,3 +150,17 @@ ostream& operator<<(ostream& os, const optional<T> & m)
   return os;
 }
 
+
+template <typename T, typename U>
+ostream& operator<<(ostream& os, const map<T,U> & m)
+{
+  os << "[";
+  uint i=0;
+  for ( auto v : m ) {
+    if ( i++ ) os << ", ";
+    os << "'" << v.first << "':";
+    os << v.second;
+  }
+  os << "] ("<< m.size() <<")";
+  return os;
+}

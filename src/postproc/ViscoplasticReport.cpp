@@ -25,14 +25,14 @@ void ViscoplasticReport::init()
   for ( Probe * probe : probes ) 
   {
     CsvFile1 ofile(probe->filename, "\t", false);
-    ofile << "Time" << "Timestep" << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
+    ofile << "Timestep" << "Time(s)" << "Time(day)"  << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
     init_material( *probe );
   }
 
   /// SCALAR CSV FILE
   {
     CsvFile1 ofile(scalars_fn, "\t", false);
-    ofile << "Time" << "Timestep" << "Var" << "Value" << endrow;
+    ofile << "Timestep" << "Time(s)" << "Time(day)" << "Var" << "Value" << endrow;
   }
 }
 
@@ -104,7 +104,7 @@ void ViscoplasticReport::export_scalars()
     double val = (*system.current_local_solution)(dofi[0]);
     using namespace harpy_string;
 
-    ofile << t_step << time << sv.name << CSVSci(val) << endrow;
+    ofile << t_step << time << CSVSci(time/60/60/24) << sv.name << CSVSci(val) << endrow;
   }
 }
   
@@ -119,6 +119,7 @@ void ViscoplasticReport::export_by_point( Probe & probe )
   CsvFile1 ofile(probe.filename);
 
   double time = solver.ts.time;
+  double time_d = time/60/60/24;
   double t_step = solver.ts.t_step;
 
   // Export the probe points stored in the material interfaces
@@ -139,21 +140,21 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       auto & p = probe_ifc->props;
 
       auto & U = p.U;
-      ofile << t_step << time << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
-      ofile << t_step << time << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
-      ofile << t_step << time << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
 
       auto & stot = p.sigtot;
-      ofile << t_step << time << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
-      ofile << t_step << time << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
-      ofile << t_step << time << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
-      ofile << t_step << time << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
-      ofile << t_step << time << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
-      ofile << t_step << time << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
 
       auto & T = p.temperature;
-      ofile << t_step << time << "T" << pt(0) << pt(1) << pt(2) << T << endrow;
-      ofile << t_step << time << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "T" << pt(0) << pt(1) << pt(2) << T << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
     }
   }
 }

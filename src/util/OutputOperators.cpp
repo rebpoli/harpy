@@ -37,17 +37,6 @@ ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m) {
   os << "] ("<< m.size() <<")";
   return os;
 }
-ostream& operator<<(ostream& os, const map<string, double> & m) {
-  os << "[";
-  uint i=0;
-  for ( auto v : m ) {
-    if ( i++ ) os << ", ";
-    os << "'" << v.first << "':";
-    os << v.second;
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}
 
 ostream& operator<<(ostream& os, const pair<uint,uint> & m) {
   os << "("<<m.first<<","<<m.second<<")";
@@ -66,14 +55,3 @@ ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m) {
   return os;
 }
 
-ostream& operator<<(ostream& os, const map<uint,uint> & m) {
-  os << "[";
-  uint i=0;
-  for ( auto v : m ) {
-    if ( i++ ) os << ", ";
-    os << "'" << v.first << "':";
-    os << v.second;
-  }
-  os << "] ("<< m.size() <<")";
-  return os;
-}

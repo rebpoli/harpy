@@ -46,8 +46,8 @@ private:
   void setup_variables();
 
   /// Data organized from configuration
-  CIMap<double> temperature_by_material;
-  CIMap<double> initial_temperature_by_material;
+  map<uint, double> temperature_by_sid;
+  map<uint, double> initial_temperature_by_sid;
 
   friend ostream& operator<<(ostream& os, const ThermalSolverExplicit & m);
 

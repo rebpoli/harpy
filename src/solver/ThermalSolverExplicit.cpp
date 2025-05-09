@@ -102,9 +102,10 @@ ThermalPostProc * ThermalSolverExplicit::get_postproc( const Elem & elem )
 void ThermalSolverExplicit::solve()
 {
   SCOPELOG(1);
-  temperature_by_material.clear();
-  initial_temperature_by_material.clear();
+  temperature_by_sid.clear();
+  initial_temperature_by_sid.clear();
 
+  MeshBase & mesh = get_mesh();
 
 
   ///
@@ -112,12 +113,15 @@ void ThermalSolverExplicit::solve()
   if ( ! bc_config.entry_by_time.count( reftime ) ) flog << "Inconsistency in BCConfig. All _reftime_ must have an entry in entry_by_time.";
   const BCConfig::TimeEntry & timeentry = bc_config.entry_by_time.at( reftime );
   ///
-  for ( auto & [ material, dbcs ] : timeentry.domain_bcs )
-  for ( auto & dbc : dbcs )
+  for ( auto & [ sid_name, dbcs ] : timeentry.domain_bcs )
   {
-    if ( ! iequals ( dbc.vname , "T" ) ) continue;
-    temperature_by_material[ material ] = dbc.value;
-    dlog(1) << "Temperature for '" << material << "': " << dbc.value; 
+    uint sid = mesh.get_id_by_name(sid_name);
+    for ( auto & dbc : dbcs )
+    {
+      if ( ! iequals ( dbc.vname , "T" ) ) continue;
+      temperature_by_sid[ sid ] = dbc.value;
+      dlog(1) << "Temperature for '" << sid_name << "(" << sid << ")" << "': " << dbc.value; 
+    }
   }
 
   /// Fetch the initial (reference) time, where the equilibrium temperature is set
@@ -126,12 +130,15 @@ void ThermalSolverExplicit::solve()
   if ( mapit->first >=0 ) flog << "The initial timeentry should be negative, indicating thne initial condition!";
   const BCConfig::TimeEntry & init_timeentry = mapit->second;
   ///
-  for ( auto & [ material, dbcs ] : init_timeentry.domain_bcs )
-  for ( auto & dbc : dbcs )
+  for ( auto & [ sid_name, dbcs ] : init_timeentry.domain_bcs )
   {
-    if ( ! iequals ( dbc.vname , "T" ) ) continue;
-    initial_temperature_by_material[ material ] = dbc.value;
-    dlog(1) << "Initial Temperature for '" << material << "': " << dbc.value; 
+    uint sid = mesh.get_id_by_name(sid_name);
+    for ( auto & dbc : dbcs )
+    {
+      if ( ! iequals ( dbc.vname , "T" ) ) continue;
+      initial_temperature_by_sid[ sid ] = dbc.value;
+      dlog(1) << "Initial temperature for '" << sid_name << "(" << sid << ")" << "': " << dbc.value; 
+    }
   }
 
   // Feed the element solver with the temperatures
@@ -151,8 +158,10 @@ void ThermalSolverExplicit::project_to_system()
     ExplicitMaterial * mat = get_postproc( *elem );
     mat->reinit( *elem );
 
+    suint sid = elem->subdomain_id();
+
     string mname = mat->name;
-    double temperature = temperature_by_material[ mname ];
+    double temperature = temperature_by_sid[ sid ];
 
     vector<double> temp_qp;
     uint nqp = mat->qrule.n_points();
@@ -191,15 +200,16 @@ void ThermalSolverExplicit::update_reference_solver()
     // We need to feed this interface
     auto & vp_ifc = mat->vp_ifc;
     auto & props = vp_ifc.by_elem[eid];
+    suint sid = elem->subdomain_id();
 
     // Find the temperature of the material
     double temperature = 0;
-    if ( ! temperature_by_material.count( mname ) ) flog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Cannot continue.";
-    temperature = temperature_by_material[ mname ];
+    if ( ! temperature_by_sid.count( sid ) ) flog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Cannot continue.";
+    temperature = temperature_by_sid[ sid ];
     
     double initial_temperature = 0;
-    if ( ! initial_temperature_by_material.count( mname ) ) flog << "No initial temperature defined for material '" << mname << "'.";
-    initial_temperature = initial_temperature_by_material[ mname ];
+    if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
+    initial_temperature = initial_temperature_by_sid[ sid ];
 
     uint nqp = mat->qrule.n_points();
     props.resize(nqp);
@@ -226,7 +236,7 @@ void ThermalSolverExplicit::update_reference_solver()
 ostream& operator<<(ostream& os, const ThermalSolverExplicit & m)
 {
   os << "ThermalSolverExplicit:" << endl;
-  os << "       Name:                      " << m.name << endl;
-  os << "       temperature_by_material:   " << m.temperature_by_material << endl;
+  os << "       Name:                 " << m.name << endl;
+  os << "       temperature_by_sid:   " << m.temperature_by_sid << endl;
   return os;
 }

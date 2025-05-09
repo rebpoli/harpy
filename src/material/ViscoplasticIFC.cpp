@@ -68,9 +68,16 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
   beta_e           = config.get_property( "beta_e",          pt,     "porothermoelastic" );
   lame_mu          = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
   lame_lambda      = config.get_property( "lame_lambda",     pt,     "porothermoelastic" );
-  creep_carter_a   = config.get_property( "a",               pt,     "creep_carter" );
-  creep_carter_q   = config.get_property( "q",               pt,     "creep_carter" );
-  creep_carter_n   = config.get_property( "n",               pt,     "creep_carter" );
+
+  creep_md1_q      = config.get_property( "q",               pt,     "creep_md1" );
+  creep_md1_n      = config.get_property( "n",               pt,     "creep_md1" );
+  creep_md1_eps0   = config.get_property( "eps0",            pt,     "creep_md1" );
+  creep_md1_sig0   = config.get_property( "sig0",            pt,     "creep_md1" );
+
+//  creep_md2_q      = config.get_property( "q",               pt,     "creep_md2" );
+//  creep_md2_n      = config.get_property( "n",               pt,     "creep_md2" );
+//  creep_md2_eps0   = config.get_property( "eps0",            pt,     "creep_md2" );
+//  creep_md2_sig0   = config.get_property( "sig0",            pt,     "creep_md2" );
 
   sigtot = RealTensor();
   plastic_strain_n = RealTensor();
@@ -110,9 +117,16 @@ ostream& operator<<(ostream& os, const VPProps & p)
   os << right << setw(20) << "lame_lambda:" << setw(15) << p.lame_lambda << endl;
   os << right << setw(20) << "alpha_d:" << setw(15) << p.alpha_d << endl;
   os << right << setw(20) << "beta_e:" << setw(15) << p.beta_e << endl;
-  os << right << setw(20) << "creep_carter_a:" << setw(15) << p.creep_carter_a << endl;
-  os << right << setw(20) << "creep_carter_q:" << setw(15) << p.creep_carter_q << endl;
-  os << right << setw(20) << "creep_carter_n:" << setw(15) << p.creep_carter_n << endl;
+
+  os << right << setw(20) << "creep_md1_eps0:" << setw(15) << p.creep_md1_eps0 << endl;
+  os << right << setw(20) << "creep_md1_sig0:" << setw(15) << p.creep_md1_sig0 << endl;
+  os << right << setw(20) << "creep_md1_q:" << setw(15) << p.creep_md1_q << endl;
+  os << right << setw(20) << "creep_md1_n:" << setw(15) << p.creep_md1_n << endl;
+
+  os << right << setw(20) << "creep_md2_eps0:" << setw(15) << p.creep_md2_eps0 << endl;
+  os << right << setw(20) << "creep_md2_sig0:" << setw(15) << p.creep_md2_sig0 << endl;
+  os << right << setw(20) << "creep_md2_q:" << setw(15) << p.creep_md2_q << endl;
+  os << right << setw(20) << "creep_md2_n:" << setw(15) << p.creep_md2_n << endl;
   os << "    State variables:" << endl;
   os << right << setw(20) << "U:" << setw(15) << Print(p.U) << endl;
   os << right << setw(20) << "Temperature:" << setw(15) << p.temperature << endl;

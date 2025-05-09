@@ -47,10 +47,9 @@ optional<string> & MaterialConfig::file_param( string & vname, string context )
     if ( iequals( vname, "beta_d" ) )        return beta_d_file;
   }
 
-  if ( context == "creep_carter" )
-  {
-    // ...
-  }
+  // Various modes of Munson Dawson
+  if ( context == "creep_md1" ) { /* tbd */ }
+  if ( context == "creep_md2" ) { /* tbd */ }
 
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
@@ -78,13 +77,22 @@ optional<double> & MaterialConfig::con_param( string & vname, string context )
   }
 
   /** ** ** **/
-  if ( context == "creep_carter" )
+  if ( context == "creep_md1" )
   {
-    if ( iequals( vname, "a" ) ) return creep_carter_a;
-    if ( iequals( vname, "q" ) ) return creep_carter_q;
-    if ( iequals( vname, "n" ) ) return creep_carter_n;
+    if ( iequals( vname, "q" ) ) return creep_md1_q;
+    if ( iequals( vname, "n" ) ) return creep_md1_n;
+    if ( iequals( vname, "eps0" ) ) return creep_md1_eps0;
+    if ( iequals( vname, "sig0" ) ) return creep_md1_sig0;
+  }
+  if ( context == "creep_md2" )
+  {
+    if ( iequals( vname, "q" ) ) return creep_md2_q;
+    if ( iequals( vname, "n" ) ) return creep_md2_n;
+    if ( iequals( vname, "eps0" ) ) return creep_md2_eps0;
+    if ( iequals( vname, "sig0" ) ) return creep_md2_sig0;
   }
 
+  /** ** ** **/
   flog << "Unknown variable name in Material '" << name << "': " << context << " . " << vname;
   return porosity;
 } 
@@ -111,7 +119,7 @@ double MaterialConfig::get_property( string pname, const Point & xyz, string con
 {
   UNUSED(xyz);
   const optional<double> & prop = con_param(pname, context);
-  if ( ! prop ) flog << "Property '" << prop << "' is not defined for material '" << name << "'.";
+  if ( ! prop ) flog << "Property '" <<context <<"." << pname << "' is not defined for material '" << name << "'.";
 
   return *prop;
 }
@@ -134,10 +142,16 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Poisson Coef:     " << setw(15) << m.poisson      << setw(15) << m.poisson_file << endl;
   os << "                                    Lame_mu:          " << setw(15) << m.lame_mu << endl;
   os << "                                    Lame_lambda:      " << setw(15) << m.lame_lambda << endl;
-  os << "                                 Creep Model (Carter):" << endl ;
-  os << "                                    A:                " << setw(15) << m.creep_carter_a << endl;
-  os << "                                    Q:                " << setw(15) << m.creep_carter_q << endl;
-  os << "                                    N:                " << setw(15) << m.creep_carter_n << endl;
+  os << "                                 Creep Model (MD1):" << endl ;
+  os << "                                    EPS0:             " << setw(15) << m.creep_md1_eps0 << endl;
+  os << "                                    SIG0:             " << setw(15) << m.creep_md1_sig0 << endl;
+  os << "                                    Q:                " << setw(15) << m.creep_md1_q << endl;
+  os << "                                    N:                " << setw(15) << m.creep_md1_n << endl;
+  os << "                                 Creep Model (MD2):" << endl ;
+  os << "                                    EPS0:             " << setw(15) << m.creep_md2_eps0 << endl;
+  os << "                                    SIG0:             " << setw(15) << m.creep_md2_sig0 << endl;
+  os << "                                    Q:                " << setw(15) << m.creep_md2_q << endl;
+  os << "                                    N:                " << setw(15) << m.creep_md2_n << endl;
 
   return os;
 }

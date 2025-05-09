@@ -19,7 +19,8 @@ struct VPProps
 
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
-  double creep_carter_a, creep_carter_q, creep_carter_n;
+  double creep_md1_eps0, creep_md1_sig0, creep_md1_q, creep_md1_n;
+  double creep_md2_eps0, creep_md2_sig0, creep_md2_q, creep_md2_n;
 
   // State variables
   RealTensor GRAD_U;

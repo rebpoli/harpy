@@ -37,7 +37,8 @@ public:
   // Thermal
   optional<double> beta_e, beta_d, alpha_d;
   // Creep (Carter Model)
-  optional<double> creep_carter_a, creep_carter_q, creep_carter_n;
+  optional<double> creep_md1_eps0, creep_md1_sig0, creep_md1_q, creep_md1_n;
+  optional<double> creep_md2_eps0, creep_md2_sig0, creep_md2_q, creep_md2_n;
 
   // Secondary variables (computed from the primary above)
   optional<double> lame_mu, lame_lambda, bulk_modulus;

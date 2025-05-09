@@ -313,9 +313,10 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
-  AD::Mat plastic_strain_rate = deviatoric * 3./2. * P->creep_carter_a *
-                                exp( - P->creep_carter_q / R_ / P->temperature ) *
-                                pow( von_mises/1e6 , P->creep_carter_n-1 ) / 1e6;
+  AD::Mat plastic_strain_rate =  3./2. * P->creep_md1_eps0 *
+                                exp( - P->creep_md1_q / R_ / P->temperature ) *
+                                pow( von_mises/P->creep_md1_sig0 , P->creep_md1_n-1 ) *
+                                deviatoric / P->creep_md1_sig0 ;
 
   // Update the plasteic strain
   AD::Mat plastic_strain = vpsolver.ts.dt * plastic_strain_rate;
@@ -545,11 +546,11 @@ void ViscoPlasticMaterial::props_at( VPProps & p,
   //
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
-  p.plastic_strain_rate = p.deviatoric;
-  p.plastic_strain_rate *= 3./2. * p.creep_carter_a;
-  p.plastic_strain_rate *= exp( - p.creep_carter_q / R_ / p.temperature );
-  p.plastic_strain_rate *= pow( p.von_mises/1e6 , p.creep_carter_n-1 );
-  p.plastic_strain_rate /= 1e6;
+
+  p.plastic_strain_rate =  3./2. * p.creep_md1_eps0 *
+                           exp( - p.creep_md1_q / R_ / p.temperature ) *
+                           pow( p.von_mises/p.creep_md1_sig0 , p.creep_md1_n-1 ) *
+                           p.deviatoric * (1./p.creep_md1_sig0) ;
 
   p.plastic_strain = vpsolver.ts.dt * p.plastic_strain_rate;
   for (uint i=0; i<3; i++ )
