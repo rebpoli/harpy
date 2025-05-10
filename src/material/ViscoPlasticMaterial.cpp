@@ -276,7 +276,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * C_ijkl(i,j,k,l) * grad_u(k,l) ;
+    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;
 
   // Temperature
   //       alpha_d = beta_d * K_bulk
@@ -293,7 +293,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   AD::Mat sigeff(3,3);
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain(k,l) );
+    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain(k,l) );
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
@@ -342,7 +342,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * C_ijkl(i,j,k,l) * plastic_strain(k,l) ;   // using the plastic strain from previous newton K
+    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * plastic_strain(k,l) ;   // using the plastic strain from previous newton K
  
   return ad_Fib;
 }
@@ -511,51 +511,20 @@ void ViscoPlasticMaterial::props_at( VPProps & p,
   FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
   fe->reinit( elem, & pts_to );
 
-  // Compute stuff in the point
-  p.U = 0;
+  // Compute U and GRAD_U at the point
+  RealVectorValue U = 0;
   for ( uint B=0; B<n_dofsv; B++ )
   for ( uint i=0; i<3; i++ )
-    p.U(i) += phi[B][0] * val( Uib(i,B) );
+    U(i) += phi[B][0] * val( Uib(i,B) );
 
-  p.GRAD_U = 0;
+  RealTensor GRAD_U;
   for ( uint B=0; B<n_dofsv; B++ )
   for ( uint i=0; i<3; i++ )
   for ( uint j=0; j<3; j++ )
-    p.GRAD_U(i,j) += dphi[B][0](j) * val( Uib(i,B) );
+    GRAD_U(i,j) += dphi[B][0](j) * val( Uib(i,B) );
 
-  RealTensor sigeff;
-  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
-  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += p.C_ijkl(i,j,k,l) * ( p.GRAD_U(k,l) - p.plastic_strain(k,l) );
-
-  p.sigtot = sigeff;
-  for (uint k=0; k<3; k++ ) 
-    p.sigtot(k,k) -= p.alpha_d * ( p.temperature - p.initial_temperature );
-
-  p.deviatoric = p.sigtot;
-  for (uint i=0; i<3; i++ )
-  for (uint k=0; k<3; k++ ) 
-    p.deviatoric(i,i) -= (1./3.) * p.sigtot(k,k);
-
-  double J2=0;
-  for (uint i=0; i<3; i++ )
-  for (uint j=0; j<3; j++ ) 
-    J2 += (1./2.) * p.deviatoric(i,j) * p.deviatoric(i,j);
-
-  p.von_mises = sqrt( 3 * J2 );
-  //
-  // Compute plastic strain rate
-  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
-
-  p.plastic_strain_rate =  3./2. * p.creep_md1_eps0 *
-                           exp( - p.creep_md1_q / R_ / p.temperature ) *
-                           pow( p.von_mises/p.creep_md1_sig0 , p.creep_md1_n-1 ) *
-                           p.deviatoric * (1./p.creep_md1_sig0) ;
-
-  p.plastic_strain = vpsolver.ts.dt * p.plastic_strain_rate;
-  for (uint i=0; i<3; i++ )
-  for (uint j=0; j<3; j++ ) 
-    p.plastic_strain(i,j) += p.plastic_strain_n(i,j);
+  // Update the VPProps stresses, plasticity etc
+  p.update( U, GRAD_U, vpsolver.ts.dt );
 }
 
 

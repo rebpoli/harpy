@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python -i
+#!/usr/bin/env -S python
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,7 +18,13 @@ fig, ax = plt.subplots()
 sxxdf = df[ df.Var == "STOTXX" ]
 sxxdf = sxxdf[ sxxdf.X > -0.02 ]
 sxxdf = sxxdf[ sxxdf.X <  0 ]
-ax.plot( sxxdf["Time(day)"], sxxdf["Value"] )
+
+##
+ax.plot( sxxdf["Time(day)"], sxxdf["Value"], marker='x', markersize=2)
+##
+
 ax.set_xscale('log')
+ax.set_xlabel("Time (days)")
+ax.set_ylabel(r"Stress at the sphere center ($\sigma_{xx}$) - MPa")
 
 plt.show()

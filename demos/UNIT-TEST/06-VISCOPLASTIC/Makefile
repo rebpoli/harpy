@@ -44,4 +44,7 @@ model/cube.msh: model/cube.py
 
 gdb: gdb-dbg
 
+plot: .force
+	py/plot_lin0.py
+
 .force:

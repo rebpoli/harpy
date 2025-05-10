@@ -86,6 +86,50 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
 
 /**
  *
+ *
+ */
+void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
+                      double dt )
+{
+  U=U_; GRAD_U = GRAD_U_;
+
+  RealTensor sigeff;
+  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+    sigeff(i,j) += C_ijkl(i,j,k,l) * ( GRAD_U(k,l) - plastic_strain(k,l) );
+
+  sigtot = sigeff;
+  for (uint k=0; k<3; k++ ) 
+    sigtot(k,k) -= alpha_d * ( temperature - initial_temperature );
+
+  deviatoric = sigtot;
+  for (uint i=0; i<3; i++ )
+  for (uint k=0; k<3; k++ ) 
+    deviatoric(i,i) -= (1./3.) * sigtot(k,k);
+
+  double J2=0;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
+
+  von_mises = sqrt( 3 * J2 );
+  //
+  // Compute plastic strain rate
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+
+  plastic_strain_rate =  3./2. * creep_md1_eps0 *
+                           exp( - creep_md1_q / R_ / temperature ) *
+                           pow( von_mises/creep_md1_sig0 , creep_md1_n-1 ) *
+                           deviatoric * (1./creep_md1_sig0) ;
+
+  plastic_strain = dt * plastic_strain_rate;
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    plastic_strain(i,j) += plastic_strain_n(i,j);
+}
+
+/**
+ *
  */
 ostream& operator<<(ostream& os, const ViscoplasticIFC & m)
 {

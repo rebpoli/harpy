@@ -16,6 +16,8 @@ struct VPProps
   void init_from_config( const MaterialConfig & config, const Point & pt );
   // Calculated properties
   inline double C_ijkl( uint i, uint j, uint k, uint l);
+  // Calculate stresses from displacements
+  void update( const RealVectorValue & U_, const RealTensor & GRAD_U_, double dt );
 
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
@@ -139,7 +141,10 @@ namespace boost { namespace serialization {
 /** **/
 template<class Archive>
 void serialize(Archive & ar, VPProps & p, const unsigned int version)
-{ ar & p.lame_mu; ar & p.lame_lambda; ar & p.GRAD_U; ar & p.U; ar & p.sigtot; } 
+{
+  ar & p.lame_mu; ar & p.lame_lambda; ar & p.GRAD_U;
+  ar & p.U; ar & p.sigtot; ar & p.temperature;
+} 
 /** **/
 template<class Archive>
 void serialize(Archive & ar, ProbeIFC & p, const unsigned int version)

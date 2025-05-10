@@ -73,9 +73,6 @@ public:
   string hello() { return "ViscoPlasticMaterial"; }
 
 private:
-  /// Calc Cijkl from lame constants
-  inline double C_ijkl(uint i, uint j, uint k, uint l);
-
   /// Creates the variables in the stress system
   void setup_variables();
 
@@ -157,17 +154,6 @@ private:
   optional<RealTensor> sigtot;
 
 };
-
-
-/**
- *
- */
-inline double ViscoPlasticMaterial::C_ijkl( uint i, uint j, uint k, uint l) {
-  const auto kd = Math::kronecker_delta;  // From Global
-
-  return P->lame_lambda * ( kd(i,j)*kd(k,l) ) 
-           + P->lame_mu * ( kd(i, k)*kd(j, l) + kd(i, l)*kd(j, k) );
-}
 
 /**
  *  Advances in the quadrature integration point.
