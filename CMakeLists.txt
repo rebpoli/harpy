@@ -199,6 +199,9 @@ target_link_libraries( ut-viscoplastic Modules )
 add_executable( map-mpi-localize demos/UNIT-TEST/08-MAP-MPI-LOCALIZE/map-mpi-localize.cpp  )
 target_link_libraries( map-mpi-localize Modules )
 
+add_executable( templated-namespaces demos/UNIT-TEST/09-TEMPLATED-NAMESPACES/templated-namespaces.cpp )
+target_link_libraries( templated-namespaces Modules )
+
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )
 #   target_link_libraries( FractureNodeSplit Modules )
