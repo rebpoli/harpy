@@ -1,0 +1,915 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.5cm, top=1cm]{geometry}
+\usepackage{amsmath,amssymb,scalerel}
+\usepackage{bbm}
+\usepackage{stmaryrd} % for symbols like \llbracket
+\usepackage{mathabx}
+\usepackage{bm}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage[scr=rsfs,cal=boondox]{mathalfa}
+
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{../ref.bib}
+
+
+
+\title{Crk3 formulation}
+\author{Renato Poli}
+\begin{document}
+\maketitle
+\hrule
+
+% some accelarators
+\def\u{\bm{u}}
+\def\n{\bm{n}}
+\def\K{\bm{K}}
+\def\F{\bm{F}}
+\def\I{\bm{I}}
+\def\U{\bm{U}}
+\def\w{\bm{w}}
+\def\W{\bm{W}} 
+\def\N{\bm{N}}
+\def\x{\bm{x}}
+\def\X{\bm{X}}
+\def\cF{\mathcal{F}}
+\def\CC{\mathbb{C}}
+\def\cc{\mathbbm{c}}
+\newcommand{\cof}{\mathop{\mathrm{cof}}}
+\newcommand{\adj}{\mathop{\mathrm{adj}}}
+\newcommand{\tr}{\mathop{\mathrm{tr}}}
+\def\eps{\bm{\varepsilon}}
+\def\jmp#1{\llbracket #1 \rrbracket}
+\def\ss#1#2#3{\tiny\substack{#1\\#2\\#3}}
+
+\section{Fracture storage}
+
+\[
+  \zeta_f = \frac{\delta a_f}{a_f} 
+      + c_f \delta p
+      - \beta_f \delta T \\
+\ ,\]
+and we need the term
+\begin{align}
+  \label{eqn:zeta_variational}
+  ( \tilde{\psi}, a_f \dot{\zeta}_f )_{\tilde{\Omega}} =  
+    ( \tilde{\psi}, \delta \dot{a}_f) 
+  + ( \tilde{\psi}, a_f c_f \delta \dot{p})
+  - ( \tilde{\psi}, a_f \beta_f \delta \dot{T} )
+\ ,
+\end{align}
+where 
+\begin{align*}
+  a_f &= \jmp{\u} \cdot \n^+ \ =
+         ( \u^+-\u^- ) \cdot \n^+ = 
+         \sum_{d=1}^2 u^d_k\ n^d_k \ =
+         u^d_k\ n^d_k \ .
+\end{align*}
+where $d=0$ for the element in the $+$ side of the fracture and $d=1$ for the element in the $-$ side.
+
+Opening the terms in \eqref{eqn:zeta_variational} into coefficients (assuming $p$ to be a step constant):
+\begin{align*}
+  + ( \tilde{\psi}, \delta \dot{a}_f) \Delta t : & \\
+               \K \ss{\beta\gamma}{pd}{0k} & \quad = \quad
+                   \tilde{\psi}^\beta\   \quad
+                   (-1)^d\               \quad
+                   \phi\ss{\gamma}{d}{}  \quad
+                   n\ss{}{+}{k}          \\
+               \F \ss{\beta}{p}{0} &   \quad = \quad
+                   \tilde{\psi}^\beta\   \quad
+                   (-1)^d\               \quad
+                   \phi\ss{\gamma}{d}{}  \quad
+                   n\ss{}{+}{k}          \quad
+                   \check{u} \ss{\gamma}{d}{k} 
+\ \ , \\      
+ + ( \tilde{\psi}, a_f c_f \delta \dot{p}) \Delta t : & \\
+               \K \ss{\beta\gamma}{pd}{0k} & \quad = \quad
+                   c_f                   \quad
+                   \tilde{\psi}^\beta\   \quad
+                   (-1)^d\               \quad
+                   \phi\ss{\gamma}{d}{}  \quad
+                   n\ss{}{+}{k}          \quad 
+                   \Delta p               
+\ \ , \\      
+ - ( \tilde{\psi}, a_f \beta_f \delta \dot{T} ) \Delta t : & \\
+               \K \ss{\beta\gamma}{pd}{0k} & \quad = \quad
+                   \beta_f               \quad
+                   \tilde{\psi}^\beta\   \quad
+                   (-1)^{d+1}            \quad
+                   \phi\ss{\gamma}{d}{}  \quad
+                   n\ss{}{+}{k}          \quad 
+                   \Delta T               
+\ \ .
+\end{align*}
+where $\check{u}$ refers to the (known) solution in the previous timestep, and $c_f= \frac{1}{K_f}$.
+$\Delta p$ and $\Delta T$ are the delta of $p$ and $T$ from the previous timestep to the current.
+
+
+\newpage
+\section{Derivatives for nonlinear solution}
+
+Both pressure and displacements are variables of the system.
+We need to derive some non-linear term for Newton's method.
+Let:
+\begin{align*}
+ f = \left( \tilde{\psi}, \quad
+             a_f\ 
+             c_f\  
+             \delta \dot{p} \right) \Delta t = 
+ \sum_{d=1}^2 \left( \tilde{\psi}, \quad
+                         c_f\ 
+                         n^d_k\ 
+                         u^d_k\ 
+                         \delta \dot{p}
+      \right) \Delta t 
+      \quad .
+\end{align*}
+where $d=0$ for the element in the $+$ side of the fracture and $d=1$ for the element in the $-$ side.
+Then,the partial derivatives are
+\begin{align*}
+  \frac{\partial f}{\partial p} = 
+       \sum_{d=1}^2 \left( \tilde{\psi}, \quad
+                               c_f\ 
+                               n^d_k\ 
+                               u^d_k 
+            \right) \Delta t 
+      \quad ,
+\end{align*}
+and
+\begin{align*}
+  \frac{\partial f}{\partial u\ss{}{d}{k}} = 
+       \left( \tilde{\psi}, \quad
+                         c_f\ 
+                         n^d_k\ 
+                         \delta \dot{p}\ 
+            \right) \Delta t 
+        \quad .
+\end{align*}
+
+
+\newpage
+\section{Discontinuous galerkin for pressure}
+
+Reference: (Ruijie Liu, 2004) - PhD dissertation
+
+Our equation:
+\begin{align*}
+  \alpha \nabla \cdot \dot{u}
+  + S_\epsilon\ \dot{p} 
+  - \nabla \cdot ( \check{\kappa} \nabla p) 
+  = 0
+\end{align*}
+Weak formulation:
+\begin{align*}
+  ( w, \alpha \nabla \cdot \dot{u} )
+  + (w, S_\epsilon\ \dot{p} )
+  - ( w, \nabla \cdot ( \check{\kappa} \nabla p)  )
+  = 0 \quad\quad \forall w
+\end{align*}
+Lets focus our attention to the last term. Integrate by parts:
+\begin{align*}
+  - ( w, \nabla \cdot ( \check{\kappa} \nabla p)  ) =
+        ( \nabla w, \check{\kappa} \nabla p )
+        - ( w, \check{\kappa} \nabla p \cdot \n )_{\Gamma}
+\end{align*}
+When we sum element by element, the last term in $\Gamma$ results in the edge skeleton $\Gamma_i$ 
+and the outside boundary $\Gamma_p$.
+
+The full equation becomes a summation of the following:
+\begin{align*}
+  ( w, \alpha \nabla \cdot \dot{u} )_{\Omega_E}
+  + (w, S_\epsilon\ \dot{p} )_{\Omega_E}
+  + ( \nabla w, \check{\kappa} \nabla p )_{\Omega_E}
+  - ( w, \check{\kappa} \nabla p \cdot \n )_{\Gamma_i}
+  - ( w, \check{\kappa} \nabla p \cdot \n )_{\Gamma_p}
+  = 0 \quad\quad \forall w
+\end{align*}
+where $\Omega_E$ is the element interiors
+
+We observe the following identity:
+\begin{align}
+  \label{eqn:dg_term}
+  - ( w, \check{\kappa} \nabla p \cdot \n )_{\Gamma_i} =
+  - ( \jmp{w}, \check{\kappa} \{\nabla p\})_{\Gamma_i} 
+  - ( \check{\kappa} \jmp{\nabla p}, \{w\})_{\Gamma_i} 
+\end{align}
+where
+\begin{align*}
+  \jmp{w} &= w^+ \n^+ + w^- \n^- \\
+  \{w\} &=  0.5 \times ( w^+ + w^- ) 
+\end{align*}
+and similarly
+\begin{align*}
+  \jmp{\nabla p} &= \nabla p^+ \cdot \n^+ + \nabla p^- \cdot \n^- \\
+  \{\nabla p\} &=  0.5 \times ( \nabla p^+ + \nabla p^- ) 
+\end{align*}
+Define $d=0$ for $+$ and $d=1$ for $-$ and similarly $e=0$ for $+$ and $e=1$ for $-$. 
+The above can be written as summations in $d$ :
+\begin{align*}
+  \jmp{w} &= \sum_d w^d n^d_k   \\
+  \{w\}    &= 0.5 \times \sum_d w^d \\
+  \jmp{\nabla p} &= \sum_e p_{,k}^e n_k^e   \\
+  \{\nabla p\}    &= 0.5 \times \sum_e p_{,k}^e
+\end{align*}
+Replace the above in \eqref{eqn:dg_term} suppressing the summation sign in $d$ and $e$:
+\begin{align*}
+  - ( w, \check{\kappa}\ \nabla p \cdot \n )_{\Gamma_i} =
+  - 0.5 \times \left[ 
+        \left( w^d\ n^d_k,\quad \check{\kappa}\ p_{,k}^e \right)_{\Gamma_i} 
+      \quad+\quad 
+        \left( \check{\kappa}\ p_{,k}^e\ n^e_k ,\quad  w^d \right)_{\Gamma_i} 
+    \right]
+\end{align*}
+
+Finally, we add an interior penalty term:
+\begin{align*}
+  \frac{\delta_p}{|s|} \left( \jmp{p} , \jmp{w} \right)_{\Gamma_i}
+\end{align*}
+
+The final expression is:
+\begin{align*}
+  & ( w, \alpha \nabla \cdot \dot{u} )_{\Omega_E}
+  + (w, S_\epsilon\ \dot{p} )_{\Omega_E}
+  + ( \nabla w, \check{\kappa} \nabla p )_{\Omega_E}
+  - ( w, \check{\kappa} \nabla p \cdot \n )_{\Gamma_p}\\[10pt]
+  & - ( \jmp{w}, \check{\kappa} \{\nabla p\})_{\Gamma_i} 
+  - ( \check{\kappa} \jmp{\nabla p}, \{w\})_{\Gamma_i} \\[10pt]
+  & + \frac{\delta_p}{|s|} \left( \jmp{p} , \jmp{w} \right)_{\Gamma_i}
+  = 0 \quad\quad \forall w
+\end{align*}
+
+\newpage
+\section{An identity}
+\begin{align*}
+  ( w, \u \cdot \n )_{\Gamma_i}
+              &= ( w^+, \u^+ \cdot \n_+ )_{\Gamma_i} + ( w^-, \u^- \cdot \n^- )_{\Gamma_i}\\
+              &= ( \jmp{w} , \{\u\} ) + ( \jmp{\u}, \{ w \} ) \\
+              &= 0.5\times ( w^D ,\quad \u^E \cdot \n^E )_{\Gamma_i}        &+&
+                 0.5\times ( \u^D ,\quad w^E\ \n^E )_{\Gamma_i} \\
+              &= 0.5\times (-1)^E ( w^D ,\quad \u^E \cdot \n^+ )_{\Gamma_i} &+&
+                 0.5\times (-1)^E ( \u^D ,\quad w^E\ \n^+ )_{\Gamma_i} \\
+              &= 0.5\times (-1)^E ( w^D ,\quad \u^E \cdot \n^+ )_{\Gamma_i} &+&
+                 0.5\times (-1)^D ( w^D ,\quad \u^E\ \n^+ )_{\Gamma_i} \\
+              &= 0.5\times \left[ (-1)^E + (-1)^D \right] ( w^D ,\quad \u^E \cdot \n^+ )_{\Gamma_i} \\
+              &= \delta^{DE} (-1)^D ( w^D ,\quad \u^E \cdot \n^+ )_{\Gamma_i} \\
+              &= (-1)^D ( w^D ,\quad \u^D \cdot \n^+ )_{\Gamma_i} \\
+              &= ( w^D ,\quad \u^D \cdot \n^D )_{\Gamma_i} \\
+\end{align*}
+
+An alternative derivation:
+\begin{align*}
+  & ( \jmp{w} , \{\u\} ) + ( \jmp{\u}, \{ w \} ) = \\
+              &= 0.5\times ( w^D ,\quad \u^E \cdot \n^E )_{\Gamma_i} +
+                 0.5\times ( \u^D ,\quad w^E\ \n^E )_{\Gamma_i}\\
+    &= \\
+    &\quad\quad (w^+, \u^+\cdot\n^+)    \quad+\quad   (\u^+, w^+ \n^+) \\
+    &\quad\quad \textcolor{red}{(w^-, \u^+\cdot\n^+)}    \quad+\quad   \textcolor{red}{(\u^+, w^- \n^-)} \\
+    &\quad\quad \textcolor{blue}{(w^+, \u^-\cdot\n^-)}   \quad+\quad   \textcolor{blue}{(\u^-, w^+ \n^+)} \\
+    &\quad\quad (w^-, \u^-\cdot\n^-)    \quad+\quad   (\u^-, w^- \n^-) \\
+    &= \\
+    &\quad\quad (w^+, \u^+\cdot\n^+)    \quad+\quad   (\u^+, w^+ \n^+) \\
+    &\quad\quad (w^-, \u^-\cdot\n^-)    \quad+\quad   (\u^-, w^- \n^-) \\
+    &= \\
+    &\quad\quad ( w^D ,\quad \u^D \cdot \n^D )_{\Gamma_i} \\
+\end{align*}
+
+\newpage
+\section{Viscoelasticity (Creep)}
+
+We follow the workflow by \textcite{kumar2021} for the formulation of the viscoelastic model for salt.
+According to \parencite{carter1993}, the strain of a solid is
+\begin{align}
+  \eps=\eps^e+\eps^p+\eps^t+\eps^s+\eps^a \quad,
+\end{align}
+where the superscripts stand for elastic, plastic, transient (or primary or decelerating creep), steady-state (or secondary creep) and accelerating (or tertiary creep), respectively.
+
+\subsection{Multiaxial creep - development}
+
+\begin{align*}
+ & \sigma_e^2= \frac{3}{2} \tau_{ij} \tau_{ij} \\
+ & \tau_{ij} = \sigma_{ij} - \frac{1}{3} \sigma_{kk} \delta_{ij}
+\end{align*}
+Now we want to develop the equality:
+\begin{align*}
+  \dot{\varepsilon}_{ij}^s = \frac{\partial \sigma_e}{\partial \sigma_{ij}} \dot{\bar{\varepsilon}} = \frac{3}{2} \frac{\tau_{ij}}{\sigma_e}\ \dot{\bar{\varepsilon}}^s 
+\end{align*}
+Hence:
+\begin{align*}
+ 2 \sigma_e \ \partial\sigma_e &= 3 \tau_{ij} \ \frac{\partial\tau_{ij}}{\partial \sigma_{kl}} \partial \sigma_{kl}  \\
+                               &= 3 \tau_{ij} \ \left[\frac{\partial\sigma_{ij}}{\partial \sigma_{kl}} - \frac{1}{3} \frac{\partial\sigma_{mm}}{\partial\sigma_{kl}}\right]\ \partial \sigma_{kl}  \\
+                               &= 3 \tau_{ij} \ \left[\delta_{ik}\delta_{jl} - \frac{1}{3} \delta_{kl}\delta_{ij}\right]\ \partial \sigma_{kl}  \\
+                               &= 3 \tau_{kl}\partial\sigma_{kl} - \tau_{ii}\partial\sigma_{kl}\delta_{kl} \\
+                               &= 3 \tau_{kl}\partial\sigma_{kl} 
+\end{align*}
+because $\tau_{ii}=0$. Hence:
+\begin{align*}
+  \frac{\partial\sigma_e}{\partial\sigma_{kl}} = \frac{3}{2} \frac{\tau_{kl}}{\sigma_e}
+\end{align*}
+%
+%
+%
+%
+%
+\subsection{Carter model}
+
+The starting point is Carter's model \parencite{carter1993}.
+We write in the normalized way so that the constants have rational units \parencite{dusseault1993}, and dimensionless parameters.
+The expression for the creep model is the following power-law for steady-state creep is obtained from the lab for uniaxial strain as
+\begin{align}
+  \dot{\bar{\varepsilon}}^{s} =
+      \varepsilon_0\  
+      \exp\left({-\frac{Q}{RT}}\right)\ 
+      \left(\frac{\sigma_e}{\sigma_0}\right)^n 
+\end{align}
+where $\sigma_0$ is a normalization stress arbitrary in some sense as it is a fitting parameter together with $\varepsilon_0$.
+It can be seen as a critical stress for transition of regimes (when the quotient approaches $1$, we can continuously change the exponent $n$). See \parencite{dusseault1987, poiate2012} .
+Table \ref{tab:carter_symbols} describes the variables.
+
+Now we express the creep flow rule in tensor form under multiaxial stress conditions \parencite{xu2018,kraus1980,hyde2014}, as:
+\begin{align}
+  \dot{\varepsilon}_{ij}^s = \frac{\partial \sigma_e}{\partial \sigma_{ij}} \dot{\bar{\varepsilon}} = \frac{3}{2} \frac{\tau_{ij}}{\sigma_e}\ \dot{\bar{\varepsilon}}^s 
+\end{align}
+where $\sigma_e$ is an effective stress measure (here assumed Von Misses) and $\tau_{ij}$ is the stress deviator tensor.
+\begin{align}
+  \sigma_e^2 = \frac{3}{2}\ \tau_{ij} \tau_{ij} \\
+  \tau_{ij} = \sigma_{ij} - \frac{1}{3} \sigma_{kk} \delta_{ij}
+\end{align}
+Equivalent expressions for $\sigma_e$ are
+\begin{align}
+  & \sigma_e^2=3\ J_2 \quad\quad J_2=0.5\times \tau_{ij}\tau_{ij} \\
+ & \sigma_e^2 = 0.5\times\left[ 
+        (\sigma_{xx} - \sigma_{yy})^2  + (\sigma_{yy} - \sigma_{zz})^2  + (\sigma_{zz} - \sigma_{xx})^2  +
+        6\ ( \sigma_{xy}^2 + \sigma_{yz}^2 + \sigma_{xz}^2 )
+    \right] \\
+ &   \sigma_e^2 = \frac{3}{2} \sigma_{ij} \sigma_{ij} - \frac{1}{2} (\sigma_{kk}^2 )
+\end{align}
+where $J_2$ is the second invariant of the stress deviator tensor.
+We can use Carter's law to write
+\begin{align}
+  \dot{\varepsilon}_{ij}^s =
+          \frac{3}{2}\ \varepsilon_0\ 
+          \exp\left({-\frac{Q}{RT}}\right)\ 
+          \left(\frac{\sigma_e}{\sigma_0}\right)^n\ 
+          \left(\frac{\tau_{ij}}{\sigma_e}\right)
+\end{align}
+An alternative writing for this equation, as e.g. in \parencite{kumar2021}, is 
+\begin{align}
+  \dot{\varepsilon}_{ij}^s =
+          \frac{3}{2}\ A\ 
+          \exp\left({-\frac{Q}{RT}}\right)\ 
+          \sigma_e^{n-1}\ 
+          \tau_{ij}
+\end{align}
+where $A=\varepsilon_0/\sigma_0^n$. However, the units of $A$ are $MPa^{-n}$ and $A$ and $n$ are mutually dependent.
+The use of $\sigma_0$ is convenient for decoupling and different creep modes can be calibrated using only $n$, for example.
+Alternativelly, we can use the strategy by \parencite{dusseault1987}, with a critical stress and sharp transitions between modes..
+\begin{align}
+  A= \frac{\varepsilon_0}{\sigma_0^n}
+          \exp\left({\frac{Q}{RT}}\right)\ 
+\end{align}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{ c c c }
+\hline Variable & Unit & Description \\
+\hline $R$ & J mol$^{-1}$ K$^{-1}$  & Universal gas constant ($R=8.3144$)\\
+\hline $T$ & K                      & Temperature \\
+\hline $Q$ & J mol$^{-1}$          & Apparent activation energy \\
+\hline $n$ & $-$                     & Material constant \\
+\hline $\varepsilon_0$ & $-$     & Material constant \\
+\hline $\sigmae_0$ & MPa           & Material constant \\
+\hline $\sigma_e$ &MPa                 & Differential stress ($\sigma_1-\sigma_3$), or von mises, or Tresca. \\
+\hline
+\end{tabular}
+\caption{Symbols in Carter model}
+\label{tab:carter_symbols}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{ c c }
+\hline Variable & Value \\
+\hline $Q$      & $51.6 \times 10^{-3}$ J mol$^{-1}$  \\ 
+\hline $R$      & $8.3144$ J mol$^{-1}$ K$^{-1}$ \\ 
+\hline $A$      & $8.1\times 10^{-5}$ MPa$^{-n}$ s$^{-1}$  \\ 
+\hline
+\end{tabular}
+\caption{Values for initial testcase, to compare with results from \textcite{carter1993} and \textcite{kumar2021}.}
+\label{tab:carter_values_0}
+\end{table}
+
+\subsection{Creep in small strains}
+Let $\eps^s$ be the steady state creep history, so that
+\begin{align*}
+  \eps^s (t+\Delta t) &= \eps^s(t) + \Delta \eps^s(t+\theta) \quad, \\
+  \Delta \eps^s &= \dot{\eps}(t)\ \Delta t
+\end{align*}
+is an explicit timetepping. We can calculate $\dot{\eps}^s$ from the previous section.
+
+The problem statement is:
+
+Find $\u\in\mathcal{V}$ such that $\forall \w\in\mathcal{W}$
+\begin{align*}
+  & (w_{i,j},\ \sigma_{ij}) - (w_i,\ \mathcal{f}_i) - (w_i,\ \mathcal{h}_i)_{\Gamma_h} = 0 \\
+  & \sigma_{ij} = \CC_{ijkl}\ \varepsilon^e_{kl} \\
+  & \varepsilon^e_{kl} = \varepsilon_{kl} - \varepsilon^s_{kl} \\
+  & \varepsilon_{kl} = 0.5\times(u_{k,l} + u_{l,k}) \\
+  & u_i = \mathcal{g}_i                                & \text{on } \Gamma_g \\
+  & \sigma_{ij}\ n_j = \mathcal{h}_i                     & \text{on } \Gamma_h 
+\end{align*}
+where $\Omega$ is the domain of the the bilinear operators whenever ommitted.
+$u_i$ agregates the unknown and known (Dirichlet) degrees of freedom, as usual.
+
+The creep term is integrated in time and added to the equilibrium equation as
+\begin{align*}
+  & (w_{i,j},\ \CC_{ijkl}\ u_{k,l}) - (w_{i,j},\ \CC_{ijkl}\ \varepsilon^s_{kl}) - (w_i,\ \mathcal{f}_i) - (w_i,\ \mathcal{h}_i)_{\Gamma_h} = 0 
+\end{align*}
+
+\subsection{Creep integration with large strain elasticity}
+For small timesteps, we can determine the creep strain variation explicitely:
+\begin{align*}
+  \eps^s (t+\Delta t) = \eps^s(t) + \Delta \eps^s(t+\theta) 
+\end{align*}
+where $\theta$ indicates the time when the increment in creep strain is measured.
+We start using an explicit measurement, $\theta=0$ (stable for small $\Delta t$), so that
+\begin{align*}
+\Delta \eps^s=\dot{\eps}(t)\ \Delta t
+\end{align*}
+Before moving to the next timestep, recalculate the stresses using the above creep strain.
+Check for a threshold and reduce the time increment if necessary.
+
+Rewrite the mechanical equilibrium equation with the creep increments.
+We know how to solve elastic stresses, so:
+\begin{align*}
+  &  \cF = ( W_{i,I},\  P_{iI}^e )_{\Omega_0} - ( W_i,\ \tilde{T}_i )_{\Gamma_H} = 0\\
+  &  P_{iI}^e = P_{iI} - P_{iI}^s 
+\end{align*}
+We need to move the creep contribution $P_{iI}^s$ to the current configuration:
+\begin{align*}
+ &  P_{iI}^s  = J \ \sigma_{ij}^s \ F^{-1}_{Ij} \\
+ &  \cF  = (W_{i,I},\ P_{iI})_{\Omega_0} - ( W_{i,I},\  J \ \sigma_{ij}^s \ F^{-1}_{Ij} )_{\Omega_0} - ( W_i,\ \tilde{T}_i )_{\Gamma_H} = 0
+\end{align*}
+Now we must calculate $\sigma_{ij}^s$:
+\begin{align*}
+  &  \sigma_{ij}^s = \cc_{ijkl}\ \varepsilon_{kl}^s \\
+  & \cc_{ijkl} = J^{-1}\ F_{iI}F_{jJ}F_{kK}F_{lL}\  \CC_{IJKL}
+\end{align*}
+\begin{align*}
+  &  P_{iI}^e = F_{iJ}\ S_{JI} \\
+  &  S_{JI}^e = \CC_{JIKL}\ E_{KL}^e \\
+  &  E_{KL}^e = E_{KL} - E_{KL}^s
+\end{align*}
+where $E_{KL}^e$ is the elastic behavior of the Green-Lagrange strain and $E_{KL}^s$ is the GL strain for the secondary creep.  We now need to compute $E_{KL}^s$ from $\eps^s$:
+\begin{align*}
+  \varepsilon^e_{ij}
+\end{align*}
+
+\newpage
+\section{Large Strains formulation for elasticity}
+
+%
+%
+%
+%
+%
+\subsection{Some definitions}
+
+The deformation gradient $\F$:
+\begin{align}
+  \F = \frac{\partial \bm{x}}{\partial \bm{X}} = \frac{\partial\u}{\partial\bm{X}} + \bm{I} 
+\end{align}
+or, equivalently
+\begin{align}
+  F_{iJ} = u_{i,J} + \delta_{iJ}
+\end{align}
+and
+\begin{align}
+  J= \det{\F} \quad.
+\end{align}
+First and second Piola Kirchhoff
+\begin{align}
+& P_{iI} = F_{iJ}\ S_{JI} \\
+& \CC_{IJKL} = \frac{\partial S_{IJ}}{\partial E_{KL}} \\
+& \cc_{ijkl} = J^{-1}\ F_{iI}F_{jJ}F_{kK}F_{lL}\  \CC_{IJKL}
+\end{align}
+
+
+
+%
+%
+%
+%
+%
+\subsection{Elasticity derivation}
+
+Articulating things in the initial configuration:
+\begin{align}
+  & \nabla \cdot P = 0 & \text{on }\Omega_0 \\
+  & U = \tilde{U}      & \text{on }\Gamma_G \\
+  & T=P\ N=\tilde{T}      & \text{on }\Gamma_H 
+\end{align}
+
+The weak form is
+\begin{align}
+  \cF = ( W_{i,I},\  P_{iI} )_{\Omega_0} - ( W_i,\ \tilde{T}_i )_{\Gamma_H} = 0
+\end{align}
+We want to linearize $\cF$.
+\begin{align}
+  D\cF(\varphi)\cdot\Delta U_i =
+       \frac{d}{d\varepsilon}\bigg( W_{i,I},\ P_{iI}(\varphi+\varepsilon\Delta U_i) \bigg)_{\Omega_0} \bigg|_{\varepsilon\rightarrow 0}
+\end{align}
+Let's work on $P$ and derive wrt $\varepsilon$.
+\begin{align}
+& P = F_{iJ}\ S_{JI} = \frac{\partial\varphi_i}{\partial X_J}\ S_{JI}(\varphi_i) \\
+& P(\varphi_i + \varepsilon \Delta U_i) =  
+                         \frac
+                             {\partial (\varphi_i + \varepsilon \Delta U_i)}
+                             {\partial X_J}\ S_{JI} (\varphi_i + \varepsilon \Delta U_i) \\
+\end{align}
+\begin{align}
+\frac{\partial P (\varphi_i + \varepsilon \Delta U_i)}{\partial \varepsilon} 
+& =
+                         \frac {\partial\Delta U_i}{\partial X_J}\ S_{JI} +
+                         \frac{\partial \varphi_i}{\partial X_J}\ \frac{\partial S_{JI}}{\partial \varepsilon}\\
+&= 
+                        \Delta U_{i,J}\  S_{JI} +
+                        F_{iJ} \frac{\partial S_{JI}}{\partial E_{KL}}
+                         \frac{\partial E_{KL} (\varphi_i + \varepsilon \Delta U_i) }{\partial \varepsilon} \\
+& =
+                        \Delta U_{i,J}\  S_{JI} +
+                         F_{iJ}\ \CC_{JIKL}
+                         \frac{\partial E_{KL} (\varphi_i + \varepsilon \Delta U_i) }{\partial \varepsilon} 
+  \label{eqn:piola_linearization}
+\end{align}
+Recall that
+\begin{align}
+  2 E_{KL} & = F_{lK}\ F_{lL} - \delta_{KL} \\
+           &= 
+                \frac{\partial \varphi_l}{\partial X_K} 
+                \frac{\partial \varphi_l}{\partial X_L} 
+                - \delta_{KL}
+\end{align}
+and
+\begin{align}
+  2 \lim_{\varepsilon\to0} \partial_\varepsilon E_{KL}  (\varphi_l + \varepsilon \Delta U_l )
+      &= \partial_\varepsilon F_{lK}\ F_{lL} + \partial_\varepsilon F_{lL}\ F_{lK}  \\
+      &= \Delta U_{l,K}\ F_{lL} + \Delta U_{l,L}\ F_{lK}
+\end{align}
+Observing the $K$-$L$ simmetry in $C_{JIKL}$, we can say that
+\begin{align}
+   C_{JIKL}\ \lim_{\varepsilon\to0} \partial_\varepsilon E_{KL} (\varphi_l + \varepsilon \Delta U_l) 
+        & = C_{JIKL}\ F_{lK}\ \Delta U_{l,L}
+\end{align}
+Subs back into the \eqref{eqn:piola_linearization} to obtain
+\begin{align}
+  \partial_\varepsilon P &=
+  \Delta U_{i,J}\ S_{JI} + F_{iJ}\ F_{lK}\ \CC_{JIKL}\ \Delta U_{l,L}
+\end{align}
+The inner product becomes:
+\begin{align}
+  D \cF(\varphi_l) \cdot \Delta U_l = \left( W_{i,I} \quad,\quad U_{i,J}\ S_{JI} + F_{iJ}\ F_{lK}\ \CC_{JIKL}\ \Delta U_{l,L} \right)
+\end{align}
+And the linearized stiffness matrix:
+\begin{align}
+  K_{il}^{\beta\gamma} = \int_\Omega \bigg[
+                               \phi^\beta_{,I}\ \phi^\gamma_{,J}\ S_{JI}\ \delta_{il} + 
+                             \phi^\beta_{,I}\ \phi^\gamma_{,L}\ F_{iJ}\ F_{lK} \CC_{JIKL} 
+                           \Bigg]\ d\Omega
+\end{align}
+%
+%
+%
+%
+%
+\subsection{Pressure loading - calculations using $F$ (initial configuration).}
+
+In the current configuration, write:
+\begin{align}
+  & h_i = -p\ n_i                             & \text{on}\ \Gamma_h \\
+  & \int_{\Gamma_h} w_i\ h_i\ d\Gamma = 
+  - \int_{\Gamma_h} p\ \w\cdot\n\ d\Gamma         & \text{on}\ \Gamma_h \\
+\end{align}
+where $p$ is the constant pressure (normal force) at the boundary. 
+Note that the coordinate system is not constant, so the force direction changes with time.
+
+Recall cramers rule:
+\begin{align}
+& \cof{\F^T} = \F^{-1} \det(\F) \\
+& \cof{\F} = \F^{-T} \det(\F) = J\ \F^{-T} \\
+& [\cof{\F}]_{iI} = J\ (F^{-1})_{Ii} 
+\end{align}
+We know that
+\begin{align}
+\n\ da = J \F^{-T}\ \N\ dA = \cof{(\F)}\ \N\ dA\\
+n_i\ da = J [\F^{-1}]_{Ii}\ N_I\ dA = [\cof{(\F)}]_{iI}\ N_I\ dA
+\end{align}
+where
+\begin{align}
+  \cof{(\F)}_{iI} = (-1)^{i+I} M_{iI}
+\end{align}
+and $M_{iI}$ is the minor of the element $iI$.
+We can now write
+\begin{align}
+   - \int_{\Gamma_h} p\ n_i\ w_i\ d\Gamma =
+   & - \int_{\Gamma_H} p\ \W\cdot J F^{-T} \N \ d\Gamma = \\ 
+   & - \int_{\Gamma_H} p\ \W\cdot \left[ \cof{(\F)}\ \N \right]\ d\Gamma  \\
+   & - \int_{\Gamma_H} p\ W_i (J\ F^{-1})_{Ii}\ N_I \ d\Gamma = 
+\end{align}
+Now we need to linearize the above in the initial configuration.
+Preliminary derivation (Jacobi formula):
+\begin{align}
+  \partial J = \partial \det \F 
+    &= \frac{d [\det\F] }{d F_{jJ}} \ \partial F_{jJ} \\
+    &= \det \F\ [\F^{-T}]_{jJ} \ \partial F_{jJ} \\
+    &= J\ [\F^{-T}]_{jJ} \ \partial F_{jJ} \\
+    &= J\ [\F^{-1}]_{Jj} \ \partial F_{jJ} \\
+    &= \det \F \tr \left\{\F^{-1} \ \partial \F \right\} \\
+    &= J \left[\F^{-1} \ \partial \F \right]_{kk} \\
+    &= \left[ J\ \F^{-1} \ \partial \F \right]_{kk} \\
+    &= \left[ \cof\F^T \ \partial \F \right]_{kk}  \\
+    &= \left[ \adj\F \ \partial \F \right]_{kk} 
+\end{align}
+The derivative of an inverse matrix:
+\begin{align}
+  &\F\ \F^{-1} = \bm{I}\\
+  \rightarrow\quad & \partial \left[\F \F^{-1}\right]=0 \\
+  \rightarrow\quad & \F\ \partial \left[\F^{-1}\right] + \partial \F\ \F^{-1} = 0 \\
+  \rightarrow\quad & \F\ \partial \left[\F^{-1}\right] = - \partial \F \ \F^{-1} \\
+  \rightarrow\quad \partial \left[\F^{-1}\right] & = - \F^{-1}\ \partial\F\ \F^{-1} \\
+  \rightarrow\quad \partial \left[\F^{-1}\right]_{Ii}
+       &= - \left[\F^{-1}\right]_{Ij} \left[\partial \F\right]_{jJ} \left[\F^{-1}\right]_{Ji}
+\end{align}
+Now we can derive the derivative of the cofactors:
+\begin{align}
+  \partial \left[\cof \F \right] = \partial \left[\cof \F \right]_{iI} 
+  &= \partial \left[ J \F^{-T} \right] \\
+  &= \left[\F^{-T}\right] \partial J + J\ \partial\left[\F^{-T}\right] \\
+  &= \left[\F^{-T}\right]_{iI} \partial J + J\ \partial\left[\F^{-T}\right]_{iI} \\
+  &= \left[\F^{-1}\right]_{Ii} \partial J + J\ \partial\left[\F^{-1}\right]_{Ii} \\
+  &= \left[\F^{-1}\right]_{Ii}\ J\ [\F^{-1}]_{Jj} \ \partial \left[\F\right]_{jJ}  -
+    J \left[\F^{-1}\right]_{Ij} \left[\partial \F\right]_{jJ} \left[\F^{-1}\right]_{Ji} \\
+  &= J \partial \left[\F\right]_{jJ}\Bigg\{
+          \left[\F^{-1}\right]_{Ii}\ [\F^{-1}]_{Jj} \ -\ 
+          \left[\F^{-1}\right]_{Ij}\  \left[\F^{-1}\right]_{Ji} 
+      \Bigg\}
+\end{align}
+and the directional derivative becomes
+\begin{align}
+  \partial \left[ \cof \F(\varphi_i + \varepsilon \Delta u_i) \right]_{iI}
+  &= \Bigg\{ 
+           \left[\F^{-1}\right]_{Ii}\ [\F^{-1}]_{Jj} \   - 
+           \left[\F^{-1}\right]_{Ij} \left[\F^{-1}\right]_{Ji} 
+    \Bigg\}\  J\ \Delta u_{j,J} \\
+\end{align}
+And finally we transport ths restult to the linearization of the pressure loading.  Let
+\begin{align}
+   \cF(\varphi_i) &= - \int_{\Gamma_H} p\ \W\cdot \bigg[ \cof{\bigg(\F(\varphi)\bigg)}\ \N \bigg]\ d\Gamma  \\
+                  &= - \int_{\Gamma_H} p\ W_i\ \left[\cof{(\F(\varphi)}\right]_{iI}\ N_I \ d\Gamma  \\
+   \F &= \frac{d \x}{d \X} \\
+   F_{iI} &= \frac{d x_i}{d X_I} = \frac{d\varphi_i}{d X_I}\\
+   F_{iI}(\varphi_i + \varepsilon\Delta u_i) 
+          &= \frac{d \left(\varphi_i + \varepsilon\Delta u_i\right)}{d X_I}\\
+   \lim_{\varepsilon\to 0} \partial_\varepsilon F_{jJ}(\varphi_k + \varepsilon\Delta u_k) 
+          &= \frac{d \Delta u_k}{d X_K} = \Delta u_{j,J}
+\end{align}
+Then
+\begin{align}
+  \lim_{\varepsilon\to 0} \partial_\varepsilon \cF(\varphi+\varepsilon\Delta\u) 
+   &= - \int_{\Gamma_H} p\ \W\cdot 
+          \bigg\{ \partial_\varepsilon \cof{\bigg(\F(\varphi+\varepsilon\Delta\u)\bigg)}\ 
+           \N \bigg\}\ d\Gamma  \\
+   &= - \int_{\Gamma_H} p\ J\ W_i\ N_I\ 
+          \bigg\{ 
+                 \left[\F^{-1}\right]_{Ii} [\F^{-1}]_{Jj} -
+                 \left[\F^{-1}\right]_{Ij} \left[\F^{-1}\right]_{Ji} 
+           \bigg\}\ \Delta u_{j,J}\ d\Gamma   \\
+   \\
+   &= - \int_{\Gamma_H} p\ J\ W_i\ N_I\ 
+          \bigg\{ 
+            \left[\F^{-1}\right]_{Ik} [\F^{-1}]_{Jl} \delta_{ik}\delta_{jl} -
+            \left[\F^{-1}\right]_{Ik} \left[\F^{-1}\right]_{Jl} \delta_{il} \delta_{jk}
+           \bigg\}\ \Delta u_{j,J}\ d\Gamma   \\
+   &= - \int_{\Gamma_H} p\ J\ W_i\ N_I\ \left[\F^{-1}\right]_{Ik} [\F^{-1}]_{Jl}\ 
+   \big( \delta_{ik}\delta_{jl} - \delta_{il} \delta_{jk} \big)\ 
+          \Delta u_{j,J}\ d\Gamma   \\
+   &= \int_{\Gamma_H} p\ J\ W_i\ N_I\ \left[\F^{-1}\right]_{Ik} [\F^{-1}]_{Jl}\ 
+   \big( \delta_{il} \delta_{jk} - \delta_{ik}\delta_{jl}  \big)\ 
+          \Delta u_{j,J}\ d\Gamma   \\
+\end{align}
+The element matrix becomes:
+\begin{align}
+  K_{ij}^{\beta\gamma}
+   &= \int_{\Gamma_H} \phi^\beta \phi_{,J}^\gamma\ p\ J\ N_I\ \left[\F^{-1}\right]_{Ik} [\F^{-1}]_{Jl}\ 
+   \big( \delta_{il} \delta_{jk} - \delta_{ik}\delta_{jl}  \big)\ d\Gamma
+\end{align}
+%
+%
+%
+%
+%
+\subsection{Pressure loading - calculating from the isoparametric state}
+
+Recall that 
+\begin{align}
+  \def\w{\bm{w}}
+  \def\xh{\hat{\bm{x}}}
+  \def\cross{\left(\frac{\partial\xh}{\partial\xi_1} \times \frac{\partial\xh}{\partial\xi_2}\right)}
+  d\Gamma = \left| \cross \right| d\Gamma^\square
+\end{align}
+where $\Gamma^\square$ is the surface in the reference (isoparametric) configuration.
+We can calculate the normal vector in the current configuration using
+\begin{align}
+  \def\w{\bm{w}}
+  \def\xh{\hat{\bm{x}}}
+  \def\cross{\left(\frac{\partial\xh}{\partial\xi_1} \times \frac{\partial\xh}{\partial\xi_2}\right)}
+  n_i=\frac{\cross}{\left|\cross\right|}
+\end{align}
+so that
+\begin{align*}
+  \def\w{\bm{w}}
+  \def\xh{\hat{\bm{x}}}
+  \def\cross{\left(\frac{\partial\xh}{\partial\xi_1} \times \frac{\partial\xh}{\partial\xi_2}\right)}
+  \int_{\Gamma_h} w_i\ h_i\ d\Gamma = -\int_{\Gamma_h^\square} p\ \w \cdot \cross d\Gamma^\square
+%   & \int_{\Gamma_h} w_i\ h_i\ d\Gamma = - \int_{\Gamma_h} p\ w_i\ \cross d\Gamma         & \text{on}\ \Gamma_h
+\end{align*}
+Now we need to compute $\frac{\partial\hat{x}}{\partial\xi_i}$. So
+\begin{align*}
+  \def\w{\bm{w}}
+  \def\xh{\hat{\bm{x}}}
+  \def\Xh{\hat{\bm{X}}}
+\frac{\partial\xh}{\partial\xi_i} = \frac{\partial \phi^\gamma}{\partial\xi_i} U^\gamma = \F\ \frac{\partial\Xh}{\partial\xi_i}  \\
+\def\Xh{\hat{\bm{X}}}
+\frac{\partial\Xh}{\partial\xi_i} = \frac{\partial \phi^\gamma}{\partial\xi_i}\ X_i^\gamma \\
+\end{align*}
+We finally obtain
+
+\def\w{\bm{w}}
+\def\xh{\hat{\bm{x}}}
+\def\Xh{\hat{\bm{X}}}
+\def\crossFX{\left(\F \frac{\partial\Xh}{\partial\xi_1} \times \F \frac{\partial\Xh}{\partial\xi_2}\right)}
+\def\crossFXi{\left(\F \frac{\partial\Xh}{\partial\xi_1} \times \F \frac{\partial\Xh}{\partial\xi_2}\right)_i}
+\def\cross{\left(\frac{\partial\xh}{\partial\xi_1} \times \frac{\partial\xh}{\partial\xi_2}\right)}
+\begin{align*}
+  \cF = \int_{\Gamma_h} w_i\ h_i\ d\Gamma &= -\int_{\Gamma_h^\square} p\ \W \cdot \cross d\Gamma^\square \\
+                                          &= -\int_{\Gamma_h^\square} p\ \W \cdot \left( \frac{\partial \U}{\partial\xi_1}\times\frac{\partial \U}{\partial\xi_2}\right) d\Gamma^\square \\
+                                          &= -\int_{\Gamma_h^\square} p\ \W \cdot \left( \frac{\partial \phi^\gamma}{\partial\xi_1}\U^\gamma\times\frac{\partial \phi^\gamma }{\partial\xi_2}\U^\gamma\right) d\Gamma^\square \\
+\end{align*}
+Now we can linearize (see Belytschko book, pg365)
+\begin{align*}
+  D\cF\cdot\Delta U &= \lim_{\varepsilon\to0}\partial_\varepsilon\cF(\varphi+\varepsilon\Delta U) \\
+                    &=\lim_{\varepsilon\to0} \Bigg[ -\int_{\Gamma_h^\square} p\ W_i \ \ \partial_\varepsilon \crossFXi d\Gamma^\square \Bigg]\\
+                    &=\lim_{\varepsilon\to0} \Bigg[ -\int_{\Gamma_h^\square} p\ W_i 
+                      \Bigg(
+                        \partial_\varepsilon \hat{\x}_{,\xi_1} \times \hat{\x}_{,\xi_2} + 
+                        \hat{\x}_{,\xi_1} \times \partial_\varepsilon \hat{\x}_{,\xi_2}  
+                      \Bigg)_i\\
+                    &= -\int_{\Gamma_h^\square} p\ W_i 
+                      \Bigg(
+                        \Delta \U_{,\xi_1} \times \hat{\x}_{,\xi_2} + 
+                        \hat{\x}_{,\xi_1} \times \Delta \U_{,\xi_2}  
+                      \Bigg)_i\\
+                    &= -\int_{\Gamma_h^\square} p\ W_i 
+                      \Bigg(
+                        \Delta \U_{,\xi_1} \times \F \frac{\partial\Xh}{\partial\xi_2} + 
+                        \F \frac{\partial\Xh}{\partial\xi_1} \times \Delta \U_{,\xi_2}  
+                      \Bigg)_i\\
+                    &= -\int_{\Gamma_h^\square} p\ W_i 
+                      \Bigg(
+                        \Delta U_{j,\xi_1} \times F_{jJ} \frac{\partial\hat{X}_J}{\partial\xi_2} + 
+                        F_{kK} \frac{\partial\hat{X}_K}{\partial\xi_1} \times \Delta U_{k,\xi_2}  
+                      \Bigg)_i\\
+  \\D\cF\cdot\Delta U &= \lim_{\varepsilon\to0}\partial_\varepsilon\cF(\varphi+\varepsilon\Delta U) \\
+                    &=\lim_{\varepsilon\to0} \Bigg[ -\int_{\Gamma_h^\square} p\ W_i \ 
+                      \Bigg(
+                        \partial_\varepsilon \F \frac{\partial\Xh}{\partial\xi_1} \times \F \frac{\partial\Xh}{\partial\xi_2}
+                       \ +\ 
+                        \F \frac{\partial\Xh}{\partial\xi_1} \times \partial_\varepsilon \F \frac{\partial\Xh}{\partial\xi_2}
+                      \Bigg)
+                    d\Gamma^\square \Bigg]\\
+                    &=-\int_{\Gamma_h^\square} p\ W_i \ 
+                      \Bigg(
+                        \nabla (\Delta \bm{U}) \frac{\partial\Xh}{\partial\xi_1} \times \F \frac{\partial\Xh}{\partial\xi_2}
+                       \ +\ 
+                       \F \frac{\partial\Xh}{\partial\xi_1} \times \nabla (\Delta \bm{U}) \frac{\partial\Xh}{\partial\xi_2}
+                      \Bigg)_i
+                    d\Gamma^\square  \\
+                    &=-\int_{\Gamma_h^\square} p\ W_i \ 
+                      \Bigg(
+                        \Delta U_{j,I} \frac{\partial\hat{X}_I}{\partial\xi_1} F_{kJ} \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                       \ +\ 
+                       F_{jI} \frac{\partial\hat{X}_I}{\partial\xi_1} \Delta U_{k,J} \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \Bigg)\ \varepsilon_{jki}
+                    \ \ d\Gamma^\square  \\
+                    &=-\int_{\Gamma_h^\square} p\ W_k \ 
+                      \Bigg(
+                        \Delta U_{i,I} \frac{\partial\hat{X}_I}{\partial\xi_1} F_{jJ} \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                       \ +\ 
+                       F_{iI} \frac{\partial\hat{X}_I}{\partial\xi_1} \Delta U_{j,J} \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \Bigg)\ \varepsilon_{ijk}
+                    \ \ d\Gamma^\square  \\
+                    &=-\int_{\Gamma_h^\square} p\ W_k \ 
+                      \Big( F_{jJ}\ \Delta U_{i,I} \ +\ F_{iI}\ \Delta U_{j,J} \Big)\ 
+                      \frac{\partial\hat{X}_I}{\partial\xi_1}\ \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \ \varepsilon_{ijk}
+                    \ \ d\Gamma^\square  \\
+                    &=-\int_{\Gamma_h^\square} p\ W_k \ \Delta U_{i,I} \ F_{jJ}\ 
+                      \frac{\partial\hat{X}_I}{\partial\xi_1}\ \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \ \varepsilon_{ijk}
+                    \ \ d\Gamma^\square  -
+                    \int_{\Gamma_h^\square} p\ W_k \ \Delta U_{j,J} \ F_{iI}\  
+                      \frac{\partial\hat{X}_I}{\partial\xi_1}\ \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \ \varepsilon_{ijk}
+                    \ \ d\Gamma^\square  \\
+                    &= -\  W_k^\beta \ \Delta U_i^\gamma \int_{\Gamma_h^\square} p\ \phi^\beta  \ \phi^\gamma_{,I} \ F_{jJ}\ 
+                      \frac{\partial\hat{X}_I}{\partial\xi_1}\ \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \ \varepsilon_{ijk} \ d\Gamma^\square  \\ 
+                    &\quad -
+                    \ W_k^\beta \ \Delta U_j^\gamma \int_{\Gamma_h^\square} p\ \phi^\beta \ \phi^\gamma_{,J} \ F_{iI}\  
+                      \frac{\partial\hat{X}_I}{\partial\xi_1}\ \frac{\partial\hat{X}_J}{\partial\xi_2} 
+                      \ \varepsilon_{ijk} \ d\Gamma^\square  \\
+\end{align*}
+where
+\begin{align}
+  \varepsilon_{ijk} =
+  \begin{cases}
+    +1 \quad \text{if } (ijk)=(123),(231),(312) - \text{even permutation}\\
+    -1 \quad \text{if } (ijk)=(321),(132),(213) - \text{odd permutation}\\
+    0  otherwise
+  \end{cases}
+\end{align}
+\newpage
+\section{Incremental formulation}
+Start from the residual weak formulation.
+\begin{align*}
+  \cF &= ( W_{i,I},\  P_{iI} )_{\Omega_0} - ( W_i,\ \tilde{T} )_{\Gamma_H} = 0 \\
+      &= ( W_{i,I},\  F_{iJ}\ S_{JI} )_{\Omega_0} - ( W_i,\ \tilde{T} )_{\Gamma_H} = 0 \\
+      &= ( W_{i,I},\  F_{iJ}\ \CC_{JIKL}\ E_{KL} )_{\Omega_0} - ( W_i,\ \tilde{T} )_{\Gamma_H} = 0 
+\end{align*}
+We need to define the timestep of the variables.
+Define the states $0$, $1$, $2$ as the initial, last solved and next to solve respectively.
+Then
+\begin{align*}
+  E_{KL} &= \prescript{2}{0}{E}_{KL} = \prescript{1}{0}{E}_{KL} + \prescript{1\rightarrow2}{0}{\delta E}_{KL} \\
+  \delta E_{KL} &= \prescript{1\rightarrow2}{0}{\delta E}_{KL} = \prescript{2}{0}{E}_{KL} - \prescript{1}{0}{E}_{KL} \\
+\nonumber\\
+  S_{JI} &= \prescript{2}{0}{S}_{JI} \\
+         & = \prescript{1}{0}{S}_{JI} + \prescript{2}{0}{\delta S}_{JI} \\
+\end{align*}
+Calculate $E_{KL}$ from the displacements:
+\begin{align*}
+  2 \delta E_{KL} &=
+  \prescript{2}{0}{\Bigg[U_{K,L} + U_{L,K} + U_{i,K}\ U_{i,L}\Bigg]} -
+  \prescript{1}{0}{\Bigg[U_{K,L} + U_{L,K} + U_{i,K}\ U_{i,L}\Bigg]}  \\
+                  &= \Bigg( \delta U_{K,L} + \delta U_{L,K} +
+                  \prescript{1}{0} U_{i,K}\ \delta U_{i,L} +
+                  \prescript{1}{0} U_{i,L}\ \delta U_{i,K} \Bigg) +
+                  \Bigg( \delta U_{i,L} \delta U_{i,K} \Bigg)
+\end{align*}
+Back to the formulation:
+\begin{align*}
+  \cF &=
+          \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0}{E_{KL}} \right) +
+          \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta E_{KL} \right) -
+          (W_i, \tilde{T} ) \\
+      &= \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0}{E_{KL}} \right)  \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta U_{K,L} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta U_{L,K} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0} U_{i,K}\ \delta U_{i,L} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0} U_{i,L}\ \delta U_{i,K} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta U_{i,L}\ \delta U_{i,K} \right) \\
+      & - (W_i,\quad \tilde{T} )_{\Gamma_H}
+\end{align*}
+Linearize:
+\begin{align*}
+  D\cF\cdot\delta U_i & = \lim_{\varepsilon\to0} \partial_\varepsilon \cF(\delta U +\varepsilon \Delta U_i) \\
+      & = \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \Delta U_{K,L} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \Delta U_{L,K} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0} U_{i,K}\ \Delta U_{i,L} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0} U_{i,L}\ \Delta U_{i,K} \right) \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta U_{i,L}\ \Delta U_{i,K} \right)  \\
+      & + \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \Delta U_{i,L}\ \delta U_{i,K} \right) 
+\end{align*}
+Trying from the deformation gradient perspective:
+\begin{align*}
+  \delta E_{KL} &= \big( \prescript{2}{0}{\F^T}\ \prescript{2}{0}{\F} - \I \big) -\ \big( \prescript{1}{0}{\F^T}\ \prescript{1}{0}{\F} - \I \big) \\
+                &=  \prescript{2}{0}{\F^T}\ \prescript{2}{0}{\F} -\ \prescript{1}{0}{\F^T}\ \prescript{1}{0}{\F}  \\
+                &=  \prescript{2}{0}{F_{iK}}\ \prescript{2}{0}{F_{iL}} -\ \prescript{1}{0}{F_{iK}}\ \prescript{1}{0}{F_{iL}} 
+\end{align*}
+Hence:
+\begin{align*}
+  \cF &=
+          \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0}{E_{KL}} \right) +
+          \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \delta E_{KL} \right) -
+          (W_i, \tilde{T} ) \\
+      &= 
+          \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0}{E_{KL}} \right) \\
+      &+  \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{2}{0}{F_{iK}}\ \prescript{2}{0}{F_{iL}} \right) \\
+      &- \left( W_{i,I},\quad F_{iJ}\ C_{JIKL}\ \prescript{1}{0}{F_{iK}}\ \prescript{1}{0}{F_{iL}}\right) \\
+      &-    (W_i, \tilde{T} ) \\
+\end{align*}
+Did not work out, because the $\Delta U_i$ does not show. Need to open the terms, and will get to the same verbosity.
+\newpage
+\printbibliography
+\end{document}
