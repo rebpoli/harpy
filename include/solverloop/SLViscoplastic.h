@@ -21,7 +21,7 @@ class SLViscoplastic : public Solverloop
 {
 
   public:
-    SLViscoplastic( const Timestep & ts_ );
+    SLViscoplastic( Timestep & ts_ );
 
     void solve();
 

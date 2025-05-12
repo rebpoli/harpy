@@ -28,12 +28,13 @@ using namespace std;
 class TestClass
 {
 public:
+  void foo( libMesh::RealTensor m ) { foo<N2>(m); }
+
   template < typename N >
-  void foo() {
-    using Mat = typename N::Mat;
-    auto m = is_same_v<N, N1> ? Mat(3,3) : Mat();
+  void foo( typename N::Mat m ) {
+//    auto m = is_same_v<N, N1> ? Mat(3,3) : Mat();
     m(1,1) = 2;
-    dlog(1) << "Matrix: " << m;
+    dlog(1) << "Matrix: " << endl << m;
   };
 
 
@@ -46,6 +47,10 @@ int main(int argc, char* argv[]) {
   dlog(1) << "Hello world!";
 
   TestClass tc;
-  tc.foo<N1>();
-  tc.foo<N2>();
+
+  libMesh::RealTensor rt;
+  tc.foo(rt);
+
+  AD::Mat adm(3,3);
+  tc.foo<N1>( adm );
 }

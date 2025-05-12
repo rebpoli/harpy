@@ -24,13 +24,15 @@
 #include "libmesh/enum_fe_family.h"
 #include "libmesh/enum_order.h"
 
+//#include <petscsnes.h>
+#include "libmesh/petsc_nonlinear_solver.h"
 
 /**
  *  Creates the system and the materials.
  *
  *  This object owns the mesh and the rquation system.
  */
-ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) : 
+ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) : 
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
@@ -363,11 +365,18 @@ void ViscoplasticSolver::solve()
   if ( curr_bc.update( ts ) ) set_dirichlet_bcs();
   
   es.reinit(); // Maybe only needed if the curr_bc was updated?
-  
+
+  // We might need to rewind.
+  // TODO: The best is to keep this solution in the interface
+  // and aviod completely thhe use of libmesh transient system
+  old_sol = system.solution->clone();
+
   /** ** ** ** **/
-  *system.old_local_solution = *system.current_local_solution;
   system.solve();
   /** ** ** ** **/
+
+  bool success = update_adaptive_timestep();
+  if ( ! success ) return;  // Do not postprocess if the TS failed
 
   // Deal with heterogeneous dirichlet boundary constraints
   system.get_dof_map().enforce_constraints_exactly(system);
@@ -381,6 +390,61 @@ void ViscoplasticSolver::solve()
 
   /** Export information of the timestep **/
   export_results();
+
+  /** Update for the next timestep **/
+  *system.old_local_solution = *system.current_local_solution;
+}
+
+/**
+ *
+ */
+void ViscoplasticSolver::do_ts_cut()
+{
+  ts.cut();
+
+  // Rewind the plastic strain memory to the beginning of the TS
+  // TODO: move this TS cutting process to a new method
+  MeshBase & mesh = get_mesh();
+  for ( const auto & elem : mesh.active_local_element_ptr_range() )
+  {
+    ViscoPlasticMaterial * mat = get_material( *elem );
+    mat->rewind( *elem );
+  }
+
+  // Rewind the solution
+  *system.solution = *old_sol;
+}
+
+/**
+ *    If the timestep was cut, return false. Otherwise true;
+ */
+bool ViscoplasticSolver::update_adaptive_timestep()
+{
+  if ( system.nonlinear_solver.get() ) 
+  { 
+    auto * solver = dynamic_cast<PetscNonlinearSolver<Number> *> (system.nonlinear_solver.get());
+
+    if ( solver ) 
+    {
+      SNESConvergedReason result = solver->get_converged_reason();
+
+      // Converged ?
+      if ( result > 0 ) 
+      {
+        ilog1 << "Nonlinear solver converged (" << SNESConvergedReasons[result] << ").";
+        return true;
+      }
+
+      // Did not converge. Do the ts cutr.
+      wlog1 << "Nonlinear solver diverged (" << SNESConvergedReasons[result] << "). Cutting timestep.";
+      do_ts_cut();
+
+      return false;
+    } 
+  }
+
+  flog << "Could not get the nonlinear solver? Something is terribly wrong.";
+  return true;
 }
 
 /**
@@ -391,6 +455,8 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
 {
   UNUSED(sys);
   Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
+
+  ilog << "SOLN norm: " << scientific << setprecision(10) << soln.l2_norm();
 
   MeshBase & mesh = get_mesh();
 

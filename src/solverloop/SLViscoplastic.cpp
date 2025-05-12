@@ -18,7 +18,7 @@
  * the master.
  *
  */
-SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :
+SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
   Solverloop(ts_), viscoplastic( "viscoplastic", ts ) , 
   thermal( viscoplastic, "thermal" )
 {

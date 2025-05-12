@@ -14,7 +14,7 @@
 /**
  *
  */
-Solver::Solver( string name_, const Timestep & ts_ ) :
+Solver::Solver( string name_, Timestep & ts_ ) :
   name(name_), ts(ts_), own_es(1),
   config (MODEL->solver_config( name_ ) ),
   bc_config ( MODEL->boundary_config ),

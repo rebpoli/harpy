@@ -51,11 +51,13 @@ class ViscoplasticSolver : public Solver,
                                 public System::Constraint
 {
   public:
-    ViscoplasticSolver( string name, const Timestep & ts_ );
+    ViscoplasticSolver( string name, Timestep & ts_ );
     virtual ~ViscoplasticSolver();
 
     /// Solution workflow
     virtual void solve();
+    bool update_adaptive_timestep();
+    void do_ts_cut();
 
     void constrain();
 
@@ -97,4 +99,6 @@ class ViscoplasticSolver : public Solver,
 
     /// Boundary conditions for the current timetep
     BC curr_bc;
+
+    unique_ptr<NumericVector<Number>> old_sol;
 };

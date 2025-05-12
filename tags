@@ -233,7 +233,6 @@ C_J	/opt/libmesh/include/reduced_basis/rb_scm_evaluation.h	/^  std::vector<RBPar
 C_J_stability_vector	/opt/libmesh/include/reduced_basis/rb_scm_evaluation.h	/^  std::vector<Real> C_J_stability_vector;$/;"	m	class:libMesh::RBSCMEvaluation
 C_eq	/opt/libmesh/include/systems/optimization_system.h	/^  std::unique_ptr<NumericVector<Number>> C_eq;$/;"	m	class:libMesh::OptimizationSystem
 C_eq_jac	/opt/libmesh/include/systems/optimization_system.h	/^  std::unique_ptr<SparseMatrix<Number>> C_eq_jac;$/;"	m	class:libMesh::OptimizationSystem
-C_ijkl	include/material/ViscoPlasticMaterial.h	/^inline double ViscoPlasticMaterial::C_ijkl( uint i, uint j, uint k, uint l) {$/;"	f	class:ViscoPlasticMaterial
 C_ijkl	include/material/ViscoplasticIFC.h	/^inline double VPProps::C_ijkl( uint i, uint j, uint k, uint l) {$/;"	f	class:VPProps
 C_ineq	/opt/libmesh/include/systems/optimization_system.h	/^  std::unique_ptr<NumericVector<Number>> C_ineq;$/;"	m	class:libMesh::OptimizationSystem
 C_ineq_jac	/opt/libmesh/include/systems/optimization_system.h	/^  std::unique_ptr<SparseMatrix<Number>> C_ineq_jac;$/;"	m	class:libMesh::OptimizationSystem
@@ -2688,7 +2687,7 @@ SIGTOT	include/config/BCConfig.h	/^enum { SIGEFF=0, SIGTOT, HEAT };$/;"	e	enum:_
 SINGLEPROC	include/base/Global.h	45;"	d
 SLEPC_VERSION_LESS_THAN	/opt/libmesh/include/solvers/slepc_macro.h	33;"	d
 SLViscoplastic	include/solverloop/SLViscoplastic.h	/^class SLViscoplastic : public Solverloop $/;"	c
-SLViscoplastic	src/solverloop/SLViscoplastic.cpp	/^SLViscoplastic::SLViscoplastic( const Timestep & ts_ ) :$/;"	f	class:SLViscoplastic
+SLViscoplastic	src/solverloop/SLViscoplastic.cpp	/^SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :$/;"	f	class:SLViscoplastic
 SNESFunction_DMlibMesh	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^static PetscErrorCode SNESFunction_DMlibMesh(SNES, Vec x, Vec r, void * ctx)$/;"	f	file:
 SNESJacobian_DMlibMesh	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^static PetscErrorCode SNESJacobian_DMlibMesh(SNES, Vec x, Mat jac, Mat pc, void * ctx)$/;"	f	file:
 SOLUTIONTRANSFER_H	/opt/libmesh/include/solution_transfer/solution_transfer.h	21;"	d
@@ -2789,7 +2788,7 @@ SolutionTransfer	/opt/libmesh/include/solution_transfer/solution_transfer.h	/^cl
 SolveResult	/opt/libmesh/include/solvers/diff_solver.h	/^  enum SolveResult {$/;"	g	class:libMesh::DiffSolver
 Solver	include/harpy/Solver.h	/^class Solver$/;"	c
 Solver	src/harpy/Solver.cpp	/^Solver::Solver( Solver & ref, string name_ ) :$/;"	f	class:Solver
-Solver	src/harpy/Solver.cpp	/^Solver::Solver( string name_, const Timestep & ts_ ) :$/;"	f	class:Solver
+Solver	src/harpy/Solver.cpp	/^Solver::Solver( string name_, Timestep & ts_ ) :$/;"	f	class:Solver
 SolverConfig	include/config/SolverConfig.h	/^class SolverConfig$/;"	c
 SolverConfig	src/config/SolverConfig.cpp	/^SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ ) :$/;"	f	class:SolverConfig
 SolverConfiguration	/opt/libmesh/include/solvers/solver_configuration.h	/^class SolverConfiguration : public ReferenceCountedObject<SolverConfiguration>$/;"	c	namespace:libMesh
@@ -2797,7 +2796,7 @@ SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^  SolverExcepti
 SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^class SolverException: public std::exception$/;"	c	namespace:libMesh
 SolverReader	include/config/reader/SolverReader.h	/^class SolverReader$/;"	c
 SolverReader	src/config/reader/SolverReader.cpp	/^SolverReader::SolverReader( SolverConfig & config_ ) : config(config_) $/;"	f	class:SolverReader
-Solverloop	include/harpy/Solverloop.h	/^  Solverloop( const Timestep & ts_ ) : ts(ts_) {}$/;"	f	class:Solverloop
+Solverloop	include/harpy/Solverloop.h	/^  Solverloop( Timestep & ts_ ) : ts(ts_) {}$/;"	f	class:Solverloop
 Solverloop	include/harpy/Solverloop.h	/^class Solverloop $/;"	c
 Sort	/opt/libmesh/include/parallel/parallel_sort.h	/^class Sort : public ParallelObject$/;"	c	namespace:libMesh::Parallel
 Sort	/opt/libmesh/src/parallel/parallel_sort.C	/^Sort<KeyType,IdxType>::Sort(const Parallel::Communicator & comm_in,$/;"	f	class:libMesh::Parallel::Sort
@@ -3246,7 +3245,7 @@ ViscoplasticIFC	include/material/ViscoplasticIFC.h	/^struct ViscoplasticIFC$/;"	
 ViscoplasticReport	include/postproc/ViscoplasticReport.h	/^class ViscoplasticReport$/;"	c
 ViscoplasticReport	src/postproc/ViscoplasticReport.cpp	/^ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) :$/;"	f	class:ViscoplasticReport
 ViscoplasticSolver	include/solver/ViscoplasticSolver.h	/^class ViscoplasticSolver : public Solver, $/;"	c
-ViscoplasticSolver	src/solver/ViscoplasticSolver.cpp	/^ViscoplasticSolver::ViscoplasticSolver( string name_, const Timestep & ts_ ) : $/;"	f	class:ViscoplasticSolver
+ViscoplasticSolver	src/solver/ViscoplasticSolver.cpp	/^ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) : $/;"	f	class:ViscoplasticSolver
 VolumeIntegral	/opt/libmesh/src/geom/cell_prism6.C	/^struct VolumeIntegral$/;"	s	namespace:__anon59	file:
 WIN32_LEAN_AND_MEAN	/opt/libmesh/include/utils/win_gettimeofday.h	13;"	d
 WRITE_ADDITIONAL_DATA	/opt/libmesh/include/systems/equation_systems.h	/^                    WRITE_ADDITIONAL_DATA  = 2,$/;"	e	enum:libMesh::EquationSystems::WriteFlags
@@ -6640,6 +6639,7 @@ current_time	include/config/reader/ModelReader.h	/^  double current_time;   \/\/
 current_vec	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    PetscVector<libMesh::Number> * current_vec;$/;"	m	struct:libMesh::PetscDMContext
 cursor	/opt/libmesh/include/base/getpot.h	/^  unsigned cursor; \/\/ cursor for argv$/;"	m	class:GETPOT_NAMESPACE::GetPot
 curvatures	/opt/libmesh/include/fe/fe_map.h	/^  std::vector<Real> curvatures;$/;"	m	class:libMesh::FEMap
+cut	include/harpy/Timestep.h	/^    void cut() { cut_next = 5; } $/;"	f	class:Timestep
 cut_1D	/opt/libmesh/src/geom/elem_cutter.C	/^void ElemCutter::cut_1D (const Elem & \/*elem*\/,$/;"	f	class:libMesh::ElemCutter
 cut_2D	/opt/libmesh/src/geom/elem_cutter.C	/^void ElemCutter::cut_2D (const Elem & elem,$/;"	f	class:libMesh::ElemCutter
 cut_3D	/opt/libmesh/src/geom/elem_cutter.C	/^void ElemCutter::cut_3D (const Elem & elem,$/;"	f	class:libMesh::ElemCutter
@@ -6648,6 +6648,7 @@ cut_above	/opt/libmesh/src/utils/statistics.C	/^std::vector<dof_id_type> Statist
 cut_below	/opt/libmesh/src/utils/error_vector.C	/^std::vector<dof_id_type> ErrorVector::cut_below(Real cut) const$/;"	f	class:libMesh::ErrorVector
 cut_below	/opt/libmesh/src/utils/statistics.C	/^std::vector<dof_id_type> StatisticsVector<T>::cut_below(Real cut) const$/;"	f	class:libMesh::StatisticsVector
 cut_cntr	/opt/libmesh/src/geom/elem_cutter.C	/^unsigned int cut_cntr;$/;"	m	namespace:__anon62	file:
+cut_next	include/harpy/Timestep.h	/^    int cut_next;$/;"	m	class:Timestep
 d1d2n	/opt/libmesh/src/fe/fe_clough_shape_2D.C	/^Real d1d2n, d1d3n, d2d3n, d2d1n, d3d1n, d3d2n;$/;"	m	struct:__anon20::CloughCoefs	file:
 d1d3n	/opt/libmesh/src/fe/fe_clough_shape_2D.C	/^Real d1d2n, d1d3n, d2d3n, d2d1n, d3d1n, d3d2n;$/;"	m	struct:__anon20::CloughCoefs	file:
 d1nd1n	/opt/libmesh/src/fe/fe_clough_shape_2D.C	/^Real d1nd1n, d2nd2n, d3nd3n;$/;"	m	struct:__anon20::CloughCoefs	file:
@@ -6979,6 +6980,7 @@ do_read	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_read(std::complex<T> & a
 do_read	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_read(std::string & a)$/;"	f	class:libMesh::Xdr
 do_read	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_read(std::vector<T> & a)$/;"	f	class:libMesh::Xdr
 do_read	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_read(std::vector<std::complex<T>> & a)$/;"	f	class:libMesh::Xdr
+do_ts_cut	src/solver/ViscoplasticSolver.cpp	/^void ViscoplasticSolver::do_ts_cut()$/;"	f	class:ViscoplasticSolver
 do_write	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_write(T & a) { *out << a; }$/;"	f	class:libMesh::Xdr
 do_write	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_write(std::complex<T> & a)$/;"	f	class:libMesh::Xdr
 do_write	/opt/libmesh/src/utils/xdr_cxx.C	/^void Xdr::do_write(std::vector<T> & a)$/;"	f	class:libMesh::Xdr
@@ -16645,6 +16647,7 @@ reverse	include/autodiff/reverse/var/var.hpp	/^namespace reverse {$/;"	n	namespa
 reverse_index_map	/opt/libmesh/include/numerics/composite_fem_function.h	/^  std::vector<std::pair<unsigned int, unsigned int>> reverse_index_map;$/;"	m	class:libMesh::CompositeFEMFunction
 reverse_index_map	/opt/libmesh/include/numerics/composite_function.h	/^  std::vector<std::pair<unsigned int, unsigned int>> reverse_index_map;$/;"	m	class:libMesh::CompositeFunction
 reversion_wrapper	/opt/libmesh/src/mesh/mesh_modification.C	/^struct reversion_wrapper { T& iterable; };$/;"	s	namespace:__anon76	file:
+rewind	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::rewind( Elem & elem_ )$/;"	f	class:ViscoPlasticMaterial
 rewrite_stored_solution	/opt/libmesh/src/solvers/file_history_data.C	/^  void FileHistoryData::rewrite_stored_solution()$/;"	f	class:libMesh::FileHistoryData
 rewrite_stored_solution	/opt/libmesh/src/solvers/memory_history_data.C	/^    void MemoryHistoryData::rewrite_stored_solution()$/;"	f	class:libMesh::MemoryHistoryData
 rhs	/opt/libmesh/include/systems/explicit_system.h	/^  NumericVector<Number> * rhs;$/;"	m	class:libMesh::ExplicitSystem
@@ -18797,8 +18800,8 @@ truth_outputs	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  std::vect
 truth_outputs_all_k	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::vector<std::vector<Number>> truth_outputs_all_k;$/;"	m	class:libMesh::TransientRBConstruction
 truth_solve	/opt/libmesh/src/reduced_basis/rb_construction.C	/^Real RBConstruction::truth_solve(int plot_solution)$/;"	f	class:libMesh::RBConstruction
 truth_solve	/opt/libmesh/src/reduced_basis/transient_rb_construction.C	/^Real TransientRBConstruction::truth_solve(int write_interval)$/;"	f	class:libMesh::TransientRBConstruction
-ts	include/harpy/Solver.h	/^    const Timestep & ts;$/;"	m	class:Solver
-ts	include/harpy/Solverloop.h	/^  const Timestep & ts;        \/\/ Owned by Timeloop$/;"	m	class:Solverloop
+ts	include/harpy/Solver.h	/^    Timestep & ts;$/;"	m	class:Solver
+ts	include/harpy/Solverloop.h	/^  Timestep & ts;        \/\/ Owned by Timeloop$/;"	m	class:Solverloop
 ts	include/harpy/Timeloop.h	/^    Timestep ts;$/;"	m	class:Timeloop
 tsqueue	include/harpy/Timestep.h	/^    queue<double> tsqueue;  $/;"	m	class:Timestep
 tstart	/opt/libmesh/include/utils/perf_log.h	/^  struct timeval tstart;$/;"	m	class:libMesh::PerfData	typeref:struct:libMesh::PerfData::timeval
@@ -18967,11 +18970,13 @@ update	/opt/libmesh/src/systems/system.C	/^void System::update ()$/;"	f	class:li
 update	include/autodiff/reverse/var/var.hpp	/^    void update() { expr->update(); }$/;"	f	struct:autodiff::reverse::detail::Variable
 update	include/autodiff/reverse/var/var.hpp	/^    void update() { val = expr(); }$/;"	f	struct:autodiff::reverse::detail::BooleanExpr
 update	include/autodiff/reverse/var/var.hpp	/^    void update(T value) {$/;"	f	struct:autodiff::reverse::detail::Variable
+update	src/material/ViscoplasticIFC.cpp	/^void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,$/;"	f	class:VPProps
 update	src/solver/BC.cpp	/^bool BC::update( const Timestep & ts ) { return update( ts.time ) ; }$/;"	f	class:BC
 update	src/solver/BC.cpp	/^bool BC::update( double t ) $/;"	f	class:BC
 update_RB_initial_condition_all_N	/opt/libmesh/src/reduced_basis/transient_rb_construction.C	/^void TransientRBConstruction::update_RB_initial_condition_all_N()$/;"	f	class:libMesh::TransientRBConstruction
 update_RB_system_matrices	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::update_RB_system_matrices()$/;"	f	class:libMesh::RBConstruction
 update_RB_system_matrices	/opt/libmesh/src/reduced_basis/transient_rb_construction.C	/^void TransientRBConstruction::update_RB_system_matrices()$/;"	f	class:libMesh::TransientRBConstruction
+update_adaptive_timestep	src/solver/ViscoplasticSolver.cpp	/^bool ViscoplasticSolver::update_adaptive_timestep()$/;"	f	class:ViscoplasticSolver
 update_base_elem	/opt/libmesh/src/fe/inf_fe.C	/^void InfFE<Dim,T_radial,T_base>::update_base_elem (const Elem * inf_elem)$/;"	f	class:libMesh::InfFE
 update_eim_matrices	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^void RBEIMConstruction::update_eim_matrices(bool set_eim_error_indicator)$/;"	f	class:libMesh::RBEIMConstruction
 update_global_solution	/opt/libmesh/src/systems/system.C	/^void System::update_global_solution (std::vector<Number> & global_soln) const$/;"	f	class:libMesh::System

@@ -63,6 +63,9 @@ public:
   void project_stress( Elem & elem_ );
   void props_at( VPProps & props, const Point & pt, const Elem * elem );
 
+  /// Rewinds the interfaces to the beginning of the timeste (for TS cutting)
+  void rewind( Elem & elem_ );
+
   /// Differentiates ViscoPlasticMaterial and ViscoPlasticMaterialBC in runtime
   virtual bool is_bc() { return false; }
 

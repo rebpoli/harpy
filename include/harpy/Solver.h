@@ -31,7 +31,7 @@ using namespace libMesh;
 class Solver
 {
   public:
-    Solver( string name_, const Timestep & ts_ );
+    Solver( string name_, Timestep & ts_ );
     Solver( Solver & ref, string name_ );
     virtual ~Solver();
 
@@ -51,7 +51,7 @@ class Solver
     void export_exo( string fn );
 
     string name;
-    const Timestep & ts;
+    Timestep & ts;
     map< uint, Material * > material_by_sid;
     bool own_es;
 

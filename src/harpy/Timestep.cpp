@@ -9,9 +9,8 @@
  */
 Timestep::Timestep() :
        config(MODEL->timestep),
-       t_step(0),
-       dt(config.dt0), 
-       time(-1) 
+       t_step(0), dt(config.dt0), 
+       time(-1) , cut_next(0)
 {
 
   // Build tsqueue
@@ -45,20 +44,36 @@ bool Timestep::test_end() const {
  */
 double Timestep::next() {
   SCOPELOG1(1);
+
+  if ( cut_next )  cut_next--;
+
+  // This means that we should not increment t_step and we should cut dt in half
+  if ( cut_next == 4 ) 
+  {
+    time -= dt; 
+    dt /= config.dtk; 
+    time += dt; 
+    if ( time < 0 ) { dt = config.dt_min; time=dt; }
+
+    dlog(1) << "Cutting timestep (time: " << time << ", dt= " << dt << ")";
+    if ( dt < config.dt_min ) flog << "Cannot continue: dt(" << dt << ")<dt_min(" << config.dt_min << ")";
+    return dt;
+  }
+
   t_step++;
 
   // Primeiro timestep após a inicializacao, roda com dt0
   if ( time < 0 ) 
   { 
     dt = config.dt0; 
-    time = 0;
+    time = dt;
     return dt; 
   }
 
   // Controle normal dos timesteps ( dt = progressao geometrica )
-  dt = dt * config.dtk;
+  if ( ! cut_next ) dt = dt * config.dtk; // Increment dt only if cut_next=0
+  // Constrain dt
   if ( dt > config.dt_max ) dt = config.dt_max;
-
   if ( dt < config.dt0 ) dt = config.dt0; // This happens after using an entry from tsqueue, near the previous TS
 
   double prev_time = time;

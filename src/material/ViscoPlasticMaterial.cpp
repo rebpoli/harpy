@@ -220,6 +220,22 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
 
 /**
  *
+ *  Rewind the plastic strain due to a timestep cut
+ */
+void ViscoPlasticMaterial::rewind( Elem & elem_ )
+{
+  reinit(elem_);
+  do { P->plastic_strain = P->plastic_strain_n; } while ( next_qp() );
+
+  // Update the probes accordingly   ////PROBE
+  // This can go into the IFC interface...
+  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+  for ( auto & probe_ifc : m1[elem->id()] ) 
+    probe_ifc->props.plastic_strain = probe_ifc->props.plastic_strain_n;
+}
+
+/**
+ *
  */
 void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 {
@@ -311,6 +327,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   AD::real von_mises = sqrt( 3 * J2 );
 
+  /// NOTE: This must match the calculations in the update function (ViscoplasticIFC)
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
   AD::Mat plastic_strain_rate =  3./2. * P->creep_md1_eps0 *
@@ -342,7 +359,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * plastic_strain(k,l) ;   // using the plastic strain from previous newton K
+    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * plastic_strain(k,l) ;
  
   return ad_Fib;
 }

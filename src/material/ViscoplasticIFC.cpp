@@ -85,7 +85,7 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
 }
 
 /**
- *
+ * Updates the properties based on precalculated U and GRAD_U
  *
  */
 void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
@@ -113,14 +113,15 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
     J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
 
   von_mises = sqrt( 3 * J2 );
-  //
+
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
 
+  /// NOTE: This must match the calculations in the residual_qp function (ViscoPlasticMaterial)
   plastic_strain_rate =  3./2. * creep_md1_eps0 *
-                           exp( - creep_md1_q / R_ / temperature ) *
-                           pow( von_mises/creep_md1_sig0 , creep_md1_n-1 ) *
-                           deviatoric * (1./creep_md1_sig0) ;
+                         exp( - creep_md1_q / R_ / temperature ) *
+                         pow( von_mises/creep_md1_sig0 , creep_md1_n-1 ) *
+                         deviatoric * (1./creep_md1_sig0) ;
 
   plastic_strain = dt * plastic_strain_rate;
   for (uint i=0; i<3; i++ )
