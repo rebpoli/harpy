@@ -35,7 +35,7 @@ public:
 //    auto m = is_same_v<N, N1> ? Mat(3,3) : Mat();
     m(1,1) = 2;
     dlog(1) << "Matrix: " << endl << m;
-  };
+  }
 
 
 };

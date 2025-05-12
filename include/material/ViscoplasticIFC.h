@@ -98,7 +98,8 @@ private:
   // For boost
   template<class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-      ar & boost::serialization::base_object<ProbeByElemBaseMap>(*this);
+    UNUSED(version);
+    ar & boost::serialization::base_object<ProbeByElemBaseMap>(*this);
   }
 };
 
@@ -142,13 +143,14 @@ namespace boost { namespace serialization {
 template<class Archive>
 void serialize(Archive & ar, VPProps & p, const unsigned int version)
 {
+  UNUSED(version);
   ar & p.lame_mu; ar & p.lame_lambda; ar & p.GRAD_U;
   ar & p.U; ar & p.sigtot; ar & p.temperature;
 } 
 /** **/
 template<class Archive>
 void serialize(Archive & ar, ProbeIFC & p, const unsigned int version)
-{ ar & p.elem_id; ar & p.pt; ar & p.props;  } 
+{ UNUSED(version); ar & p.elem_id; ar & p.pt; ar & p.props;  } 
 
 } }  // Namespaces
 

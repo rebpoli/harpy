@@ -40,8 +40,6 @@ class Solver
 
     virtual void solve()
       { flog << "Must be defined in the child class."; }
-    virtual void export_results( string basename )
-      { UNUSED(basename); flog << "Must be defined in the child class."; }
 
     virtual void init();
 

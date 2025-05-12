@@ -36,7 +36,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
-                   curr_bc( system ), report(*this)
+                   report(*this), curr_bc( system )
 {
   SCOPELOG(1);
   dlog(1) << "ViscoplasticSolver: " << *config;
@@ -366,9 +366,7 @@ void ViscoplasticSolver::solve()
   
   es.reinit(); // Maybe only needed if the curr_bc was updated?
 
-  // We might need to rewind.
-  // TODO: The best is to keep this solution in the interface
-  // and aviod completely thhe use of libmesh transient system
+  // We might need to rewind in case of TS cuts.
   old_sol = system.solution->clone();
 
   /** ** ** ** **/
@@ -400,6 +398,7 @@ void ViscoplasticSolver::solve()
  */
 void ViscoplasticSolver::do_ts_cut()
 {
+  SCOPELOG(1);
   ts.cut();
 
   // Rewind the plastic strain memory to the beginning of the TS
@@ -456,8 +455,6 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
   UNUSED(sys);
   Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
 
-  ilog << "SOLN norm: " << scientific << setprecision(10) << soln.l2_norm();
-
   MeshBase & mesh = get_mesh();
 
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
@@ -506,9 +503,6 @@ void ViscoplasticSolver::posproc_stresses()
 void ViscoplasticSolver::export_results()
 {
   SCOPELOG(1);
-  
-  MeshBase & mesh = get_mesh();
-
   report.do_export();
 }
 

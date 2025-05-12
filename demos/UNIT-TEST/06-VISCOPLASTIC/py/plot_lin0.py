@@ -39,21 +39,26 @@ class CSVPlotter:
     def do_plot( self ) :
         df = pd.read_csv(self.csv_file, sep="\t")
         df = df[df["Time(s)"]>0]
+        df = df[ df.X > -0.02 ]
+        df = df[ df.X <  0 ]
 
         # Index(['Timestep', 'Time(s)', 'Time(day)', 'Var', 'X', 'Y', 'Z', 'Value'], dtype='object')
         ax = self.ax
 
         sxxdf = df[ df.Var == "STOTXX" ]
-        sxxdf = sxxdf[ sxxdf.X > -0.02 ]
-        sxxdf = sxxdf[ sxxdf.X <  0 ]
+        syydf = df[ df.Var == "STOTYY" ]
+        szzdf = df[ df.Var == "STOTZZ" ]
 
         ##
-        ax.plot( sxxdf["Time(day)"], sxxdf["Value"], marker='x', markersize=2)
+        ax.plot( sxxdf["Time(day)"], sxxdf["Value"], marker='x', markersize=2, label=r"$\sigma_{xx}$")
+        ax.plot( syydf["Time(day)"], syydf["Value"], marker='x', markersize=2, label=r"$\sigma_{yy}$")
+        ax.plot( szzdf["Time(day)"], szzdf["Value"], marker='x', markersize=2, label=r"$\sigma_{zz}$")
         ##
 
         ax.set_xscale('log')
         ax.set_xlabel("Time (days)")
-        ax.set_ylabel(r"Stress at the sphere center ($\sigma_{xx}$) - MPa")
+        ax.set_ylabel(r"Stress at the sphere center (MPa)")
+        ax.legend()
 
     #
     #
