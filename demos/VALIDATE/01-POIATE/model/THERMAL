@@ -1,0 +1,5 @@
+.MESH mesh.e
+
+.CONFIG     BASE                # Material collection for the BASE sys_cfg
+TEST_FRAME halite    BASE   
+SIDEBURDEN halite    BASE    
