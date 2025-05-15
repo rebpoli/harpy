@@ -70,6 +70,37 @@
       \field{pages}{1257\bibrangedash 1271}
       \range{pages}{15}
     \endentry
+    \entry{cheng2024}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=777ffa68af3590f0d727a2b12bed211a}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Z},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{organization}{1}{%
+        {ARMA}%
+      }
+      \strng{namehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{fullhash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{bibnamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authorbibnamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authornamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authorfullhash}{777ffa68af3590f0d727a2b12bed211a}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ARMA US Rock Mechanics/Geomechanics Symposium}
+      \field{title}{Implementation and Verification of Enhanced Munson-Dawson Creep Model for Rock Salt}
+      \field{year}{2024}
+      \field{pages}{D041S047R003}
+      \range{pages}{-1}
+    \endentry
     \entry{dusseault1993}{inbook}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6666a2b1f520e82f8436a7a5b5de6f56}{%
@@ -284,6 +315,110 @@
       \field{pages}{19640}
       \range{pages}{1}
     \endentry
+    \entry{munson1999}{report}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Lab.(SNL-NM), Albuquerque, NM (United States); Sandia~…}%
+      }
+      \strng{namehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{fullhash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{bibnamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authorbibnamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authornamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authorfullhash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Correlation of creep behavior of domal salts}
+      \field{type}{techreport}
+      \field{year}{1999}
+    \endentry
+    \entry{munson1982}{report}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f1d949f6676606a0b6d08d9f59f8a3c4}{%
+           family={Dawson},
+           familyi={D\bibinitperiod},
+           given={PR},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Labs., Albuquerque, NM (USA); Cornell Univ., Ithaca, NY (USA~…}%
+      }
+      \strng{namehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{fullhash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{bibnamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authorbibnamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authornamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authorfullhash}{f4d87ed329a6abd7619eacf502d635c5}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Transient creep model for salt during stress loading and unloading}
+      \field{type}{techreport}
+      \field{year}{1982}
+    \endentry
+    \entry{munson1989}{book}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=468aacbe092d42ab3343ad1462fbb36b}{%
+           family={Fossum},
+           familyi={F\bibinitperiod},
+           given={Arlo\bibnamedelima F},
+           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=913ef23dbcdf21a41dfb9cc97e706d3c}{%
+           family={Senseny},
+           familyi={S\bibinitperiod},
+           given={Paul\bibnamedelima E},
+           giveni={P\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Sandia National Laboratories Albuquerque, NM}%
+      }
+      \strng{namehash}{891645c5a0f36f99dd26af3d5fd1a6a2}
+      \strng{fullhash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{bibnamehash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{authorbibnamehash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{authornamehash}{891645c5a0f36f99dd26af3d5fd1a6a2}
+      \strng{authorfullhash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Advances in resolution of discrepancies between predicted and measured in situ WIPP room closures}
+      \field{year}{1989}
+    \endentry
     \entry{poiate2012}{thesis}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=71e8c5fd6f9d2d8d5e9130bbc970141e}{%
@@ -316,6 +451,35 @@
       \field{title}{Mecânica das rochas e mecânica computacional para projeto de poços de petróleo em zonas de sal}
       \field{type}{Tese de Doutorado}
       \field{year}{2012}
+    \endentry
+    \entry{reedlunn2018}{report}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=09b078dbe32665fe7756fec8421939cf}{%
+           family={Reedlunn},
+           familyi={R\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Lab.(SNL-NM), Albuquerque, NM (United States)}%
+      }
+      \strng{namehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{fullhash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{bibnamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authorbibnamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authornamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authorfullhash}{09b078dbe32665fe7756fec8421939cf}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Enhancements to the Munson-Dawson model for rock salt}
+      \field{type}{techreport}
+      \field{year}{2018}
     \endentry
     \entry{xu2018}{article}{}
       \name{author}{6}{}{%
@@ -432,6 +596,37 @@
       \field{pages}{1257\bibrangedash 1271}
       \range{pages}{15}
     \endentry
+    \entry{cheng2024}{article}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=777ffa68af3590f0d727a2b12bed211a}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Z},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{organization}{1}{%
+        {ARMA}%
+      }
+      \strng{namehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{fullhash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{bibnamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authorbibnamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authornamehash}{777ffa68af3590f0d727a2b12bed211a}
+      \strng{authorfullhash}{777ffa68af3590f0d727a2b12bed211a}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ARMA US Rock Mechanics/Geomechanics Symposium}
+      \field{title}{Implementation and Verification of Enhanced Munson-Dawson Creep Model for Rock Salt}
+      \field{year}{2024}
+      \field{pages}{D041S047R003}
+      \range{pages}{-1}
+    \endentry
     \entry{dusseault1993}{inbook}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=6666a2b1f520e82f8436a7a5b5de6f56}{%
@@ -646,6 +841,110 @@
       \field{pages}{19640}
       \range{pages}{1}
     \endentry
+    \entry{munson1999}{report}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Lab.(SNL-NM), Albuquerque, NM (United States); Sandia~…}%
+      }
+      \strng{namehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{fullhash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{bibnamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authorbibnamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authornamehash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \strng{authorfullhash}{ee72f015ee4c9ecdeef904ba5d90f781}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Correlation of creep behavior of domal salts}
+      \field{type}{techreport}
+      \field{year}{1999}
+    \endentry
+    \entry{munson1982}{report}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f1d949f6676606a0b6d08d9f59f8a3c4}{%
+           family={Dawson},
+           familyi={D\bibinitperiod},
+           given={PR},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Labs., Albuquerque, NM (USA); Cornell Univ., Ithaca, NY (USA~…}%
+      }
+      \strng{namehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{fullhash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{bibnamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authorbibnamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authornamehash}{f4d87ed329a6abd7619eacf502d635c5}
+      \strng{authorfullhash}{f4d87ed329a6abd7619eacf502d635c5}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Transient creep model for salt during stress loading and unloading}
+      \field{type}{techreport}
+      \field{year}{1982}
+    \endentry
+    \entry{munson1989}{book}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=ee72f015ee4c9ecdeef904ba5d90f781}{%
+           family={Munson},
+           familyi={M\bibinitperiod},
+           given={Darrell\bibnamedelima E},
+           giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=468aacbe092d42ab3343ad1462fbb36b}{%
+           family={Fossum},
+           familyi={F\bibinitperiod},
+           given={Arlo\bibnamedelima F},
+           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=913ef23dbcdf21a41dfb9cc97e706d3c}{%
+           family={Senseny},
+           familyi={S\bibinitperiod},
+           given={Paul\bibnamedelima E},
+           giveni={P\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Sandia National Laboratories Albuquerque, NM}%
+      }
+      \strng{namehash}{891645c5a0f36f99dd26af3d5fd1a6a2}
+      \strng{fullhash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{bibnamehash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{authorbibnamehash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \strng{authornamehash}{891645c5a0f36f99dd26af3d5fd1a6a2}
+      \strng{authorfullhash}{3be6782df1b4b8444067ecd19d4cd6a8}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Advances in resolution of discrepancies between predicted and measured in situ WIPP room closures}
+      \field{year}{1989}
+    \endentry
     \entry{poiate2012}{thesis}{}
       \name{author}{1}{}{%
         {{un=0,uniquepart=base,hash=71e8c5fd6f9d2d8d5e9130bbc970141e}{%
@@ -678,6 +977,35 @@
       \field{title}{Mecânica das rochas e mecânica computacional para projeto de poços de petróleo em zonas de sal}
       \field{type}{Tese de Doutorado}
       \field{year}{2012}
+    \endentry
+    \entry{reedlunn2018}{report}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=09b078dbe32665fe7756fec8421939cf}{%
+           family={Reedlunn},
+           familyi={R\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Sandia National Lab.(SNL-NM), Albuquerque, NM (United States)}%
+      }
+      \strng{namehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{fullhash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{bibnamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authorbibnamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authornamehash}{09b078dbe32665fe7756fec8421939cf}
+      \strng{authorfullhash}{09b078dbe32665fe7756fec8421939cf}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Enhancements to the Munson-Dawson model for rock salt}
+      \field{type}{techreport}
+      \field{year}{2018}
     \endentry
     \entry{xu2018}{article}{}
       \name{author}{6}{}{%

@@ -262,14 +262,14 @@ INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/boondox/BOONDOX-r-cal.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/boondox/BOONDOX-r-cal.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/boondox/BOONDOX-r-cal.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/public/boondox/BOONDOX-r-cal.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/boondox/zxxrw7z.tfm
 INPUT /usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/bbm/bbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/bbm/bbm8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/bbm/bbm6.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/vf/public/boondox/BOONDOX-r-cal.vf
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/boondox/zxxrw7z.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT main.aux
 INPUT main.run.xml

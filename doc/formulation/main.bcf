@@ -3079,6 +3079,11 @@
     <bcf:citekey order="15" intorder="1">carter1993</bcf:citekey>
     <bcf:citekey order="16" intorder="1">kumar2021</bcf:citekey>
     <bcf:citekey order="17" intorder="1">kumar2021</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">reedlunn2018</bcf:citekey>
+    <bcf:citekey order="18" intorder="2">munson1999</bcf:citekey>
+    <bcf:citekey order="18" intorder="3">cheng2024</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">munson1982</bcf:citekey>
+    <bcf:citekey order="19" intorder="2">munson1989</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="apa">

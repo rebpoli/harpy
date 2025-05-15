@@ -43,6 +43,7 @@
 \def\eps{\bm{\varepsilon}}
 \def\jmp#1{\llbracket #1 \rrbracket}
 \def\ss#1#2#3{\tiny\substack{#1\\#2\\#3}}
+\def\vepbd{\dot{\bar{\varepsilon}}}  % varepsilon, bar and dot
 
 \section{Fracture storage}
 
@@ -379,7 +380,7 @@ Alternativelly, we can use the strategy by \parencite{dusseault1987}, with a cri
 \hline $Q$ & J mol$^{-1}$          & Apparent activation energy \\
 \hline $n$ & $-$                     & Material constant \\
 \hline $\varepsilon_0$ & $-$     & Material constant \\
-\hline $\sigmae_0$ & MPa           & Material constant \\
+\hline $\sigma_0$ & MPa           & Material constant \\
 \hline $\sigma_e$ &MPa                 & Differential stress ($\sigma_1-\sigma_3$), or von mises, or Tresca. \\
 \hline
 \end{tabular}
@@ -426,6 +427,49 @@ The creep term is integrated in time and added to the equilibrium equation as
 \begin{align*}
   & (w_{i,j},\ \CC_{ijkl}\ u_{k,l}) - (w_{i,j},\ \CC_{ijkl}\ \varepsilon^s_{kl}) - (w_i,\ \mathcal{f}_i) - (w_i,\ \mathcal{h}_i)_{\Gamma_h} = 0 
 \end{align*}
+
+\subsection{Munson Dawson - transient creep}
+This section is based on \parencite{reedlunn2018, munson1999, cheng2024}, that follow previous work at Sandia \parencite{munson1982,munson1989}.
+
+Define the total plastic strain rate as
+\begin{align}
+  \vepbd_p = \vepbd_{ss} + \vepbd_{tr} = F\ \vepbd_{ss}
+\end{align}
+where the steadystate creep is
+\begin{align}
+  \vepbd_{ss} = \varepsilon_0\ \exp{\frac{-Q}{RT}}\ \bar\sigma^n
+\end{align}
+where the normalized stress is 
+\begin{align}
+  \bar\sigma=\frac{\sigma_e}{\sigma_0}
+\end{align}
+and $\sigma_e$ is the deviatoric (or equivalent, or von mises, or Hosford) stress.
+
+The transient creep is
+\begin{align}
+  \vepbd_{tr} = (1-F)\ \vepbd_{ss}
+\end{align}
+where
+\begin{align}
+  \def\arraystretch{2}
+  F =
+  \left\{
+    \begin{array}{ll}
+      \exp \left( \omega_w\ \zeta^2 \right) & \quad,\quad \zeta > 0 \ (\varepsilon_{tr}\leq\varepsilon^*_{tr})\\
+      \exp \left( - \omega_r\ \zeta^2 \right) & \quad,\quad \zeta < 0 \ (\varepsilon_{tr}>\varepsilon^*_{tr})\\
+    \end{array}
+  \right.
+\end{align}
+where
+\begin{align}
+  \zeta &= 1 - \frac{\varepsilon_{tr}}{\varepsilon^*_{tr}} \\
+  \omega_w &= \alpha_w + \beta_w\ \log \bar\sigma \\
+  \omega_r &= \alpha_r + \beta_r\ \log \bar\sigma
+\end{align}
+and
+\begin{align}
+  \varepsilon_{tr}^* = \kappa\ \exp(cT)\ \bar\sigma^m
+\end{align}
 
 \subsection{Creep integration with large strain elasticity}
 For small timesteps, we can determine the creep strain variation explicitely:
