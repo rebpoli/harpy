@@ -11,10 +11,18 @@
 \usepackage{mathrsfs}
 \usepackage[scr=rsfs,cal=boondox]{mathalfa}
 
+\usepackage{array}
+\usepackage{graphicx}
+
 \usepackage[style=apa,backend=biber]{biblatex}
 \addbibresource{../ref.bib}
 
 
+\newcolumntype{A}{c@{\hspace{.5cm}}}
+\newcolumntype{B}{c@{\hspace{2cm}}}
+\newcolumntype{L}{>$l<$} 
+\setlength{\jot}{6pt}
+\renewcommand{\arraystretch}{1.5}
 
 \title{Crk3 formulation}
 \author{Renato Poli}
@@ -470,6 +478,25 @@ and
 \begin{align}
   \varepsilon_{tr}^* = \kappa\ \exp(cT)\ \bar\sigma^m
 \end{align}
+
+The above expressions are the ones given by MD.
+Now we want to simplify to ease our implementation and analysis.
+\begin{align}
+  & 
+    \begin{cases}
+    \alpha = \alpha_w \quad,\quad \beta=\beta_w & \text{if } \zeta > 0 \\
+    \alpha = \alpha_r \quad,\quad \beta=\beta_r & \text{if } \zeta \leq 0 \\
+    \end{cases}
+    \quad,\quad
+  a = \text{sign}(\zeta)   \qquad\Longrightarrow\qquad
+  F =  e^{a\,\alpha\,\zeta^2}\ \bar{\sigma}^{a\,\beta\,\zeta^2}
+\end{align}
+
+% \[\begin{array}{ c L }
+% \hline
+% E=mc^2 & any text\\ \hline
+% cell4 & cell5 \\ \hline
+% \end{array}\]
 
 \subsection{Creep integration with large strain elasticity}
 For small timesteps, we can determine the creep strain variation explicitely:
