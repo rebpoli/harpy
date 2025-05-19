@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import os, time
 from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import MultipleLocator
+from numpy import exp
+from math import log10, log
 
 def run() :
     fn = "py/paper.mplstyle"
@@ -31,40 +33,100 @@ def run() :
     T = 86 + 273
     sig = 16e6
 
-    eps0 = 0.017 # /s
+    eps0 = 0.0175 # /s
     sig0 = 9.91e6
     N = 7.55
 
     sig_bar = sig/sig0
 
-    eps_ss_rate = eps0 * np.exp( -Q/R/T ) * sig_bar**N
+    ## Transient setup
+    kappa = 5e-3
+    c     = 3e-3
+    m     = 1 
+    eps_tr_star = kappa * exp( c * T ) * pow( sig_bar, m )
+
+    alpha_w = 2.4
+    beta_w =  0
+    alpha_r = 0
+    beta_r = 0
+    print(f"eps^* = {eps_tr_star}")
+
+    eps_ss_rate = eps0 * exp( -Q/R/T ) * sig_bar**N
 
     eps_tot = np.zeros_like(t_s)
     eps_tr = np.zeros_like(t_s)
+    F_i = np.zeros_like(t_s)
+    Zeta_i = np.zeros_like(t_s)
 
     for i in range( len( t_s ) ) :
-        en = 0 ; dt = 0
+        ess_n = 0 ; dt = 0; etr_n=0
         if i > 0 : 
-            en = eps_tot[i-1]
+            ess_n = eps_tot[i-1]
+            etr_n = eps_tr[i-1]
             dt = t_s[i] - t_s[i-1]
 
         t = t_s[i]
-        eps_tot[i] = en + eps_ss_rate * dt
+
+        zeta = 1 - etr_n/eps_tr_star
+
+        alpha = alpha_w
+        beta = beta_w 
+        if zeta < 0 : 
+            alpha=-alpha_r
+            beta=-beta_r 
+
+        test = alpha + beta * log10(sig_bar)
+#         print(f"test:{test:.2e} alpha:{alpha:.2e} beta:{beta:.2e} sig_bar:{sig_bar:.2e} zeta:{zeta:.2e}")
+        F = exp(alpha*zeta*zeta) * pow( sig_bar, beta*zeta*zeta )
+        if test < 0 : F = 1
+
+        eps_tr_rate = ( F - 1 ) * eps_ss_rate
+        eps_tr[i] = etr_n + eps_tr_rate * dt
+
+        print(f"F:{F:.2e} eps_tr_rate:{eps_tr_rate:.2e} eps_tr:{eps_tr[i]:.2e} etr_n:{etr_n:.2e}")
+
+        eps_tot[i] = ess_n + F * eps_ss_rate * dt
+
+        ## Debugging stuff
+        F_i[i] = F
+        Zeta_i[i] = zeta
 
 
     # Do the plotting
-    fig, ax1 = plt.subplots(figsize=(10, 6))
-    ax1.scatter(df.time_h, df.epsxx, c='b', s=10, label=r'$\varepsilon_{xx}$')
-
-#     ax1.plot( t_h, eps_tot , 'k--' )
-
+    fig, [ax1, ax3] = plt.subplots(2,1,figsize=(10, 6))
     ax2 = ax1.twinx()
-    ax2.scatter(df.time_h, df.eps_rate, c='r', s=10, label=r'$\dot{\varepsilon}$')
-    ax2.plot(df.time_h, df.eps_rate_smooth, 'r--')
+
+    lines = []
+    labels = []
+
+
+    l1 = ax1.scatter(df.time_h, df.epsxx, c='b', s=10, label=r'$\varepsilon_{xx}$') 
+    l2 = ax2.scatter(df.time_h, df.eps_rate, c='r', s=10, label=r'$\dot{\varepsilon}$') 
+    l3, = ax2.plot(df.time_h, df.eps_rate_smooth, 'r--') 
+
+    l4, = ax1.plot( t_h, eps_tot , 'k--', lw=1.5, alpha=0.6, label=r"Model ($\varepsilon_{tr}$)" ) 
+    l5, = ax1.plot(t_h, eps_tr, 'g--', lw=1.5, alpha=0.6, label=r"Model ($\varepsilon_{tr}$)") 
+
+    lines = [ l1, l2, l4, l5 ]
+    labels = [line.get_label() for line in lines]
+    ax1.legend(lines, labels, loc='upper left', bbox_to_anchor=(0.04,0.96), fontsize=10 )
 
     set_grid( ax1, ax2 )
 
-    fig.legend( loc='upper left', bbox_to_anchor=(0.07,0.96), fontsize=14 )
+    # Aux variables plot
+    l1, = ax3.plot(t_h, F_i, label="$F$" )
+    ax3.set_ylabel("$F$")
+
+    ax4 = ax3.twinx()
+    l2, = ax4.plot(t_h, Zeta_i, label=r"$\zeta$" , c='red' )
+    ax4.set_ylabel(r"$\zeta$")
+
+    lines = [ l1, l2 ]
+    labels = [line.get_label() for line in lines]
+    ax3.legend(lines, labels, loc='upper left', bbox_to_anchor=(0.3,0.96), fontsize=10 )
+
+    ax3.set_xlim( 0 , ax1.get_xlim()[1])
+    ax4.grid(False, which='both')
 
     plt.show()
 

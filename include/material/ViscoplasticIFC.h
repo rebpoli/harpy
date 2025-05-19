@@ -21,8 +21,17 @@ struct VPProps
 
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
+
+  // Creep Mode 1
   double creep_md1_eps0, creep_md1_sig0, creep_md1_q, creep_md1_n;
+  double creep_md1_c,    creep_md1_k, creep_md1_m;
+  double creep_md1_alpha_w,creep_md1_beta_w,creep_md1_alpha_r,creep_md1_beta_r;
+  double creep_md1_etr, creep_md1_etr_n; // transient strain
+  // Mode 2
   double creep_md2_eps0, creep_md2_sig0, creep_md2_q, creep_md2_n;
+  double creep_md2_c,    creep_md2_k, creep_md2_m;
+  double creep_md2_alpha_w,creep_md2_beta_w,creep_md2_alpha_r,creep_md2_beta_r;
+  double creep_md2_etr, creep_md2_etr_n; // transient strain
 
   // State variables
   RealTensor GRAD_U;
@@ -31,7 +40,7 @@ struct VPProps
 
   // Stresses
   RealTensor sigtot, sigeff, deviatoric;
-  double von_mises, epskk;
+  double von_mises, epskk, F;
 
   // Plasticity
   RealTensor plastic_strain, plastic_strain_n;
@@ -44,7 +53,7 @@ struct PropsTranspose
   PropsTranspose( vector<VPProps> * by_qp ) ;
 
   vector<RealTensor> sigtot, sigeff, deviatoric, plastic_strain, plastic_strain_rate;
-  vector<double> von_mises, epskk;
+  vector<double> von_mises, epskk, F;
 };
 
 /// Probe interface

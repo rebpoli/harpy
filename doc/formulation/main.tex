@@ -455,7 +455,7 @@ and $\sigma_e$ is the deviatoric (or equivalent, or von mises, or Hosford) stres
 
 The transient creep is
 \begin{align}
-  \vepbd_{tr} = (1-F)\ \vepbd_{ss}
+  \vepbd_{tr} = (F-1)\ \vepbd_{ss}
 \end{align}
 where
 \begin{align}
@@ -471,27 +471,42 @@ where
 where
 \begin{align}
   \zeta &= 1 - \frac{\varepsilon_{tr}}{\varepsilon^*_{tr}} \\
-  \omega_w &= \alpha_w + \beta_w\ \log \bar\sigma \\
-  \omega_r &= \alpha_r + \beta_r\ \log \bar\sigma
+  \omega_w &= \alpha_w + \beta_w\ \log_{10} \bar\sigma \\
+  \omega_r &= \alpha_r + \beta_r\ \log_{10} \bar\sigma
 \end{align}
 and
 \begin{align}
-  \varepsilon_{tr}^* = \kappa\ \exp(cT)\ \bar\sigma^m
+  \varepsilon_{tr}^* = K\ \exp(c\,T)\ \bar\sigma^m
 \end{align}
 
 The above expressions are the ones given by MD.
 Now we want to simplify to ease our implementation and analysis.
-\begin{align}
-  & 
+\[\begin{array}{ccl}
+  \vepbd_{ss} = \varepsilon_0\ \exp{\frac{-Q}{RT}}\ \bar\sigma^n
+  && 
+    \varepsilon_{tr}^* = K\ \exp(c\,T)\ \bar\sigma^m 
+  \\[10pt]
+    \zeta = 1 - \frac{\varepsilon_{tr}}{\varepsilon^*_{tr}} 
+  & \rightarrow \qquad\qquad  & 
     \begin{cases}
-    \alpha = \alpha_w \quad,\quad \beta=\beta_w & \text{if } \zeta > 0 \\
-    \alpha = \alpha_r \quad,\quad \beta=\beta_r & \text{if } \zeta \leq 0 \\
+      \ \zeta > 0 \quad\rightarrow\quad    (\alpha \ ,\  \beta) = + \ ( \alpha_w \ ,\  \beta_w )  \\
+      \ \zeta \leq 0 \quad\rightarrow\quad (\alpha \ ,\  \beta) = - \ ( \alpha_r \ ,\  \beta_r ) \\
     \end{cases}
-    \quad,\quad
-  a = \text{sign}(\zeta)   \qquad\Longrightarrow\qquad
-  F =  e^{a\,\alpha\,\zeta^2}\ \bar{\sigma}^{a\,\beta\,\zeta^2}
-\end{align}
-
+  \\[15pt]
+      F = e^{\alpha\,\zeta^2}\ \bar{\sigma}^{\beta\,\zeta^2}
+  & \rightarrow \qquad\qquad  & 
+    \vepbd_{tr} = (F-1)\ \vepbd_{ss}
+    \qquad , \qquad
+    \vepbd_{p} = F\ \vepbd_{ss}
+  \\[10pt]
+    \varepsilon_{tr} = \varepsilon_{tr}^{n} + \Delta t\ \vepbd_{tr}
+  &&
+  \varepsilon_{p} = \varepsilon_{p}^{n} + \Delta t\ \vepbd_{p} \\[15pt]
+\end{array}\]
+Note that MD formulation uses $\log_{10}$ operator for the $\omega$ parameters.
+I chose to remove it, because $\omega$ is a fitting parameter.
+The idea is to keep the formulation clearer.
+Note, however, that this changes the interpretation of the material fitting parameter $\beta$.
 % \[\begin{array}{ c L }
 % \hline
 % E=mc^2 & any text\\ \hline

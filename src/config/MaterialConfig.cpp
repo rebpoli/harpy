@@ -83,6 +83,14 @@ optional<double> & MaterialConfig::con_param( string & vname, string context )
     if ( iequals( vname, "n" ) ) return creep_md1_n;
     if ( iequals( vname, "eps0" ) ) return creep_md1_eps0;
     if ( iequals( vname, "sig0" ) ) return creep_md1_sig0;
+
+    if ( iequals( vname, "c" ) ) return creep_md1_c;
+    if ( iequals( vname, "k" ) ) return creep_md1_k;
+    if ( iequals( vname, "m" ) ) return creep_md1_m;
+    if ( iequals( vname, "alpha_w" ) ) return creep_md1_alpha_w;
+    if ( iequals( vname, "alpha_r" ) ) return creep_md1_alpha_r;
+    if ( iequals( vname, "beta_w" ) ) return creep_md1_beta_w;
+    if ( iequals( vname, "beta_r" ) ) return creep_md1_beta_r;
   }
   if ( context == "creep_md2" )
   {
@@ -90,6 +98,13 @@ optional<double> & MaterialConfig::con_param( string & vname, string context )
     if ( iequals( vname, "n" ) ) return creep_md2_n;
     if ( iequals( vname, "eps0" ) ) return creep_md2_eps0;
     if ( iequals( vname, "sig0" ) ) return creep_md2_sig0;
+    if ( iequals( vname, "c" ) ) return creep_md2_c;
+    if ( iequals( vname, "k" ) ) return creep_md2_k;
+    if ( iequals( vname, "m" ) ) return creep_md2_m;
+    if ( iequals( vname, "alpha_w" ) ) return creep_md2_alpha_w;
+    if ( iequals( vname, "alpha_r" ) ) return creep_md2_alpha_r;
+    if ( iequals( vname, "beta_w" ) ) return creep_md2_beta_w;
+    if ( iequals( vname, "beta_r" ) ) return creep_md2_beta_r;
   }
 
   /** ** ** **/
@@ -147,11 +162,25 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    SIG0:             " << setw(15) << m.creep_md1_sig0 << endl;
   os << "                                    Q:                " << setw(15) << m.creep_md1_q << endl;
   os << "                                    N:                " << setw(15) << m.creep_md1_n << endl;
+  os << "                                    C:                " << setw(15) << m.creep_md1_c << endl;
+  os << "                                    K:                " << setw(15) << m.creep_md1_k << endl;
+  os << "                                    M:                " << setw(15) << m.creep_md1_m << endl;
+  os << "                                    ALPHA_W:          " << setw(15) << m.creep_md1_alpha_w << endl;
+  os << "                                    BETA_W:           " << setw(15) << m.creep_md1_beta_w << endl;
+  os << "                                    ALPHA_R:          " << setw(15) << m.creep_md1_alpha_r << endl;
+  os << "                                    BETA_R:           " << setw(15) << m.creep_md1_beta_r << endl;
   os << "                                 Creep Model (MD2):" << endl ;
   os << "                                    EPS0:             " << setw(15) << m.creep_md2_eps0 << endl;
   os << "                                    SIG0:             " << setw(15) << m.creep_md2_sig0 << endl;
   os << "                                    Q:                " << setw(15) << m.creep_md2_q << endl;
   os << "                                    N:                " << setw(15) << m.creep_md2_n << endl;
+  os << "                                    C:                " << setw(15) << m.creep_md2_c << endl;
+  os << "                                    K:                " << setw(15) << m.creep_md2_k << endl;
+  os << "                                    M:                " << setw(15) << m.creep_md2_m << endl;
+  os << "                                    ALPHA_W:          " << setw(15) << m.creep_md2_alpha_w << endl;
+  os << "                                    BETA_W:           " << setw(15) << m.creep_md2_beta_w << endl;
+  os << "                                    ALPHA_R:          " << setw(15) << m.creep_md2_alpha_r << endl;
+  os << "                                    BETA_R:           " << setw(15) << m.creep_md2_beta_r << endl;
 
   return os;
 }

@@ -225,13 +225,19 @@ void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Ele
 void ViscoPlasticMaterial::rewind( Elem & elem_ )
 {
   reinit(elem_);
-  do { P->plastic_strain = P->plastic_strain_n; } while ( next_qp() );
+  do { 
+    P->plastic_strain = P->plastic_strain_n; 
+    P->creep_md1_etr = P->creep_md1_etr_n;
+  } while ( next_qp() );
 
   // Update the probes accordingly   ////PROBE
   // This can go into the IFC interface...
   for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
   for ( auto & probe_ifc : m1[elem->id()] ) 
+  {
     probe_ifc->props.plastic_strain = probe_ifc->props.plastic_strain_n;
+    probe_ifc->props.creep_md1_etr = probe_ifc->props.creep_md1_etr_n;
+  }
 }
 
 /**
@@ -244,13 +250,19 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   // Update plastic strain history -- we could make it blindly in the interface,
   // without element awareness
   reinit(elem_);
-  do { P->plastic_strain_n = P->plastic_strain; } while ( next_qp() );
+  do { 
+    P->plastic_strain_n = P->plastic_strain; 
+    P->creep_md1_etr_n = P->creep_md1_etr;
+  } while ( next_qp() );
 
   // Update the probes accordingly   ////PROBE
   // This can go into the IFC interface...
   for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
   for ( auto & probe_ifc : m1[elem->id()] ) 
+  {
     probe_ifc->props.plastic_strain_n = probe_ifc->props.plastic_strain;
+    probe_ifc->props.creep_md1_etr_n = probe_ifc->props.creep_md1_etr;
+  }
 
   ///  Project into the stress system
   stress_postproc.reinit( elem_ );
@@ -264,6 +276,7 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   stress_postproc.project_tensor( Pt.plastic_strain_rate, "plastic_strain_rate" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
   stress_postproc.project( Pt.epskk, "epskk" );
+  stress_postproc.project( Pt.F, "F" );
 }
 
 /**
@@ -327,13 +340,53 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   AD::real von_mises = sqrt( 3 * J2 );
 
+  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+
+//  dlog(1) << "deviatoric:" << deviatoric;
+//  dlog(1) << "J2:" << J2;
+//  dlog(1) << "K:" << P->creep_md1_k;
+//  dlog(1) << "C:" << P->creep_md1_c;
+//  dlog(1) << "T:" << P->temperature;
+//  dlog(1) << "VM:" << von_mises;
+//  dlog(1) << "sig0:" << P->creep_md1_sig0;
+//  dlog(1) << "m:" << P->creep_md1_m;
+
+  // Compute the transient
+  AD::real etr_star = P->creep_md1_k * exp( P->creep_md1_c * P->temperature ) * 
+                      pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m );
+//  dlog(1) << "exp( P->creep_md1_c * P->temperature ):" << exp( P->creep_md1_c * P->temperature );
+//  dlog(1) << "pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m ):" << pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m );
+//  dlog(1) << "etr_star:" << etr_star;
+
+  AD::real zeta = 0;
+  if ( abs(etr_star) > 1e-20 ) 
+    zeta = 1 - P->creep_md1_etr / etr_star;
+
+  double alpha = P->creep_md1_alpha_w, beta = P->creep_md1_beta_w;
+  if ( zeta <= 0 ) { alpha = P->creep_md1_alpha_r; beta = P->creep_md1_beta_r; }
+
+
+  AD::real F = exp( alpha * zeta * zeta ) * pow( ( von_mises / P->creep_md1_sig0 ), beta * zeta * zeta );
+
+//  dlog(1) << "** alpha:" << alpha;
+//  dlog(1) << "** beta: " << beta;
+//  dlog(1) << "** zeta: " << zeta;
+//  dlog(1) << "** exp(alpha): " << exp( alpha * zeta * zeta );
+//  dlog(1) << "** pow(beta):  " << pow( ( von_mises / P->creep_md1_sig0 ), beta * zeta * zeta );
+//  dlog(1) << "F:" << F << "  etr_star:" << etr_star << " zeta:" << zeta << " creep_md1_k: " << P->creep_md1_k;
+//  dlog(1) << *P;
+
+  AD::real etr_rate = ( F - 1 ) * P->creep_md1_eps0 *
+                      exp( - P->creep_md1_q / R_ / P->temperature ) *
+                      pow( von_mises/P->creep_md1_sig0 , P->creep_md1_n );
+  P->creep_md1_etr = P->creep_md1_etr_n + val(etr_rate) * vpsolver.ts.dt;
+
   /// NOTE: This must match the calculations in the update function (ViscoplasticIFC)
   // Compute plastic strain rate
-  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
-  AD::Mat plastic_strain_rate =  3./2. * P->creep_md1_eps0 *
-                                exp( - P->creep_md1_q / R_ / P->temperature ) *
-                                pow( von_mises/P->creep_md1_sig0 , P->creep_md1_n-1 ) *
-                                deviatoric / P->creep_md1_sig0 ;
+  AD::Mat plastic_strain_rate =  3./2. * F * P->creep_md1_eps0 *
+                                     exp( - P->creep_md1_q / R_ / P->temperature ) *
+                                     pow( von_mises/P->creep_md1_sig0 , P->creep_md1_n-1 ) *
+                                     deviatoric / P->creep_md1_sig0 ;
 
   // Update the plasteic strain
   AD::Mat plastic_strain = vpsolver.ts.dt * plastic_strain_rate;
@@ -349,6 +402,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   AD::dump( plastic_strain, P->plastic_strain);
   P->von_mises = val(von_mises);
   P->epskk = val(epskk);
+  P->F = val(F);
 
   // 
   // Subtract the plastic strain as a body force

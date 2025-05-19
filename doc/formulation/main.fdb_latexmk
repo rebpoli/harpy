@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1747171501.97421 "main.bcf" "main.bbl" "main" 1747341642.5541 0
+["biber main"] 1747171501.97421 "main.bcf" "main.bbl" "main" 1747689870.34246 0
   "../ref.bib" 1747171248.93455 3914 9d72c6d2452cb39c328eea1d836f947d ""
-  "main.bcf" 1747341642.3977 134505 1608ab595f305bee71e8682e286e7c35 "pdflatex"
+  "main.bcf" 1747689870.13481 134505 1608ab595f305bee71e8682e286e7c35 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1747341641.45681 "main.tex" "main.pdf" "main" 1747341642.55452 0
+["pdflatex"] 1747689869.05545 "main.tex" "main.pdf" "main" 1747689870.34282 0
   "/etc/texmf/web2c/texmf.cnf" 1736044772 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/renato/.texlive2023/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.657pk" 1738771995.10197 7808 03d6d2e0c48b9c2dff039783ec4fa9b8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -88,6 +88,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/boondox/zxxrw8a.pfb" 1304615349 17551 711513621dd81e026c0c1a707362e1e0 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/matha10.pfb" 1295482684 90043 a01ee69dbd537ea8a0835a2b4841a64e ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/matha5.pfb" 1295482684 96302 e91b1c31d3582d16775d0bf165963e92 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/matha6.pfb" 1295482684 93176 0e192b93dceeff9d5c17507fff8379cc ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/matha8.pfb" 1295482684 92536 122d225cdc6105aa1e30a312e405a45c ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/mathb10.pfb" 1295482684 89251 441f72450b980a987c1a89892f305fb3 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/mathabx-type1/mathb6.pfb" 1295482684 92034 c638867769e1a9bfec418ffe78d5a1ba ""
@@ -174,10 +175,10 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1736044786 5472523 3385632d03104648b518c8e4afd7264e ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1736044803 8214546 b521ea07097d46a54e8390f514013417 ""
-  "main.aux" 1747341642.3873 6444 7645a34d7ed5ee5dafafb8329fbc7bd9 "pdflatex"
+  "main.aux" 1747689870.12381 6444 0662a368a2133aa6fa34dee8ef0ef248 "pdflatex"
   "main.bbl" 1747171502.79682 43290 eca3152625614698810d1b370c6aa9e6 "biber main"
-  "main.run.xml" 1747341642.3977 2423 2c29162e9996be3644b87894c5e87352 "pdflatex"
-  "main.tex" 1747341641.04621 41794 61b3c523928be2b94cb928c0510e2308 ""
+  "main.run.xml" 1747689870.13481 2423 2c29162e9996be3644b87894c5e87352 "pdflatex"
+  "main.tex" 1747689867.86881 42582 5d97a91aec5edf14f0a6a36be0d8a2ba ""
   (generated)
   "main.aux"
   "main.bcf"

@@ -97,6 +97,7 @@ void ViscoplasticSolver::setup_variables()
 
     stress_system.add_variable( "von_mises", order, fef);
     stress_system.add_variable( "epskk", order, fef );
+    stress_system.add_variable( "F", order, fef );
   }
 
   // Scalars and penalties

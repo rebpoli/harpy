@@ -36,9 +36,16 @@ public:
   optional<double> biot, young, poisson;
   // Thermal
   optional<double> beta_e, beta_d, alpha_d;
-  // Creep (Carter Model)
+  // Creep (MD Model)
+  // MD steadystate
   optional<double> creep_md1_eps0, creep_md1_sig0, creep_md1_q, creep_md1_n;
+  // MD transient
+  optional<double> creep_md1_c,    creep_md1_k, creep_md1_m;
+  optional<double> creep_md1_alpha_w,creep_md1_beta_w,creep_md1_alpha_r,creep_md1_beta_r;
+  // MD mode 2
   optional<double> creep_md2_eps0, creep_md2_sig0, creep_md2_q, creep_md2_n;
+  optional<double> creep_md2_c,    creep_md2_k, creep_md2_m;
+  optional<double> creep_md2_alpha_w,creep_md2_beta_w,creep_md2_alpha_r,creep_md2_beta_r;
 
   // Secondary variables (computed from the primary above)
   optional<double> lame_mu, lame_lambda, bulk_modulus;

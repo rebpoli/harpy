@@ -21,8 +21,14 @@ BETA_D        1e-4        # Thermal
 
 # Defines the creep model - multiple definitions define multiple modes
 .CREEP MD1
-EPS0          0.017   # Dimensionless
-SIG0          9.91e6      # Pa
-Q             51.6e3   # J/mol
+EPS0          0.017  
+SIG0          9.91e6  
+Q             51.6e3   
 N             7.55 
-
+C             3e-3  
+K             5e-3
+M             1
+ALPHA_W       2.4
+BETA_W        0
+ALPHA_R       0
+BETA_R        0

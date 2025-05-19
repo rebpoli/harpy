@@ -7,9 +7,9 @@ THERMAL BASE
 STRESS BASE
 
 .TIMESTEP 
-DT0           2500 # 100
-DTK           1
-DTMAX         2.592e6 # 30 days
+DT0           100
+DTK           1.3
+DTMAX         5000 # 30 days
 TMAX          1e9 # 30 years
 MAX_STEPS     100000
 
