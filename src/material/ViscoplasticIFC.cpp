@@ -216,6 +216,8 @@ ostream& operator<<(ostream& os, const VPProps & p)
   os << "    State variables:" << endl;
   os << right << setw(20) << "U:" << setw(15) << Print(p.U) << endl;
   os << right << setw(20) << "Temperature:" << setw(15) << p.temperature << endl;
-
+  os << right << setw(20) << "Plastic_strain:" << setw(15) << Print(p.plastic_strain) << endl;
+  os << right << setw(20) << "Plastic_strain_n:" << setw(15) << Print(p.plastic_strain_n) << endl;
+  os << right << setw(20) << "Plastic_strain_rate:" << setw(15) << Print(p.plastic_strain_rate) << endl;
   return os;
 }

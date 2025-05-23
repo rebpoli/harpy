@@ -21,7 +21,8 @@ class CSVPlotter:
         self.last_modified = 0
 
         # Set up the plot
-        self.fig, (self.ax1, self.ax2) = plt.subplots(1,2,figsize=(10, 6))
+#         self.fig, (self.ax1, self.ax2) = plt.subplots(1,2,figsize=(10, 6))
+        self.fig, self.ax1 = plt.subplots(1,1,figsize=(10, 6))
         plt.title('Live CSV Data Visualization')
 
         # Initial plot
@@ -39,6 +40,7 @@ class CSVPlotter:
     def do_plot( self ) :
         df = pd.read_csv(self.csv_file, sep="\t")
         df = df[df["Time(s)"]>0]
+        df = df[df["Time(s)"]<2200*60*60]  # Only up to the data
 
         # Index(['Timestep', 'Time(s)', 'Time(day)', 'Var', 'X', 'Y', 'Z', 'Value'], dtype='object')
         ax = self.ax1
@@ -46,7 +48,7 @@ class CSVPlotter:
         syydf = syydf[ syydf.Y > -0.06 ]
         syydf = syydf[ syydf.Y <  0 ]
         syydf = syydf.iloc[::70]
-        ax.scatter( syydf["Time(day)"], syydf["Value"]/(syydf.Y+5), s=20, marker='x', lw=1)
+        ax.scatter( syydf["Time(day)"], syydf["Value"]/(syydf.Y+5), s=20, marker='x', lw=1, label=r'$\varepsilon_{yy}$ from model')
         ##
 
 #         ax.set_xscale('log')
@@ -55,19 +57,20 @@ class CSVPlotter:
 
         ## Reference
         ref_df = pd.read_csv("py/csv/fig15_5.csv", sep="\t")
-        ax.plot(ref_df.time_h/24, -ref_df.epsxx, 'r--', lw=2, alpha=0.5, label=r'$\varepsilon_{xx}$') 
+        ax.plot(ref_df.time_h/24, -ref_df.epsxx, 'r--', lw=2, alpha=0.5, label="Data from (Poiate,2012)") 
 
+        ax.legend(fontsize=12)
 #         ax.set_xlim(0,10)
 
         #############
-        ax = self.ax2
-        syydf = df[ df.Var == "STOTYY" ]
-        syydf = syydf[ syydf.Y > -0.06 ]
-        syydf = syydf[ syydf.Y <  0 ]
-        ax.plot( syydf["Time(day)"], syydf["Value"], marker='x', markersize=2)
-#         ax.set_xscale('log')
-        ax.set_xlabel("Time (days)")
-        ax.set_ylabel(r"Stress $\sigma_{yy}$ - MPa")
+#         ax = self.ax2
+#         syydf = df[ df.Var == "STOTYY" ]
+#         syydf = syydf[ syydf.Y > -0.06 ]
+#         syydf = syydf[ syydf.Y <  0 ]
+#         ax.plot( syydf["Time(day)"], syydf["Value"], marker='x', markersize=2)
+# #         ax.set_xscale('log')
+#         ax.set_xlabel("Time (days)")
+#         ax.set_ylabel(r"Stress $\sigma_{yy}$ - MPa")
 
     #
     #
@@ -82,7 +85,7 @@ class CSVPlotter:
 
             # Clear the current plot
             self.ax1.clear()
-            self.ax2.clear()
+#             self.ax2.clear()
 
             # Read and plot the data
             try:
@@ -90,7 +93,7 @@ class CSVPlotter:
             except Exception as e:
                 print(f"Error updating plot: {e}")
 
-        return self.ax1, self.ax2
+        return self.ax1, #self.ax2
 
     #
     #

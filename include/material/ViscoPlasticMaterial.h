@@ -16,6 +16,8 @@
 // Autodiff stuff
 #include "util/Autodiff.h"
 
+#include "util/CsvFile.h"
+
 /**
  *
  */
@@ -129,6 +131,8 @@ public:
   /// The stress engine
   StressPostProc stress_postproc;
 
+  CsvFile dfile; // Debugging file
+  int res_jac_k; // Debugging counter
 };
 
 /**

@@ -31,11 +31,17 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   P( 0 ), bc_material(0),
   vpsolver(vpsolver_), system( sys_ ), 
   stress_system( vpsolver.stress_system ),
-  stress_postproc( *this, stress_system )
+  stress_postproc( *this, stress_system ),
+  dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config.name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
+  res_jac_k(0)
 {
   // Setup cariables only if on the parent
   if (! called_from_bc_constructor ) 
     bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
+
+  dfile << "sid" << "timestep" << "res_jac_k" << "dt" << "newton_k" << "elem" << "qp" << "von_mises";
+  dfile << "F" << "PlStrain" << "PlStrRate" << "eps_tr" << "eps_tr*" << "zeta";
+  dfile << endrow;
 }
 
 /**
@@ -354,12 +360,13 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   // Compute the transient
   AD::real etr_star = P->creep_md1_k * exp( P->creep_md1_c * P->temperature ) * 
                       pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m );
+
 //  dlog(1) << "exp( P->creep_md1_c * P->temperature ):" << exp( P->creep_md1_c * P->temperature );
 //  dlog(1) << "pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m ):" << pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m );
 //  dlog(1) << "etr_star:" << etr_star;
 
   AD::real zeta = 0;
-  if ( abs(etr_star) > 1e-20 ) 
+  if ( abs(val(etr_star)) > 1e-20 ) 
     zeta = 1 - P->creep_md1_etr / etr_star;
 
   double alpha = P->creep_md1_alpha_w, beta = P->creep_md1_beta_w;
@@ -380,6 +387,8 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
                       exp( - P->creep_md1_q / R_ / P->temperature ) *
                       pow( von_mises/P->creep_md1_sig0 , P->creep_md1_n );
   P->creep_md1_etr = P->creep_md1_etr_n + val(etr_rate) * vpsolver.ts.dt;
+  P->creep_md1_etr_star = val(etr_star);
+  P->creep_md1_zeta = val(zeta);
 
   /// NOTE: This must match the calculations in the update function (ViscoplasticIFC)
   // Compute plastic strain rate
@@ -414,6 +423,36 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
     Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * plastic_strain(k,l) ;
+
+  //   Hunting NaN
+  for (uint i=0; i<3; i++) 
+  for (uint B=0;  B<n_dofsv;  B++)
+    if ( P->plastic_strain.norm() > 1e30 ) 
+    {
+      ilog << "ELEM:" << elem->id();
+      ilog << "QP:" << QP;
+      ilog << "grad_u:" << Print(grad_u);
+      ilog << "sigeff:" << Print(sigeff);
+      ilog << "sigtot:" << Print(sigtot);
+      ilog << "deviatoric:" << Print(deviatoric);
+      ilog << "J2:" << J2;
+      ilog << "K:" << P->creep_md1_k;
+      ilog << "C:" << P->creep_md1_c;
+      ilog << "T:" << P->temperature;
+      ilog << "VM:" << von_mises;
+      ilog << "sig0:" << P->creep_md1_sig0;
+      ilog << "m:" << P->creep_md1_m;
+      ilog << "exp( P->creep_md1_c * P->temperature ):" << exp( P->creep_md1_c * P->temperature );
+      ilog << "pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m ):" << pow( ( von_mises/P->creep_md1_sig0 ), P->creep_md1_m );
+      ilog << "etr_star:" << etr_star;
+      ilog << "** alpha:" << alpha;
+      ilog << "** beta: " << beta;
+      ilog << "** zeta: " << zeta;
+      ilog << "** exp(alpha): " << exp( alpha * zeta * zeta );
+      ilog << "** pow(beta):  " << pow( ( von_mises / P->creep_md1_sig0 ), beta * zeta * zeta );
+      ilog << "F:" << F << "  etr_star:" << etr_star << " zeta:" << zeta << " creep_md1_k: " << P->creep_md1_k;
+      flog << "Found NaN in residual! " << *P;
+    }
  
   return ad_Fib;
 }
@@ -430,6 +469,34 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
+
+  dfile << sid;
+  dfile << vpsolver.ts.t_step;
+  dfile << res_jac_k;
+  dfile << vpsolver.ts.dt;
+  dfile << 0;
+  dfile << elem->id();
+  dfile << QP;
+  dfile << P->von_mises;
+  dfile << P->F;
+  dfile << P->plastic_strain.norm();
+  dfile << P->plastic_strain_rate.norm();
+  dfile << P->creep_md1_etr;
+  dfile << P->creep_md1_etr_star;
+  dfile << P->creep_md1_zeta;
+  dfile << endrow;
+
+  // Map from the AD variable to libmesh datastructures
+  for (uint i=0; i<3; i++) for (uint B=0;  B<n_dofsv;  B++)
+    if ( isnan( val(Fib(i,B) ) ) ) 
+      flog << "Found NaN in residual! " << *P;
+
+  // Search for nan
+  // Map from the AD variable to libmesh datastructures
+  for (uint B=0; B<n_dofsv;  B++) for (uint M=0; M<n_dofsv;  M++)
+  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++)
+    if ( isnan( val(Jijbm(i,j,B,M) ) ) ) 
+      flog << "Found NaN in jacobian!" << *P;
 
   // Map from the AD variable to libmesh datastructures
   for (uint B=0; B<n_dofsv;  B++)
@@ -453,6 +520,8 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )
 {
   SCOPELOG(10);
+
+  res_jac_k++; // Debugging stuff
   
   // Reinit the object
   reinit( soln, elem_ );
