@@ -47,7 +47,7 @@ class CSVPlotter:
         syydf = df[ df.Var == "UY" ]
         syydf = syydf[ syydf.Y > -0.06 ]
         syydf = syydf[ syydf.Y <  0 ]
-        syydf = syydf.iloc[::70]
+#         syydf = syydf.iloc[::70]
         ax.scatter( syydf["Time(day)"], syydf["Value"]/(syydf.Y+5), s=20, marker='x', lw=1, label=r'$\varepsilon_{yy}$ from model')
         ##
 

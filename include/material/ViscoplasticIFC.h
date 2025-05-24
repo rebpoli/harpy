@@ -43,8 +43,13 @@ struct VPProps
   double von_mises, epskk, F;
 
   // Plasticity
-  RealTensor plastic_strain, plastic_strain_n;
+  RealTensor plastic_strain, plastic_strain_n, plastic_strain_k;
   RealTensor plastic_strain_rate;
+
+  // Debug
+  double grad_norm;
+  double sigeff0, plast0;
+  RealTensor plast0_t;
 };
 
 /// Transposed version of the properties

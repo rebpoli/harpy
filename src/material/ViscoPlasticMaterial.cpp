@@ -40,7 +40,8 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
     bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
 
   dfile << "sid" << "timestep" << "res_jac_k" << "dt" << "newton_k" << "elem" << "qp" << "von_mises";
-  dfile << "F" << "PlStrain" << "PlStrRate" << "eps_tr" << "eps_tr*" << "zeta";
+  dfile << "eps_kk" << "gradu" << "sigeff" << "sigtot" << "deviatoric" << "sigeff0" << "plast0";
+  dfile << "F" << "PlStrain_n" << "PlStrain" << "PlStrRate" << "eps_tr" << "eps_tr*" << "zeta" << "U";
   dfile << endrow;
 }
 
@@ -297,6 +298,9 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 
+//  bool deb = 0;
+//  if ( ( elem->id() == 36330 ) && ( ! QP ) ) deb = 1;
+
   ad_Fib.setZero(); 
 
   AD::Mat grad_u(3,3);
@@ -326,9 +330,16 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   // Update stresses and plastic strain
   AD::Mat sigeff(3,3);
+
+  P->sigeff0 = AD::norm(sigeff);
+  P->plast0 = P->plastic_strain_k.norm();
+  P->plast0_t = P->plastic_strain_k;
+
+//  if ( deb ) ilog << "plast_k:    " << P->plastic_strain_k.norm();
+
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain(k,l) );
+    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) );
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
@@ -403,15 +414,21 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++ ) 
     plastic_strain(i,j) += P->plastic_strain_n(i,j);
 
+//  if ( deb ) ilog << "plast_k+1:  " << plastic_strain.norm();
+
   /// Set the results into the quadrature point
   AD::dump( sigtot, P->sigtot );
   AD::dump( sigeff, P->sigeff );
   AD::dump( deviatoric, P->deviatoric );
   AD::dump( plastic_strain_rate, P->plastic_strain_rate );
   AD::dump( plastic_strain, P->plastic_strain);
+//  if ( deb ) ilog << "plast_k+1a: " << P->plastic_strain.norm();
   P->von_mises = val(von_mises);
   P->epskk = val(epskk);
   P->F = val(F);
+  double g=0; 
+  for (uint i=0; i<3; i++ ) for (uint j=0; j<3; j++ ) g += pow( val(grad_u(i,j)), 2 );
+  P->grad_norm = g;
 
   // 
   // Subtract the plastic strain as a body force
@@ -470,6 +487,9 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
 
+  // Update plastic_strain_k : the plastic strain after this newton iteration
+  P->plastic_strain_k = P->plastic_strain;
+
   dfile << sid;
   dfile << vpsolver.ts.t_step;
   dfile << res_jac_k;
@@ -478,12 +498,28 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   dfile << elem->id();
   dfile << QP;
   dfile << P->von_mises;
+  dfile << P->epskk;
+  dfile << P->grad_norm;
+  dfile << P->sigeff.norm();
+  dfile << P->sigtot.norm();
+  dfile << P->deviatoric.norm();
+  dfile << P->sigeff0;
+  dfile << P->plast0;
   dfile << P->F;
+  dfile << P->plastic_strain_n.norm();
   dfile << P->plastic_strain.norm();
   dfile << P->plastic_strain_rate.norm();
   dfile << P->creep_md1_etr;
   dfile << P->creep_md1_etr_star;
   dfile << P->creep_md1_zeta;
+  //Compute the sum of U
+  double u = 0; 
+  for ( uint i=0; i<3; i++ )
+  for ( uint B=0; B<n_dofsv; B++ )
+      u += pow( val(Uib(i,B)) , 2 ) ;
+  dfile << u;
+//  dfile << Print(P->plastic_strain);
+//  dfile << Print(P->plast0_t);
   dfile << endrow;
 
   // Map from the AD variable to libmesh datastructures

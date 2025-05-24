@@ -24,4 +24,13 @@ namespace AD
     for ( uint j=0; j<src.cols() ; j++ )
       trg(i,j) = val( src(i,j) );
   }
+
+  inline double norm( const Mat & src )
+  {
+    libMesh::RealTensor trg;
+    for ( uint i=0; i<src.rows() ; i++ )
+    for ( uint j=0; j<src.cols() ; j++ )
+      trg(i,j) = val( src(i,j) );
+    return trg.norm();
+  }
 }
