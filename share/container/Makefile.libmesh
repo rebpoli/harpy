@@ -1,0 +1,28 @@
+
+#
+#
+#
+BDIR := /opt/libmesh/build
+libmesh: libmesh-dwn libmesh-dbg libmesh-opt libmesh-devel
+LIBMESH_CONFIGURE := cd $(BDIR) && ../configure --prefix=/usr/local --enable-mpi-required --enable-vtk-required --enable-petsc-required --enable-slepc-required --with-vtk-include=/usr/local/include/vtk-9.3 --with-vtk-lib=/usr/local/lib 
+LIBMESH_MAKE := cd $(BDIR) && make -j$(N) all && make install && ldconfig
+
+libmesh-dwn:
+	cd /opt && git clone https://github.com/libMesh/libmesh.git
+	### FIX TO SUPPORT VTK 9.3 --- NEED TO REMOVE SOON
+	git config --global user.email "rebpoli@gmail.com"
+	git config --global user.name "Renato"
+	cd /opt/libmesh && git pull --no-rebase origin pull/3666/head
+	###
+	cd /opt/libmesh && git submodule update --init --recursive && mkdir build
+	mkdir -p $(BDIR)
+libmesh-dbg:
+	$(LIBMESH_CONFIGURE) METHODS="dbg"
+	$(LIBMESH_MAKE)
+libmesh-opt:
+	$(LIBMESH_CONFIGURE) METHODS="opt"
+	$(LIBMESH_MAKE)
+libmesh-devel:
+	$(LIBMESH_CONFIGURE) METHODS="devel"
+	$(LIBMESH_MAKE)
+

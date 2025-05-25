@@ -1,0 +1,33 @@
+#
+#
+#
+#
+#
+#
+# https://vtk.org/files/release/9.2/VTK-9.2.2.tar.gz
+# BDIR := /opt/VTK-9.2.2/build
+# vtk:
+#     cd /opt && wget https://vtk.org/files/release/9.2/VTK-9.2.2.tar.gz && tar -xzf VTK-9.2.2.tar.gz
+#     mkdir -p $(BDIR)
+#     cd $(BDIR) && cmake -DVTK_USE_MPI=ON -DVTK_Group_MPI=ON  .. 
+#     cd $(BDIR) && make -j$(N) all && make install && ldconfig
+#     rm -rf /opt/VTK-*  # Limpa, nao precisamos dos fontes no container
+
+
+
+BDIR := /opt/VTK-9.3.0.rc1/build
+vtk:
+	mkdir -p $(BDIR)
+	cd /opt && tar -xzf /opt/VTK-9.3.0.rc1.tar.gz
+	cd $(BDIR) && cmake -DVTK_USE_MPI=ON -DVTK_Group_MPI=ON  .. 
+	cd $(BDIR) && make -j$(N) all && make install && ldconfig
+	rm -rf /opt/VTK-*  # Limpa, nao precisamos dos fontes no container
+
+#BDIR := /opt/VTK-8.2.0/build
+#vtk:
+#	cd /opt && wget https://www.vtk.org/files/release/8.2/VTK-8.2.0.tar.gz && tar -xzf VTK-8.2.0.tar.gz
+#	mkdir -p $(BDIR)
+#	cd $(BDIR) && cmake -DVTK_Group_MPI:BOOL=ON ..
+#	cd $(BDIR) && make -j$(N) all && make install && ldconfig
+#	rm -rf /opt/VTK-*  # Limpa, nao precisamos dos fontes no container
+

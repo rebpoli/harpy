@@ -1,0 +1,11 @@
+#
+#
+#
+BDIR := /opt/gmsh/build
+gmsh:
+	cd /opt && git clone https://gitlab.onelab.info/gmsh/gmsh.git
+	mkdir -p $(BDIR)
+	cd $(BDIR) && cmake -DENABLE_BUILD_DYNAMIC=1 -DENABLE_METIS=0 -DCMAKE_PREFIX_PATH=/usr/local ..
+	cd $(BDIR) && make -j$(N) && make install
+	rm -rf /opt/gmsh  # limpa - nao precisamos dos fontes no container (??)
+
