@@ -110,17 +110,11 @@ Stage0 += shell(commands=[f"/tmp/ttf-vista-fonts-installer.sh -q -0 -"], _args=F
 Stage0 += shell(commands=[f"rm -f /opt/*gz /opt/Makefile.*"], _args=False, chdir=False)
 
 # So that python matplotlib works
-Stage0 += packages( ospackages=[ 'qtwayland5',
-                                 'libxkbcommon-x11-0',
-                                 'libxcb-cursor0',
-                                 'libxcb-icccm4',
-                                 'libxcb-image0',
-                                 'libxcb-keysyms1',
-                                 'libxcb-randr0',
-                                 'libxcb-render-util0',
-                                 'libxcb-xinerama0',
-                                 'libxcb-xfixes0' ] )
-
+Stage0 += packages( ospackages=[ 'qtwayland5', 'libxkbcommon-x11-0', 'libxcb-cursor0', 'libxcb-icccm4',
+                                 'libxcb-image0', 'libxcb-keysyms1', 'libxcb-randr0', 'libxcb-render-util0',
+                                 'libxcb-xinerama0', 'libxcb-xfixes0' ] )
 
 # For tex edition in VIM
 Stage0 += packages( ospackages=[ 'zathura' ] )
+#  For autodiff
+Stage0 += packages( ospackages=[ 'libeigen3-dev' ] )   
