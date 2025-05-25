@@ -36,13 +36,14 @@ export SINGULARITY_TMPDIR
 TMPDIR := /tmp
 export TMPDIR
 
-MASK := lm23_ub24
-INSTALLDIR := $(BASEDIR)/build/$(MASK)
+MASK := harpy
+BUILDDIR := $(BASEDIR)/tmp/build/$(MASK)
+INSTALLDIR := $(BASEDIR)/sif/$(MASK)
 
 TAG := $(MASK)_$(USER)
 PYFILE := $(MASK).py
-DOCKERFILE := $(INSTALLDIR)/Dockerfile_$(MASK)
-TARFILE := $(INSTALLDIR)/$(MASK).tar
+DOCKERFILE := $(BUILDDIR)/Dockerfile_$(MASK)
+TARFILE := $(BUILDDIR)/$(MASK).tar
 SIFFILE := $(INSTALLDIR)/$(MASK).sif
 
 all: build
@@ -50,8 +51,7 @@ download: .force
 	rm -rf download
 	mkdir -p download
 	cp Makefile.download download/Makefile
-	make -j5 -C download
-
+	make -C download
 
 build: $(TARFILE)
 	@echo "**"
@@ -71,16 +71,14 @@ $(DOCKERFILE): $(PYFILE) .force
 	@echo "**"
 	@echo "** Rodando hpccm (py => Dockerfile)"
 	@echo "**"
-	mkdir -p $(INSTALLDIR)
+	mkdir -p $(BUILDDIR)
 	hpccm --recipe $(PYFILE) --format docker > $(DOCKERFILE) 
 
 clean:
 	rm -rf $(DOCKERFILE) $(TARFILE)
 
 install:
-	mv $(SIFFILE) $(INSTALLDIR)/../../sif
-
-sync_sif_to_sdu:
-	scp /raid/bfq9/build/lm23/lm23.sif lncc:/petrobr/poromec/sif
+	mv $(SIFFILE) $(INSTALLDIR)
+	scp $(SIFFILE) atenadev01:/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/sif/harpy.sif
 
 .force:
