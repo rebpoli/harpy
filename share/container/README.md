@@ -1,13 +1,21 @@
-# Construção do container Singularity para rodar o Chimas
+# Construção do container Singularity para rodar o HARPY
 
 A construção usa Makefiles e hpccm.
 
 Para rodar:
 
-```
+```bash
+make download
 make build
+make install
 make clean
 ```
+
+Dá para fazer o download em paralelo. Editar a linha no Makefile como
+```bash
+	make -j5 -C download
+```
+
 
 ### Observações
 
@@ -28,3 +36,7 @@ make clean
     * sudo apt install podman
 
 1. Run "make build" e verify what else is missing
+
+# storage.conf
+
+* o arquivo `storage.config.conf` deve ser copiado para `~/.config/containers/storage.conf` para compilar na Petrobras.
