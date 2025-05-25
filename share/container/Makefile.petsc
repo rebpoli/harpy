@@ -2,7 +2,7 @@
 #
 #
 #
-VER = 3.21.4
+VER = 3.23.2
 BDIR = /opt/petsc
 petsc: 
 #     cd /opt && git clone https://gitlab.com/petsc/petsc.git

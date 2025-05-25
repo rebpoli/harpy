@@ -1,12 +1,19 @@
 
-all: paraview petsc vtk spai hypre slepc mumps scalapack superlu bibucket hdf5 
+all: paraview petsc vtk spai 
 
 # Individual targets to promote parallelism
 paraview: .force
 	wget https://www.paraview.org/files/v5.13/ParaView-5.13.1-MPI-Linux-Python3.10-x86_64.tar.gz 
 
 petsc: .force
-	wget https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-3.21.4.tar.gz  
+	wget https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-3.23.2.tar.gz
+	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/hdf5-1.14.3-p1.tar.bz2
+	wget https://github.com/hypre-space/hypre/archive/v2.32.0.tar.gz
+	wget https://gitlab.com/slepc/slepc/-/archive/v3.23.1/slepc-v3.23.1.tar.gz
+	wget https://github.com/xiaoyeli/superlu_dist/archive/eac44cf48878f8699cc19fb566832b6736596727.tar.gz
+	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/MUMPS_5.7.3.tar.gz
+	wget https://github.com/Reference-ScaLAPACK/scalapack/archive/0e8767285b7a201c7b1ff34d2c2bb009534145df.tar.gz
+	wget https://bitbucket.org/petsc/pkg-parms/get/v3.2p5.tar.gz
 
 vtk: .force
 	wget https://www.vtk.org/files/release/9.3/VTK-9.3.0.rc1.tar.gz  
@@ -14,25 +21,4 @@ vtk: .force
 spai: .force
 	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/spai-3.0-p1.tar.gz 
 
-hypre: .force
-	wget https://github.com/hypre-space/hypre/archive/ee74c20e7a84e4e48eec142c6bb6ff2a75db72f1.tar.gz 
-
-slepc: .force
-	wget https://gitlab.com/slepc/slepc/-/archive/v3.21.1/slepc-v3.21.1.tar.gz 
-
-mumps: .force
-	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/MUMPS_5.6.2.tar.gz 
-
-scalapack: .force
-	wget https://github.com/Reference-ScaLAPACK/scalapack/archive/0234af94c6578c53ac4c19f2925eb6e5c4ad6f0f.tar.gz 
-
-superlu: .force
-	wget https://github.com/xiaoyeli/superlu_dist/archive/v8.2.1.tar.gz 
-
-bitbucket: .force
-	wget https://bitbucket.org/petsc/pkg-parms/get/v3.2p5.tar.gz 
-
-hdf5: .force
-	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/hdf5-1.14.3-p1.tar.bz2 
-	
 .force:
