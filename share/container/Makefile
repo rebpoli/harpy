@@ -21,12 +21,12 @@
 
 
 # Petrobras
-SINGULARITY_CACHEDIR := /raid/bfq9/tmp/singularity_${USER}
-BASEDIR = /raid/bfq9
+# SINGULARITY_CACHEDIR := /raid/bfq9/tmp/singularity_${USER}
+# BASEDIR = /raid/bfq9
 
 # WSL
-# SINGULARITY_CACHEDIR := /home/renato/temp/singularity_cache
-# BASEDIR = /home/renato/build
+SINGULARITY_CACHEDIR := /home/renato/temp/singularity_cache
+BASEDIR = /home/renato/build
 
 
 SINGULARITY_TMPDIR := $(SINGULARITY_CACHEDIR)
@@ -51,7 +51,7 @@ download: .force
 	rm -rf download
 	mkdir -p download
 	cp Makefile.download download/Makefile
-	make -C download
+	$(MAKE) -C download
 
 build: $(TARFILE)
 	@echo "**"
