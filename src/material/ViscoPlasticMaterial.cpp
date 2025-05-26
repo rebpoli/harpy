@@ -234,6 +234,7 @@ void ViscoPlasticMaterial::rewind( Elem & elem_ )
   reinit(elem_);
   do { 
     P->plastic_strain = P->plastic_strain_n; 
+    P->plastic_strain_k = P->plastic_strain_n;
     P->creep_md1_etr = P->creep_md1_etr_n;
   } while ( next_qp() );
 
