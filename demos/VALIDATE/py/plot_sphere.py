@@ -26,9 +26,9 @@ ss_df = ss_df[ ss_df.X <  0 ]
 sxxdf = ss_df[ ss_df.Var == "STOTXX" ]
 syydf = ss_df[ ss_df.Var == "STOTYY" ]
 szzdf = ss_df[ ss_df.Var == "STOTZZ" ]
-ax.plot( sxxdf["Time(day)"], sxxdf["Value"], ls='-', label=r"$\sigma_{xx}$ (ss)" , c='b')
-ax.plot( syydf["Time(day)"], syydf["Value"], ls='-', label=r"$\sigma_{yy}$ (ss)" , c='r')
-ax.plot( szzdf["Time(day)"], szzdf["Value"], ls='-', label=r"$\sigma_{zz}$ (ss)" , c='g')
+ax.plot( sxxdf["Time(day)"], sxxdf["Value"]/1e6, ls='-', label=r"$\sigma_{xx}$ (ss)" , c='b')
+ax.plot( syydf["Time(day)"], syydf["Value"]/1e6, ls='-', label=r"$\sigma_{yy}$ (ss)" , c='r')
+ax.plot( szzdf["Time(day)"], szzdf["Value"]/1e6, ls='-', label=r"$\sigma_{zz}$ (ss)" , c='g')
 
 tr_csv = "02-SPHERE/run/csv/lin_0.csv"
 tr_df = pd.read_csv(tr_csv, sep="\t")
@@ -39,15 +39,15 @@ tr_df = tr_df[ tr_df.X <  0 ]
 sxxdf = tr_df[ tr_df.Var == "STOTXX" ]
 syydf = tr_df[ tr_df.Var == "STOTYY" ]
 szzdf = tr_df[ tr_df.Var == "STOTZZ" ]
-ax.plot( sxxdf["Time(day)"], sxxdf["Value"], ls='--', label=r"$\sigma_{xx}$ (tr)", c='b')
-ax.plot( syydf["Time(day)"], syydf["Value"], ls='--', label=r"$\sigma_{yy}$ (tr)", c='r')
-ax.plot( szzdf["Time(day)"], szzdf["Value"], ls='--', label=r"$\sigma_{zz}$ (tr)", c='g')
+ax.plot( sxxdf["Time(day)"], sxxdf["Value"]/1e6, ls='--', label=r"$\sigma_{xx}$ (tr)", c='b')
+ax.plot( syydf["Time(day)"], syydf["Value"]/1e6, ls='--', label=r"$\sigma_{yy}$ (tr)", c='r')
+ax.plot( szzdf["Time(day)"], szzdf["Value"]/1e6, ls='--', label=r"$\sigma_{zz}$ (tr)", c='g')
 
 
 #
 #
 #
-ax.set_ylim( 1e7, 4e7 )
+ax.set_ylim( 10, 40 )
 ax.set_xscale('log')
 ax.set_xlabel("Time (days)")
 ax.set_ylabel(r"Stress at the sphere center (MPa)")
