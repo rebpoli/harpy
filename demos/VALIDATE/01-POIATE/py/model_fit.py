@@ -25,8 +25,8 @@ def build_model_df( t_s , T_C, sig_MPa ) :
     sig0 = 13.5e6 # 9.91e6
     N = 7.5
 
-    eps2 = 0.1 #0.0175# /s
-    N2 = 2
+    eps2 = 0.02 #0.0175# /s
+    N2 = 1
 
     eps3 = 0 # /s
     N3 = 1.5
@@ -46,6 +46,8 @@ def build_model_df( t_s , T_C, sig_MPa ) :
 #     print(f"eps^* = {eps_tr_star}")
 
     eps_ss_rate =  exp( -Q*fac/R/T ) * ( eps0 * sig_bar**N + eps2 * sig_bar**N2 + eps3 * sig_bar**N3 )
+    eps_ss_rate1 =  exp( -Q*fac/R/T ) * eps0 * sig_bar**N 
+    eps_ss_rate2 =  exp( -Q*fac/R/T ) * eps2 * sig_bar**N2 
 #     eps_ss_rate =  ( eps0 * sig_bar**N + eps2 * sig_bar**N2 + eps3 * sig_bar**N3 )
 
     eps_tot = np.zeros_like(t_s)
@@ -97,6 +99,8 @@ def build_model_df( t_s , T_C, sig_MPa ) :
                          'eps_tot'       : eps_tot,
                          'eps_ss_rate'   : eps_ss_rate,
                          'eps_ss_rate_h' : eps_ss_rate*60*60,
+                         'eps_ss_rate1_h': eps_ss_rate1*60*60,
+                         'eps_ss_rate2_h': eps_ss_rate2*60*60,
                          'eps_tr'        : eps_tr,
                          'F'             : F_i ,
                          'Zeta'          : Zeta_i
@@ -136,7 +140,10 @@ def sige_plot( ax ) :
 
     color_cycle = itertools.cycle(colors)
     for T_C, gdf in df.groupby( 'T_C' ) :
-        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate_h, c=next(color_cycle) )
+        c = next(color_cycle)
+        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate_h, c=c )
+        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate1_h, ':',c=c )
+        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate2_h, ':', c=c )
 
     fac = 1.08
     Q = 51600
