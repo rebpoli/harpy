@@ -16,77 +16,58 @@ def build_model_df( t_s , T_C, sig_MPa ) :
 
     sig = sig_MPa * 1e6
     T = T_C + 273
+    fud = 1.08  ##  A Fudge factor (see arrhenius)
 
     Q = 51600
     R = 8.314
-    fac = 1.1
 
-    eps0 = 1 #0.08 # /s
-    sig0 = 13.5e6 # 9.91e6
-    N = 7.5
-
-    eps2 = 0.02 #0.0175# /s
-    N2 = 1
-
-    eps3 = 0 # /s
-    N3 = 1.5
-
-    sig_bar = sig/sig0
+    ## Steady State
+    sig0ss = [ 10e6 ,   50e6  ]
+    N    = [    8.6 ,   .7    ]
 
     ## Transient setup
-    kappa = 5e-3
-    c     = 3e-3
-    m     = 1 
-    eps_tr_star = kappa * exp( c * T ) * pow( sig_bar, m )
+    sig0tr     = 3e9
+    c          = 3e-3
+    m          = 1
+    alpha_w    = 2
 
-    alpha_w = 2.4
-    beta_w =  0
-    alpha_r = 0
-    beta_r = 0
-#     print(f"eps^* = {eps_tr_star}")
 
-    eps_ss_rate =  exp( -Q*fac/R/T ) * ( eps0 * sig_bar**N + eps2 * sig_bar**N2 + eps3 * sig_bar**N3 )
-    eps_ss_rate1 =  exp( -Q*fac/R/T ) * eps0 * sig_bar**N 
-    eps_ss_rate2 =  exp( -Q*fac/R/T ) * eps2 * sig_bar**N2 
-#     eps_ss_rate =  ( eps0 * sig_bar**N + eps2 * sig_bar**N2 + eps3 * sig_bar**N3 )
+    # Steady State
+    eps_ss_rate = 0
+    for i in range(2) : 
+        eps_ss_rate += exp( -(Q/R/T)**fud  ) * ( sig/sig0ss[i] )**N[i]
+
+    eps_tr_star = exp( c * T ) * pow( sig/sig0tr, m )
 
     eps_tot = np.zeros_like(t_s)
     eps_tr = np.zeros_like(t_s)
     F_i = np.zeros_like(t_s)
     Zeta_i = np.zeros_like(t_s)
 
-    for i in range( len( t_s ) ) :
+    # Integrate in time
+    for ti in range( len( t_s ) ) :
         ess_n = 0 ; dt = 0; etr_n=0
-        if i > 0 : 
-            ess_n = eps_tot[i-1]
-            etr_n = eps_tr[i-1]
-            dt = t_s[i] - t_s[i-1]
+        if ti > 0 : 
+            ess_n = eps_tot[ti-1]
+            etr_n = eps_tr[ti-1]
+            dt = t_s[ti] - t_s[ti-1]
 
-        t = t_s[i]
+        t = t_s[ti]
 
         zeta = 1 - etr_n/eps_tr_star
 
         alpha = alpha_w
-        beta = beta_w 
-        if zeta < 0 : 
-            alpha=-alpha_r
-            beta=-beta_r 
+        if zeta < 0 :  alpha = 0 
 
-        test = alpha + beta * log10(sig_bar)
-#         print(f"test:{test:.2e} alpha:{alpha:.2e} beta:{beta:.2e} sig_bar:{sig_bar:.2e} zeta:{zeta:.2e}")
-        F = exp(alpha*zeta*zeta) * pow( sig_bar, beta*zeta*zeta )
-        if test < 0 : F = 1
+        F = exp(alpha*zeta*zeta)
 
         eps_tr_rate = ( F - 1 ) * eps_ss_rate
-        eps_tr[i] = etr_n + eps_tr_rate * dt
-
-#         print(f"F:{F:.2e} eps_tr_rate:{eps_tr_rate:.2e} eps_tr:{eps_tr[i]:.2e} etr_n:{etr_n:.2e}")
-
-        eps_tot[i] = ess_n + F * eps_ss_rate * dt
+        eps_tr[ti] =  etr_n + eps_tr_rate * dt
+        eps_tot[ti] =  ess_n + F * eps_ss_rate * dt
 
         ## Debugging stuff
-        F_i[i] = F
-        Zeta_i[i] = zeta
+        F_i[ti] = F
+        Zeta_i[ti] = zeta
 
     ## Feed the dataframe
     df = pd.DataFrame( { 
@@ -99,8 +80,6 @@ def build_model_df( t_s , T_C, sig_MPa ) :
                          'eps_tot'       : eps_tot,
                          'eps_ss_rate'   : eps_ss_rate,
                          'eps_ss_rate_h' : eps_ss_rate*60*60,
-                         'eps_ss_rate1_h': eps_ss_rate1*60*60,
-                         'eps_ss_rate2_h': eps_ss_rate2*60*60,
                          'eps_tr'        : eps_tr,
                          'F'             : F_i ,
                          'Zeta'          : Zeta_i
@@ -141,9 +120,8 @@ def sige_plot( ax ) :
     color_cycle = itertools.cycle(colors)
     for T_C, gdf in df.groupby( 'T_C' ) :
         c = next(color_cycle)
-        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate_h, c=c )
-        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate1_h, ':',c=c )
-        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate2_h, ':', c=c )
+        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate_h, c=c, label=f"{T_C} C" )
+#         ax.plot( gdf.sig_MPa, gdf.eps_ss_rate1_h, ':',c=c )
 
     fac = 1.08
     Q = 51600
@@ -157,6 +135,7 @@ def sige_plot( ax ) :
     df = pd.read_csv("py/csv/fig_5_17_T130.csv", sep="\t")
     l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=130$ °C') 
 
+    ax.legend()
     ax.set_yscale('log')
     ax.set_xscale('log')
     ax.set_xlabel(r"$\sigma_e$ (MPa)")
@@ -172,7 +151,7 @@ def time_plots( ax1, ax2 ) :
 
     # Compute the model
     dfs_16mpa = []
-    for T_C in [ 16, 36, 56, 86 ] :
+    for T_C in [ 16, 36, 56 , 86 ] :
         dfs_16mpa.append ( build_model_df( t_s, T_C, 16 ) )
     df_16mpa = pd.concat( dfs_16mpa )
 
