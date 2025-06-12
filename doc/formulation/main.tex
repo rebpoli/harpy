@@ -513,6 +513,49 @@ Note, however, that this changes the interpretation of the material fitting para
 % cell4 & cell5 \\ \hline
 % \end{array}\]
 
+\subsection{Adapting MD to our problem}
+
+For our problem and data, the transient effect is not central, and we do not have too much data to calibrate.
+On the other hand, the multiple modes of the steady state solution are central.
+The temperature dependency of the steady state creep rate can benefit of an empirical fudge factor in form of a stretched exponential.
+
+Assumptions:
+\begin{itemize}
+    \item Our data suggest the use of a stretched exponential of the form $\vepbd_{ss}=\exp(A^p) \sigma^n$, where $p$ is an empirical fudge parameter used for fitting
+    \item I need at least two mechanisms to map the steadystate creep
+    \item Transient creep can be modeled with a single-mechanism
+    \item Transient creep depends only on the state variable $\zeta$ so that $F$ does not depend on $\sigma$ ($\beta=0$ in the MD formulation)
+    \item $\alpha=0$ when $\zeta\le0$. This means that the transient result is only relevant in small $\varepsilon_{tr}$ (that is, $\varepsilon_{tr} \le \varepsilon^*_{tr}$ )
+    \item The coefficients $\varepsilon_0$ and $\sigma_0$ are redundant. I merged them into $_i\sigma_0$.
+\end{itemize}
+
+The new set of equations is
+\[\begin{array}{ccl}
+  \vepbd^{ss} = \sum \vepbd^{ss}_i
+  & \rightarrow \qquad\qquad  & 
+  \vepbd^{ss}_i = \exp{\left[-\left(\frac{Q_i}{RT}\right)^{p_i}\right]}\ 
+                       \left(\frac{\sigma}{\sigma^{ss}_i}\right)^{n_i}
+  \\[10pt]
+  \varepsilon^{tr}_*= K\ \exp(c\,T)\ \left(\frac{\sigma}{\sigma^{tr}}\right)^m  
+  & \quad,\quad  & 
+    \zeta = 1 - \frac{\varepsilon^{tr}}{\varepsilon_*^{tr}} 
+    \quad
+    \begin{cases}
+      \ \zeta > 0 \quad\rightarrow\quad    \alpha = \alpha_w  \\
+      \ \zeta \leq 0 \quad\rightarrow\quad \alpha = 0 \\
+    \end{cases}
+  \\[15pt]
+      F = \exp{\left(\alpha\,\zeta^2\right)}
+  & \rightarrow \qquad\qquad  & 
+    \vepbd^{tr} = (F-1)\ \vepbd^{ss}
+    \qquad , \qquad
+    \vepbd^{p} = F\ \vepbd^{ss}
+  \\[10pt]
+    \varepsilon^{tr} = \varepsilon^{tr}_{n} + \Delta t\ \vepbd^{tr}
+  &&
+\varepsilon^{p} = \varepsilon^{p}_n + \Delta t\ \vepbd^{p} \\[15pt]
+\end{array}\]
+
 \subsection{Creep integration with large strain elasticity}
 For small timesteps, we can determine the creep strain variation explicitely:
 \begin{align*}

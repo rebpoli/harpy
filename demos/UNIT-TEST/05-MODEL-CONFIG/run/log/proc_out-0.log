@@ -3,112 +3,52 @@
 # Info:     ******************************************************              @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:14
 # Deb[1:0]: Model directory and file ok! We are good to go! (model/, model//MODEL)     @ /lm23_hdd/harpy/src/config/reader/ModelReader.cpp:55
 # Deb[1:0]: Model directory and system file ok! We are good to go! (model/, model//VISCOPLASTIC)     @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:48
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ Read mesh filename: 'model//cube-sphere.e'.                      @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:132
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing material state line 'TEST_FRAME reservoir    BASE'       @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:143
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing material state line 'SIDEBURDEN caprock      BASE'       @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:143
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing numerical state line 'LS_PC         hypre'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:165
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing numerical state line 'LS_SOLVER     bcgsl'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:165
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing numerical state line 'LS_ATOL       1e-15'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:165
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: Processing numerical state line 'LS_RTOL       1e-6'                @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:165
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:204     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: Read mesh filename: 'model//cube-sphere.e'.                         @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:131
+# Deb[1:0]: Processing material state line 'TEST_FRAME reservoir    BASE'       @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:142
+# Deb[1:0]: Processing material state line 'SIDEBURDEN caprock      BASE'       @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:142
+# Deb[1:0]: Processing numerical state line 'LS_PC         hypre'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:164
+# Deb[1:0]: Processing numerical state line 'LS_SOLVER     bcgsl'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:164
+# Deb[1:0]: Processing numerical state line 'LS_ATOL       1e-15'               @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:164
+# Deb[1:0]: Processing numerical state line 'LS_RTOL       1e-6'                @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:164
+# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:203     @ /lm23_hdd/harpy/src/base/Log.cpp:202
 # Deb[1:0]: ~ScopeLog @ SolverReader::fem_state()                               @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:204     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:203     @ /lm23_hdd/harpy/src/base/Log.cpp:202
 # Deb[1:0]: ~ScopeLog @ SolverReader::fem_state()                               @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::next_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:92     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ~ScopeLog @ SolverReader::next_state()                              @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:204     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: ScopeLog @ SolverReader::fem_state() @ /lm23_hdd/harpy/src/config/reader/SolverReader.cpp:203     @ /lm23_hdd/harpy/src/base/Log.cpp:202
 # Deb[1:0]: ~ScopeLog @ SolverReader::fem_state()                               @ /lm23_hdd/harpy/src/base/Log.cpp:216
 # Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//caprock/BASE)     @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:38
 # Deb[1:0]: ScopeLog @ MaterialReader::parse_material_file() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:46     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ____ NEXT STATE: 0                                                  @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:119
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 0                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
-# Warn:     __ Ignoring line 10 >> POROSITY      FILE    POR-BASE               @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:68
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 0                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
-# Warn:     __ Ignoring line 11 >> PERMEABILITY        1e-12                    @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:68
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 0                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
-# Warn:     __ Ignoring line 12 >> BIOT                0.3                      @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:68
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ ScopeLog @ MaterialReader::next_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:79     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ MaterialReader::next_state()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ NEXT STATE: 0                                                    @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117
+# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: ____ File param: POROSITY                                           @ /lm23_hdd/harpy/src/config/MaterialConfig.cpp:38
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::porothermoelastic_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:167     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::porothermoelastic_state()            @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ NEXT STATE: 3                                                    @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:117
+# Deb[1:0]: __ Parsing state: 3                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::creep_md_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:128     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::creep_md_state()                     @ /lm23_hdd/harpy/src/base/Log.cpp:216
+# Deb[1:0]: __ Parsing state: 3                                                 @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:62
+# Deb[1:0]: __ ScopeLog @ MaterialReader::creep_md_state() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:128     @ /lm23_hdd/harpy/src/base/Log.cpp:202
+# Deb[1:0]: __ ~ScopeLog @ MaterialReader::creep_md_state()                     @ /lm23_hdd/harpy/src/base/Log.cpp:216
 # Deb[1:0]: ~ScopeLog @ MaterialReader::parse_material_file()                   @ /lm23_hdd/harpy/src/base/Log.cpp:216
 # Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//reservoir/BASE)     @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:38
 # Deb[1:0]: ScopeLog @ MaterialReader::parse_material_file() @ /lm23_hdd/harpy/src/config/reader/MaterialReader.cpp:46     @ /lm23_hdd/harpy/src/base/Log.cpp:202
@@ -141,24 +81,31 @@ SolverConfig:
        type:              CONTINUOUS     
        family:            LAGRANGE       
        order:             SECOND         
-       implicit:          6.95297e-310   
+       implicit:          6.95277e-310   
 
       MATERIAL / Config:
            
                             MaterialConfig for 'caprock'/ 'BASE'
                                  Filename 'model//caprock/BASE'
                                  Thermoporoelastic:
-                                    Por:              (undef)        (undef)        
-                                    Permeability:     (undef)        (undef)        
-                                    Biot:             (undef)        (undef)        
-                                    Young Modulus:    (undef)        (undef)        
-                                    Poisson Coef:     (undef)        (undef)        
-                                    Lame_mu:          (undef)        
-                                    Lame_lambda:      (undef)        
-                                 Creep Model (Carter):
-                                    A:                (undef)        
-                                    Q:                (undef)        
-                                    N:                (undef)        
+                                    Por:              (undef)        POR-BASE       
+                                    Permeability:     1e-12          (undef)        
+                                    Biot:             0.3            (undef)        
+                                    Young Modulus:    2e+10          (undef)        
+                                    Poisson Coef:     0.3            (undef)        
+                                    Lame_mu:          7.69231e+09    
+                                    Lame_lambda:      1.15385e+10    
+                                 Creep Model (MD):
+                                   SteadyState (0)
+                                        sig0:     1e+07          
+                                        n:        8.6            
+                                        q:        51600          
+                                        stretch:  1              
+                                   SteadyState (1)
+                                        sig0:     5e+07          
+                                        n:        0.7            
+                                        q:        51600          
+                                        stretch:  1.08           
 
            
                             MaterialConfig for 'reservoir'/ 'BASE'
@@ -171,11 +118,8 @@ SolverConfig:
                                     Poisson Coef:     (undef)        (undef)        
                                     Lame_mu:          (undef)        
                                     Lame_lambda:      (undef)        
-                                 Creep Model (Carter):
-                                    A:                (undef)        
-                                    Q:                (undef)        
-                                    N:                (undef)        
-
+                                 Creep Model (MD):
+(undef)
       Boundary  Config:
 
 |-----------------------------------------------
@@ -253,52 +197,6 @@ STOT BCS:
 |----------------------------------------------
      @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:17
 # Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//INOUT)     @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:35
-# Deb[1:0]: ScopeLog @ InoutReader::parse_inout_file() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:43     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ____ match NUM - >RADIUS 1<                                         @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ____ match NUM - >DTHETA 90<                                        @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ~ScopeLog @ InoutReader::parse_inout_file()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
 # Info:     InoutConfig
 Probe 'gauss' : 
                 Type                    GAUSS
@@ -317,52 +215,6 @@ Probe 'lin_0' :
                 Npts                    3
      @ /lm23_hdd/harpy/demos/UNIT-TEST/05-MODEL-CONFIG/main.cpp:20
 # Deb[1:0]: Model directory and material file ok! We are good to go! (model/, model//INOUT)     @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:35
-# Deb[1:0]: ScopeLog @ InoutReader::parse_inout_file() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:43     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ____ match NUM - >RADIUS 1<                                         @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: ____ match NUM - >DTHETA 90<                                        @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:158
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ NEXT STATE: 1                                                    @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:105
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: __ Parsing state: 1                                                 @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:57
-# Deb[1:0]: __ ScopeLog @ InoutReader::probe_state() @ /lm23_hdd/harpy/src/config/reader/InoutReader.cpp:115     @ /lm23_hdd/harpy/src/base/Log.cpp:202
-# Deb[1:0]: __ ~ScopeLog @ InoutReader::probe_state()                           @ /lm23_hdd/harpy/src/base/Log.cpp:216
-# Deb[1:0]: ~ScopeLog @ InoutReader::parse_inout_file()                         @ /lm23_hdd/harpy/src/base/Log.cpp:216
 # Info:     Probe Collection (ProbeCol):
          GaussProbe:
                          Order          FIRST

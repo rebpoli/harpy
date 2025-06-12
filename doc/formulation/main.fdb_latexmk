@@ -1,15 +1,16 @@
 # Fdb version 4
-["biber main"] 1747171501.97421 "main.bcf" "main.bbl" "main" 1747689870.34246 0
+["biber main"] 1747171501.97421 "main.bcf" "main.bbl" "main" 1749235586.93939 0
   "../ref.bib" 1747171248.93455 3914 9d72c6d2452cb39c328eea1d836f947d ""
-  "main.bcf" 1747689870.13481 134505 1608ab595f305bee71e8682e286e7c35 "pdflatex"
+  "main.bcf" 1749235586.69924 134505 1608ab595f305bee71e8682e286e7c35 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1747689869.05545 "main.tex" "main.pdf" "main" 1747689870.34282 0
+["pdflatex"] 1749235585.25735 "main.tex" "main.pdf" "main" 1749235586.93982 0
   "/etc/texmf/web2c/texmf.cnf" 1736044772 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/renato/.texlive2023/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.657pk" 1738771995.10197 7808 03d6d2e0c48b9c2dff039783ec4fa9b8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1136768653 1536 02c06700a42be0f5a28664c7273f82e7 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy5.tfm" 1246382020 1120 1e8878807317373affa7f7bba4cf2f6a ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -172,13 +173,15 @@
   "/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty" 1700082560 55487 80a65caedd3722f4c20a14a69e785d8f ""
   "/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1655411236 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
+  "/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1636152094 2900 1537cc8184ad1792082cd229ecc269f4 ""
+  "/usr/share/texmf/fonts/type1/public/cm-super/sfrm1095.pfb" 1736044782 145929 f25e56369a345c4ff583b067cd87ce8e ""
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1736044786 5472523 3385632d03104648b518c8e4afd7264e ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1736044803 8214546 b521ea07097d46a54e8390f514013417 ""
-  "main.aux" 1747689870.12381 6444 0662a368a2133aa6fa34dee8ef0ef248 "pdflatex"
+  "main.aux" 1749235586.69924 6564 ab0692e1a71f9066eab9b57cc06f9920 "pdflatex"
   "main.bbl" 1747171502.79682 43290 eca3152625614698810d1b370c6aa9e6 "biber main"
-  "main.run.xml" 1747689870.13481 2423 2c29162e9996be3644b87894c5e87352 "pdflatex"
-  "main.tex" 1747689867.86881 42582 5d97a91aec5edf14f0a6a36be0d8a2ba ""
+  "main.run.xml" 1749235586.69924 2423 2c29162e9996be3644b87894c5e87352 "pdflatex"
+  "main.tex" 1749235584.14924 44665 c76cc446bcbe83b5954a8a2c4d6c1ba1 ""
   (generated)
   "main.aux"
   "main.bcf"

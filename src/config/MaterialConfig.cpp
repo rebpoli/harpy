@@ -47,10 +47,6 @@ optional<string> & MaterialConfig::file_param( string & vname, string context )
     if ( iequals( vname, "beta_d" ) )        return beta_d_file;
   }
 
-  // Various modes of Munson Dawson
-  if ( context == "creep_md1" ) { /* tbd */ }
-  if ( context == "creep_md2" ) { /* tbd */ }
-
   flog << "Variable name in Material '" << name << "', " << filename;
   return porosity_file;
 }
@@ -74,37 +70,6 @@ optional<double> & MaterialConfig::con_param( string & vname, string context )
     if ( iequals( vname, "lame_lambda" ) )   return lame_lambda;
     if ( iequals( vname, "bulk_modulus" ) )  return bulk_modulus;
     if ( iequals( vname, "alpha_d" ) )       return alpha_d;
-  }
-
-  /** ** ** **/
-  if ( context == "creep_md1" )
-  {
-    if ( iequals( vname, "q" ) ) return creep_md1_q;
-    if ( iequals( vname, "n" ) ) return creep_md1_n;
-    if ( iequals( vname, "eps0" ) ) return creep_md1_eps0;
-    if ( iequals( vname, "sig0" ) ) return creep_md1_sig0;
-
-    if ( iequals( vname, "c" ) ) return creep_md1_c;
-    if ( iequals( vname, "k" ) ) return creep_md1_k;
-    if ( iequals( vname, "m" ) ) return creep_md1_m;
-    if ( iequals( vname, "alpha_w" ) ) return creep_md1_alpha_w;
-    if ( iequals( vname, "alpha_r" ) ) return creep_md1_alpha_r;
-    if ( iequals( vname, "beta_w" ) ) return creep_md1_beta_w;
-    if ( iequals( vname, "beta_r" ) ) return creep_md1_beta_r;
-  }
-  if ( context == "creep_md2" )
-  {
-    if ( iequals( vname, "q" ) ) return creep_md2_q;
-    if ( iequals( vname, "n" ) ) return creep_md2_n;
-    if ( iequals( vname, "eps0" ) ) return creep_md2_eps0;
-    if ( iequals( vname, "sig0" ) ) return creep_md2_sig0;
-    if ( iequals( vname, "c" ) ) return creep_md2_c;
-    if ( iequals( vname, "k" ) ) return creep_md2_k;
-    if ( iequals( vname, "m" ) ) return creep_md2_m;
-    if ( iequals( vname, "alpha_w" ) ) return creep_md2_alpha_w;
-    if ( iequals( vname, "alpha_r" ) ) return creep_md2_alpha_r;
-    if ( iequals( vname, "beta_w" ) ) return creep_md2_beta_w;
-    if ( iequals( vname, "beta_r" ) ) return creep_md2_beta_r;
   }
 
   /** ** ** **/
@@ -157,34 +122,35 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Poisson Coef:     " << setw(15) << m.poisson      << setw(15) << m.poisson_file << endl;
   os << "                                    Lame_mu:          " << setw(15) << m.lame_mu << endl;
   os << "                                    Lame_lambda:      " << setw(15) << m.lame_lambda << endl;
-  os << "                                 Creep Model (MD1):" << endl ;
-  os << "                                    EPS0:             " << setw(15) << m.creep_md1_eps0 << endl;
-  os << "                                    SIG0:             " << setw(15) << m.creep_md1_sig0 << endl;
-  os << "                                    Q:                " << setw(15) << m.creep_md1_q << endl;
-  os << "                                    N:                " << setw(15) << m.creep_md1_n << endl;
-  os << "                                    C:                " << setw(15) << m.creep_md1_c << endl;
-  os << "                                    K:                " << setw(15) << m.creep_md1_k << endl;
-  os << "                                    M:                " << setw(15) << m.creep_md1_m << endl;
-  os << "                                    ALPHA_W:          " << setw(15) << m.creep_md1_alpha_w << endl;
-  os << "                                    BETA_W:           " << setw(15) << m.creep_md1_beta_w << endl;
-  os << "                                    ALPHA_R:          " << setw(15) << m.creep_md1_alpha_r << endl;
-  os << "                                    BETA_R:           " << setw(15) << m.creep_md1_beta_r << endl;
-  os << "                                 Creep Model (MD2):" << endl ;
-  os << "                                    EPS0:             " << setw(15) << m.creep_md2_eps0 << endl;
-  os << "                                    SIG0:             " << setw(15) << m.creep_md2_sig0 << endl;
-  os << "                                    Q:                " << setw(15) << m.creep_md2_q << endl;
-  os << "                                    N:                " << setw(15) << m.creep_md2_n << endl;
-  os << "                                    C:                " << setw(15) << m.creep_md2_c << endl;
-  os << "                                    K:                " << setw(15) << m.creep_md2_k << endl;
-  os << "                                    M:                " << setw(15) << m.creep_md2_m << endl;
-  os << "                                    ALPHA_W:          " << setw(15) << m.creep_md2_alpha_w << endl;
-  os << "                                    BETA_W:           " << setw(15) << m.creep_md2_beta_w << endl;
-  os << "                                    ALPHA_R:          " << setw(15) << m.creep_md2_alpha_r << endl;
-  os << "                                    BETA_R:           " << setw(15) << m.creep_md2_beta_r << endl;
-
+  os << "                                 Creep Model (MD):" << endl ;
+  os << m.creep_md;
   return os;
 }
 
+ostream& operator<<(ostream& os, const CreepMD & m)
+{
+  for ( uint i=0 ; i < m.ss.size() ; i++ ) 
+  {
+    os << "                                   SteadyState (" << i << ")" << endl ;
+    auto & ss = m.ss.at(i);
+    os << "                                        sig0:     " << setw(15) << ss.sig0 << endl ;
+    os << "                                        n:        " << setw(15) << ss.n << endl ;
+    os << "                                        q:        " << setw(15) << ss.q << endl ;
+    os << "                                        stretch:  " << setw(15) << ss.stretch << endl ;
+  }
+
+  for ( uint i=0 ; i < m.tr.size() ; i++ ) 
+  {
+    os << "                                   Transient (" << i << ")" << endl ;
+    auto & tr = m.tr.at(i);
+    os << "                                        sig0:     " << setw(15) << tr.sig0 << endl ;
+    os << "                                        m:        " << setw(15) << tr.m << endl ;
+    os << "                                        c:        " << setw(15) << tr.c << endl ;
+    os << "                                        alpha_w:  " << setw(15) << tr.alpha_w << endl ;
+  }
+
+  return os;
+}
 
 /**
  * Enable the object to index a map.

@@ -3,6 +3,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os, time
+import numpy as np
 from matplotlib.animation import FuncAnimation
 
 fn = "py/paper.mplstyle"
@@ -51,6 +52,15 @@ class CSVPlotter:
         ax.scatter( syydf["Time(day)"], syydf["Value"]/(syydf.Y+5), s=20, marker='x', lw=1, label=r'$\varepsilon_{yy}$ from model')
         ##
 
+        # Fit
+        slope, intercept = np.polyfit(syydf["Time(day)"], syydf["Value"]/(syydf.Y+5), 1)
+        ax.plot( syydf["Time(day)"], intercept+slope*syydf["Time(day)"] )
+
+        slope_s = slope / 24 / 60 / 60
+        info_text = r'$\varepsilon_{yy}$ = '+f"{slope_s:.4e} $t$[s] + {intercept:.4e}\n"
+        ax.text(0.2, 0.95, info_text, transform=plt.gca().transAxes, fontsize=11, va='top',
+                             bbox=dict(boxstyle='round', facecolor='lightgray', alpha=0.8))
+
 #         ax.set_xscale('log')
         ax.set_xlabel("Time (days)")
         ax.set_ylabel(r"Strain $\varepsilon_y$ ")
@@ -59,6 +69,8 @@ class CSVPlotter:
         ref_df = pd.read_csv("py/csv/fig15_5.csv", sep="\t")
         ax.plot(ref_df.time_h/24, -ref_df.epsxx, 'r--', lw=2, alpha=0.5, label="Data from (Poiate,2012)") 
 
+
+ 
         ax.legend(fontsize=12)
 #         ax.set_xlim(0,10)
 

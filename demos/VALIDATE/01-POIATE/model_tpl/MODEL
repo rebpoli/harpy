@@ -30,7 +30,7 @@ BOUNDARY       YN               UY            0
 BOUNDARY       YP               UY            0
 BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         TEST_FRAME       T            359
+DOMAIN         TEST_FRAME       T             %TEMPERATURE%
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
@@ -38,9 +38,9 @@ DOMAIN         TEST_FRAME       T            359
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
-BOUNDARY       XP               SXX           -10e6
-BOUNDARY       YP               SYY           -26E6
-BOUNDARY       ZP               SZZ           -10e6
-DOMAIN         TEST_FRAME        T            359
+BOUNDARY       XP               SXX           %SXX%
+BOUNDARY       YP               SYY           %SYY%
+BOUNDARY       ZP               SZZ           %SZZ%
+DOMAIN         TEST_FRAME        T            %TEMPERATURE%
 
 

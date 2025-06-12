@@ -18,8 +18,10 @@ namespace MRDEF
   inline const string numint =  R"(([+-]?(?:\d+)))";
   inline const string numuint = R"((\d+))";
   inline const string sp = R"(\s+)";
+
   inline const string tok_op  = R"((?:)" + sp + tok + R"()?)";  // optional token (with leading space)
   inline const string filename_op  = R"((?:)" + sp + filename + R"()?)";  // optional token (with leading space)
+  inline const string num_op  = R"((?:)" + sp + num + R"()?)";  // optional token (with leading space)
   inline const string ini  = R"(^)";
   inline const string end  = R"($)";
                                                                 //
@@ -45,4 +47,8 @@ namespace MRDEF
   inline const regex RE_SEC_NAMEOPT      ( ini + R"(\.)" + tok + filename_op + end ); 
   inline const regex RE_SEC_TOK          ( ini + R"(\.)" + tok + sp + tok + end );    
   inline const regex RE_SEC_NAME         ( ini + R"(\.)" + tok + sp + filename + end ); 
+
+  // Application specific RE
+  inline const regex RE_CREEP_MD_SS   ( ini + tok + sp + num + sp + num + sp + num + num_op + end);
+  inline const regex RE_CREEP_MD_TR   ( ini + tok + sp + num + sp + num + sp + num + sp + num + end);
 }

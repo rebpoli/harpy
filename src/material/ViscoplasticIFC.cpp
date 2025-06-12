@@ -70,29 +70,11 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
   lame_mu            = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
   lame_lambda        = config.get_property( "lame_lambda",     pt,     "porothermoelastic" );
 
-  creep_md1_q        = config.get_property( "q",               pt,     "creep_md1" );
-  creep_md1_n        = config.get_property( "n",               pt,     "creep_md1" );
-  creep_md1_eps0     = config.get_property( "eps0",            pt,     "creep_md1" );
-  creep_md1_sig0     = config.get_property( "sig0",            pt,     "creep_md1" );
-
-  creep_md1_c        = config.get_property( "c",               pt,     "creep_md1" );
-  creep_md1_k        = config.get_property( "k",               pt,     "creep_md1" );
-  creep_md1_m        = config.get_property( "m",               pt,     "creep_md1" );
-  creep_md1_alpha_w  = config.get_property( "alpha_w",         pt,     "creep_md1" );
-  creep_md1_alpha_r  = config.get_property( "alpha_r",         pt,     "creep_md1" );
-  creep_md1_beta_w   = config.get_property( "beta_w",          pt,     "creep_md1" );
-  creep_md1_beta_r   = config.get_property( "beta_r",          pt,     "creep_md1" );
-
-//  creep_md2_q      = config.get_property( "q",               pt,     "creep_md2" );
-//  creep_md2_n      = config.get_property( "n",               pt,     "creep_md2" );
-//  creep_md2_eps0   = config.get_property( "eps0",            pt,     "creep_md2" );
-//  creep_md2_sig0   = config.get_property( "sig0",            pt,     "creep_md2" );
+  if ( config.creep_md ) creep_md = *(config.creep_md);
 
   sigtot = RealTensor();
   plastic_strain_n = RealTensor();
   plastic_strain   = RealTensor();
-  creep_md1_etr   = 0;
-  creep_md1_etr_n = 0;
 }
 
 /**
@@ -128,27 +110,39 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
   // Compute plastic strain rate
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
 
-  double etr_star = creep_md1_k * exp( creep_md1_c * temperature ) * 
-                      pow( ( von_mises/creep_md1_sig0 ), creep_md1_m );
-  double zeta = 0;
-  if ( abs(etr_star) > 1e-20 ) 
-    zeta = 1 - creep_md1_etr / etr_star;
+  // STEADY STATE CREEP
+  double creep_ss_rate;
+  for ( auto & ss : creep_md.ss ) 
+    creep_ss_rate +=  exp( - ss.q / R_ / temperature ) *
+                      pow( von_mises/ss.sig0 , ss.n );
+                 
 
-  double alpha = creep_md1_alpha_w, beta = creep_md1_beta_w;
-  if ( zeta <= 0 ) { alpha = creep_md1_alpha_r; beta = creep_md1_beta_r; }
+  // TRANSIENT CREEP (find F)
+  double F = 1;
+  for ( auto & tr : creep_md.tr )
+  {
+    double etr_star = exp( tr.c * temperature ) * pow( ( von_mises/tr.sig0 ), tr.m );
 
-  F = exp( alpha * zeta * zeta ) * pow( ( von_mises / creep_md1_sig0 ), beta * zeta * zeta );
+    double zeta = 0;
+    if ( abs(etr_star) > 1e-20 ) zeta = 1 - creep_md.etr / etr_star;
 
-  double etr_rate = ( F - 1 ) * creep_md1_eps0 *
-                      exp( - creep_md1_q / R_ / temperature ) *
-                      pow( von_mises/creep_md1_sig0 , creep_md1_n );
-  creep_md1_etr = creep_md1_etr_n + etr_rate * dt;
+    double alpha = tr.alpha_w;
+    if ( zeta <= 0 ) alpha = 0;
+
+    F *= exp( alpha * zeta * zeta ) ;
+  }
+
+  double etr_rate = ( F - 1 ) * creep_ss_rate;
+  creep_md.etr = creep_md.etr_n + etr_rate * dt;
 
   /// NOTE: This must match the calculations in the residual_qp function (ViscoPlasticMaterial)
-  plastic_strain_rate =  3./2. * F * creep_md1_eps0 *
-                         exp( - creep_md1_q / R_ / temperature ) *
-                         pow( von_mises/creep_md1_sig0 , creep_md1_n-1 ) *
-                         deviatoric * (1./creep_md1_sig0) ;
+  plastic_strain_rate = 0;
+  for ( auto & ss : creep_md.ss ) 
+    plastic_strain_rate += 
+                      3./2. * F * 
+                      exp( - ss.q / R_ / temperature ) *
+                      pow( von_mises/ss.sig0 , ss.n-1 ) * 
+                      deviatoric / ss.sig0;
 
   plastic_strain = dt * plastic_strain_rate;
   for (uint i=0; i<3; i++ )
@@ -190,29 +184,7 @@ ostream& operator<<(ostream& os, const VPProps & p)
   os << right << setw(20) << "alpha_d:" << setw(15) << p.alpha_d << endl;
   os << right << setw(20) << "beta_e:" << setw(15) << p.beta_e << endl;
 
-  os << right << setw(20) << "creep_md1_eps0:" << setw(15) << p.creep_md1_eps0 << endl;
-  os << right << setw(20) << "creep_md1_sig0:" << setw(15) << p.creep_md1_sig0 << endl;
-  os << right << setw(20) << "creep_md1_q:" << setw(15) << p.creep_md1_q << endl;
-  os << right << setw(20) << "creep_md1_n:" << setw(15) << p.creep_md1_n << endl;
-  os << right << setw(20) << "creep_md1_c:" << setw(15) << p.creep_md1_c << endl;
-  os << right << setw(20) << "creep_md1_k:" << setw(15) << p.creep_md1_k << endl;
-  os << right << setw(20) << "creep_md1_m:" << setw(15) << p.creep_md1_m << endl;
-  os << right << setw(20) << "creep_md1_alpha_w:" << setw(15) << p.creep_md1_alpha_w << endl;
-  os << right << setw(20) << "creep_md1_beta_w:" << setw(15) << p.creep_md1_beta_w << endl;
-  os << right << setw(20) << "creep_md1_alpha_r:" << setw(15) << p.creep_md1_alpha_r << endl;
-  os << right << setw(20) << "creep_md1_beta_r:" << setw(15) << p.creep_md1_beta_r << endl;
-
-  os << right << setw(20) << "creep_md2_eps0:" << setw(15) << p.creep_md2_eps0 << endl;
-  os << right << setw(20) << "creep_md2_sig0:" << setw(15) << p.creep_md2_sig0 << endl;
-  os << right << setw(20) << "creep_md2_q:" << setw(15) << p.creep_md2_q << endl;
-  os << right << setw(20) << "creep_md2_n:" << setw(15) << p.creep_md2_n << endl;
-  os << right << setw(20) << "creep_md2_c:" << setw(15) << p.creep_md2_c << endl;
-  os << right << setw(20) << "creep_md2_k:" << setw(15) << p.creep_md2_k << endl;
-  os << right << setw(20) << "creep_md2_m:" << setw(15) << p.creep_md2_m << endl;
-  os << right << setw(20) << "creep_md2_alpha_w:" << setw(15) << p.creep_md2_alpha_w << endl;
-  os << right << setw(20) << "creep_md2_beta_w:" << setw(15) << p.creep_md2_beta_w << endl;
-  os << right << setw(20) << "creep_md2_alpha_r:" << setw(15) << p.creep_md2_alpha_r << endl;
-  os << right << setw(20) << "creep_md2_beta_r:" << setw(15) << p.creep_md2_beta_r << endl;
+  os << right << setw(20) << "creep_md:" << setw(15) << p.creep_md << endl;
   os << "    State variables:" << endl;
   os << right << setw(20) << "U:" << setw(15) << Print(p.U) << endl;
   os << right << setw(20) << "Temperature:" << setw(15) << p.temperature << endl;

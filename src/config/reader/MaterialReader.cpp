@@ -64,8 +64,7 @@ void MaterialReader::parse_material_file()
     switch (current_state)
     {
       case State::POROTHERMOELASTIC: { porothermoelastic_state(); break; }
-      case State::CREEP_MD1: { creep_md_state(1); break; }
-      case State::CREEP_MD2: { creep_md_state(2); break; }
+      case State::CREEP_MD: { creep_md_state(); break; }
       default: { wlog << "Ignoring line " << ln << " >> " << line; break; }
     }
   }
@@ -110,8 +109,7 @@ bool MaterialReader::next_state()
     /**/
     if ( current_state == State::CREEP ) 
     {
-      if      ( iequals( sname , "md1" ) ) current_state = State::CREEP_MD1;
-      else if ( iequals( sname , "md2" ) ) current_state = State::CREEP_MD2;
+      if      ( iequals( sname , "md" ) ) current_state = State::CREEP_MD;
       else                                 flog << "Unknown creep model '" << sname << "'";
     }
   }
@@ -125,21 +123,40 @@ bool MaterialReader::next_state()
 /**
  *
  */
-void MaterialReader::creep_md_state( uint mode ) 
+void MaterialReader::creep_md_state() 
 {
   SCOPELOG(1);
   smatch match;
-  string vname;
-  string context = "creep_md" + to_string(mode);
-  if ( regex_search( line, match, RE_STR_STR_STR ) ) 
-    reg_param_str( match[1], match[2], match[3], context);
 
-  else if ( regex_search( line, match, RE_STR_NUM ) ) 
-    reg_param_dbl( match[1], "CON", stod(match[2]), context);
+  // Must have something like SS [#] [#] [#] ...
+  if ( ! regex_search( line, match, RE_STR_ETC ) ) return;
+  string vname = match[1];
 
-  else if ( regex_search( line, match, RE_STR_STR_NUM ) ) 
-    reg_param_dbl( match[1], match[2], stod(match[3]), context);
+  if (! config.creep_md ) config.creep_md = CreepMD{};
+  auto & creep_md = config.creep_md;
 
+  // Steady state mechanism
+  if ( iequals( vname, "SS" ) ) 
+  {
+    if ( ! regex_search( line, match, RE_CREEP_MD_SS ) ) flog << "Creep steady state line bad format (line " << ln << ")";
+    double sig0     = stod( match[2] );
+    double n        = stod( match[3] );
+    double q        = stod( match[4] );
+    double stretch  = 1;
+    if ( match[5].length() ) stretch = stod( match[5] );
+    creep_md->ss.push_back({sig0, n, q, stretch});
+  }
+
+  // Steady state mechanism
+  if ( iequals( vname, "TR" ) ) 
+  {
+    if ( ! regex_search( line, match, RE_CREEP_MD_SS ) ) flog << "Creep steady state line bad format (line " << ln << ")";
+    double sig0     = stod( match[2] );
+    double m        = stod( match[3] );
+    double c        = stod( match[4] );
+    double alpha_w  = stod( match[5] );
+    creep_md->tr.push_back({sig0, m, c, alpha_w});
+  }
 }
 
 /**

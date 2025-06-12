@@ -1,0 +1,53 @@
+#!/usr/bin/env -S python -i
+
+import os, time
+
+from numpy import log10, logspace, linspace
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import shutil
+
+from env import ilog, flog, elog, dlog, mkdir
+
+all_sig  = - logspace(log10(4e6), log10(20e6), num=10)
+all_temp = linspace( 46, 106, num=4 ) + 273
+
+print(all_sig)
+print(all_temp)
+
+#
+#
+#
+NEXT_RUN = 0
+def create_batch( sig, temp ) :
+    global NEXT_RUN
+    NEXT_RUN += 1
+    run_dir = f"batch/run.{NEXT_RUN}"
+    dlog(1 , f"Processing run at '{run_dir}' ...") 
+
+    if os.path.isdir(run_dir): shutil.rmtree( run_dir )
+
+    model_dir = f"{run_dir}/model"
+    shutil.copytree( "model_tpl/", model_dir, dirs_exist_ok=True )
+    shutil.copy2( "Makefile" , model_dir )
+
+
+    model_fn = model_dir + "/MODEL"
+    
+    # Process the template
+    subs = { 'TEMPERATURE' : temp,
+            'SXX'         : "%.4e"%sig,
+            'SYY'         : "%.4e"%(sig-10e6),
+            'SZZ'         : "%.4e"%sig }
+    with open(model_fn) as f: content = f.read()
+    for k, v in subs.items():
+        content = content.replace(f'%{k}%', str(v))
+    with open(model_fn, 'w') as f: f.write(content)
+    #
+
+mkdir("batch")
+shutil.copy2( "Makefile.batch" , "batch/Makefile" )
+
+create_batch(-1e6,300)
