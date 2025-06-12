@@ -104,6 +104,7 @@ class CSVPlotter:
                 self.do_plot()
             except Exception as e:
                 print(f"Error updating plot: {e}")
+            self.fig.savefig("timeplot.png")
 
         return self.ax1, #self.ax2
 
