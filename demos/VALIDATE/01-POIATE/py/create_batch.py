@@ -32,6 +32,7 @@ def create_batch( sig, temp ) :
     model_dir = f"{run_dir}/model"
     shutil.copytree( "model_tpl/", model_dir, dirs_exist_ok=True )
     shutil.copy2( "Makefile" , model_dir )
+    shutil.copy2( "py/run_atena.sh" , model_dir )
 
 
     model_fn = model_dir + "/MODEL"

@@ -31,7 +31,7 @@ ssh.connect( "atenadev01" )
 # PROCEDURE : Map from container to the outer world (sbatch only works on the outer)
 #
 import re
-from_to = { "^/lm23_hdd/" : "/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/lm23_hdd/" }
+from_to = { "^/work/" : "/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/work/harpy/" }
 for f,t in from_to.items() :
     cwd = re.sub(f,t,cwd)
 
