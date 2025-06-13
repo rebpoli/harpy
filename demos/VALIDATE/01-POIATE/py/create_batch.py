@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python -i
+#!/usr/bin/env -S python 
 
 import os, time
 
@@ -31,9 +31,9 @@ def create_batch( sig, temp ) :
 
     model_dir = f"{run_dir}/model"
     shutil.copytree( "model_tpl/", model_dir, dirs_exist_ok=True )
-    shutil.copy2( "Makefile" , model_dir )
-    shutil.copy2( "py/run_atena.sh" , model_dir )
 
+    shutil.copy2( "py/run_atena.sh" , run_dir )
+    shutil.copy2( "Makefile" , run_dir )
 
     model_fn = model_dir + "/MODEL"
     
@@ -51,4 +51,6 @@ def create_batch( sig, temp ) :
 mkdir("batch")
 shutil.copy2( "Makefile.batch" , "batch/Makefile" )
 
-create_batch(-1e6,300)
+for sig in all_sig :
+    for temp in all_temp :
+        create_batch( sig, temp )

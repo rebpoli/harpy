@@ -5,6 +5,7 @@ TOPDIR=$(shell realpath $(topdir))
 # Enable parallelization
 # 
 launch:
+	$(MAKE) -j10 -C .. set-opt 
 	../py/launch.py
 
 .force:

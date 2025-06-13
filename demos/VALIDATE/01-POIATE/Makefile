@@ -17,6 +17,9 @@ run-%: set-% .force
 	rm -rf run/
 	mpirun -n $(N) $(topdir)/build/$*/harpy $(PETSC_OPT) 
 
+_run_:
+	$(topdir)/build/opt/harpy $(PETSC_OPT) 
+
 launch-athena:
 	sbatch  --exclude=atn2b03n04 ./run_atena.sh
 
@@ -50,5 +53,13 @@ gdb: gdb-dbg
 
 plot: .force
 	py/plot_lin0.py
+
+#
+# BATCH DRIVERS
+#
+batch: .force
+	py/create_batch.py
+launch: .force
+	$(MAKE) -C batch launch
 
 .force:

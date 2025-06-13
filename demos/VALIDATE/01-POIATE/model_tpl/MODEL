@@ -11,7 +11,7 @@ DT0           0.01
 DTK           1.3
 DTMAX         5000 # 30 days
 TMAX          1e9 # 30 years
-MAX_STEPS     100000
+MAX_STEPS     50
 
 # List of scalar variables
 .SCALAR
@@ -38,6 +38,7 @@ DOMAIN         TEST_FRAME       T             %TEMPERATURE%
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZN               UZ            0
+BOUNDARY       YP               UY            tri_dy
 BOUNDARY       XP               SXX           %SXX%
 BOUNDARY       YP               SYY           %SYY%
 BOUNDARY       ZP               SZZ           %SZZ%

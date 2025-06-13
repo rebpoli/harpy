@@ -3,9 +3,13 @@
 import os, glob
 from glob import glob
 from os.path import abspath, isdir
+import time 
 import my_ssh as ssh
 
-rdirs = [ abspath(d) for d in glob('run.*/') if isdir(d) ]
+start_time = time.time()
+
+
+rdirs = [ d for d in glob('run.*/') if isdir(d) ]
 
 n_jobs = len(rdirs)
 launch_i=0
@@ -36,10 +40,11 @@ for f,t in from_to.items() :
     cwd = re.sub(f,t,cwd)
 
 all_trg = [];
-all_trg.extend( [ (x, "run-opt") for x in rdirs ]  )
+all_trg.extend( [ (x, "launch-athena") for x in rdirs ]  )
+print(f"CWD:{cwd}")
 
 print(f"ALL TARGETS ::: ({len(all_trg)})")
-# print (all_trg)
+print (all_trg)
 
 # # Clean targets that are up to date (they have a DONE in their slurm file)
 # targets = []
@@ -86,7 +91,9 @@ while True :
 
 # Sleep a little bit to get all the commands through before the ssh connection dies
 print("Last sleep to get all commands through...")
-time.sleep(60)
+for i in range(10) :
+    ssh.cmd("", 0)
+    time.sleep(1)
 
 runtime_s = time.time() - start_time
 print(f"# Done. - Total runtime: {runtime_s/60:.1f} min")

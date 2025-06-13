@@ -12,7 +12,7 @@ namespace MRDEF
 {
   using namespace std;
 
-  inline const string tok       = R"(([-a-zA-Z_0-9]+))";
+  inline const string tok       = R"((\S+))";
   inline const string filename  = R"(([-a-zA-Z_0-9.]+))";
   inline const string num = R"(([+-]?(?:(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?|[+-]?\d+[eE][+-]?\d+)))";
   inline const string numint =  R"(([+-]?(?:\d+)))";
