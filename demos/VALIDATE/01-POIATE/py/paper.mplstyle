@@ -9,7 +9,7 @@ scatter.marker: o
 scatter.edgecolors: face
 axes.prop_cycle    : cycler('color', 'bgrcmyk')
 mathtext.fontset : cm
-text.usetex: True
+text.usetex: False
 
 font.family         : Cambria Math
 

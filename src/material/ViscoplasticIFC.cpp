@@ -113,7 +113,7 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
   // STEADY STATE CREEP
   double creep_ss_rate;
   for ( auto & ss : creep_md.ss ) 
-    creep_ss_rate +=  exp( - ss.q / R_ / temperature ) *
+    creep_ss_rate +=  exp( - pow(ss.q / R_ / temperature, ss.stretch) ) *
                       pow( von_mises/ss.sig0 , ss.n );
                  
 
@@ -121,7 +121,8 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
   double F = 1;
   for ( auto & tr : creep_md.tr )
   {
-    double etr_star = exp( tr.c * temperature ) * pow( ( von_mises/tr.sig0 ), tr.m );
+    double etr_star = exp( tr.c * temperature ) * 
+                      pow( ( von_mises/tr.sig0 ), tr.m );
 
     double zeta = 0;
     if ( abs(etr_star) > 1e-20 ) zeta = 1 - creep_md.etr / etr_star;
@@ -137,10 +138,11 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
 
   /// NOTE: This must match the calculations in the residual_qp function (ViscoPlasticMaterial)
   plastic_strain_rate = 0;
+  if ( von_mises )
   for ( auto & ss : creep_md.ss ) 
     plastic_strain_rate += 
                       3./2. * F * 
-                      exp( - ss.q / R_ / temperature ) *
+                      exp( - pow(ss.q / R_ / temperature, ss.stretch) ) *
                       pow( von_mises/ss.sig0 , ss.n-1 ) * 
                       deviatoric / ss.sig0;
 

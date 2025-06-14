@@ -3,7 +3,7 @@
 #SBATCH -A gger           # Project/Account
 #SBATCH -J harpy
 #SBATCH --nodes=1         # Number of nodes
-#SBATCH --ntasks=24
+#SBATCH --ntasks=8
 #SBATCH --time=1:00:00  # Runtime of this jobs
 #SBATCH --cpus-per-task=1
 

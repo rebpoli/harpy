@@ -11,8 +11,8 @@ import shutil
 
 from env import ilog, flog, elog, dlog, mkdir
 
-all_sig  = - logspace(log10(4e6), log10(20e6), num=10)
-all_temp = linspace( 46, 106, num=4 ) + 273
+all_sig  = - logspace(log10(1e6), log10(50e6), num=15)
+all_temp = np.array( [ 46, 86, 126 ] ) + 273  #linspace( 20, 120, num=15 ) + 273
 
 print(all_sig)
 print(all_temp)
@@ -39,9 +39,9 @@ def create_batch( sig, temp ) :
     
     # Process the template
     subs = { 'TEMPERATURE' : temp,
-            'SXX'         : "%.4e"%sig,
+            'SXX'         : "-10e6",
             'SYY'         : "%.4e"%(sig-10e6),
-            'SZZ'         : "%.4e"%sig }
+            'SZZ'         : "-10e6" }
     with open(model_fn) as f: content = f.read()
     for k, v in subs.items():
         content = content.replace(f'%{k}%', str(v))

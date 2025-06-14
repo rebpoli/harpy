@@ -357,6 +357,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
     J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
 
   AD::real von_mises = sqrt( 3 * J2 );
+  dlog(1) << "VON MISES:" << von_mises;
 
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
 
@@ -393,7 +394,8 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   if ( von_mises )
   for ( auto & ss : P->creep_md.ss )
     plastic_strain_rate += 
-              3./2. * F * exp( - pow(ss.q/R_/P->temperature, ss.stretch) ) *
+              3./2. * F * 
+              exp( - pow(ss.q/R_/P->temperature, ss.stretch) ) *
               pow( von_mises/ss.sig0 , ss.n-1 ) *
               deviatoric / ss.sig0;
 

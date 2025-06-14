@@ -120,7 +120,7 @@ def sige_plot( ax ) :
     color_cycle = itertools.cycle(colors)
     for T_C, gdf in df.groupby( 'T_C' ) :
         c = next(color_cycle)
-        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate_h, c=c, label=f"{T_C} C" )
+        ax.plot( gdf.sig_MPa, gdf.eps_ss_rate, c=c, label=f"{T_C} C" )
 #         ax.plot( gdf.sig_MPa, gdf.eps_ss_rate1_h, ':',c=c )
 
     fac = 1.08
@@ -129,17 +129,17 @@ def sige_plot( ax ) :
 
     color_cycle = itertools.cycle(colors)
     df = pd.read_csv("py/csv/fig_5_17_T43.csv", sep="\t")
-    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=43$ °C') 
+    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=43$ °C') 
     df = pd.read_csv("py/csv/fig_5_17_T86.csv", sep="\t")
-    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=86$ °C') 
+    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=86$ °C') 
     df = pd.read_csv("py/csv/fig_5_17_T130.csv", sep="\t")
-    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=130$ °C') 
+    l1 = ax.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=130$ °C') 
 
     ax.legend()
     ax.set_yscale('log')
     ax.set_xscale('log')
     ax.set_xlabel(r"$\sigma_e$ (MPa)")
-    ax.set_ylabel(r"$\dot\varepsilon$ (1/h)")
+    ax.set_ylabel(r"$\dot\varepsilon$ (1/s)")
 
 #
 #
