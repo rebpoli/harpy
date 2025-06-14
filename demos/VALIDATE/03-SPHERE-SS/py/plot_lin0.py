@@ -50,13 +50,13 @@ class CSVPlotter:
         szzdf = df[ df.Var == "STOTZZ" ]
 
         ##
-        ax.plot( sxxdf["Time(day)"], sxxdf["Value"], marker='x', markersize=2, label=r"$\sigma_{xx}$")
-        ax.plot( syydf["Time(day)"], syydf["Value"], marker='x', markersize=2, label=r"$\sigma_{yy}$")
-        ax.plot( szzdf["Time(day)"], szzdf["Value"], marker='x', markersize=2, label=r"$\sigma_{zz}$")
+        ax.plot( sxxdf["Time(day)"], sxxdf["Value"]/1e6, marker='x', markersize=2, label=r"$\sigma_{xx}$")
+        ax.plot( syydf["Time(day)"], syydf["Value"]/1e6, marker='x', markersize=2, label=r"$\sigma_{yy}$")
+        ax.plot( szzdf["Time(day)"], szzdf["Value"]/1e6, marker='x', markersize=2, label=r"$\sigma_{zz}$")
         ##
 
-        ax.set_ylim( 1e7, 4e7 )
-        ax.set_xscale('log')
+        ax.set_ylim( 0, 40 )
+#         ax.set_xscale('log')
         ax.set_xlabel("Time (days)")
         ax.set_ylabel(r"Stress at the sphere center (MPa)")
         ax.legend()
