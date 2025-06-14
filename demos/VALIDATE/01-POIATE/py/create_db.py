@@ -43,17 +43,27 @@ def run_main() :
 
     fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(15,6))
     
+    SEL_TEMP = [] # np.array([ 130, 86, 46 ]) + 273
+
+    import itertools
+    colors = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'pink', 'brown', 'gray', 'cyan', 'magenta', 'lime', 'indigo', 'violet', 'turquoise']
+    color_cycle = itertools.cycle(colors)
+
     groups = list(df_.groupby("T", sort=True))
     for k, g in reversed(groups):
-        ax1.plot( -g.sig/1e6, -g.eps_yy_rate, lw=1, label=f"T={k-273:.1f} °C")
+        print(k) 
+        if len(SEL_TEMP) and not k in SEL_TEMP : continue
+        ax1.scatter( -g.sig/1e6, -g.eps_yy_rate, marker='x', lw=1, label=f"T={k-273:.1f} °C", c=next(color_cycle))
 
+    color_cycle = itertools.cycle(colors)
     all_temp = df["T"].drop_duplicates()
-    for temp in all_temp :
+    for temp in reversed(list(all_temp)) :
+        if len(SEL_TEMP) and not temp in SEL_TEMP : continue
         all_rate = []
         all_sig = np.logspace(np.log10(1e6), np.log10(50e6), num=15)
         for sig in all_sig :
             all_rate.append( analytical_model( temp-273, sig/1e6 ) )
-        ax1.plot( all_sig/1e6, all_rate, '--' )
+        ax1.plot( all_sig/1e6, all_rate, '-', c=next(color_cycle) ) #, label=f"Analytical $T={temp-273}$ °C", c=next(color_cycle) )
 
     ax1.set_xscale('log')
     ax1.set_yscale('log')
@@ -105,13 +115,13 @@ def run_main() :
     import itertools
     colors = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'pink', 'brown', 'gray', 'cyan', 'magenta', 'lime', 'indigo', 'violet', 'turquoise']
     color_cycle = itertools.cycle(colors)
-    df = pd.read_csv("py/csv/fig_5_17_T43.csv", sep="\t")
-    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=43$ °C') 
-    df = pd.read_csv("py/csv/fig_5_17_T86.csv", sep="\t")
-    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=86$ °C') 
     df = pd.read_csv("py/csv/fig_5_17_T130.csv", sep="\t")
-    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=10, label=r'$\varepsilon_{xx}$ $T=130$ °C') 
-
+    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Data: $T=130$ °C') 
+    df = pd.read_csv("py/csv/fig_5_17_T86.csv", sep="\t")
+    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Data: $T=86$ °C') 
+    df = pd.read_csv("py/csv/fig_5_17_T43.csv", sep="\t")
+    l1 = ax1.scatter(df.sig_MPa, df.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Data: $T=43$ °C') 
+    ax1.legend()
 
     fig.tight_layout()
 

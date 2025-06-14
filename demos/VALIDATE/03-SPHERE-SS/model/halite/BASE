@@ -20,15 +20,8 @@ BETA_E        1e-5        # Thermal
 BETA_D        1e-4        # Thermal
 
 # Defines the creep model - multiple definitions define multiple modes
-.CREEP MD1
-EPS0          0.017  
-SIG0          9.91e6  
-Q             51.6e3   
-N             7.55 
-C             3e-3  
-K             5e-3
-M             1
-ALPHA_W       0
-BETA_W        0
-ALPHA_R       0
-BETA_R        0
+# SS     [sig0]   [n]   [q]    [stretch]    # repeat as many times as needed for each mechanism
+# TR_2   [sig0]   [m]   [c]    [alpha_w]
+.CREEP MD
+SS    10e6   8.6   51600   1.08 
+SS    50e6   0.7   51600   1.08 

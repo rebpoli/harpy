@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python 
+#!/usr/bin/env -S python -i
 
 import os, time
 
@@ -11,8 +11,18 @@ import shutil
 
 from env import ilog, flog, elog, dlog, mkdir
 
+##
 all_sig  = - logspace(log10(1e6), log10(50e6), num=15)
-all_temp = np.array( [ 46, 86, 126 ] ) + 273  #linspace( 20, 120, num=15 ) + 273
+##
+all_temp = [] 
+t = 20
+while True :
+    all_temp.append( t )
+    t += 10
+    if t > 130 : break
+all_temp.extend( [ 46, 86 ] )
+all_temp = np.array( sorted(all_temp) )
+all_temp += 273  #linspace( 20, 120, num=15 ) + 273
 
 print(all_sig)
 print(all_temp)
