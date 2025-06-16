@@ -55,14 +55,20 @@ def run_main() :
         if len(SEL_TEMP) and not k in SEL_TEMP : continue
         ax1.scatter( -g.sig/1e6, -g.eps_yy_rate, marker='x', lw=1, label=f"T={k-273:.1f} °C", c=next(color_cycle))
 
+    an_data = { 'T' : [], 'sig' : [], 'eps_rate' : [] }
     color_cycle = itertools.cycle(colors)
     all_temp = df["T"].drop_duplicates()
+    all_temp = np.arange(10,140,1)+273
     for temp in reversed(list(all_temp)) :
         if len(SEL_TEMP) and not temp in SEL_TEMP : continue
         all_rate = []
-        all_sig = np.logspace(np.log10(1e6), np.log10(50e6), num=15)
+        all_sig = np.logspace(np.log10(1e6), np.log10(50e6), num=100)
         for sig in all_sig :
-            all_rate.append( analytical_model( temp-273, sig/1e6 ) )
+            an_data['T'].append(temp-273)
+            an_data['sig'].append( sig/1e6 )
+            an = analytical_model( temp-273, sig/1e6 )
+            an_data['eps_rate'].append( an )
+            all_rate.append( an )
         ax1.plot( all_sig/1e6, all_rate, '-', c=next(color_cycle) ) #, label=f"Analytical $T={temp-273}$ °C", c=next(color_cycle) )
 
     ax1.set_xscale('log')
@@ -76,6 +82,11 @@ def run_main() :
     x = -df["sig"].values / 1e6  # MPa
     y = df["T"].values - 273 # ºC
     z = -df['eps_yy_rate'].values
+
+    x = an_data['sig']
+    y = an_data['T']
+    z = an_data['eps_rate']
+                
 
     # cria a malha
     grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
