@@ -56,7 +56,7 @@ class CSVPlotter:
         ##
 
         ax.set_ylim( 0, 40 )
-#         ax.set_xscale('log')
+        ax.set_xscale('log')
         ax.set_xlabel("Time (days)")
         ax.set_ylabel(r"Stress at the sphere center (MPa)")
         ax.legend()
