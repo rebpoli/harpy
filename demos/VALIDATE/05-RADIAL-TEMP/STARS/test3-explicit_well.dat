@@ -1,14 +1,14 @@
 
 
 
-** Modelagem tÈrmica de B˙zios
-** Sistema modelado: fundo do mar atÈ o embasamento (grid geomec‚nico)
+** Modelagem t√©rmica de B√∫zios
+** Sistema modelado: fundo do mar at√© o embasamento (grid geomec√¢nico)
 
 
 ** SECTION 1: INPUT/OUTPUT CONTROL  ==============================================
 
-*TITLE1 'CAMPO DE B⁄ZIOS'
-*TITLE2 'SIMULA«√O T…RMICA COM GRID GEOMEC¬NICO'
+*TITLE1 'CAMPO DE B√öZIOS'
+*TITLE2 'SIMULA√á√ÉO T√âRMICA COM GRID GEOMEC√ÇNICO'
 *TITLE3 'FUNDO DO MAR A EMBASAMENTO'
 *CASEID 'CASOBASE'
 *XDR *ON
@@ -17,15 +17,15 @@
 *OUTUNIT *SI
   *EXCEPT  3 4   ** pressao em kgf/cm2
 
-** *RESTART  237  ** sem argumentos --> partir do ˙ltimo disponÌvel
+** *RESTART  237  ** sem argumentos --> partir do √∫ltimo dispon√≠vel
 ** *WRST *TIME
 ** *REWIND 5
 
-** SAÕDA PARA ARQUIVO .OUT
+** SA√çDA PARA ARQUIVO .OUT
 
 
 
-** SAÕDA PARA ARQUIVOS .IRF e .MRF
+** SA√çDA PARA ARQUIVOS .IRF e .MRF
 
 *OUTPRN *GRID *NONE
 ** *OUTPRN *WELL *LAYER
@@ -44,10 +44,13 @@
 
 **  Radial blocks:  small near well;  outer block is large
 
-*DI *IVAR 0.033	0.0400	0.0560	0.0784	0.1098	0.1537	0.2151	0.3012	0.4217	0.5903	0.8264	10*1.1570	1.6198	2.2678	3.1749	4.4448	10*6.2227	8.7118	12.1965	17.0752	23.9052	33.4673	46.8542	65.5959	91.8343	128.5680	179.9952	251.9933	352.7906	493.9068	691.4695	968.0573	1355.2802	1897.3923	2656.3492	3718.8889	5206.4445
+*DI IVAR 0.033	0.0400	0.0560	0.0784	0.1098	0.1537	
+0.2151	0.3012	0.4217	0.5903	0.8264	10*1.1570	1.6198	2.2678	3.1749	
+4.4448	10*6.2227	8.7118	12.1965	17.0752	23.9052	33.4673	46.8542	65.5959	91.8343	128.5680	179.9952	251.9933	352.7906	493.9068	691.4695	968.0573	1355.2802	1897.3923	2656.3492	3718.8889	5206.4445
 *DJ *CON 360   **  Full circle
 ** *DK *CON 3
 *DK *CON 10         
+
  kdir down
 *DEPTH 1 1 1 5200     ** Depth to center of first block, in top layer.
 *DIP 0 0     **angulo
@@ -56,7 +59,7 @@
 MOD 
 1:5 1 1:30 = 0.12
 
-** *CPOR 3.0001E-07     **  1/(kPa) - valor atualizado com input do estudo geomec‚nico. Email do Luis Carlos em 28/05/2015
+** *CPOR 3.0001E-07     **  1/(kPa) - valor atualizado com input do estudo geomec√¢nico. Email do Luis Carlos em 28/05/2015
 ** *PRPOR 63448.7       **  kPa
 
 *PERMI *KVAR  30*0. 10*1000. 30*0.               
@@ -131,7 +134,7 @@ MOD
 ** *THCONO 1.122E+04    **Thermal conductivity of oil   (J/m-day-C) = 1.8 (BTU/ft-day-F)
 ** *THCONG 3.740E+03    **Thermal conductivity of gas   (J/m-day-C) = 0.6 (BTU/ft-day-F)
 ** 
-** *ROCKTYPE 4 ** EMBASAMENTO   --- topo da talco-estevensita atÈ 12km
+** *ROCKTYPE 4 ** EMBASAMENTO   --- topo da talco-estevensita at√© 12km
 ** 
 ** *PRPOR   640.0       **Reference pressure for rock compressibility   (kgf) = 3043.298 (KPa)
 ** *CPOR   50.0E-06      **Effective rock compressibility              (1/KPa) = 7.00E-4 (1/psi)
@@ -145,7 +148,7 @@ MOD
 ** *THCONO 1.122E+04    **Thermal conductivity of oil   (J/m-day-C) = 1.8 (BTU/ft-day-F)
 ** *THCONG 3.740E+03    **Thermal conductivity of gas   (J/m-day-C) = 0.6 (BTU/ft-day-F)
 ** 
-** *ROCKTYPE 5 ** LAYER 1 (CAPACIDADE CALORÕFERA AUMENTADA)
+** *ROCKTYPE 5 ** LAYER 1 (CAPACIDADE CALOR√çFERA AUMENTADA)
 ** 
 ** *PRPOR   640.0       **Reference pressure for rock compressibility   (kgf) = 3043.298 (KPa)
 ** *CPOR   50.0E-06      **Effective rock compressibility              (1/KPa) = 7.00E-4 (1/psi)
