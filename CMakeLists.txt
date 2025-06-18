@@ -99,6 +99,7 @@ ADD_LIBRARY(Modules
   src/config/reader/ModelReader.cpp
   src/config/reader/SolverReader.cpp
   src/config/reader/SpatialDataReader.cpp
+  src/util/Grid3D.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
