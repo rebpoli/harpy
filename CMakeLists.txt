@@ -202,6 +202,9 @@ target_link_libraries( map-mpi-localize Modules )
 add_executable( templated-namespaces demos/UNIT-TEST/09-TEMPLATED-NAMESPACES/templated-namespaces.cpp )
 target_link_libraries( templated-namespaces Modules )
 
+add_executable( ut-radial-temperature demos/UNIT-TEST/10-RADIAL-TEMPERATURE/main.cpp  )
+target_link_libraries( ut-radial-temperature Modules )
+
 # if(EXISTS ${RT}/demos/UnitTests/FractureNodeSplit)
 #   add_executable( FractureNodeSplit demos/UnitTests/FractureNodeSplit/main.cpp  )
 #   target_link_libraries( FractureNodeSplit Modules )
