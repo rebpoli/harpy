@@ -1,0 +1,3 @@
+.FILE temperature.csv.gz
+.GRID RADIAL
+.ORIGIN 0 0 0
