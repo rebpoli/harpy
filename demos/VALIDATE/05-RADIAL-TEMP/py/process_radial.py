@@ -258,7 +258,7 @@ def format_time_days(t_days):
     return f"{years}y {months}m {days}d {hours}h"
 
 df.to_pickle( "db/temp.pkl" )
-df.to_csv("db/temperature.csv.gz", index=True, float_format="%.6e", compression="gzip")
+df.reset_index()[["t","x","z","TEMP"]].to_csv("db/temperature.csv.gz", index=False, float_format="%.6e", compression="gzip")
 print(df)
 
 # #

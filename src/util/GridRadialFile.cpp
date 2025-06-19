@@ -1,5 +1,5 @@
 
-#include "util/Grid3D.h"
+#include "util/GridRadialFile.h"
 #include "util/GzStream.h"
 
 #include <iostream>
@@ -39,22 +39,20 @@ struct DataEntry
 {
   double t, x, z, temp;
 
-  DataEntry(const string& csv_line) {
+  DataEntry(const string& csv_line) 
+  {
     CSVLine tokens(csv_line);
-    t = tokens.next<double>();
-    tokens.next<double>(); //i
-    tokens.next<double>(); //j
-    tokens.next<double>(); //k
-    temp = tokens.next<double>();
-    x = tokens.next<double>();
-    z = tokens.next<double>();
+    t      =   tokens.next<double>();
+    x      =   tokens.next<double>();
+    z      =   tokens.next<double>();
+    temp   =   tokens.next<double>();
   }
 };
 
 /**
  *
  */
-Grid3D::Grid3D(const string & filename) 
+GridRadialFile::GridRadialFile(const string & filename) 
 {
   GzStream file(filename);
   string line;
@@ -98,7 +96,7 @@ Grid3D::Grid3D(const string & filename)
 /** 
  *   Trilinear interpolation
  */
-double Grid3D::at(double qt, double qx, double qz) const 
+double GridRadialFile::at(double qt, double qx, double qz) const 
 {
   auto find_index = [](const vector<double>& vec, double val) {
     auto it = upper_bound(vec.begin(), vec.end(), val);

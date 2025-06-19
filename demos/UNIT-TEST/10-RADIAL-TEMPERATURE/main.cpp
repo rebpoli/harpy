@@ -1,5 +1,5 @@
 
-#include "util/Grid3D.h"
+#include "util/GridRadialFile.h"
 
 /**
  *
@@ -8,7 +8,7 @@
  */
 int main() 
 {
-  Grid3D grid("temperature.csv.gz");
+  GridRadialFile grid("temperature.csv.gz");
   double T = grid.at(912*24*60*60, 66, 5585);
   ilog << "Interpolated T: " << T-273;
 }

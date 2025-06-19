@@ -8,14 +8,14 @@
 /**
  *   The grid interpolator
  */
-class Grid3D 
+class GridRadialFile 
 {
   vector<double> t, x, z, grid;
   size_t Nt, Nx, Nz;
   size_t index(size_t it, size_t ix, size_t iz) const { return it * Nx * Nz + ix * Nz + iz; }
 
 public:
-  Grid3D(const string & filename) ;
+  GridRadialFile(const string & filename) ;
   double at(double qt, double qx, double qz) const;
 };
 
