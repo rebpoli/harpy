@@ -1,0 +1,102 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.5cm, top=1cm]{geometry}
+\usepackage{amsmath,amssymb,scalerel}
+\usepackage{bbm}
+\usepackage{stmaryrd} % for symbols like \llbracket
+\usepackage{mathabx}
+\usepackage{bm}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage[scr=rsfs,cal=boondox]{mathalfa}
+
+\usepackage{array}
+\usepackage{graphicx}
+
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{../ref.bib}
+
+
+\newcolumntype{A}{c@{\hspace{.5cm}}}
+\newcolumntype{B}{c@{\hspace{2cm}}}
+\newcolumntype{L}{>$l<$} 
+\setlength{\jot}{6pt}
+\renewcommand{\arraystretch}{1.5}
+
+\title{2 phase flow formulation - assessing the mesh dependency}
+\author{Renato Poli , Bruno Fernandes}
+\begin{document}
+\maketitle
+\hrule
+
+% some accelarators
+\def\qq{\bm{q}}
+\def\vv{\mathbf{v}}
+\def\uu{\mathbf{u}}
+
+\section{Problem statement}
+
+We start from the continuity equation for each phase, all written in massic form:
+\[
+  0 = \frac{mass}{time} + \text{net outflow} - \text{sink}   
+\]
+that leads to
+\[
+  0 = \dot{\zeta_\alpha} + \nabla\cdot\uu_\alpha - q_\alpha 
+\]
+where $\zeta_\alpha$ is the fluid mass per unit volume ($kg/m^3$), 
+$\uu_\alpha$ is the massic flow ($kg/m^2/s$) and
+$q_\alpha$ is the sink term ($kg/m^3/s$).
+\begin{gather}
+   \zeta_\alpha = \rho_\alpha \phi S_\alpha \\
+   \uu_\alpha = \rho_\alpha \vv_\alpha 
+\end{gather}
+where $\vv$ is the darcy velocity.
+\[
+  \vv_\alpha = - \frac{1}{\mu_\alpha} \bm{K}_\alpha \cdot ( \nabla p_\alpha - \rho_\alpha \bm{g} ) 
+\]
+where $\rho_\alpha$ is the fluid density ($kg/m^3$), $\vv$ is the fluid velocity vector ($m/s$) and $q_m$ is the source term ($kg/m^3/s$).
+
+Define densities:
+\[
+   \rho_\alpha \approx \rho^0_\alpha [ 1 + c_\alpha ( p_\alpha - p_\alpha^0 ) ]        \quad,
+\]
+fluid fraction in the reservoir (porosity):
+\[
+  \phi  \approx \phi_0 \left[ 1 + c_f ( p - p_0 ) \right]     \quad,
+\]
+and permeability tensor
+\[
+  \bm{K}_\alpha = \bm{K} k_{r\alpha}      \quad,
+\]
+where $\bm{K}$ is the absolute (intrinsic) permeability tensor and $k_{r\alpha}$ is the relative permeability of that phase.
+
+Consider the saturation restrictions:
+\[
+  1 = \sum_\alpha S_\alpha      \quad,
+\]
+and cappilary pressure for a two-phase flow system
+\[
+  p_o = p_w + P_{cow}   \quad.
+\]
+
+The system of PDE is hence
+{
+\newcommand{\Gammaw}{\Gamma_{\text{w}}}
+\newcommand{\Gammao}{\Gamma_{\text{o}}}
+\newcommand{\Omegawell}{\Omega_{\text{well}}}
+\newcommand{\zetaalpha}{\zeta_\alpha}
+\[\begin{array}{ l l }
+   0 = \sum_\alpha \Big\{ \dot{\zetaalpha} + \nabla\cdot\uu_\alpha - q_\alpha  \Big\} & \quad\quad \text{in } \Omega        \\ 
+   0 = \dot{\zeta_w} + \nabla\cdot\uu_w - q_w                                           & \quad\quad \text{in } \Omega        \\ 
+   1 = \sum_\alpha S_\alpha                                                             & \quad\quad \text{in } \Omega        \\
+   0 = \nabla p_w                                                                       & \quad\quad \text{in } \Gammao      \\
+   1 = S_o                                                                              & \quad\quad \text{in } \Omega \times t=0  \\
+   q_\alpha = \hat{q}_\alpha                                                            & \quad\quad \text{in } \Omegawell  \quad \text{(wells interface in sink terms)}    \\
+\end{array}\]
+}
+
+\newpage
+\printbibliography
+\end{document}
