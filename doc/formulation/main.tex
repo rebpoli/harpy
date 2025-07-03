@@ -42,6 +42,7 @@
 \def\N{\bm{N}}
 \def\x{\bm{x}}
 \def\X{\bm{X}}
+\def\qcq{\ ,\ }
 \def\cF{\mathcal{F}}
 \def\CC{\mathbb{C}}
 \def\cc{\mathbbm{c}}
@@ -1039,6 +1040,74 @@ Hence:
       &-    (W_i, \tilde{T} ) \\
 \end{align*}
 Did not work out, because the $\Delta U_i$ does not show. Need to open the terms, and will get to the same verbosity.
+\newpage
+
+\section{Enriched galerkin - first try}
+
+We want to conserve
+\begin{align}
+  ( w_i \qcq \sigma_{ij,j} )_\Omega \equiv \sum_E ( w_i \qcq \sigma_{ij,j} )_{\Omega_E}
+\end{align}
+Integrate by parts in each element:
+\begin{align}
+     ( w_i \qcq \sigma_{ij,j} )_{\Omega_E} \equiv 
+            -  ( w_{i,j} \qcq \sigma_{ij})_{\Omega_E} 
+            +  ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_E} 
+\end{align}
+We can integrate in the element domain $\Omega_E$ as usual.  Let's focus on the element boundaries for conservativeness.
+\begin{align}
+  \sum  ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_E} \equiv 
+          ( w_i \qcq \sigma_{ij} n_j)_{\Gamma} 
+        + ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_I} 
+\end{align}
+where $\Gamma$ is the outer boundary of the domain, set as boundary conditions. Let's focus on the internal skeleton $\Gamma_I$.
+Recall the identity:
+\begin{align}
+  ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_I} \equiv
+          \Big( \jmp{\w}_{ij} \qcq      \{\bm{\sigma}\}_{ij}      \Big)_{\Gamma_I}
+        + \Big( \{\w\}_i      \qcq      \jmp{\bm{\sigma}}_i    \Big)_{\Gamma_I}
+\end{align}
+where
+\begin{align}
+  \jmp{\w}_{ij}       &= w_i^+\ n_j^+ \ +\ w_i^-\ n_j^-                      &\quad\quad\text{(tensor)} \\
+  \jmp{\bm{\sigma}}_i  &= \sigma_{ij}^+\ n_j^+ \ +\ \sigma_{ij}^-\ n_j^-        &\quad\quad\text{(vector)} \\
+  \{\w\}              &= 0.5 \  (\ w_i^+         +\ w_i^- \ )                   &\quad\quad\text{(vector)} \\
+  \{\bm{\sigma}\}     &= 0.5 \  (\ \sigma_{ij}^+  +\ \sigma_{ij}^- \ )          &\quad\quad\text{(tensor)} 
+\end{align}
+Proof:
+\begin{align}
+  ( w_i \qcq \sigma_{ij} \ n_j)_{\Gamma_I}  &= \\&
+  = \sum_e ( w_i \qcq \sigma_{ij}\  n_j)_{\Gamma_I^e}  \\&
+   = \sum_e ( w_i^+ \qcq \sigma_{ij}^+\  n_j^+)_{\Gamma_I^e} + ( w_i^- \qcq \sigma_{ij}^- \ n_j^-)_{\Gamma_I^e}
+\end{align}
+Next we suppress the domain assignment and summation sign for clarity.
+\begin{align}
+  & ( w_i^+ \qcq \sigma_{ij}^+ \ n_j^+) + ( w_i^- \qcq \sigma_{ij}^- \ n_j^-) = \\&
+  = 0.5\ ( w_i^+ \qcq \sigma_{ij}^+ \ n_j^+) + 0.5\ ( w_i^- \qcq \sigma_{ij}^- \ n_j^-)  \\&
+  + 0.5\ ( \sigma_{ij}^+ \qcq w_i^+ \ n_j^+) + 0.5\ ( \sigma_{ij}^- \qcq w_i^- \ n_j^-) 
+\end{align}
+Next we introduce convenient terms into the equation, that are clearly zero as $\n^+=-\n^-$:
+\begin{align}
+  0 =  0.5\ ( \sigma_{ij}^- \qcq w_i^+ \ n_j^+) + 0.5\ ( w_i^+ \qcq \sigma_{ij}^- \ n_j^-)  \\
+  0 =  0.5\ ( \sigma_{ij}^+ \qcq w_i^- \ n_j^-) + 0.5\ ( w_i^- \qcq \sigma_{ij}^+ \ n_j^+)
+\end{align}
+By summing the above equations throughout the elements, we obtain the relation
+\begin{align}
+  ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_I} \equiv
+          \Big( \jmp{\w}_{ij} \qcq      \{\bm{\sigma}\}_{ij}      \Big)_{\Gamma_I}
+        + \Big( \{\w\}_i      \qcq      \jmp{\bm{\sigma}}_i    \Big)_{\Gamma_I}
+\end{align}
+
+The conserved equation is:
+\begin{align}
+ &  ( w_i \qcq \sigma_{ij,j} )_\Omega = \\&
+  \sum_E ( w_i \qcq \sigma_{ij,j} )_{\Omega_E} = \\&
+  \sum_E -  ( w_{i,j} \qcq \sigma_{ij})_{\Omega_E} +  ( w_i \qcq \sigma_{ij} \ n_j)_{\Gamma_E}  = \\&
+  \sum_E  -  ( w_{i,j} \qcq \sigma_{ij})_{\Omega_E} + ( w_i \qcq \sigma_{ij} n_j)_{\Gamma} + ( w_i \qcq \sigma_{ij} n_j)_{\Gamma_I} =\\&
+   \sum_E  -  ( w_{i,j} \qcq \sigma_{ij})_{\Omega_E} + ( w_i \qcq \sigma_{ij} n_j)_{\Gamma} +
+            \left( \jmp{\w}_{ij} \qcq      \{\bm{\sigma}\}_{ij}      \right)_{\Gamma_I} + \left( \{\w\}_i      \qcq      \jmp{\bm{\sigma}}_i    \right)_{\Gamma_I}
+\end{align}
+
 \newpage
 \printbibliography
 \end{document}

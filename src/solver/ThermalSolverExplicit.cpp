@@ -33,7 +33,7 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
 void ThermalSolverExplicit::setup_variables()
 {
   dlog(1) << "Adding variable T ...";
-  system.add_variable( "T", SECOND, L2_LAGRANGE );
+  system.add_variable( "T", FIRST, LAGRANGE ); /// L2_LAGRANGE for discontinuous
 }
 
 /**
