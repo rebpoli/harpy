@@ -33,6 +33,7 @@
 % some accelarators
 \def\qq{\bm{q}}
 \def\vv{\mathbf{v}}
+\def\ww{\mathbf{w}}
 \def\uu{\mathbf{u}}
 
 \section{Problem statement}
@@ -81,21 +82,143 @@ and cappilary pressure for a two-phase flow system
   p_o = p_w + P_{cow}   \quad.
 \]
 
-The system of PDE is hence
-{
-\newcommand{\Gammaw}{\Gamma_{\text{w}}}
-\newcommand{\Gammao}{\Gamma_{\text{o}}}
-\newcommand{\Omegawell}{\Omega_{\text{well}}}
-\newcommand{\zetaalpha}{\zeta_\alpha}
-\[\begin{array}{ l l }
-   0 = \sum_\alpha \Big\{ \dot{\zetaalpha} + \nabla\cdot\uu_\alpha - q_\alpha  \Big\} & \quad\quad \text{in } \Omega        \\ 
-   0 = \dot{\zeta_w} + \nabla\cdot\uu_w - q_w                                           & \quad\quad \text{in } \Omega        \\ 
-   1 = \sum_\alpha S_\alpha                                                             & \quad\quad \text{in } \Omega        \\
-   0 = \nabla p_w                                                                       & \quad\quad \text{in } \Gammao      \\
-   1 = S_o                                                                              & \quad\quad \text{in } \Omega \times t=0  \\
-   q_\alpha = \hat{q}_\alpha                                                            & \quad\quad \text{in } \Omegawell  \quad \text{(wells interface in sink terms)}    \\
+Define the unknonwns refering to toal quantities:
+{  % Symbol definitions for the section
+  \newcommand{\Gammaw}{{\Gamma_{\text{w}}}}
+  \newcommand{\Gammao}{{\Gamma_{\text{o}}}}
+  \newcommand{\zetaalpha}{\zeta_\alpha}
+  \newcommand{\zetaw}{\zeta_\text{w}}
+  \newcommand{\zetat}{{\zeta_{\text{t}}}}
+  \newcommand{\qalpha}{q_\alpha}
+  \newcommand{\qw}{{q_{\text{w}}}}
+  \newcommand{\qt}{{q_{\text{t}}}}
+  \newcommand{\uualpha}{\uu_\alpha}
+  \newcommand{\uuw}{\uu_\text{w}}
+  \newcommand{\uut}{{\uu_{\text{t}}}}
+  \newcommand{\qcq}{\ ,\ }
+  \newcommand{\Omegawell}{\Omega_{\text{well}}}
+  \newcommand{\nn}{\mathbf{n}}
+\[\begin{array}{ c c c }
+  \displaystyle    \zetat = \sum_{\alpha\in\text{w,o}} \zetaalpha  \quad,  & 
+  \displaystyle    \uut = \sum_{\alpha\in\text{w,o}} \uualpha      \quad,  &
+  \displaystyle    \qt = \sum_{\alpha\in\text{w,o}} \qalpha  
 \end{array}\]
+
+The problem statement is:
+
+Find $p_\alpha$ and $S_\alpha$ for $\alpha \in \{\text{w, o}\}$, such that 
+
+\[\begin{array}{ l l }
+  \displaystyle
+   0 = \dot{\zetat} + \nabla\cdot\uut- \qt                        & \quad\quad \text{in } \Omega        \\ 
+   0 = \dot{\zeta_w} + \nabla\cdot\uu_w - q_w                     & \quad\quad \text{in } \Omega        \\ 
+   1 = \sum_\alpha S_\alpha                                       & \quad\quad \text{in } \Omega        \\
+   0 = \nabla p_w                                                 & \quad\quad \text{in } \Gammao      \\
+   1 = S_o                                                        & \quad\quad \text{in } \Omega \times t=0  \\
+   q_\alpha = \hat{q}_\alpha                                      & \quad\quad \text{in } \Omegawell  \quad \text{(wells interface in sink terms)}    \\
+\end{array}\]
+
+
+Define the bilinear operator as
+\[
+(v,w)_\Omega = \int_\Omega v\ w\ d\Omega
+\]
+where $\Omega$ is the integration domain. 
+If suppressed, $\Omega$ is the domain, otherwise it must be specified.
+Between two vectors, the operator considers the dot product as
+\[
+(\vv,\ww)_\Omega = \int_\Omega \vv \cdot \ww\ d\Omega
+\]
+
+Now we describe the weak discrete form for the problem.
+
+\vspace{0.5cm}
+Find $p_\text{w}^h$ and $S_\text{w}^h$ for $\alpha \in \{\text{w, o}\}$, $\forall w^h \in \mathcal{W}^h$
+\begin{align}
+  \displaystyle
+  0 &= ( w^h \qcq \dot{\zetat} ) + ( w^h \qcq \nabla \cdot \uut ) - ( w^h \qcq \qt )   \label{eqn:weak1}\\
+  0 &= ( w^h \qcq \dot{\zetaw} ) + ( w^h \qcq \nabla \cdot \uuw ) - ( w^h \qcq \qw )   \label{eqn:weak2} 
+\end{align}
+subject to the boundary constraints and initial conditions previously defined.
+The second term on the RHS requires attention because it has the second order derivative in $p$.
+Let's work it separately:
+\newcommand{\OmegaI}{{\Omega_{\text{I}}}}
+\newcommand{\GammaI}{{\Gamma_{\text{I}}}}
+\newcommand{\GammaO}{{\Gamma_{\text{O}}}}
+\begin{align}
+  ( w^h \qcq \nabla \cdot \uu ) &=  \sum_E ( w^h \qcq \nabla \cdot \uu )_{\Omega^e}  \nonumber\\
+                                &=( w^h \qcq \uu \cdot \nn )_\GammaO + ( w^h \qcq \uu \cdot \nn )_\GammaI - ( \nabla w^h \qcq \uu )_\OmegaI
+\end{align}
+where $\OmegaI$ is the summation in the element interiors, $\GammaI$ is the internal skelethon of the mesh (interfaces between elements) and $\GammaO$ is the external boundaries.
+
+Recall the identity:
+\def\jmp#1{\llbracket #1 \rrbracket}
+\def\avg#1{\{ #1 \}}
+\begin{align}
+  ( w \qcq \uu \cdot \nn)_\GammaI \equiv
+  ( \jmp{w} \qcq \avg{\uu} )_\GammaI + ( \avg{w} \qcq \jmp{\uu} )_\GammaI
+\end{align}
+where
+\[\begin{array}{ c c }
+  \jmp{\uu}    =  \uu^+\cdot\nn^+  + \uu^-\cdot\nn^-      &  \qquad
+  \avg{\uu}    = 0.5 \  (\ \uu^+         +\ \uu^- \ )  \nonumber\\
+  \jmp{w}_i    =  w^+ \cdot \nn^+ + w^- \cdot \nn^-      &  \qquad
+  \avg{w}      = 0.5 \  (\ w^+         +\ w^- \ )       
+\end{array}\]
+Recall the boundary condition $\uu=0$ in $\GammaO$. Then:
+\[\begin{array}{ c c c c }
+  ( w^h \qcq \nabla \cdot \uu ) &= 
+                                    ( \jmp{w^h} \qcq \avg{\uu} )_\GammaI 
+                                & + ( \jmp{\uu} \qcq \avg{w^h} )_\GammaI 
+                                & - ( \nabla w^h \qcq \uu )_\OmegaI
+\end{array}\]
+that is our final expression for this term.
+
+Now we can rewrite \eqref{eqn:weak1} and \eqref{eqn:weak2} using the above identity as:
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\[\begin{array}{ c c c c c c }
+  0 &= ( w^h \qcq \dot{\zetat} ) 
+            \quad & \blue{  + ( \jmp{w^h} \qcq \avg{\uut} )_\GammaI  }
+            \quad & \blue{  + ( \avg{w^h} \qcq \jmp{\uut} )_\GammaI   }
+            \quad & \blue{  - ( \nabla w^h \qcq \uut )_\OmegaI  }
+            \quad &-  ( w^h \qcq \qt )   \\
+  0 &= ( w^h \qcq \dot{\zetaw} ) 
+            \quad & \blue{  + ( \jmp{w^h} \qcq \avg{\uuw} )_\GammaI  }
+            \quad & \blue{  + ( \avg{w^h} \qcq \jmp{\uuw} )_\GammaI   }
+            \quad & \blue{  - ( \nabla w^h \qcq \uuw )_\OmegaI  }
+            \quad &-  ( w^h \qcq \qw )   \\
+\end{array}\]
+
+Now we introduce constrints at the element boundaries following the interior penalty method. 
+The idea is to weekly enforce local conservativeness and add stability by 
+adding a penalized internal fluxes on element boundaries \parencite{douglas1976, wheeler1978}:
+\newcommand{\Jt}{{J_{\text{t}}}}
+\begin{align}
+  J_\alpha(w,\uu) &= \int_\GammaI \gamma \jmp{w} \jmp{\uualpha} d\Gamma  \\
+                  &= (\ \gamma \jmp{w} \qcq \jmp{\uualpha} \ ) = 0 \\
+  \displaystyle  \Jt &= \sum_{\alpha\in\text{w,o}} J_\alpha  
+\end{align}
+where $\gamma$ is a penalty term. The final formulation is
+\[\begin{array}{ c c c c c c c }
+  0 &= ( w^h \qcq \dot{\zetat} ) 
+            \quad &  + ( \jmp{w^h} \qcq \avg{\uut} )_\GammaI  
+            \quad &  + ( \avg{w^h} \qcq \jmp{\uut} )_\GammaI   
+            \quad &  - ( \nabla w^h \qcq \uut )_\OmegaI  
+            \quad &-  ( w^h \qcq \qt ) 
+            \quad &+ ( \gamma \jmp{w} \qcq \jmp{\uualpha} )\\
+  0 &= ( w^h \qcq \dot{\zetaw} ) 
+            \quad &  + ( \jmp{w^h} \qcq \avg{\uuw} )_\GammaI  
+            \quad &  + ( \avg{w^h} \qcq \jmp{\uuw} )_\GammaI   
+            \quad &  - ( \nabla w^h \qcq \uuw )_\OmegaI  
+            \quad &-  ( w^h \qcq \qw )   
+            \quad &+ ( \gamma \jmp{w} \qcq \jmp{\uut} )\\
+\end{array}\]
+
 }
+
+
+
 
 \newpage
 \printbibliography
