@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1751470682.47587 "main.bcf" "main.bbl" "main" 1751510315.69389 0
-  "../ref.bib" 1747171248.93455 3914 9d72c6d2452cb39c328eea1d836f947d ""
+["biber main"] 1751756252.43541 "main.bcf" "main.bbl" "main" 1751756253.7879 0
+  "../ref.bib" 1751649501.60003 5321 2406de9d2279d4e7c718124d52888204 ""
   "main.bcf" 1751510315.38305 134505 1608ab595f305bee71e8682e286e7c35 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1751510313.94531 "main.tex" "main.pdf" "main" 1751510315.69434 0
+["pdflatex"] 1751510313.94531 "main.tex" "main.pdf" "main" 1751756253.78796 0
   "/etc/texmf/web2c/texmf.cnf" 1736044772 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/renato/.texlive2023/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.657pk" 1738771995.10197 7808 03d6d2e0c48b9c2dff039783ec4fa9b8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -179,7 +179,7 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1736044786 5472523 3385632d03104648b518c8e4afd7264e ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1736044803 8214546 b521ea07097d46a54e8390f514013417 ""
   "main.aux" 1751510315.38305 6682 52a58353b2b6c2c34295a18be37c73ca "pdflatex"
-  "main.bbl" 1751470683.06391 43290 eca3152625614698810d1b370c6aa9e6 "biber main"
+  "main.bbl" 1751756253.7355 43290 eca3152625614698810d1b370c6aa9e6 "biber main"
   "main.run.xml" 1751510315.39262 2423 2c29162e9996be3644b87894c5e87352 "pdflatex"
   "main.tex" 1751510312.75108 48130 b3bdb4e607d391bb68998c647c925bdd ""
   (generated)

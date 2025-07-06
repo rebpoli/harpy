@@ -133,11 +133,11 @@ Between two vectors, the operator considers the dot product as
 Now we describe the weak discrete form for the problem.
 
 \vspace{0.5cm}
-Find $p_\text{w}^h$ and $S_\text{w}^h$ for $\alpha \in \{\text{w, o}\}$, $\forall w^h \in \mathcal{W}^h$
+Find $p_\text{w}^h$ and $S_\text{w}^h$ for $\alpha \in \{\text{w, o}\}$, $\forall w^h \in \mathcal{W}^h$, $\forall v^h \in \mathcal{V}^h$
 \begin{align}
   \displaystyle
   0 &= ( w^h \qcq \dot{\zetat} ) + ( w^h \qcq \nabla \cdot \uut ) - ( w^h \qcq \qt )   \label{eqn:weak1}\\
-  0 &= ( w^h \qcq \dot{\zetaw} ) + ( w^h \qcq \nabla \cdot \uuw ) - ( w^h \qcq \qw )   \label{eqn:weak2} 
+  0 &= ( v^h \qcq \dot{\zetaw} ) + ( v^h \qcq \nabla \cdot \uuw ) - ( v^h \qcq \qw )   \label{eqn:weak2} 
 \end{align}
 subject to the boundary constraints and initial conditions previously defined.
 The second term on the RHS requires attention because it has the second order derivative in $p$.
@@ -145,14 +145,20 @@ Let's work it separately:
 \newcommand{\OmegaI}{{\Omega_{\text{I}}}}
 \newcommand{\GammaI}{{\Gamma_{\text{I}}}}
 \newcommand{\GammaO}{{\Gamma_{\text{O}}}}
+\newcommand{\GammaIe}{{\Gamma_{\text{I}}^e}}
 \begin{align}
   ( w^h \qcq \nabla \cdot \uu ) &=  \sum_E ( w^h \qcq \nabla \cdot \uu )_{\Omega^e}  \nonumber\\
                                 &=( w^h \qcq \uu \cdot \nn )_\GammaO + ( w^h \qcq \uu \cdot \nn )_\GammaI - ( \nabla w^h \qcq \uu )_\OmegaI
 \end{align}
-where $\OmegaI$ is the summation in the element interiors, $\GammaI$ is the internal skelethon of the mesh (interfaces between elements) and $\GammaO$ is the external boundaries.
+where $\OmegaI$ represent the element interiors, $\GammaI = \Gamma^e \setminus \GammaO$ is the internal element edges
+(i.e. the internal skelethon of the mesh), $\Gamma^e=\GammaI\cup\GammaO$ is all the element edges, and $\GammaO=\Gamma^e\cap\Gamma$ is the
+external boundaries of the domain.
 
-Recall the identity:
+Recall the identity (see appendix):
 \def\jmp#1{\llbracket #1 \rrbracket}
+\def\sjmp#1{\left[  #1  \right]}
+
+
 \def\avg#1{\{ #1 \}}
 \begin{align}
   ( w \qcq \uu \cdot \nn)_\GammaI \equiv
@@ -162,7 +168,7 @@ where
 \[\begin{array}{ c c }
   \jmp{\uu}    =  \uu^+\cdot\nn^+  + \uu^-\cdot\nn^-      &  \qquad
   \avg{\uu}    = 0.5 \  (\ \uu^+         +\ \uu^- \ )  \nonumber\\
-  \jmp{w}_i    =  w^+ \cdot \nn^+ + w^- \cdot \nn^-      &  \qquad
+  \jmp{w}      =  w^+ \cdot \nn^+ + w^- \cdot \nn^-      &  \qquad
   \avg{w}      = 0.5 \  (\ w^+         +\ w^- \ )       
 \end{array}\]
 Recall the boundary condition $\uu=0$ in $\GammaO$. Then:
@@ -183,42 +189,115 @@ Now we can rewrite \eqref{eqn:weak1} and \eqref{eqn:weak2} using the above ident
             \quad & \blue{  + ( \avg{w^h} \qcq \jmp{\uut} )_\GammaI   }
             \quad & \blue{  - ( \nabla w^h \qcq \uut )_\OmegaI  }
             \quad &-  ( w^h \qcq \qt )   \\
-  0 &= ( w^h \qcq \dot{\zetaw} ) 
-            \quad & \blue{  + ( \jmp{w^h} \qcq \avg{\uuw} )_\GammaI  }
-            \quad & \blue{  + ( \avg{w^h} \qcq \jmp{\uuw} )_\GammaI   }
-            \quad & \blue{  - ( \nabla w^h \qcq \uuw )_\OmegaI  }
-            \quad &-  ( w^h \qcq \qw )   \\
+    &+ ( v^h \qcq \dot{\zetaw} ) 
+            \quad & \blue{  + ( \jmp{v^h} \qcq \avg{\uuw} )_\GammaI  }
+            \quad & \blue{  + ( \avg{v^h} \qcq \jmp{\uuw} )_\GammaI   }
+            \quad & \blue{  - ( \nabla v^h \qcq \uuw )_\OmegaI  }
+            \quad &-  ( v^h \qcq \qw )   \\
 \end{array}\]
 
-Now we introduce constrints at the element boundaries following the interior penalty method. 
-The idea is to weekly enforce local conservativeness and add stability by 
-adding a penalized internal fluxes on element boundaries \parencite{douglas1976, wheeler1978}:
+\section{Local mass conservation}
+The formulation is conservative iff $\jmp{\uualpha}=0$, that is
+\[
+  0 = \uu^+ \cdot \nn^+ + \uu^- \cdot \nn^- 
+\]
+We want to set the constraint weekly in both element boundaries sharing the edge:
+\begin{align}
+  0 &= (\ w^+ \qcq \uu^+ \cdot \nn^+\ )_{\GammaIe} + (\ w^+ \qcq \uu^- \cdot \nn^-\ )_{\GammaIe}  \\
+  0 &= (\ w^- \qcq \uu^+ \cdot \nn^+\ )_{\GammaIe} + (\ w^- \qcq \uu^- \cdot \nn^-\ )_{\GammaIe}       \quad.
+\end{align}
+or alternatively
+\begin{align}
+  0 &= (\ w^+ \nn^+ \qcq \uu^+ \ )_{\GammaIe} - (\ w^+ \nn^+ \qcq \uu^- \ )_{\GammaIe}  \\
+  0 &=  (\ w^- \nn^- \qcq \uu^- \ )_{\GammaIe} -(\ w^- \nn^- \qcq \uu^+ \ )_{\GammaIe}  \\
+  &  \rightarrow \quad 0 = ( \jmp{w} \qcq \uu^+ - \uu^- ) 
+  \quad.
+\end{align}
+We'll stick with the first solution for now. The second could help collapsing some terms later (we can try later).
+For the set of internal element interfaces of the mesh $\GammaI$, we can write
+\begin{align}
+  0 = (\ \sjmp{w} \qcq \jmp{\uu} \ )_\GammaI
+\end{align}
+where we define the scalar jump operator as
+\[
+  \sjmp{w} = w^+ - w^-   \quad.
+\]
+Note the difference between the vectorial jump $\jmp{w}$ (a summation scaled by the respective 
+normals and thus independent on the assignment of $+$ and $-$ to the neighboring elements) 
+and the scalar jump $\sjmp{w}$, that is a difference results in a scalar. In the latter, 
+the sign of the result depends on the element assignment.
+
+The above constraints at the element boundaries follow the interior penalty method 
+\parencite{douglas1976, wheeler1978}:
 \newcommand{\Jt}{{J_{\text{t}}}}
 \begin{align}
-  J_\alpha(w,\uu) &= \int_\GammaI \gamma \jmp{w} \jmp{\uualpha} d\Gamma  \\
-                  &= (\ \gamma \jmp{w} \qcq \jmp{\uualpha} \ ) = 0 \\
-  \displaystyle  \Jt &= \sum_{\alpha\in\text{w,o}} J_\alpha  
+  J_\alpha(w,\uu) &= \int_\GammaI \gamma \sjmp{w} \jmp{\uualpha} d\Gamma  \\
+                  &= (\ \gamma \sjmp{w} \qcq \jmp{\uualpha} \ ) \rightarrow  0
 \end{align}
-where $\gamma$ is a penalty term. The final formulation is
-\[\begin{array}{ c c c c c c c }
+and
+\begin{align}
+  \displaystyle  \Jt &= \sum_{\alpha\in\text{w,o}} J_\alpha       \quad,
+\end{align}
+where $\gamma$ is a penalty term. 
+
+The formulation becomes
+\begin{align}
+  & \forall w^h \in \mathcal{W}^h, \forall v^h \in \mathcal{V}^h \nonumber & \\
+  & \begin{array}{ cccccccc }
   0 &= ( w^h \qcq \dot{\zetat} ) 
             \quad &  + ( \jmp{w^h} \qcq \avg{\uut} )_\GammaI  
             \quad &  + ( \avg{w^h} \qcq \jmp{\uut} )_\GammaI   
             \quad &  - ( \nabla w^h \qcq \uut )_\OmegaI  
             \quad &-  ( w^h \qcq \qt ) 
-            \quad &+ ( \gamma \jmp{w} \qcq \jmp{\uualpha} )\\
-  0 &= ( w^h \qcq \dot{\zetaw} ) 
-            \quad &  + ( \jmp{w^h} \qcq \avg{\uuw} )_\GammaI  
-            \quad &  + ( \avg{w^h} \qcq \jmp{\uuw} )_\GammaI   
-            \quad &  - ( \nabla w^h \qcq \uuw )_\OmegaI  
-            \quad &-  ( w^h \qcq \qw )   
-            \quad &+ ( \gamma \jmp{w} \qcq \jmp{\uut} )\\
-\end{array}\]
+            \quad &+ ( \gamma \sjmp{w^h} \qcq \jmp{\uut} )_\GammaI
+                  &\\
+    &+ ( v^h \qcq \dot{\zetaw} ) 
+            \quad &  + ( \jmp{v^h} \qcq \avg{\uuw} )_\GammaI  
+            \quad &  + ( \avg{v^h} \qcq \jmp{\uuw} )_\GammaI   
+            \quad &  - ( \nabla v^h \qcq \uuw )_\OmegaI  
+            \quad &-  ( v^h \qcq \qw )   
+            \quad &+ ( \gamma \sjmp{v^h} \qcq \jmp{\uuw} )_\GammaI
+                  &,
+          \end{array}  
+  &
+        \end{align}
 
+
+\section{Finite Volume Formulation}
+
+
+\appendix
+
+\section{Discontinuous identity}
+
+An alternative derivation:
+\begin{align}
+  ( \jmp{w} \qcq \{\uu\} )_\GammaI + ( \jmp{\uu} \qcq \{ w \} )_\GammaI &= 0.5 \times \\
+    &\quad\quad (w^+\nn^+ \qcq \uu^+)                     \quad+\quad                      (\uu^+ \cdot\nn^+\qcq w^+ ) \\
+    &\quad\quad \textcolor{red}{(w^-\nn^+ \qcq \uu^+)}    \quad+\quad   \textcolor{red}{   (\uu^+ \cdot\nn^-\qcq w^- )   } \\
+    &\quad\quad \textcolor{blue}{(w^+\nn^- \qcq \uu^-)}   \quad+\quad   \textcolor{blue}{  (\uu^- \cdot\nn^+\qcq w^+ )   } \\
+    &\quad\quad (w^-\nn^- \qcq \uu^-)                     \quad+\quad                      (\uu^-\cdot \nn^- \qcq w^- ) \\
+    &= 0.5 \times \\
+    &\quad\quad (w^+\nn^+ \qcq \uu^+)                     \quad+\quad                      (\uu^+ \cdot\nn^+\qcq w^+ ) \\
+    &\quad\quad (w^-\nn^- \qcq \uu^-)                     \quad+\quad                      (\uu^-\cdot \nn^- \qcq w^- ) \\
+    &= (w \qcq \uu\cdot\nn)_\GammaI
+\end{align}
+where $\GammaI$ subscript was supressed along the derivation for clarity.
+For implementation purposes, it is convenient to use iterators ($D$, $E$), 
+\begin{align}
+  ( \jmp{w}  &\qcq \{\uu\} )_\GammaI + ( \jmp{\uu} \qcq \{ w \} )_\GammaI =  \\
+                                &= 0.5\times \sum_{D=1}^{2}\sum_{E=1}^{2} 
+                                             ( w^D \nn^D \qcq \uu^E )_\GammaI
+                                           + ( \uu^D \cdot \nn^D \qcq w^E )_\GammaI\\
+                                &=  \sum_{D=1}^{2}( w^D ,\quad \uu^D \cdot \nn^D )_{\GammaI} 
+\end{align}
+where $D,E=1$ represents the $+$ side and $D,E=2$ represents the $-$ side.
+
+Similarly,
+\begin{align}
+  ( \jmp{w} \qcq \jmp{\uu} ) = \sum_{D=1}^{2}\sum_{E=1}^{2} ( w^D \nn^D \qcq \uu^E \cdot \nn^E )
+\end{align}
 }
-
-
-
 
 \newpage
 \printbibliography
