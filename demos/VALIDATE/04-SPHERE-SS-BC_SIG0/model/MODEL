@@ -7,11 +7,11 @@ THERMAL BASE
 STRESS BASE
 
 .TIMESTEP 
-DT0           0.5
+DT0           0.001 # 0.5
 DTK           1.3
 DTMAX         31e6
 TMAX          1e10 # 300 years
-MAX_STEPS     100000
+MAX_STEPS     2
 
 # List of scalar variables
 .SCALAR
