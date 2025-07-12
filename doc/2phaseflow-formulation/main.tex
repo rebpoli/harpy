@@ -118,6 +118,12 @@ Find $p_\alpha$ and $S_\alpha$ for $\alpha \in \{\text{w, o}\}$, such that
    q_\alpha = \hat{q}_\alpha                                      & \quad\quad \text{in } \Omegawell  \quad \text{(wells interface in sink terms)}    \\
 \end{array}\]
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=200pt]{fig/domain_def.png}
+  \caption{Domain split into volumetric entities ($\Omega$'s and boundaries $\Gamma$'s)}
+  \label{fig:domain_def}
+\end{figure}
 
 Define the bilinear operator as
 \[
@@ -195,6 +201,39 @@ Now we can rewrite \eqref{eqn:weak1} and \eqref{eqn:weak2} using the above ident
             \quad & \blue{  - ( \nabla v^h \qcq \uuw )_\OmegaI  }
             \quad &-  ( v^h \qcq \qw )   \\
 \end{array}\]
+
+\section{Domain split}
+
+The domain can be split in different fashions to solve the above equations.
+Figure~\ref{fig:cgfem_split} shows the usual FEM split used for Continuous Galerkin.
+The issue is that the shape functions are typically $C_0$ continuous, meaning that the function 
+is single valued in the nodes and element interfaces, but the function \textit{derivative} 
+(and thus the flow) is not.
+
+One solution for that is using a conservative element split (see Fig.~\ref{fig:conservative_split}).
+This is a common approach for CVFEM methods or finite volumes.
+In this approach, the fluxes are calculated internally in the FEM elements, where the
+shape functions are $C_1$ continuous.
+
+We remark that the first term is not part of the fluid transport. It defines the accumulation.
+This term must be computed in teh full domain, and any element split should produce similar results.
+
+The same is true with the last term (source/sink).
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=180pt]{fig/CGFEM-split.png}
+  \caption{The usual CG element split.}
+  \label{fig:cgfem_split}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=250pt]{fig/conservative-split.png}
+  \caption{The usual voronoi element split (conservative using the usual CG shape functions.}
+  \label{fig:conservative_split}
+\end{figure}
 
 \section{Local mass conservation}
 The formulation is conservative iff $\jmp{\uualpha}=0$, that is
