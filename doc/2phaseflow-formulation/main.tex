@@ -220,6 +220,9 @@ This term must be computed in teh full domain, and any element split should prod
 
 The same is true with the last term (source/sink).
 
+The CVFEM (or EbFVM) consider the two meshes simultaneously. 
+The weighting functions live in the conservative elements (centered at the node) while
+the interpolation functions live in the usual FEM mesh.
 
 \begin{figure}[htbp]
   \centering
