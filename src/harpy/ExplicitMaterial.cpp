@@ -14,6 +14,30 @@ void ExplicitMaterial::reinit( const Elem & elem_, uint side )
 }
 
 /**
+ *    Compute the values in the quadrature points of the material.
+ */
+void ExplicitMaterial::eval( vector<double> & vals_qp , string vname )
+{
+
+  const std::vector<std::vector<Real>> & phi = fe->get_phi();
+  const std::vector<Real> & jxw = fe->get_JxW();
+
+  uint vid = system.variable_number(vname);
+  const DofMap & dof_map = system.get_dof_map();
+  std::vector<dof_id_type> dofi;
+  dof_map.dof_indices ( elem, dofi, vid);
+  
+  uint n_dofs = phi.size();
+
+  uint nqp = qrule.n_points();
+  val.resize( nqp, 0.0 );
+
+  for(uint qp=0; qp<nqp; qp++) 
+  for(uint B=0; B<n_dofs; B++) 
+    vals_qp[qp] += phi[B][qp] * (*system.current_local_solution)( dofi[B] );
+}
+
+/**
  *    Project the element coupler into the system. 
  */
 void ExplicitMaterial::project( vector<double> & vals_qp, string vname )

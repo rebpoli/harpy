@@ -142,12 +142,15 @@ void ThermalSolverExplicit::solve()
   }
 
   // Feed the element solver with the temperatures
-  update_reference_solver();
   project_to_system();
+  update_reference_solver();
 }
 
 /**
- *
+ *  Project the temperature to a system. This projection can be
+ *  discontinuous (so that we can have steep temperature gradients) or
+ *  continuous (where the temperature is going to be smoothen in the
+ *  interfaces so that all points are single valued)
  */
 void ThermalSolverExplicit::project_to_system()
 {
@@ -175,7 +178,11 @@ void ThermalSolverExplicit::project_to_system()
 }
 
 /**
+ *   Update the reference solver based on the current system solution.
  *
+ *   TODO: deal with the initial temperature. The best is likely to have a 
+ *         different ThermalSolver for the initial temperature.
+ *         
  */
 void ThermalSolverExplicit::update_reference_solver()
 {
@@ -191,40 +198,61 @@ void ThermalSolverExplicit::update_reference_solver()
   {
     uint eid = elem->id();
 
-    ViscoPlasticMaterial * mat = ref_solver->get_material( *elem );
-    string mname = mat->name;
-
-    // init the fe
+    // init the fe in the explicit material (same qrule as the reference element,
+    // different shape function - the one used in project_to_system)
+    ExplicitMaterial * mat = get_postproc( *elem );
     mat->reinit( *elem ); 
 
-    // We need to feed this interface
-    auto & vp_ifc = mat->vp_ifc;
+    string mname = mat->name;
+
+    // We need to feed the reference interface
+    ViscoPlasticMaterial * vpmat = ref_solver->get_material( *elem );
+    auto & vp_ifc = vpmat->vp_ifc;
     auto & props = vp_ifc.by_elem[eid];
-    suint sid = elem->subdomain_id();
 
-    // Find the temperature of the material
-    double temperature = 0;
-    if ( ! temperature_by_sid.count( sid ) ) flog << "No temperature defined for material '" << mname << "' at time " << ts.time << " (timestep " << ts.t_step << "). Cannot continue.";
-    temperature = temperature_by_sid[ sid ];
-    
-    double initial_temperature = 0;
-    if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
-    initial_temperature = initial_temperature_by_sid[ sid ];
+    // Validation - reference and thermal quadratures must be identical
+    if ( vpmat->qrule.n_points() != mat->qrule.n_point() )
+      flog << "Reference and thermal quadrature points are different? Ref.nqp=" << mat->qrule.n_points() << " != mat->nqp=" << vpmat->qrule.n_points();
 
-    uint nqp = mat->qrule.n_points();
+    uint nqp = vpmat->qrule.n_points();
     props.resize(nqp);
-    for ( uint qp=0 ; qp< nqp ; qp++ )
+
+    /**
+     * Update the initial temperature
+     */
     {
-      props[qp].temperature = temperature;
-      props[qp].initial_temperature = initial_temperature;
+      suint sid = elem->subdomain_id();
+      double initial_temperature = 0;
+      if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
+      initial_temperature = initial_temperature_by_sid[ sid ];
+
+      // Update the props
+      for ( uint qp=0 ; qp< nqp ; qp++ )
+        props[qp].initial_temperature = initial_temperature;
+
+      /// Updates the probes
+      for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+      for ( auto & p : m1[eid] ) 
+        p->props.initial_temperature = initial_temperature;
     }
 
-    /// Updates the probes
-    for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-    for ( auto & p : m1[eid] ) 
     {
-      p->props.temperature = temperature;
-      p->props.initial_temperature = initial_temperature;
+    }
+
+    /**
+     *    Update the temperature from the system solution
+     */
+    {
+      /* Quadrature points */
+      vector<double> vals_qp;
+      mat->eval( vals_qp , "T" )
+      for ( uint qp=0 ; qp< nqp ; qp++ )
+        props[qp].temperature = vals_qp[qp];
+
+      /* Update probes */
+      for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem )
+      for ( auto & p : m1[eid] ) 
+        map->eval( p->props.temperature, p->pt, "T" );
     }
   }
 }

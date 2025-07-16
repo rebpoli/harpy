@@ -18,7 +18,7 @@ struct VPProps
   inline double C_ijkl( uint i, uint j, uint k, uint l);
   // Calculate stresses from displacements
   void update( const RealVectorValue & U_, const RealTensor & GRAD_U_, double dt );
-
+  
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
 

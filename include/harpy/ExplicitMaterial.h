@@ -27,6 +27,8 @@ public:
   void project( vector<double> & vals_qp, string vname="" );
   void project_tensor( vector<RealTensor> & vals_qp, string vname="" );
 
+  void eval( vector<double> & vals_qp , string vname );
+
   void close_system();
 
 protected:
