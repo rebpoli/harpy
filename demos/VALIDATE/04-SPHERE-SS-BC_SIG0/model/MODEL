@@ -27,7 +27,6 @@ K0    1e15    0
 .INITIAL 
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               UY            0
 BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
 DOMAIN         SIDEBURDEN          T          400

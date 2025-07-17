@@ -33,7 +33,7 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
 void ThermalSolverExplicit::setup_variables()
 {
   dlog(1) << "Adding variable T ...";
-  system.add_variable( "T", FIRST, L2_LAGRANGE ); /// L2_LAGRANGE for discontinuous
+  system.add_variable( "T", FIRST, LAGRANGE ); /// L2_LAGRANGE for discontinuous
 }
 
 /**
@@ -175,6 +175,7 @@ void ThermalSolverExplicit::project_to_system()
   }
   // Close the system
   system.solution->close(); 
+  system.update();
 }
 
 /**
@@ -197,6 +198,7 @@ void ThermalSolverExplicit::update_reference_solver()
   for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
     uint eid = elem->id();
+    suint sid = elem->subdomain_id();
 
     // init the fe in the explicit material (same qrule as the reference element,
     // different shape function - the one used in project_to_system)
@@ -226,7 +228,6 @@ void ThermalSolverExplicit::update_reference_solver()
      * Update the initial temperature
      */
     {
-      suint sid = elem->subdomain_id();
       double initial_temperature = 0;
       if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
       initial_temperature = initial_temperature_by_sid[ sid ];
@@ -248,6 +249,10 @@ void ThermalSolverExplicit::update_reference_solver()
       /* Quadrature points */
       vector<double> vals_qp;
       mat->eval( vals_qp , "T" );
+      // debug
+      bool dd=0; // for ( double v : vals_qp ) if ( abs(v-400) > 0.1) dd = 1;
+      if ( sid == 1 ) dd = 1;
+      if ( dd ) dlog(1) << "[" << mesh.subdomain_name(sid) << "] VALS_QP: " << vals_qp;
       for ( uint qp=0 ; qp< nqp ; qp++ )
         props[qp].temperature = vals_qp[qp];
 

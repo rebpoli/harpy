@@ -35,7 +35,7 @@ void ExplicitMaterial::eval( vector<double> & vals_qp , string vname )
   for(uint qp=0; qp<nqp; qp++) 
   for(uint B=0; B<n_dofs; B++) 
   {
-    double v = (*system.solution)( dofi[B] );
+    double v = (*system.current_local_solution)( dofi[B] );
     vals_qp[qp] += phi[B][qp] * v;
   }
 }
@@ -66,8 +66,7 @@ double ExplicitMaterial::eval( const Point & pt, string vname )
   double ret = 0;
   for ( uint B=0; B<n_dofs; B++ )
   {
-    double v = (*system.solution)( dofi[B] );
-    dlog(1) << "V: " << v;
+    double v = (*system.current_local_solution)( dofi[B] );
     ret += phi[B][0] * v;
   }
 
