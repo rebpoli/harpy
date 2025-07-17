@@ -15,7 +15,8 @@
  */
 ThermalPostProc::ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ ) :
   ExplicitMaterial( ref_material, sys_ )
-{ }
+{ 
+}
 
 
 /**
@@ -31,7 +32,12 @@ void ThermalPostProc::init_fem()
 
   fe = move( FEBase::build(3, fe_type) );
 
-  qrule = QGauss( 3, fe_type.default_quadrature_order() );
+  // Inherits the qrule from the reference material to
+  // calculate in the same qp's
+  if ( refmat )
+    qrule = refmat->qrule;
+  else
+    qrule = QGauss( 3, fe_type.default_quadrature_order() );
 
   fe->attach_quadrature_rule (&qrule);
 

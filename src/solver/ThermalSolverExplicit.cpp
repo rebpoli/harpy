@@ -33,7 +33,7 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
 void ThermalSolverExplicit::setup_variables()
 {
   dlog(1) << "Adding variable T ...";
-  system.add_variable( "T", FIRST, LAGRANGE ); /// L2_LAGRANGE for discontinuous
+  system.add_variable( "T", FIRST, L2_LAGRANGE ); /// L2_LAGRANGE for discontinuous
 }
 
 /**
@@ -194,7 +194,7 @@ void ThermalSolverExplicit::update_reference_solver()
   /**
    *   Update the quadrature points
    */
-  for (const auto & elem : mesh.active_element_ptr_range()) 
+  for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
     uint eid = elem->id();
 
@@ -207,15 +207,20 @@ void ThermalSolverExplicit::update_reference_solver()
 
     // We need to feed the reference interface
     ViscoPlasticMaterial * vpmat = ref_solver->get_material( *elem );
+    vpmat->reinit( *elem ); 
+
     auto & vp_ifc = vpmat->vp_ifc;
     auto & props = vp_ifc.by_elem[eid];
 
-    // Validation - reference and thermal quadratures must be identical
-    if ( vpmat->qrule.n_points() != mat->qrule.n_point() )
-      flog << "Reference and thermal quadrature points are different? Ref.nqp=" << mat->qrule.n_points() << " != mat->nqp=" << vpmat->qrule.n_points();
+    //
+    // TODO: This should work, but it seems that in the first iteration vpmat->qrule.n_points=0?
+    //
+//     Validation - reference and thermal quadratures must be identical
+    if ( vpmat->qrule.n_points() != mat->qrule.n_points() )
+      wlog << "Reference and thermal quadrature points are different? Mat.nqp=" << mat->qrule.n_points() << " != VPMat->nqp=" << vpmat->qrule.n_points();
 
     uint nqp = vpmat->qrule.n_points();
-    props.resize(nqp);
+    props.resize(nqp); /// Is this correct?
 
     /**
      * Update the initial temperature
@@ -236,23 +241,20 @@ void ThermalSolverExplicit::update_reference_solver()
         p->props.initial_temperature = initial_temperature;
     }
 
-    {
-    }
-
     /**
      *    Update the temperature from the system solution
      */
     {
       /* Quadrature points */
       vector<double> vals_qp;
-      mat->eval( vals_qp , "T" )
+      mat->eval( vals_qp , "T" );
       for ( uint qp=0 ; qp< nqp ; qp++ )
         props[qp].temperature = vals_qp[qp];
 
       /* Update probes */
       for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem )
       for ( auto & p : m1[eid] ) 
-        map->eval( p->props.temperature, p->pt, "T" );
+        p->props.temperature = mat->eval( p->pt, "T" );
     }
   }
 }

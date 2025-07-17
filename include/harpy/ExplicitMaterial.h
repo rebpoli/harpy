@@ -28,6 +28,7 @@ public:
   void project_tensor( vector<RealTensor> & vals_qp, string vname="" );
 
   void eval( vector<double> & vals_qp , string vname );
+  double eval( const Point & pt, string vname );
 
   void close_system();
 

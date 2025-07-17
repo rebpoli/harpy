@@ -1,6 +1,7 @@
 
 #include "harpy/ExplicitMaterial.h"
 #include "libmesh/explicit_system.h"
+#include "util/OutputOperators.h"
 
 /**
  *   Reinits the FE strucutures and assign the element to the material.
@@ -20,7 +21,6 @@ void ExplicitMaterial::eval( vector<double> & vals_qp , string vname )
 {
 
   const std::vector<std::vector<Real>> & phi = fe->get_phi();
-  const std::vector<Real> & jxw = fe->get_JxW();
 
   uint vid = system.variable_number(vname);
   const DofMap & dof_map = system.get_dof_map();
@@ -30,11 +30,48 @@ void ExplicitMaterial::eval( vector<double> & vals_qp , string vname )
   uint n_dofs = phi.size();
 
   uint nqp = qrule.n_points();
-  val.resize( nqp, 0.0 );
+  vals_qp.resize( nqp, 0.0 );
 
   for(uint qp=0; qp<nqp; qp++) 
   for(uint B=0; B<n_dofs; B++) 
-    vals_qp[qp] += phi[B][qp] * (*system.current_local_solution)( dofi[B] );
+  {
+    double v = (*system.solution)( dofi[B] );
+    vals_qp[qp] += phi[B][qp] * v;
+  }
+}
+
+/**
+ *
+ */
+double ExplicitMaterial::eval( const Point & pt, string vname )
+{
+  // Use a local FEBase to avoid poluting the one owned by the object
+  uint vid = system.variable_number(vname);
+  const DofMap & dof_map = system.get_dof_map();
+  std::vector<dof_id_type> dofi;
+  dof_map.dof_indices ( elem, dofi, vid);
+  
+  FEType fetype = system.variable_type( vid );
+  unique_ptr<FEBase> _fe = FEBase::build( 3, fetype );
+
+  const std::vector<std::vector<Real>> & phi = _fe->get_phi();
+
+  std::vector<Point> pts_from = { pt };
+  std::vector<Point> pts_to;
+  FEInterface::inverse_map (3, fetype, elem, pts_from, pts_to, 1E-10);
+  _fe->reinit( elem, & pts_to );
+
+  uint n_dofs = phi.size();
+
+  double ret = 0;
+  for ( uint B=0; B<n_dofs; B++ )
+  {
+    double v = (*system.solution)( dofi[B] );
+    dlog(1) << "V: " << v;
+    ret += phi[B][0] * v;
+  }
+
+  return ret;
 }
 
 /**

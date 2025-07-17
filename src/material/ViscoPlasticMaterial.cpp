@@ -107,7 +107,7 @@ ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig
  */
 void ViscoPlasticMaterial::init_fem()
 {
-  SCOPELOG(5);
+  SCOPELOG(1);
   uint vid = system.variable_number( "UX" );
 
   // Setup shape functions
@@ -357,7 +357,6 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
     J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
 
   AD::real von_mises = sqrt( 3 * J2 );
-  dlog(1) << "VON MISES:" << von_mises;
 
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
 
@@ -398,9 +397,6 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
               exp( - pow(ss.q/R_/P->temperature, ss.stretch) ) *
               pow( von_mises/ss.sig0 , ss.n-1 ) *
               deviatoric / ss.sig0;
-
-//  dlog(1) << "creep_ss_rate>" << creep_ss_rate;
-//  dlog(1) << "plastic_strain_rate>" << plastic_strain_rate;
 
   // Update the plasteic strain
   AD::Mat plastic_strain = vpsolver.ts.dt * plastic_strain_rate;
