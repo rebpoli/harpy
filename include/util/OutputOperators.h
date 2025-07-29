@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/Global.h"
+#include "base/Enums.h"
 
 #include "libmesh/vector_value.h"
 #include "libmesh/tensor_value.h"
@@ -136,6 +137,18 @@ inline ostream& operator<<(ostream& os, const Print<vector<libMesh::Point>> & pr
     os << "'" << Print(v) << "'";
   }
   os << "] ("<< printer.ref.size() <<") {vec}";
+  return os;
+}
+
+template<> 
+inline ostream& operator<<(ostream& os, const Print<GRID_TYPE> & printer)
+{
+  using enum GRID_TYPE;
+  if ( printer.ref == RADIAL ) 
+    os << "Radial";
+  else 
+    os << "<unknown>";
+
   return os;
 }
 

@@ -5,7 +5,6 @@
 #include "harpy/Solverloop.h"
 
 #include "solver/ViscoplasticSolver.h"
-#include "solver/ThermalSolverExplicit.h"
 
 class Timestep;
 

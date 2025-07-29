@@ -11,6 +11,10 @@
 #include "libmesh/mesh.h"
 #include "libmesh/elem.h"
 
+// Import children
+#include "solver/ThermalSolverConstant.h"
+#include "solver/ThermalSolverFromFile.h"
+
 /**
  *
  */
@@ -101,3 +105,20 @@ Material * Solver::get_material( uint sid )
   return material_by_sid.at(sid);
 }
 
+/** 
+ *
+ * FACTORY
+ *
+ */
+
+/** **/
+Solver * SolverFactory::new_thermal( Solver * ref )
+{
+  string sname = "thermal";
+  SolverConfig * config = MODEL->solver_config( sname );
+
+  if ( config->external_file.is_defined() ) 
+    return new ThermalSolverFromFile( ref,  sname );
+  
+  return new ThermalSolverConstant( ref,  sname );
+}

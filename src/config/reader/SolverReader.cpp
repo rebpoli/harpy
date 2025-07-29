@@ -38,6 +38,19 @@ SolverReader::SolverReader( SolverConfig & config_ ) : config(config_)
   config.mat_config_by_name = all_mat_cfgs[ curr_cfg ];
 }
 
+/**
+ *
+ */
+string SolverReader::abs_filepath( string rel_filepath, bool check_exists )
+{
+  string ret = config.model_dir + "/" + rel_filepath;
+
+  if ( check_exists )
+  if ( ! file_exists( ret ) )
+    flog << "Cannot find file '" << ret << "'!";
+
+  return ret;
+}
 
 /**
  *
@@ -144,20 +157,16 @@ bool SolverReader::next_state()
   return true;
 }
 
-/**
- *
- *
- */
-void SolverReader::set_origin( double x, double y, double z ) { 
-}
 
 /**
  *
  *
  */
 void SolverReader::set_grid_type( string str ) { 
+  using enum GRID_TYPE;
+
   if ( iequals( str, "radial" ) ) 
-    config.external_file.grid_type = SolverConfig::GRID_TYPE_ENUM::RADIAL;
+    config.external_file.grid_type = RADIAL;
 
   else flog << "Unknown grid type "<< str <<".";
 }
@@ -177,7 +186,7 @@ void SolverReader::external_state()
     string key = match[1];
     string val = match[2];
 
-    if ( iequals( key, "file" ) ) { config.external_file.filename = val; return; }
+    if ( iequals( key, "file" ) ) { config.external_file.filename = abs_filepath(val); return; }
     if ( iequals( key, "grid" ) ) { set_grid_type(val);         return; }
   }
 

@@ -19,9 +19,9 @@ SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_
  */
 bool SolverConfig::ExternalFile::check()
 { 
-   if (filename && grid_type && grid_origin) return true ; 
-   else flog << "External file is not completely defined!" << endl << *this;
-   return false;
+  if ( is_defined() ) return true;
+  else flog << "External file is not completely defined!" << endl << *this;
+  return false;
 }
 
 /**

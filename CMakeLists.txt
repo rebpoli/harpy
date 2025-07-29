@@ -99,7 +99,7 @@ ADD_LIBRARY(Modules
   src/config/reader/ModelReader.cpp
   src/config/reader/SolverReader.cpp
   src/config/reader/SpatialDataReader.cpp
-  src/util/GridRadialFile.cpp
+  src/util/GridFile.cpp
   src/util/Json.cpp
   src/util/Stopwatch.cpp
   src/util/OutputOperators.cpp
@@ -117,10 +117,10 @@ ADD_LIBRARY(Modules
   src/postproc/Probe.cpp
   src/postproc/ViscoplasticReport.cpp
   src/postproc/StressPostProc.cpp
-  src/postproc/ThermalPostProc.cpp
   src/solver/BC.cpp
   src/solver/ViscoplasticSolver.cpp
-  src/solver/ThermalSolverExplicit.cpp
+  src/solver/ThermalSolverConstant.cpp
+  src/solver/ThermalSolverFromFile.cpp
   src/solverloop/SLViscoplastic.cpp
 
 

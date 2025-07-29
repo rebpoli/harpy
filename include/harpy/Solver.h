@@ -61,3 +61,12 @@ class Solver
 
     Solver * ref_solver;
 };
+
+
+/**
+ *   Factories of solvers.
+ */
+struct SolverFactory
+{
+  static Solver * new_thermal( Solver * ref );
+};

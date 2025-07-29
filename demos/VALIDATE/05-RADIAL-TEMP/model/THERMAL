@@ -1,4 +1,4 @@
 .EXTERNAL
 FILE temperature.csv.gz
 GRID RADIAL
-ORIGIN 0.2 1e2 1.2e5
+ORIGIN 0 0 0 

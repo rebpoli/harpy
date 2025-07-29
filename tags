@@ -226,8 +226,8 @@ CONVERGED_RELATIVE_STEP	/opt/libmesh/include/solvers/diff_solver.h	/^    CONVERG
 CREATE_MEMBER_CHECK	include/autodiff/common/classtraits.hpp	69;"	d
 CREEP	include/config/reader/MaterialReader.h	/^  enum State { INITIAL, POROTHERMOELASTIC, CREEP, CREEP_MD };$/;"	e	enum:MaterialReader::State
 CREEP_MD	include/config/reader/MaterialReader.h	/^  enum State { INITIAL, POROTHERMOELASTIC, CREEP, CREEP_MD };$/;"	e	enum:MaterialReader::State
-CSVLine	src/util/GridRadialFile.cpp	/^  CSVLine(const string& line) { ss.str(line); }$/;"	f	struct:CSVLine
-CSVLine	src/util/GridRadialFile.cpp	/^struct CSVLine $/;"	s	file:
+CSVLine	src/util/GridFile.cpp	/^  CSVLine(const string& line) { ss.str(line); }$/;"	f	struct:CSVLine
+CSVLine	src/util/GridFile.cpp	/^struct CSVLine $/;"	s	file:
 CSVSci	include/util/CsvFile.h	/^struct CSVSci { CSVSci(double v_) : val(v_) {} ; double val; };$/;"	f	struct:CSVSci
 CSVSci	include/util/CsvFile.h	/^struct CSVSci { CSVSci(double v_) : val(v_) {} ; double val; };$/;"	s
 CURRENT	/opt/libmesh/include/systems/fem_context.h	/^                       CURRENT,   \/\/ Use dof_indices, current solution$/;"	e	enum:libMesh::FEMContext::AlgebraicType
@@ -437,8 +437,8 @@ DTKSOLUTIONTRANSFER_H	/opt/libmesh/include/solution_transfer/dtk_solution_transf
 DTKSolutionTransfer	/opt/libmesh/include/solution_transfer/dtk_solution_transfer.h	/^class DTKSolutionTransfer : public SolutionTransfer$/;"	c	namespace:libMesh
 DTKSolutionTransfer	/opt/libmesh/src/solution_transfer/dtk_solution_transfer.C	/^DTKSolutionTransfer::DTKSolutionTransfer(const libMesh::Parallel::Communicator & comm) :$/;"	f	class:libMesh::DTKSolutionTransfer
 D_deriv	/opt/libmesh/include/fe/inf_fe.h	/^  static Real D_deriv (const Real v) { return (v-1.)\/2.; }$/;"	f	class:libMesh::InfFERadial
-DataEntry	src/util/GridRadialFile.cpp	/^  DataEntry(const string& csv_line) $/;"	f	struct:DataEntry
-DataEntry	src/util/GridRadialFile.cpp	/^struct DataEntry $/;"	s	file:
+DataEntry	src/util/GridFile.cpp	/^  DataEntry(const string& csv_line) $/;"	f	struct:DataEntry
+DataEntry	src/util/GridFile.cpp	/^struct DataEntry $/;"	s	file:
 DataType	/opt/libmesh/include/numerics/eigen_sparse_matrix.h	/^  typedef EigenSM DataType;$/;"	t	class:libMesh::final
 DataType	/opt/libmesh/include/numerics/eigen_sparse_vector.h	/^  typedef EigenSV DataType;$/;"	t	class:libMesh::final
 DataType	/opt/libmesh/include/utils/plt_loader.h	/^  enum DataType { FLOAT=1,$/;"	g	class:libMesh::PltLoader
@@ -667,7 +667,7 @@ ExodusII_IO_Helper	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^ExodusII_IO_Help
 ExodusVarType	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  enum ExodusVarType {NODAL=0, ELEMENTAL=1, GLOBAL=2, SIDESET=3, NODESET=4, ELEMSET=5};$/;"	g	class:libMesh::ExodusII_IO_Helper
 ExpExpr	include/autodiff/reverse/var/var.hpp	/^struct ExpExpr : UnaryExpr<T>$/;"	s	namespace:autodiff::reverse::detail
 ExpOp	include/autodiff/forward/dual/dual.hpp	/^struct ExpOp     {};  \/\/ EXPONENTIAL OPERATOR$/;"	s	namespace:autodiff::detail
-ExplicitMaterial	include/harpy/ExplicitMaterial.h	/^  ExplicitMaterial( Material & ref_material, ExplicitSystem & sys_ ) :$/;"	f	class:ExplicitMaterial
+ExplicitMaterial	include/harpy/ExplicitMaterial.h	/^  ExplicitMaterial( Material * ref_material, ExplicitSystem & sys_ ) :$/;"	f	class:ExplicitMaterial
 ExplicitMaterial	include/harpy/ExplicitMaterial.h	/^  ExplicitMaterial( suint sid_, const MaterialConfig & config_,$/;"	f	class:ExplicitMaterial
 ExplicitMaterial	include/harpy/ExplicitMaterial.h	/^class ExplicitMaterial : public Material$/;"	c
 ExplicitSystem	/opt/libmesh/include/systems/explicit_system.h	/^class ExplicitSystem : public System$/;"	c	namespace:libMesh
@@ -885,7 +885,7 @@ GMVLib	/opt/libmesh/src/mesh/gmv_io.C	/^namespace GMVLib$/;"	n	file:
 GRAD_U	include/material/ViscoplasticIFC.h	/^  RealTensor GRAD_U;$/;"	m	struct:VPProps
 GRAVITY_FORCE	include/config/Config.h	/^const double GRAVITY_FORCE = 9.80665;$/;"	v
 GRID_ON	/opt/libmesh/include/mesh/gnuplot_io.h	/^  enum PlottingProperties { GRID_ON    = 1,$/;"	e	enum:libMesh::GnuPlotIO::PlottingProperties
-GRID_TYPE_ENUM	include/config/SolverConfig.h	/^  enum GRID_TYPE_ENUM { RADIAL };$/;"	g	class:SolverConfig
+GRID_TYPE	include/base/Enums.h	/^enum class GRID_TYPE { RADIAL };$/;"	c
 G_Lambda	/opt/libmesh/include/systems/continuation_system.h	/^                 G_Lambda};$/;"	e	enum:libMesh::ContinuationSystem::RHS_Mode
 GaussLobattoRedistributionFunction	/opt/libmesh/src/mesh/mesh_generation.C	/^  GaussLobattoRedistributionFunction(unsigned int nx,$/;"	f	class:libMesh::MeshTools::Generation::Private::GaussLobattoRedistributionFunction
 GaussLobattoRedistributionFunction	/opt/libmesh/src/mesh/mesh_generation.C	/^class GaussLobattoRedistributionFunction : public FunctionBase<Real>$/;"	c	namespace:libMesh::MeshTools::Generation::Private	file:
@@ -930,8 +930,10 @@ GradientFunctionPointer	/opt/libmesh/include/systems/system.h	/^  typedef Gradie
 GradientMeshFunction	/opt/libmesh/include/systems/inter_mesh_projection.h	/^class GradientMeshFunction : public FunctionBase<Gradient>$/;"	c	namespace:libMesh
 GradientMeshFunction	/opt/libmesh/src/systems/inter_mesh_projection.C	/^GradientMeshFunction::GradientMeshFunction(const MeshFunction & _mesh_function):$/;"	f	class:libMesh::GradientMeshFunction
 Graph	/opt/libmesh/include/base/sparsity_pattern.h	/^class Graph : public std::vector<Row> {};$/;"	c	namespace:libMesh::SparsityPattern
-GridRadialFile	include/util/GridRadialFile.h	/^class GridRadialFile $/;"	c
-GridRadialFile	src/util/GridRadialFile.cpp	/^GridRadialFile::GridRadialFile(const string & filename) $/;"	f	class:GridRadialFile
+GridFile	include/util/GridFile.h	/^  GridFile() {}$/;"	f	class:GridFile
+GridFile	include/util/GridFile.h	/^class GridFile$/;"	c
+GridRadialFile	include/util/GridFile.h	/^class GridRadialFile : public GridFile$/;"	c
+GridRadialFile	src/util/GridFile.cpp	/^GridRadialFile::GridRadialFile(const string & filename) $/;"	f	class:GridRadialFile
 GzStream	include/util/GzStream.h	/^    GzStream(const string& filename) $/;"	f	class:GzStream
 GzStream	include/util/GzStream.h	/^class GzStream {$/;"	c
 H1FETransformation	/opt/libmesh/include/fe/h1_fe_transformation.h	/^  H1FETransformation()$/;"	f	class:libMesh::H1FETransformation
@@ -1849,7 +1851,7 @@ MatConfigMap	include/config/SolverConfig.h	/^  struct MatConfigMap : public CIMa
 MatNameAndCfg	include/config/SolverConfig.h	/^    MatNameAndCfg( string & m, string c ) : name(m), cfg(c) {}$/;"	f	struct:SolverConfig::MatNameAndCfg
 MatNameAndCfg	include/config/SolverConfig.h	/^  struct MatNameAndCfg {$/;"	s	class:SolverConfig
 Material	include/harpy/Material.h	/^class Material $/;"	c
-Material	src/harpy/Material.cpp	/^Material::Material( Material & refmat_ ) :$/;"	f	class:Material
+Material	src/harpy/Material.cpp	/^Material::Material( Material * refmat_ ) :$/;"	f	class:Material
 Material	src/harpy/Material.cpp	/^Material::Material( suint sid_, const MaterialConfig & config_ ) :$/;"	f	class:Material
 MaterialConfig	include/config/MaterialConfig.h	/^  MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};$/;"	f	class:MaterialConfig
 MaterialConfig	include/config/MaterialConfig.h	/^class MaterialConfig$/;"	c
@@ -2060,7 +2062,8 @@ NowAssembling	/opt/libmesh/include/solvers/eigen_time_solver.h	/^  enum NowAssem
 NoxNonlinearSolver	/opt/libmesh/include/solvers/trilinos_nox_nonlinear_solver.h	/^NoxNonlinearSolver<T>::NoxNonlinearSolver (sys_type & system) :$/;"	f	class:libMesh::NoxNonlinearSolver
 NoxNonlinearSolver	/opt/libmesh/include/solvers/trilinos_nox_nonlinear_solver.h	/^class NoxNonlinearSolver : public NonlinearSolver<T>$/;"	c	namespace:libMesh
 NoxNonlinearSolver	/opt/libmesh/src/solvers/trilinos_nox_nonlinear_solver.C	/^template class LIBMESH_EXPORT NoxNonlinearSolver<Number>;$/;"	m	namespace:libMesh	typeref:class:libMesh::LIBMESH_EXPORT	file:
-Nt	include/util/GridRadialFile.h	/^  size_t Nt, Nx, Nz;$/;"	m	class:GridRadialFile
+Nr	include/util/GridFile.h	/^  size_t Nt, Nr, Nz;$/;"	m	class:GridRadialFile
+Nt	include/util/GridFile.h	/^  size_t Nt, Nr, Nz;$/;"	m	class:GridRadialFile
 NumTraits	include/autodiff/forward/dual/eigen.hpp	/^struct NumTraits<autodiff::Dual<T, G>> : NumTraits<double> \/\/ permits to get the epsilon, dummy_precision, lowest, highest functions$/;"	s	namespace:Eigen
 NumTraits	include/autodiff/forward/real/eigen.hpp	/^struct NumTraits<autodiff::Real<N, T>> : NumTraits<double> \/\/ permits to get the epsilon, dummy_precision, lowest, highest functions$/;"	s	namespace:Eigen
 NumTraits	include/autodiff/reverse/var/eigen.hpp	/^struct NumTraits<autodiff::Variable<T>> : NumTraits<T> \/\/ permits to get the epsilon, dummy_precision, lowest, highest functions$/;"	s	namespace:Eigen
@@ -2087,8 +2090,7 @@ NumericVector	/opt/libmesh/include/numerics/numeric_vector.h	/^class NumericVect
 NumericVector	/opt/libmesh/src/numerics/numeric_vector.C	/^template class LIBMESH_EXPORT NumericVector<Number>;$/;"	m	namespace:libMesh	typeref:class:libMesh::LIBMESH_EXPORT	file:
 Numerical	include/config/SolverConfig.h	/^    Numerical() : ls_pc("bjacobi"), ls_solver("cg"), ls_atol(1e-10), ls_rtol(1e-6) { }$/;"	f	struct:SolverConfig::Numerical
 Numerical	include/config/SolverConfig.h	/^  struct Numerical {$/;"	s	class:SolverConfig
-Nx	include/util/GridRadialFile.h	/^  size_t Nt, Nx, Nz;$/;"	m	class:GridRadialFile
-Nz	include/util/GridRadialFile.h	/^  size_t Nt, Nx, Nz;$/;"	m	class:GridRadialFile
+Nz	include/util/GridFile.h	/^  size_t Nt, Nr, Nz;$/;"	m	class:GridRadialFile
 OFFIO	/opt/libmesh/include/mesh/off_io.h	/^OFFIO::OFFIO (MeshBase & mesh_in) :$/;"	f	class:libMesh::OFFIO
 OFFIO	/opt/libmesh/include/mesh/off_io.h	/^class OFFIO : public MeshInput<MeshBase>$/;"	c	namespace:libMesh
 OLD	/opt/libmesh/include/systems/fem_context.h	/^                       OLD,       \/\/ Use old_dof_indices, custom solution$/;"	e	enum:libMesh::FEMContext::AlgebraicType
@@ -2486,7 +2488,6 @@ QuadTree	/opt/libmesh/include/utils/tree.h	/^typedef Tree<4> QuadTree;$/;"	t	nam
 Quality	/opt/libmesh/include/geom/elem_quality.h	/^namespace Quality$/;"	n	namespace:libMesh
 QueryElemSubdomainIDBase	/opt/libmesh/include/mesh/mesh_generation.h	/^class QueryElemSubdomainIDBase$/;"	c	namespace:libMesh::MeshTools::Generation
 RADIAL	/opt/libmesh/include/partitioning/centroid_partitioner.h	/^                           RADIAL,$/;"	e	enum:libMesh::CentroidPartitioner::CentroidSortMethod
-RADIAL	include/config/SolverConfig.h	/^  enum GRID_TYPE_ENUM { RADIAL };$/;"	e	enum:SolverConfig::GRID_TYPE_ENUM
 RANK	src/base/Global.cpp	/^uint RANK = 0;$/;"	v
 RAVIART_LOW_D_ERROR_MESSAGE	/opt/libmesh/src/fe/fe_raviart.C	286;"	d	file:
 RBAssemblyExpansion	/opt/libmesh/include/reduced_basis/rb_assembly_expansion.h	/^class RBAssemblyExpansion : public ReferenceCountedObject<RBAssemblyExpansion>$/;"	c	namespace:libMesh
@@ -2814,6 +2815,7 @@ SolverConfig	src/config/SolverConfig.cpp	/^SolverConfig::SolverConfig( string mo
 SolverConfiguration	/opt/libmesh/include/solvers/solver_configuration.h	/^class SolverConfiguration : public ReferenceCountedObject<SolverConfiguration>$/;"	c	namespace:libMesh
 SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^  SolverException(int error_code_in) :$/;"	f	class:libMesh::SolverException
 SolverException	/opt/libmesh/include/base/libmesh_exceptions.h	/^class SolverException: public std::exception$/;"	c	namespace:libMesh
+SolverFactory	include/harpy/Solver.h	/^struct SolverFactory$/;"	s
 SolverReader	include/config/reader/SolverReader.h	/^class SolverReader$/;"	c
 SolverReader	src/config/reader/SolverReader.cpp	/^SolverReader::SolverReader( SolverConfig & config_ ) : config(config_) $/;"	f	class:SolverReader
 Solverloop	include/harpy/Solverloop.h	/^  Solverloop( Timestep & ts_ ) : ts(ts_) {}$/;"	f	class:Solverloop
@@ -2892,7 +2894,7 @@ StoredRange	/opt/libmesh/include/geom/stored_range.h	/^  StoredRange (const unsi
 StoredRange	/opt/libmesh/include/geom/stored_range.h	/^  StoredRange (vec_type * objs,$/;"	f	class:libMesh::StoredRange
 StoredRange	/opt/libmesh/include/geom/stored_range.h	/^class StoredRange$/;"	c	namespace:libMesh
 StressPostProc	include/postproc/StressPostProc.h	/^class StressPostProc : public ExplicitMaterial$/;"	c
-StressPostProc	src/postproc/StressPostProc.cpp	/^StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :$/;"	f	class:StressPostProc
+StressPostProc	src/postproc/StressPostProc.cpp	/^StressPostProc::StressPostProc( Material * refmat , ExplicitSystem & sys_ ) :$/;"	f	class:StressPostProc
 SubActive	/opt/libmesh/include/base/multi_predicates.h	/^  SubActive() : abstract_multi_predicate<T>(make_vec<pred_ptr<T>>($/;"	f	struct:libMesh::Predicates::SubActive
 SubActive	/opt/libmesh/include/base/multi_predicates.h	/^struct SubActive : abstract_multi_predicate<T>$/;"	s	namespace:libMesh::Predicates
 SubExpr	include/autodiff/reverse/var/var.hpp	/^struct SubExpr : BinaryExpr<T>$/;"	s	namespace:autodiff::reverse::detail
@@ -3034,10 +3036,10 @@ TetGenMeshInterface	/opt/libmesh/src/mesh/mesh_tetgen_interface.C	/^TetGenMeshIn
 TetGenWrapper	/opt/libmesh/include/mesh/mesh_tetgen_wrapper.h	/^class TetGenWrapper$/;"	c	namespace:libMesh
 TetGenWrapper	/opt/libmesh/src/mesh/mesh_tetgen_wrapper.C	/^TetGenWrapper::TetGenWrapper() :$/;"	f	class:libMesh::TetGenWrapper
 ThermalIFC	include/material/ThermalIFC.h	/^struct ThermalIFC$/;"	s
-ThermalPostProc	include/postproc/ThermalPostProc.h	/^class ThermalPostProc : public ExplicitMaterial$/;"	c
-ThermalPostProc	src/postproc/ThermalPostProc.cpp	/^ThermalPostProc::ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ ) :$/;"	f	class:ThermalPostProc
-ThermalSolverExplicit	include/solver/ThermalSolverExplicit.h	/^class ThermalSolverExplicit : public Solver $/;"	c
-ThermalSolverExplicit	src/solver/ThermalSolverExplicit.cpp	/^ThermalSolverExplicit::ThermalSolverExplicit( Solver * ref_solver_, string name_ ) :$/;"	f	class:ThermalSolverExplicit
+ThermalSolverConstant	include/solver/ThermalSolverConstant.h	/^class ThermalSolverConstant : public Solver $/;"	c
+ThermalSolverConstant	src/solver/ThermalSolverConstant.cpp	/^ThermalSolverConstant::ThermalSolverConstant( Solver * ref_solver_, string name_ ) :$/;"	f	class:ThermalSolverConstant
+ThermalSolverFromFile	include/solver/ThermalSolverFromFile.h	/^class ThermalSolverFromFile : public Solver $/;"	c
+ThermalSolverFromFile	src/solver/ThermalSolverFromFile.cpp	/^ThermalSolverFromFile::ThermalSolverFromFile( Solver * ref_solver_, string name_ ) :$/;"	f	class:ThermalSolverFromFile
 Theta	/opt/libmesh/include/systems/continuation_system.h	/^  Real Theta;$/;"	m	class:libMesh::ContinuationSystem
 Theta_LOCA	/opt/libmesh/include/systems/continuation_system.h	/^  Real Theta_LOCA;$/;"	m	class:libMesh::ContinuationSystem
 Thread	/opt/libmesh/include/parallel/threads_none.h	/^typedef NonConcurrentThread Thread;$/;"	t	namespace:libMesh::Threads
@@ -4906,6 +4908,7 @@ abs	include/autodiff/reverse/var/var.hpp	/^template<typename T> ExprPtr<T> abs(c
 abs2	include/autodiff/forward/dual/dual.hpp	/^template<typename R, Requires<isExpr<R>> = true> AUTODIFF_DEVICE_FUNC constexpr auto abs2(R&& r) { return std::forward<R>(r) * std::forward<R>(r); }$/;"	f	namespace:autodiff::detail
 abs2	include/autodiff/reverse/var/var.hpp	/^template<typename T> ExprPtr<T> abs2(const ExprPtr<T>& x) { return x * x; }$/;"	f	namespace:autodiff::reverse::detail
 abs2	include/autodiff/reverse/var/var.hpp	/^template<typename T> ExprPtr<T> abs2(const Variable<T>& x) { return abs2(x.expr); }$/;"	f	namespace:autodiff::reverse::detail
+abs_filepath	src/config/reader/SolverReader.cpp	/^string SolverReader::abs_filepath( string rel_filepath, bool check_exists )$/;"	f	class:SolverReader
 abs_training_tolerance	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  Real abs_training_tolerance;$/;"	m	class:libMesh::RBConstruction
 absolute_fuzzy_equals	/opt/libmesh/include/numerics/type_vector.h	/^bool TypeVector<T>::absolute_fuzzy_equals(const TypeVector<T> & rhs, Real tol) const$/;"	f	class:libMesh::TypeVector
 absolute_fuzzy_equals	/opt/libmesh/include/utils/fuzzy_equals.h	/^absolute_fuzzy_equals(const T & var1, const T2 & var2, const Real tol = TOLERANCE * TOLERANCE)$/;"	f	namespace:libMesh
@@ -5439,7 +5442,9 @@ assign_sideset_ids	/opt/libmesh/src/mesh/abaqus_io.C	/^void AbaqusIO::assign_sid
 assign_subdomain_ids	/opt/libmesh/src/mesh/abaqus_io.C	/^void AbaqusIO::assign_subdomain_ids()$/;"	f	class:libMesh::AbaqusIO
 associate	/opt/libmesh/include/mesh/vtk_io.h	/^    void associate(ElemType libmesh_type, vtkIdType vtk_type)$/;"	f	struct:libMesh::VTKIO::ElementMaps
 at	include/autodiff/forward/utils/derivative.hpp	/^AUTODIFF_DEVICE_FUNC auto at(Args&&... args)$/;"	f	namespace:autodiff::detail
-at	src/util/GridRadialFile.cpp	/^double GridRadialFile::at(double qt, double qx, double qz) const $/;"	f	class:GridRadialFile
+at	include/util/GridFile.h	/^  virtual double at(double t, double x, double y, double z) const $/;"	f	class:GridFile
+at	src/util/GridFile.cpp	/^double GridRadialFile::at(double qt, double qr, double qz) const $/;"	f	class:GridRadialFile
+at	src/util/GridFile.cpp	/^double GridRadialFile::at(double qt, double qx, double qy, double qz) const $/;"	f	class:GridRadialFile
 atan	include/autodiff/forward/real/real.hpp	/^AUTODIFF_DEVICE_FUNC constexpr auto atan(const Real<N, T>& x)$/;"	f	namespace:autodiff::detail
 atan	include/autodiff/reverse/var/var.hpp	/^template<typename T> ExprPtr<T> atan(const ExprPtr<T>& x) { return std::make_shared<ArcTanExpr<T>>(atan(x->val), x); }$/;"	f	namespace:autodiff::reverse::detail
 atan	include/autodiff/reverse/var/var.hpp	/^template<typename T> ExprPtr<T> atan(const Variable<T>& x) { return atan(x.expr); }$/;"	f	namespace:autodiff::reverse::detail
@@ -8631,6 +8636,8 @@ get_evaluated_thetas	/opt/libmesh/src/reduced_basis/rb_construction.C	/^RBConstr
 get_exio_helper	/opt/libmesh/src/mesh/exodusII_io.C	/^ExodusII_IO_Helper & ExodusII_IO::get_exio_helper()$/;"	f	class:libMesh::ExodusII_IO
 get_exodus_version	/opt/libmesh/src/mesh/exodusII_io.C	/^int ExodusII_IO::get_exodus_version()$/;"	f	class:libMesh::ExodusII_IO
 get_exodus_version	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^int ExodusII_IO_Helper::get_exodus_version()$/;"	f	class:libMesh::ExodusII_IO_Helper
+get_explicit_material	include/solver/ThermalSolverConstant.h	/^  ExplicitMaterial * get_explicit_material( const Elem & elem ) { return dynamic_cast<ExplicitMaterial *> ( get_material( elem ) ); }$/;"	f	class:ThermalSolverConstant
+get_explicit_material	include/solver/ThermalSolverFromFile.h	/^  ExplicitMaterial * get_explicit_material( const Elem & elem ) { return dynamic_cast<ExplicitMaterial *> ( get_material( elem ) ); }$/;"	f	class:ThermalSolverFromFile
 get_extra_datum	/opt/libmesh/include/base/dof_object.h	/^DofObject::get_extra_datum (const unsigned int index) const$/;"	f	class:libMesh::DofObject
 get_extra_integer	/opt/libmesh/include/base/dof_object.h	/^DofObject::get_extra_integer (const unsigned int index) const$/;"	f	class:libMesh::DofObject
 get_extra_parameter_names	/opt/libmesh/src/reduced_basis/rb_parameters.C	/^std::set<std::string> RBParameters::get_extra_parameter_names() const$/;"	f	class:libMesh::RBParameters
@@ -8906,7 +8913,6 @@ get_points	/opt/libmesh/include/mesh/mesh_triangle_holes.h	/^  const std::vector
 get_points	/opt/libmesh/include/quadrature/quadrature.h	/^  const std::vector<Point> & get_points() const { return _points; }$/;"	f	class:libMesh::QBase
 get_points	/opt/libmesh/include/quadrature/quadrature.h	/^  std::vector<Point> & get_points() { return _points; }$/;"	f	class:libMesh::QBase
 get_points	include/config/reader/SpatialDataReader.h	/^    const vector<Pt>& get_points() const { return points; };$/;"	f	class:SpatialDataReader
-get_postproc	src/solver/ThermalSolverExplicit.cpp	/^ThermalPostProc * ThermalSolverExplicit::get_postproc( const Elem & elem )$/;"	f	class:ThermalSolverExplicit
 get_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^SparseMatrix<Number> & EigenSystem::get_precond_matrix()$/;"	f	class:libMesh::EigenSystem
 get_precond_matrix	/opt/libmesh/src/systems/eigen_system.C	/^const SparseMatrix<Number> & EigenSystem::get_precond_matrix() const$/;"	f	class:libMesh::EigenSystem
 get_preconditioner	/opt/libmesh/include/numerics/static_condensation.h	/^  StaticCondensationPreconditioner & get_preconditioner() { return *_scp; }$/;"	f	class:libMesh::StaticCondensation
@@ -9187,9 +9193,10 @@ grainsize	/opt/libmesh/include/parallel/threads.h	/^  void grainsize (const unsi
 greedy_param_list	/opt/libmesh/include/reduced_basis/rb_evaluation.h	/^  std::vector<RBParameters> greedy_param_list;$/;"	m	class:libMesh::RBEvaluation
 greedy_termination_test	/opt/libmesh/src/reduced_basis/rb_construction.C	/^bool RBConstruction::greedy_termination_test(Real abs_greedy_error,$/;"	f	class:libMesh::RBConstruction
 greedy_termination_test	/opt/libmesh/src/reduced_basis/transient_rb_construction.C	/^TransientRBConstruction::greedy_termination_test(Real abs_greedy_error,$/;"	f	class:libMesh::TransientRBConstruction
-grid	include/util/GridRadialFile.h	/^  vector<double> t, x, z, grid;$/;"	m	class:GridRadialFile
+grid	include/solver/ThermalSolverFromFile.h	/^  GridFile * grid;$/;"	m	class:ThermalSolverFromFile
+grid	include/util/GridFile.h	/^  vector<double> t, r, z, grid;$/;"	m	class:GridRadialFile
 grid_origin	include/config/SolverConfig.h	/^    optional<libMesh::Point> grid_origin;$/;"	m	struct:SolverConfig::ExternalFile
-grid_type	include/config/SolverConfig.h	/^    optional<GRID_TYPE_ENUM> grid_type;$/;"	m	struct:SolverConfig::ExternalFile
+grid_type	include/config/SolverConfig.h	/^    optional<GRID_TYPE> grid_type;$/;"	m	struct:SolverConfig::ExternalFile
 groups_in	/opt/libmesh/src/mesh/unv_io.C	/^void UNVIO::groups_in (std::istream & in_file)$/;"	f	class:libMesh::UNVIO
 gzipped_file	/opt/libmesh/include/utils/xdr_cxx.h	/^  bool gzipped_file, bzipped_file, xzipped_file;$/;"	m	class:libMesh::Xdr
 h1_error	/opt/libmesh/src/error_estimation/exact_solution.C	/^Real ExactSolution::h1_error(std::string_view sys_name,$/;"	f	class:libMesh::ExactSolution
@@ -9470,7 +9477,7 @@ index	/opt/libmesh/include/utils/chunked_mapvector.h	/^    index_t index() const
 index	/opt/libmesh/include/utils/mapvector.h	/^    index_t index() const { return it->first; }$/;"	f	class:libMesh::mapvector::const_veclike_iterator
 index	/opt/libmesh/include/utils/mapvector.h	/^    index_t index() const { return it->first; }$/;"	f	class:libMesh::mapvector::veclike_iterator
 index	include/autodiff/common/meta.hpp	/^    constexpr static size_t index = i;$/;"	m	struct:autodiff::detail::Index
-index	include/util/GridRadialFile.h	/^  size_t index(size_t it, size_t ix, size_t iz) const { return it * Nx * Nz + ix * Nz + iz; }$/;"	f	class:GridRadialFile
+index	include/util/GridFile.h	/^  size_t index(size_t it, size_t ir, size_t iz) const { return it * Nr * Nz + ir * Nz + iz; }$/;"	f	class:GridRadialFile
 index_buffer_t	/opt/libmesh/include/base/dof_object.h	/^  typedef std::vector<index_t> index_buffer_t;$/;"	t	class:libMesh::DofObject
 index_maps	/opt/libmesh/include/numerics/composite_fem_function.h	/^  std::vector<std::vector<unsigned int>> index_maps;$/;"	m	class:libMesh::CompositeFEMFunction
 index_maps	/opt/libmesh/include/numerics/composite_function.h	/^  std::vector<std::vector<unsigned int>> index_maps;$/;"	m	class:libMesh::CompositeFunction
@@ -9647,9 +9654,9 @@ init_eletypes	/opt/libmesh/src/mesh/gmv_io.C	/^void init_eletypes ()$/;"	f	names
 init_face_shape_functions	/opt/libmesh/src/fe/fe_boundary.C	/^void FEMap::init_face_shape_functions(const std::vector<Point> & qp,$/;"	f	class:libMesh::FEMap
 init_face_shape_functions	/opt/libmesh/src/fe/inf_fe_boundary.C	/^void InfFE<Dim,T_radial,T_base>::init_face_shape_functions(const std::vector<Point> &,$/;"	f	class:libMesh::InfFE
 init_fem	include/harpy/Material.h	/^    virtual void init_fem() $/;"	f	class:Material
+init_fem	src/harpy/ExplicitMaterial.cpp	/^void ExplicitMaterial::init_fem()$/;"	f	class:ExplicitMaterial
 init_fem	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::init_fem()$/;"	f	class:ViscoPlasticMaterial
 init_fem	src/postproc/StressPostProc.cpp	/^void StressPostProc::init_fem()$/;"	f	class:StressPostProc
-init_fem	src/postproc/ThermalPostProc.cpp	/^void ThermalPostProc::init_fem()$/;"	f	class:ThermalPostProc
 init_filename	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::string init_filename;$/;"	m	class:libMesh::TransientRBConstruction
 init_from_config	src/material/ViscoplasticIFC.cpp	/^void VPProps::init_from_config( const MaterialConfig & config, const Point & pt )$/;"	f	class:VPProps
 init_internal_data	/opt/libmesh/src/systems/fem_context.C	/^void FEMContext::init_internal_data(const System & sys)$/;"	f	class:libMesh::FEMContext
@@ -9669,7 +9676,8 @@ init_map_phi	/opt/libmesh/src/fe/hcurl_fe_transformation.C	/^void HCurlFETransfo
 init_map_phi	/opt/libmesh/src/fe/hdiv_fe_transformation.C	/^void HDivFETransformation<OutputShape>::init_map_phi(const FEGenericBase<OutputShape> & fe) const$/;"	f	class:libMesh::HDivFETransformation
 init_map_phi	/opt/libmesh/src/fe/hdiv_fe_transformation.C	/^void HDivFETransformation<Real>::init_map_phi(const FEGenericBase<Real> & ) const$/;"	f	class:libMesh::HDivFETransformation
 init_material	src/postproc/ViscoplasticReport.cpp	/^void ViscoplasticReport::init_material( Probe & probe  )$/;"	f	class:ViscoplasticReport
-init_materials	src/solver/ThermalSolverExplicit.cpp	/^void ThermalSolverExplicit::init_materials()$/;"	f	class:ThermalSolverExplicit
+init_materials	src/solver/ThermalSolverConstant.cpp	/^void ThermalSolverConstant::init_materials()$/;"	f	class:ThermalSolverConstant
+init_materials	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::init_materials()$/;"	f	class:ThermalSolverFromFile
 init_materials	src/solver/ViscoplasticSolver.cpp	/^void ViscoplasticSolver::init_materials()$/;"	f	class:ViscoplasticSolver
 init_matrices	/opt/libmesh/src/systems/eigen_system.C	/^void EigenSystem::init_matrices ()$/;"	f	class:libMesh::EigenSystem
 init_matrices	/opt/libmesh/src/systems/system.C	/^void System::init_matrices ()$/;"	f	class:libMesh::System
@@ -9702,7 +9710,7 @@ initial_linear_tolerance	/opt/libmesh/include/solvers/diff_solver.h	/^  double i
 initial_linear_tolerance	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  double initial_linear_tolerance;$/;"	m	class:libMesh::NonlinearSolver
 initial_newton_tolerance	/opt/libmesh/include/systems/continuation_system.h	/^  double initial_newton_tolerance;$/;"	m	class:libMesh::ContinuationSystem
 initial_temperature	include/material/ViscoplasticIFC.h	/^  double temperature, initial_temperature;$/;"	m	struct:VPProps
-initial_temperature_by_sid	include/solver/ThermalSolverExplicit.h	/^  map<uint, double> initial_temperature_by_sid;$/;"	m	class:ThermalSolverExplicit
+initial_temperature_by_sid	include/solver/ThermalSolverConstant.h	/^  map<uint, double> initial_temperature_by_sid;$/;"	m	class:ThermalSolverConstant
 initialize	/opt/libmesh/include/parallel/threads_none.h	/^  void initialize (int = automatic) {}$/;"	f	class:libMesh::Threads::task_scheduler_init
 initialize	/opt/libmesh/include/parallel/threads_pthread.h	/^  void initialize (int = automatic) {}$/;"	f	class:libMesh::Threads::task_scheduler_init
 initialize	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::initialize(std::string str_title, const MeshBase & mesh, bool use_discontinuous)$/;"	f	class:libMesh::ExodusII_IO_Helper
@@ -9993,6 +10001,7 @@ is_child_on_side_helper	/opt/libmesh/src/geom/cell_tet.C	/^bool Tet::is_child_on
 is_children_on_boundary_side	/opt/libmesh/include/mesh/boundary_info.h	/^  bool is_children_on_boundary_side() const$/;"	f	class:libMesh::BoundaryInfo
 is_constrained_dof	/opt/libmesh/include/base/dof_map.h	/^bool DofMap::is_constrained_dof (const dof_id_type dof) const$/;"	f	class:libMesh::DofMap
 is_constrained_node	/opt/libmesh/include/base/dof_map.h	/^bool DofMap::is_constrained_node (const Node *$/;"	f	class:libMesh::DofMap
+is_defined	include/config/SolverConfig.h	/^    bool is_defined() { if (filename && grid_type && grid_origin) return true ; return false; }$/;"	f	struct:SolverConfig::ExternalFile
 is_discrete	/opt/libmesh/src/systems/system_norm.C	/^bool SystemNorm::is_discrete() const$/;"	f	class:libMesh::SystemNorm
 is_discrete_parameter	/opt/libmesh/src/reduced_basis/rb_parametrized.C	/^bool RBParametrized::is_discrete_parameter(const std::string & mu_name) const$/;"	f	class:libMesh::RBParametrized
 is_divisible	/opt/libmesh/include/geom/stored_range.h	/^  bool is_divisible() const { return this->grainsize() < static_cast<unsigned int>(std::distance(_begin, _end)); }$/;"	f	class:libMesh::StoredRange
@@ -11399,8 +11408,8 @@ libMesh	include/harpy/ExplicitMaterial.h	/^namespace libMesh { class MeshBase; c
 libMesh	include/harpy/Material.h	/^namespace libMesh { class MeshBase; class ExplicitSystem; class Elem; }$/;"	n
 libMesh	include/harpy/Solver.h	/^namespace libMesh { class Elem ; class MeshBase; } $/;"	n
 libMesh	include/postproc/StressPostProc.h	/^namespace libMesh { class System; }$/;"	n
-libMesh	include/postproc/ThermalPostProc.h	/^namespace libMesh { class System; }$/;"	n
-libMesh	include/solver/ThermalSolverExplicit.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
+libMesh	include/solver/ThermalSolverConstant.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
+libMesh	include/solver/ThermalSolverFromFile.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
 libMesh	include/solver/ViscoplasticSolver.h	/^namespace libMesh {$/;"	n
 libMesh	include/util/MeshUtils.h	/^namespace libMesh { class MeshBase; }$/;"	n
 libMesh	include/util/OutputOperators.h	/^namespace libMesh { class Point; }$/;"	n
@@ -12594,6 +12603,7 @@ new_ids_to_push	/opt/libmesh/include/systems/generic_projector.h	/^             
 new_ids_to_save	/opt/libmesh/include/systems/generic_projector.h	/^    std::unordered_map<dof_id_type, typename FFunctor::ValuePushType> new_ids_to_save;$/;"	m	struct:libMesh::GenericProjector::SubFunctor
 new_nodes	/opt/libmesh/include/mesh/simplex_refiner.h	/^  std::map<std::pair<Node *, Node *>, Node *> new_nodes;$/;"	m	class:libMesh::SimplexRefiner
 new_proc_ids	/opt/libmesh/src/mesh/mesh_tools.C	/^  const proc_id_map_type & new_proc_ids;$/;"	m	struct:libMesh::MeshTools::__anon80::SyncProcIdsFromMap	file:
+new_thermal	src/harpy/Solver.cpp	/^Solver * SolverFactory::new_thermal( Solver * ref )$/;"	f	class:SolverFactory
 new_vector	/opt/libmesh/src/systems/system_projection.C	/^  NumericVector<Number>            & new_vector;$/;"	m	class:libMesh::BoundaryProjectSolution	file:
 newton_progress_check	/opt/libmesh/include/systems/continuation_system.h	/^  bool newton_progress_check;$/;"	m	class:libMesh::ContinuationSystem
 newton_solver	/opt/libmesh/include/systems/continuation_system.h	/^  NewtonSolver * newton_solver;$/;"	m	class:libMesh::ContinuationSystem
@@ -12604,7 +12614,7 @@ next	/opt/libmesh/include/base/getpot.h	/^GetPot::next(const char* Default)$/;"	
 next	/opt/libmesh/include/mesh/mesh_subdivision_support.h	/^static const unsigned int next[3] = {1,2,0};$/;"	m	namespace:libMesh::MeshTools::Subdivision
 next	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  struct token * next;$/;"	m	struct:token	typeref:struct:token::token	file:
 next	src/harpy/Timestep.cpp	/^double Timestep::next() {$/;"	f	class:Timestep
-next	src/util/GridRadialFile.cpp	/^    T next() {$/;"	f	struct:CSVLine
+next	src/util/GridFile.cpp	/^    T next() {$/;"	f	struct:CSVLine
 next_nominus	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus()$/;"	f	class:GETPOT_NAMESPACE::GetPot
 next_nominus_string	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus_string()$/;"	f	class:GETPOT_NAMESPACE::GetPot
 next_qp	include/material/ViscoPlasticMaterial.h	/^inline bool ViscoPlasticMaterial::next_qp( bool inc )$/;"	f	class:ViscoPlasticMaterial
@@ -13641,6 +13651,7 @@ operator <<	include/util/CsvFile.h	/^  CsvFile1& operator << (const char * val) 
 operator <<	include/util/CsvFile.h	/^  CsvFile1& operator << (const std::string & val) { return write(escape(val)); }$/;"	f	class:CsvFile1
 operator <<	include/util/CsvFile.h	/^  template<typename T> CsvFile & operator<< (const T& val) { return write(val); }$/;"	f	class:CsvFile
 operator <<	include/util/CsvFile.h	/^  template<typename T> CsvFile1 & operator<< (const T& val) { return write(val); }$/;"	f	class:CsvFile1
+operator <<	include/util/OutputOperators.h	/^inline ostream& operator<<(ostream& os, const Print<GRID_TYPE> & printer)$/;"	f
 operator <<	include/util/OutputOperators.h	/^inline ostream& operator<<(ostream& os, const Print<libMesh::Point>& printer)$/;"	f
 operator <<	include/util/OutputOperators.h	/^inline ostream& operator<<(ostream& os, const Print<libMesh::RealTensor>& printer)$/;"	f
 operator <<	include/util/OutputOperators.h	/^inline ostream& operator<<(ostream& os, const Print<libMesh::RealVectorValue>& printer)$/;"	f
@@ -13694,7 +13705,8 @@ operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const map<BC::E
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const vector<BC::DirichletItem> & m)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const vector<BC::PenaltyItem *> & m)$/;"	f
 operator <<	src/solver/BC.cpp	/^ostream& operator<<(ostream& os, const vector<BC::ScalarItem> & m)$/;"	f
-operator <<	src/solver/ThermalSolverExplicit.cpp	/^ostream& operator<<(ostream& os, const ThermalSolverExplicit & m)$/;"	f
+operator <<	src/solver/ThermalSolverConstant.cpp	/^ostream& operator<<(ostream& os, const ThermalSolverConstant & m)$/;"	f
+operator <<	src/solver/ThermalSolverFromFile.cpp	/^ostream& operator<<(ostream& os, const ThermalSolverFromFile & m)$/;"	f
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m) {$/;"	f
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m) {$/;"	f
 operator <<	src/util/OutputOperators.cpp	/^ostream& operator<<(ostream& os, const pair<uint,uint> & m) {$/;"	f
@@ -16113,7 +16125,8 @@ project_solution_on_reinit	/opt/libmesh/include/systems/system.h	/^  bool & proj
 project_stress	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::project_stress( Elem & elem_ )$/;"	f	class:ViscoPlasticMaterial
 project_system_vectors	/opt/libmesh/src/systems/inter_mesh_projection.C	/^void InterMeshProjection::project_system_vectors()$/;"	f	class:libMesh::InterMeshProjection
 project_tensor	src/harpy/ExplicitMaterial.cpp	/^void ExplicitMaterial::project_tensor( vector<RealTensor> & vals_qp, string vname )$/;"	f	class:ExplicitMaterial
-project_to_system	src/solver/ThermalSolverExplicit.cpp	/^void ThermalSolverExplicit::project_to_system()$/;"	f	class:ThermalSolverExplicit
+project_to_system	src/solver/ThermalSolverConstant.cpp	/^void ThermalSolverConstant::project_to_system()$/;"	f	class:ThermalSolverConstant
+project_to_system	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::project_to_system()$/;"	f	class:ThermalSolverFromFile
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (NumericVector<Number> & new_vector,$/;"	f	class:libMesh::System
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (NumericVector<Number> & vector,$/;"	f	class:libMesh::System
 project_vector	/opt/libmesh/src/systems/system_projection.C	/^void System::project_vector (ValueFunctionPointer fptr,$/;"	f	class:libMesh::System
@@ -16217,6 +16230,8 @@ r	include/autodiff/forward/dual/dual.hpp	/^    R r;$/;"	m	struct:autodiff::detai
 r	include/autodiff/forward/dual/dual.hpp	/^    R r;$/;"	m	struct:autodiff::detail::UnaryExpr
 r	include/autodiff/reverse/var/var.hpp	/^    ExprPtr<T> l, c, r;$/;"	m	struct:autodiff::reverse::detail::TernaryExpr
 r	include/autodiff/reverse/var/var.hpp	/^    ExprPtr<T> l, r;$/;"	m	struct:autodiff::reverse::detail::BinaryExpr
+r	include/util/GridFile.h	/^  vector<double> t, r, z, grid;$/;"	m	class:GridRadialFile
+r	src/util/GridFile.cpp	/^  double t, r, z, temp;$/;"	m	struct:DataEntry	file:
 r12	/opt/libmesh/src/geom/cell_prism21.C	/^  constexpr libMesh::Real r12 = 12;$/;"	m	namespace:__anon58	file:
 r144	/opt/libmesh/src/geom/cell_prism21.C	/^  constexpr libMesh::Real r144 = 144;$/;"	m	namespace:__anon58	file:
 r18	/opt/libmesh/src/geom/cell_prism21.C	/^  constexpr libMesh::Real r18 = 18;$/;"	m	namespace:__anon58	file:
@@ -16336,6 +16351,7 @@ read_from_file	/opt/libmesh/src/reduced_basis/rb_data_deserialization.C	/^void R
 read_from_file	/opt/libmesh/src/reduced_basis/rb_data_deserialization.C	/^void RBEvaluationDeserialization::read_from_file(const std::string &path,$/;"	f	class:libMesh::RBDataDeserialization::RBEvaluationDeserialization
 read_from_file	/opt/libmesh/src/reduced_basis/rb_data_deserialization.C	/^void RBSCMEvaluationDeserialization::read_from_file(const std::string & path,$/;"	f	class:libMesh::RBDataDeserialization::RBSCMEvaluationDeserialization
 read_from_file	/opt/libmesh/src/reduced_basis/rb_data_deserialization.C	/^void TransientRBEvaluationDeserialization::read_from_file(const std::string & path,$/;"	f	class:libMesh::RBDataDeserialization::TransientRBEvaluationDeserialization
+read_from_file	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::read_from_file()$/;"	f	class:ThermalSolverFromFile
 read_global_values	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^void ExodusII_IO_Helper::read_global_values(std::vector<Real> & values, int timestep)$/;"	f	class:libMesh::ExodusII_IO_Helper
 read_global_variable	/opt/libmesh/src/mesh/exodusII_io.C	/^void ExodusII_IO::read_global_variable(std::vector<std::string> global_var_names,$/;"	f	class:libMesh::ExodusII_IO
 read_global_variable	/opt/libmesh/src/mesh/nemesis_io.C	/^void Nemesis_IO::read_global_variable(std::vector<std::string> global_var_names,$/;"	f	class:libMesh::Nemesis_IO
@@ -16514,6 +16530,8 @@ reinit	/opt/libmesh/src/systems/newmark_system.C	/^void NewmarkSystem::reinit ()
 reinit	/opt/libmesh/src/systems/nonlinear_implicit_system.C	/^void NonlinearImplicitSystem::reinit ()$/;"	f	class:libMesh::NonlinearImplicitSystem
 reinit	/opt/libmesh/src/systems/optimization_system.C	/^void OptimizationSystem::reinit ()$/;"	f	class:libMesh::OptimizationSystem
 reinit	/opt/libmesh/src/systems/system.C	/^void System::reinit ()$/;"	f	class:libMesh::System
+reinit	include/harpy/Material.h	/^    virtual void reinit( const Elem & elem_, uint side=255 )$/;"	f	class:Material
+reinit	include/harpy/Material.h	/^    virtual void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side=255 )$/;"	f	class:Material
 reinit	src/harpy/ExplicitMaterial.cpp	/^void ExplicitMaterial::reinit( const Elem & elem_, uint side ) $/;"	f	class:ExplicitMaterial
 reinit	src/material/ThermalIFC.cpp	/^void ThermalIFC::reinit( uint eid, uint nqp ) $/;"	f	class:ThermalIFC
 reinit	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )$/;"	f	class:ViscoPlasticMaterial
@@ -17094,7 +17112,6 @@ set_numerical_jacobian_h_for_var	/opt/libmesh/include/systems/fem_system.h	/^voi
 set_off_diagonal_weight	/opt/libmesh/src/systems/system_norm.C	/^void SystemNorm::set_off_diagonal_weight(unsigned int i,$/;"	f	class:libMesh::SystemNorm
 set_old_dof_object	/opt/libmesh/src/base/dof_object.C	/^void DofObject::set_old_dof_object ()$/;"	f	class:libMesh::DofObject
 set_options_during_init	/opt/libmesh/include/solvers/solver_configuration.h	/^  virtual void set_options_during_init() {}$/;"	f	class:libMesh::SolverConfiguration
-set_origin	src/config/reader/SolverReader.cpp	/^void SolverReader::set_origin( double x, double y, double z ) { $/;"	f	class:SolverReader
 set_outer_boundary_ids	/opt/libmesh/include/mesh/triangulator_interface.h	/^  void set_outer_boundary_ids(std::set<std::size_t> bdy_ids) { _bdy_ids = std::move(bdy_ids); }$/;"	f	class:libMesh::TriangulatorInterface
 set_output_variables	/opt/libmesh/src/mesh/exodusII_io.C	/^void ExodusII_IO::set_output_variables(const std::vector<std::string> & output_variables,$/;"	f	class:libMesh::ExodusII_IO
 set_output_variables	/opt/libmesh/src/mesh/nemesis_io.C	/^void Nemesis_IO::set_output_variables(const std::vector<std::string> & output_variables,$/;"	f	class:libMesh::Nemesis_IO
@@ -17220,7 +17237,8 @@ setup	/opt/libmesh/src/geom/remote_elem.C	/^  void setup ()$/;"	f	class:__anon65
 setup	/opt/libmesh/src/numerics/static_condensation.C	/^StaticCondensation::setup()$/;"	f	class:libMesh::StaticCondensation
 setup_default_monitor	/opt/libmesh/src/solvers/petsc_nonlinear_solver.C	/^void PetscNonlinearSolver<T>::setup_default_monitor()$/;"	f	class:libMesh::PetscNonlinearSolver
 setup_petsc_data	/opt/libmesh/src/solvers/petsc_diff_solver.C	/^void PetscDiffSolver::setup_petsc_data()$/;"	f	class:libMesh::PetscDiffSolver
-setup_variables	src/solver/ThermalSolverExplicit.cpp	/^void ThermalSolverExplicit::setup_variables()$/;"	f	class:ThermalSolverExplicit
+setup_variables	src/solver/ThermalSolverConstant.cpp	/^void ThermalSolverConstant::setup_variables()$/;"	f	class:ThermalSolverConstant
+setup_variables	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::setup_variables()$/;"	f	class:ThermalSolverFromFile
 setup_variables	src/solver/ViscoplasticSolver.cpp	/^void ViscoplasticSolver::setup_variables()$/;"	f	class:ViscoplasticSolver
 sfinae_true	include/autodiff/reverse/var/var.hpp	/^template<class> struct sfinae_true : std::true_type {};$/;"	s	namespace:autodiff::reverse::detail
 sfinae_true	include/autodiff/reverse/var/var.hpp	/^template<typename T> static auto is_expr_test(int) -> sfinae_true<decltype(expr_value(std::declval<T>()))>;$/;"	m	namespace:autodiff::reverse::detail
@@ -18350,7 +18368,8 @@ solve	/opt/libmesh/src/systems/linear_implicit_system.C	/^void LinearImplicitSys
 solve	/opt/libmesh/src/systems/nonlinear_implicit_system.C	/^void NonlinearImplicitSystem::solve ()$/;"	f	class:libMesh::NonlinearImplicitSystem
 solve	/opt/libmesh/src/systems/optimization_system.C	/^void OptimizationSystem::solve ()$/;"	f	class:libMesh::OptimizationSystem
 solve	include/harpy/Solver.h	/^    virtual void solve()$/;"	f	class:Solver
-solve	src/solver/ThermalSolverExplicit.cpp	/^void ThermalSolverExplicit::solve()$/;"	f	class:ThermalSolverExplicit
+solve	src/solver/ThermalSolverConstant.cpp	/^void ThermalSolverConstant::solve()$/;"	f	class:ThermalSolverConstant
+solve	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::solve()$/;"	f	class:ThermalSolverFromFile
 solve	src/solver/ViscoplasticSolver.cpp	/^void ViscoplasticSolver::solve()$/;"	f	class:ViscoplasticSolver
 solve	src/solverloop/SLViscoplastic.cpp	/^void SLViscoplastic::solve() $/;"	f	class:SLViscoplastic
 solve_base	/opt/libmesh/src/solvers/petsc_linear_solver.C	/^PetscLinearSolver<T>::solve_base (SparseMatrix<T> * matrix,$/;"	f	class:libMesh::PetscLinearSolver
@@ -18425,7 +18444,7 @@ sqrt_pi	include/autodiff/reverse/var/var.hpp	/^    constexpr static auto sqrt_pi
 square_number_column	/opt/libmesh/src/utils/number_lookups.C	/^const unsigned char square_number_column[] = {$/;"	m	namespace:libMesh	file:
 square_number_row	/opt/libmesh/src/utils/number_lookups.C	/^const unsigned char square_number_row[] = {$/;"	m	namespace:libMesh	file:
 ss	include/config/MaterialConfig.h	/^  vector<SS> ss;$/;"	m	struct:CreepMD
-ss	src/util/GridRadialFile.cpp	/^  stringstream ss;$/;"	m	struct:CSVLine	file:
+ss	src/util/GridFile.cpp	/^  stringstream ss;$/;"	m	struct:CSVLine	file:
 ss_ids	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<int> ss_ids;$/;"	m	class:libMesh::ExodusII_IO_Helper
 start	/opt/libmesh/include/utils/perf_log.h	/^void PerfData::start ()$/;"	f	class:libMesh::PerfData
 start_event	/opt/libmesh/src/utils/perf_log.C	/^void PerfLog::start_event(const std::string & label,$/;"	f	class:libMesh::PerfLog
@@ -18652,7 +18671,8 @@ system	/opt/libmesh/src/systems/system_projection.C	/^  const System & system;$/
 system	include/harpy/ExplicitMaterial.h	/^  ExplicitSystem & system;$/;"	m	class:ExplicitMaterial
 system	include/material/ViscoPlasticMaterial.h	/^  TransientNonlinearImplicitSystem & system;$/;"	m	class:ViscoPlasticMaterial
 system	include/solver/BC.h	/^    const System & system;$/;"	m	class:BC
-system	include/solver/ThermalSolverExplicit.h	/^  ExplicitSystem & system;$/;"	m	class:ThermalSolverExplicit
+system	include/solver/ThermalSolverConstant.h	/^  ExplicitSystem & system;$/;"	m	class:ThermalSolverConstant
+system	include/solver/ThermalSolverFromFile.h	/^  ExplicitSystem & system;$/;"	m	class:ThermalSolverFromFile
 system	include/solver/ViscoplasticSolver.h	/^    TransientNonlinearImplicitSystem & system;$/;"	m	class:ViscoplasticSolver
 system_cfgid	include/config/ModelConfig.h	/^  CIMap<string> system_cfgid;        \/\/\/ sys_name -> config name$/;"	m	class:ModelConfig
 system_info	/opt/libmesh/src/utils/utility.C	/^std::string Utility::system_info()$/;"	f	class:libMesh::Utility
@@ -18668,8 +18688,8 @@ szabab_n_dofs_at_node	/opt/libmesh/src/fe/fe_szabab.C	/^unsigned int szabab_n_do
 szabab_n_dofs_per_elem	/opt/libmesh/src/fe/fe_szabab.C	/^unsigned int szabab_n_dofs_per_elem(const ElemType t, const Order o)$/;"	f	namespace:libMesh::__anon51
 szabab_nodal_soln	/opt/libmesh/src/fe/fe_szabab.C	/^void szabab_nodal_soln(const Elem * elem,$/;"	f	namespace:libMesh::__anon51
 t	/opt/libmesh/include/base/multi_predicates.h	/^  mutable T t;$/;"	m	struct:libMesh::Predicates::movable_il
-t	include/util/GridRadialFile.h	/^  vector<double> t, x, z, grid;$/;"	m	class:GridRadialFile
-t	src/util/GridRadialFile.cpp	/^  double t, x, z, temp;$/;"	m	struct:DataEntry	file:
+t	include/util/GridFile.h	/^  vector<double> t, r, z, grid;$/;"	m	class:GridRadialFile
+t	src/util/GridFile.cpp	/^  double t, r, z, temp;$/;"	m	struct:DataEntry	file:
 t_max	include/config/TimestepConfig.h	/^  double dt0, dtk, dt_max, t_max, max_steps, dt_min;$/;"	m	struct:TimestepConfig
 t_step	include/harpy/Timestep.h	/^    uint t_step;$/;"	m	class:Timestep
 table_size	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  size_t table_size;$/;"	m	class:libMesh::ExodusII_IO_Helper::NamesData
@@ -18701,10 +18721,10 @@ taylorseries	include/autodiff/forward/utils/taylorseries.hpp	/^auto taylorseries
 teebuf	include/util/TeeBuff.h	/^class teebuf : public std::streambuf$/;"	c
 teebuf	src/util/TeeBuff.cpp	/^teebuf::teebuf(std::streambuf * sb1, std::streambuf * sb2)$/;"	f	class:teebuf
 tellp	/opt/libmesh/include/utils/ostream_proxy.h	/^  std::streampos tellp() { return _target->tellp(); }$/;"	f	class:libMesh::BasicOStreamProxy
-temp	src/util/GridRadialFile.cpp	/^  double t, x, z, temp;$/;"	m	struct:DataEntry	file:
+temp	src/util/GridFile.cpp	/^  double t, r, z, temp;$/;"	m	struct:DataEntry	file:
 temperature	include/material/ThermalIFC.h	/^    double temperature; $/;"	m	struct:ThermalIFC::Props
 temperature	include/material/ViscoplasticIFC.h	/^  double temperature, initial_temperature;$/;"	m	struct:VPProps
-temperature_by_sid	include/solver/ThermalSolverExplicit.h	/^  map<uint, double> temperature_by_sid;$/;"	m	class:ThermalSolverExplicit
+temperature_by_sid	include/solver/ThermalSolverConstant.h	/^  map<uint, double> temperature_by_sid;$/;"	m	class:ThermalSolverConstant
 temporal_data	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::vector<std::unique_ptr<NumericVector<Number>>> temporal_data;$/;"	m	class:libMesh::TransientRBConstruction
 tensor_product_hex	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::tensor_product_hex(const QBase & q1D)$/;"	f	class:libMesh::QBase
 tensor_product_prism	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::tensor_product_prism(const QBase & q1D, const QBase & q2D)$/;"	f	class:libMesh::QBase
@@ -19042,7 +19062,8 @@ update_post_partitioning	/opt/libmesh/src/mesh/distributed_mesh.C	/^void Distrib
 update_preallocation_and_zero	/opt/libmesh/src/numerics/petsc_matrix.C	/^void PetscMatrix<T>::update_preallocation_and_zero ()$/;"	f	class:libMesh::PetscMatrix
 update_probes	include/harpy/Material.h	/^    virtual void update_probes() $/;"	f	class:Material
 update_probes	src/material/ViscoPlasticMaterial.cpp	/^void ViscoPlasticMaterial::update_probes()$/;"	f	class:ViscoPlasticMaterial
-update_reference_solver	src/solver/ThermalSolverExplicit.cpp	/^void ThermalSolverExplicit::update_reference_solver()$/;"	f	class:ThermalSolverExplicit
+update_reference_solver	src/solver/ThermalSolverConstant.cpp	/^void ThermalSolverConstant::update_reference_solver()$/;"	f	class:ThermalSolverConstant
+update_reference_solver	src/solver/ThermalSolverFromFile.cpp	/^void ThermalSolverFromFile::update_reference_solver()$/;"	f	class:ThermalSolverFromFile
 update_residual_terms	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::update_residual_terms(bool compute_inner_products)$/;"	f	class:libMesh::RBConstruction
 update_residual_terms	/opt/libmesh/src/reduced_basis/transient_rb_construction.C	/^void TransientRBConstruction::update_residual_terms(bool compute_inner_products)$/;"	f	class:libMesh::TransientRBConstruction
 update_rhs	/opt/libmesh/src/systems/newmark_system.C	/^void NewmarkSystem::update_rhs ()$/;"	f	class:libMesh::NewmarkSystem
@@ -19598,8 +19619,6 @@ wrt	include/autodiff/reverse/var/var.hpp	/^auto wrt(Args&&... args)$/;"	f	namesp
 x	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> x;$/;"	m	class:libMesh::ExodusII_IO_Helper
 x	include/autodiff/reverse/var/var.hpp	/^    ExprPtr<T> x;$/;"	m	struct:autodiff::reverse::detail::UnaryExpr
 x	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
-x	include/util/GridRadialFile.h	/^  vector<double> t, x, z, grid;$/;"	m	class:GridRadialFile
-x	src/util/GridRadialFile.cpp	/^  double t, x, z, temp;$/;"	m	struct:DataEntry	file:
 xadj	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  std::vector<Parmetis::idx_t>  xadj;$/;"	m	class:libMesh::ParmetisHelper
 xdr_MAX_STRING_LENGTH	/opt/libmesh/include/utils/xdr_cxx.h	/^const unsigned int xdr_MAX_STRING_LENGTH=256;$/;"	v
 xdr_REAL	/opt/libmesh/include/utils/xdr_cxx.h	48;"	d
@@ -19647,8 +19666,8 @@ yz_plane	/opt/libmesh/src/geom/plane.C	/^void Plane::yz_plane (const Real xpos)$
 z	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  std::vector<Real> z;$/;"	m	class:libMesh::ExodusII_IO_Helper
 z	/opt/libmesh/include/systems/continuation_system.h	/^  NumericVector<Number> * z;$/;"	m	class:libMesh::ContinuationSystem
 z	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:SpatialDataReader::Pt
-z	include/util/GridRadialFile.h	/^  vector<double> t, x, z, grid;$/;"	m	class:GridRadialFile
-z	src/util/GridRadialFile.cpp	/^  double t, x, z, temp;$/;"	m	struct:DataEntry	file:
+z	include/util/GridFile.h	/^  vector<double> t, r, z, grid;$/;"	m	class:GridRadialFile
+z	src/util/GridFile.cpp	/^  double t, r, z, temp;$/;"	m	struct:DataEntry	file:
 zero	/opt/libmesh/include/base/libmesh.h	/^const Number zero = 0.;$/;"	m	namespace:libMesh
 zero	/opt/libmesh/include/numerics/dense_matrix.h	/^void DenseMatrix<T>::zero()$/;"	f	class:libMesh::DenseMatrix
 zero	/opt/libmesh/include/numerics/dense_submatrix.h	/^void DenseSubMatrix<T>::zero()$/;"	f	class:libMesh::DenseSubMatrix
@@ -19716,6 +19735,7 @@ zone_type	/opt/libmesh/include/utils/plt_loader.h	/^unsigned int PltLoader::zone
 ~FPEDisabler	/opt/libmesh/include/utils/fpe_disabler.h	/^  ~FPEDisabler()$/;"	f	struct:libMesh::FPEDisabler
 ~FileHistoryData	/opt/libmesh/include/solvers/file_history_data.h	/^        ~FileHistoryData() {};$/;"	f	class:libMesh::FileHistoryData
 ~GradientMeshFunction	/opt/libmesh/include/systems/inter_mesh_projection.h	/^  virtual ~GradientMeshFunction () { }$/;"	f	class:libMesh::GradientMeshFunction
+~GridFile	include/util/GridFile.h	/^  virtual ~GridFile() {}$/;"	f	class:GridFile
 ~GzStream	include/util/GzStream.h	/^    ~GzStream() { if (file) gzclose(file); }$/;"	f	class:GzStream
 ~HarpyInit	src/base/HarpyInit.cpp	/^HarpyInit::~HarpyInit() { delete(lm_init); }$/;"	f	class:HarpyInit
 ~HistoryData	/opt/libmesh/include/solvers/history_data.h	/^        virtual ~HistoryData() {};$/;"	f	class:libMesh::HistoryData
@@ -19770,8 +19790,8 @@ zone_type	/opt/libmesh/include/utils/plt_loader.h	/^unsigned int PltLoader::zone
 ~System	/opt/libmesh/src/systems/system.C	/^System::~System ()$/;"	f	class:libMesh::System
 ~TaoOptimizationSolver	/opt/libmesh/src/solvers/tao_optimization_solver.C	/^TaoOptimizationSolver<T>::~TaoOptimizationSolver ()$/;"	f	class:libMesh::TaoOptimizationSolver
 ~TensorShellMatrix	/opt/libmesh/include/numerics/tensor_shell_matrix.h	/^TensorShellMatrix<T>::~TensorShellMatrix ()$/;"	f	class:libMesh::TensorShellMatrix
-~ThermalPostProc	include/postproc/ThermalPostProc.h	/^  virtual ~ThermalPostProc() {};$/;"	f	class:ThermalPostProc
-~ThermalSolverExplicit	include/solver/ThermalSolverExplicit.h	/^  virtual ~ThermalSolverExplicit() {};$/;"	f	class:ThermalSolverExplicit
+~ThermalSolverConstant	include/solver/ThermalSolverConstant.h	/^  virtual ~ThermalSolverConstant() {};$/;"	f	class:ThermalSolverConstant
+~ThermalSolverFromFile	src/solver/ThermalSolverFromFile.cpp	/^ThermalSolverFromFile::~ThermalSolverFromFile() $/;"	f	class:ThermalSolverFromFile
 ~Timeloop	src/harpy/Timeloop.cpp	/^Timeloop::~Timeloop() { }$/;"	f	class:Timeloop
 ~TrilinosPreconditioner	/opt/libmesh/include/numerics/trilinos_preconditioner.h	/^TrilinosPreconditioner<T>::~TrilinosPreconditioner ()$/;"	f	class:libMesh::TrilinosPreconditioner
 ~TypeTensor	/opt/libmesh/include/numerics/type_tensor.h	/^TypeTensor<T>::~TypeTensor ()$/;"	f	class:libMesh::TypeTensor

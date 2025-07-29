@@ -34,6 +34,7 @@ private:
   
   // File manip
   void check_files();
+  string abs_filepath( string rel_filepath, bool check_exists=true );
 
   // System state machine
   void parse_sys_file();
@@ -47,7 +48,6 @@ private:
 
   // Helper
   void set_grid_type( string str ) ;
-  void set_origin( double x, double y, double z ) ;
 
   friend SolverConfig;
   friend ostream& operator<<(ostream& os, const SolverReader & m);

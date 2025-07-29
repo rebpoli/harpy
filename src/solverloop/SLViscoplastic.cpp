@@ -6,6 +6,8 @@
 #include "libmesh/equation_systems.h"
 #include "libmesh/mesh.h"
 
+#include "solver/ThermalSolverConstant.h"
+
 
 /**
  *
@@ -24,7 +26,7 @@ SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
   SCOPELOG(1);
 
   viscoplastic = new ViscoplasticSolver( "viscoplastic", ts );
-  thermal = new ThermalSolverExplicit( viscoplastic, "thermal" );
+  thermal = SolverFactory::new_thermal( viscoplastic );
 
   // Initialize the ES
   EquationSystems & es = viscoplastic->es;

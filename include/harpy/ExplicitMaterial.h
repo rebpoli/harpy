@@ -32,6 +32,8 @@ public:
 
   void close_system();
 
+  void init_fem();
+
 protected:
   ExplicitSystem & system;
 };

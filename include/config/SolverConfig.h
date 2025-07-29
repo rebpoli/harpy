@@ -1,11 +1,13 @@
 #pragma once
 
 #include "base/Global.h"
+#include "base/Enums.h"
 #include "config/SolverConfig.h"
 #include "util/String.h"
 #include "libmesh/point.h"
 
 #include <map>
+
 
 /**
  *
@@ -56,12 +58,12 @@ public:
   map<string,FEMSpec> fem_by_var;
 
   /* External: when the solution is known a priory and input as a file */
-  enum GRID_TYPE_ENUM { RADIAL };
   struct ExternalFile {
     optional<string> filename;
-    optional<GRID_TYPE_ENUM> grid_type;
+    optional<GRID_TYPE> grid_type;
     optional<libMesh::Point> grid_origin;
     bool check();
+    bool is_defined() { if (filename && grid_type && grid_origin) return true ; return false; }
   };
 
   /** Data structure to the outside **/
