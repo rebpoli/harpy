@@ -3,6 +3,7 @@
 #include "base/Global.h"
 #include "config/SolverConfig.h"
 #include "util/String.h"
+#include "libmesh/point.h"
 
 #include <map>
 
@@ -54,6 +55,15 @@ public:
   };
   map<string,FEMSpec> fem_by_var;
 
+  /* External: when the solution is known a priory and input as a file */
+  enum GRID_TYPE_ENUM { RADIAL };
+  struct ExternalFile {
+    optional<string> filename;
+    optional<GRID_TYPE_ENUM> grid_type;
+    optional<libMesh::Point> grid_origin;
+    bool check();
+  };
+
   /** Data structure to the outside **/
   MatConfigMap mat_config_by_name; /// the chosen configuration for this run
   Numerical numerical;
@@ -61,6 +71,9 @@ public:
   SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ );
 
   string model_dir, sys_file, sys_name, sys_cfg, mesh_filename;
+  ExternalFile external_file;
+
+
 
 private:
   friend ostream& operator<<(ostream& os, const SolverConfig & m);
@@ -69,3 +82,4 @@ private:
 ostream& operator<<(ostream& os, const SolverConfig & m);
 ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m);
 ostream& operator<<(ostream& os, const SolverConfig::MatNameAndCfg & m);
+ostream& operator<<(ostream& os, const SolverConfig::ExternalFile & m);

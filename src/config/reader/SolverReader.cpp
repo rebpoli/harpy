@@ -24,9 +24,17 @@ SolverReader::SolverReader( SolverConfig & config_ ) : config(config_)
 
 //  Set the right configuration
   string curr_cfg = config.sys_cfg;
+
+  if ( iequals( curr_cfg , "external" ) ) 
+  {
+    config.external_file.check(); // This shall fail if not completely defined
+    return;
+  }
+
   if ( ! all_mat_cfgs.count( curr_cfg ) )
     flog << "System configuration '" << curr_cfg << "' not found for system '" << config.sys_name << "'.";
 
+  // Select the material config
   config.mat_config_by_name = all_mat_cfgs[ curr_cfg ];
 }
 
@@ -73,6 +81,7 @@ void SolverReader::parse_sys_file()
     // Machine. This is the last part of the loop
     switch (current_state) 
     {
+      case State::EXTERNAL:  {   external_state();      break;    }
       case State::CONFIG:    {   config_state();      break;    }
       case State::NUMERICAL: {   numerical_state();   break;    }
       case State::FEM:       {   fem_state();         break;    }
@@ -92,6 +101,7 @@ bool SolverReader::next_state()
   smatch match;
 
   CIMap<State> nextState = {
+    { "external", State::EXTERNAL },
     { "config", State::CONFIG },
     { "mesh",   State::MESH },
     { "fem",   State::FEM },
@@ -135,24 +145,82 @@ bool SolverReader::next_state()
 }
 
 /**
+ *
+ *
+ */
+void SolverReader::set_origin( double x, double y, double z ) { 
+}
+
+/**
+ *
+ *
+ */
+void SolverReader::set_grid_type( string str ) { 
+  if ( iequals( str, "radial" ) ) 
+    config.external_file.grid_type = SolverConfig::GRID_TYPE_ENUM::RADIAL;
+
+  else flog << "Unknown grid type "<< str <<".";
+}
+
+/**
+ * Parse a line in the state
+ */
+void SolverReader::external_state()
+{
+  dlog(1) << "Processing EXTERNAL FILE state line '" << line << "' ";
+  smatch match;
+
+  //
+  if ( regex_search( line, match, RE_STR_STR ) ) 
+  {
+
+    string key = match[1];
+    string val = match[2];
+
+    if ( iequals( key, "file" ) ) { config.external_file.filename = val; return; }
+    if ( iequals( key, "grid" ) ) { set_grid_type(val);         return; }
+  }
+
+  //
+  if ( regex_search( line, match, RE_STR_POINT ) ) 
+  {
+
+    string key = match[1];
+    double x = stod( match[2] ) , 
+           y = stod( match[3] ) ,
+           z = stod( match[4] );
+
+    if ( iequals( key, "origin" ) ) { config.external_file.grid_origin = libMesh::Point( x, y, z ); return; }
+      flog << ">>" << key << "<<";
+  }
+
+  flog << "Unrecognized format at " << config.sys_file << "(" << ln << "), EXTERNAL section. Line: " << line;
+
+}
+
+
+/**
  * Parse a line in the state
  */
 void SolverReader::config_state()
 {
-  dlog(1) << "Processing material state line '" << line << "' ";
+  dlog(1) << "Processing CONFIG state line '" << line << "' ";
   smatch match;
 
-  if ( ! regex_search( line, match, RE_STR_STR_STROPT ) ) 
-    flog << "Unrecognized format at " << config.sys_file << "(" << ln << "), MATERIAL section. Line: " << line;
+  if ( regex_search( line, match, RE_STR_STR_STROPT ) ) 
+  {
+    string subdom = match[1];
+    string material = match[2];
+    string conf = match[3];
+    if ( ! conf.length() ) conf = curr_sys_cfg;
 
-  string subdom = match[1];
-  string material = match[2];
-  string conf = match[3];
-  if ( ! conf.length() ) conf = curr_sys_cfg;
+    all_mat_cfgs[curr_sys_cfg].emplace( 
+                   subdom,
+                   SolverConfig::MatNameAndCfg( material, conf ) );
+    return;
+  }
 
-  all_mat_cfgs[curr_sys_cfg].emplace( 
-                 subdom,
-                 SolverConfig::MatNameAndCfg( material, conf ) );
+  flog << "Unrecognized format at " << config.sys_file << "(" << ln << "), CONFIG section. Line: " << line;
 
 }
 

@@ -32,7 +32,7 @@ class Solver
 {
   public:
     Solver( string name_, Timestep & ts_ );
-    Solver( Solver & ref, string name_ );
+    Solver( Solver * ref, string name_ );
     virtual ~Solver();
 
     inline MeshBase & get_mesh() { return es.get_mesh(); }
@@ -41,10 +41,11 @@ class Solver
     virtual void solve()
       { flog << "Must be defined in the child class."; }
 
-    virtual void init();
+    /// The material can be provided for the dependent solvers
+    Material * get_material( const Elem & elem );
+    Material * get_material( uint sid );
 
-    virtual void init_materials()
-      { flog << "Must be defined in the child class."; }
+    virtual void init();
 
     void export_exo( string fn );
 
@@ -56,6 +57,7 @@ class Solver
     SolverConfig * config;
     BCConfig & bc_config;
 
-    MeshBase & mesh;
     EquationSystems & es;
+
+    Solver * ref_solver;
 };

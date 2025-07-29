@@ -60,7 +60,7 @@ void ViscoplasticReport::init_material( Probe & probe  )
 
     dlog(1) << "> Element found at " << Print(pt) << ": " << elem->id();
 
-    ViscoPlasticMaterial * mat = solver.get_material( *elem );
+    ViscoPlasticMaterial * mat = solver.get_vp_material( *elem );
     ViscoplasticIFC & vp_ifc = mat->vp_ifc;
     vp_ifc.add_probe_point( mat->config, probe.name, elem->id(), pt );
   }
@@ -125,7 +125,7 @@ void ViscoplasticReport::export_by_point( Probe & probe )
   // Export the probe points stored in the material interfaces
   for ( auto & [ sid, _ ] : solver.material_by_sid )
   {
-    ViscoPlasticMaterial * mat = solver.get_material(sid);
+    ViscoPlasticMaterial * mat = solver.get_vp_material(sid);
 
     ProbeByElemMap & local_map = mat->vp_ifc.probes_by_pname_by_elem[probe.name];
 

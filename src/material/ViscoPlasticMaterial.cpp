@@ -31,7 +31,7 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   P( 0 ), bc_material(0),
   vpsolver(vpsolver_), system( sys_ ), 
   stress_system( vpsolver.stress_system ),
-  stress_postproc( *this, stress_system ),
+  stress_postproc( this, stress_system ),
   dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config.name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
   res_jac_k(0)
 {

@@ -42,6 +42,8 @@ namespace MRDEF
   inline const regex RE_STR_NUM          ( ini + tok + sp + num );
   inline const regex RE_STR_UINT         ( ini + tok + sp + numuint );
 
+  inline const regex RE_STR_POINT       ( ini + tok + sp + num + sp + num + sp + num + end );
+
   // Sections are prefixed with a dot
   inline const regex RE_SEC              ( ini + R"(\.)" + tok + tok_op + end ); 
   inline const regex RE_SEC_NAMEOPT      ( ini + R"(\.)" + tok + filename_op + end ); 

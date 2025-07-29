@@ -15,7 +15,7 @@ namespace libMesh { class System; }
 class StressPostProc : public ExplicitMaterial
 {
 public:
-  StressPostProc( Material & refmat, ExplicitSystem & sys_ );
+  StressPostProc( Material * refmat, ExplicitSystem & sys_ );
   virtual ~StressPostProc();
 
   virtual void init_fem();

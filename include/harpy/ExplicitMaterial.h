@@ -18,7 +18,7 @@ public:
   ExplicitMaterial( suint sid_, const MaterialConfig & config_,
           ExplicitSystem & sys_ ) : Material( sid_, config_ ), system(sys_) {}
 
-  ExplicitMaterial( Material & ref_material, ExplicitSystem & sys_ ) :
+  ExplicitMaterial( Material * ref_material, ExplicitSystem & sys_ ) :
     Material( ref_material ), system(sys_) {}
 
   virtual void reinit( const Elem & elem_, uint side=255 ) ;

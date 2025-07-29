@@ -1,6 +1,8 @@
 
 #include "config/SolverConfig.h"
 #include "config/reader/SolverReader.h"
+#include "util/OutputOperators.h"
+
 #include <iomanip>
 
 /**
@@ -11,6 +13,16 @@ SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_
           sys_name(sys_name_), sys_cfg(sys_cfg_)
 { SolverReader( *this ); }
 
+/**
+ *
+ *
+ */
+bool SolverConfig::ExternalFile::check()
+{ 
+   if (filename && grid_type && grid_origin) return true ; 
+   else flog << "External file is not completely defined!" << endl << *this;
+   return false;
+}
 
 /**
  *
@@ -38,7 +50,18 @@ ostream& operator<<(ostream& os, const SolverConfig & m)
     os << "       implicit:          " << setw(15) << fem.implicit     << endl;
   }
 
+  os << m.external_file;
 
+  return os;
+}
+
+/** **/
+ostream& operator<<(ostream& os, const SolverConfig::ExternalFile & m)
+{
+  os << "    External_file: " << endl;
+  os << "            filename:      " << setw(15) << m.filename << endl;
+  os << "            grid_type:     " << setw(15) << m.grid_type << endl;
+  os << "            grid_origin:   " << setw(15) << m.grid_origin << endl;
   return os;
 }
 

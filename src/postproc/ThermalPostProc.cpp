@@ -1,6 +1,6 @@
 
 #include "postproc/ThermalPostProc.h"
-#include "material/ViscoPlasticMaterial.h"
+#include "harpy/Material.h"
 #include "config/MaterialConfig.h"
 #include "util/OutputOperators.h"
 
@@ -13,7 +13,7 @@
 /**
  *
  */
-ThermalPostProc::ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ ) :
+ThermalPostProc::ThermalPostProc( Material * ref_material, ExplicitSystem & sys_ ) :
   ExplicitMaterial( ref_material, sys_ )
 { 
 }

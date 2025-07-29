@@ -18,8 +18,8 @@ using harpy_string::iequals;
 /*
  *
  */
-ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, string name_ ) :
-    Solver( ref_solver_, name_ ), system(es.add_system<ExplicitSystem>(name_)), ref_solver(&ref_solver_)
+ThermalSolverExplicit::ThermalSolverExplicit( Solver * ref_solver_, string name_ ) :
+    Solver( ref_solver_, name_ ), system(es.add_system<ExplicitSystem>(name_))
 { 
   SCOPELOG(1);
 
@@ -33,7 +33,7 @@ ThermalSolverExplicit::ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, 
 void ThermalSolverExplicit::setup_variables()
 {
   dlog(1) << "Adding variable T ...";
-  system.add_variable( "T", FIRST, LAGRANGE ); /// L2_LAGRANGE for discontinuous
+  system.add_variable( "T", FIRST, L2_LAGRANGE ); /// L2_LAGRANGE for discontinuous
 }
 
 /**
@@ -69,10 +69,10 @@ void ThermalSolverExplicit::init_materials()
 
     // Get the reference material to copy the quadrature and link
     // to the thermal material
-    ViscoPlasticMaterial * ref_material = ref_solver->get_material( *elem );
+    Material * ref_material = ref_solver->get_material( *elem );
 
     dlog(1) << "Resoved material:" << mat_conf << " SID:" << sid;
-    material_by_sid[sid] = new ThermalPostProc( *ref_material, system );
+    material_by_sid[sid] = new ThermalPostProc( ref_material, system );
   }
 }
 
@@ -208,7 +208,12 @@ void ThermalSolverExplicit::update_reference_solver()
     string mname = mat->name;
 
     // We need to feed the reference interface
-    ViscoPlasticMaterial * vpmat = ref_solver->get_material( *elem );
+    //
+    // TODO: Fix this gambiarra. We need to split the VP interface in thermal, elastic etc and
+    //       only propagate what we need.
+    Material * vpmat_ = ref_solver->get_material( *elem );
+    ViscoPlasticMaterial *vpmat = dynamic_cast< ViscoPlasticMaterial *> ( vpmat_ );
+
     vpmat->reinit( *elem ); 
 
     auto & vp_ifc = vpmat->vp_ifc;

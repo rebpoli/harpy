@@ -25,7 +25,7 @@ private:
   SolverConfig & config;
 
   // Parsing stuff
-  enum class State { INITIAL, CONFIG, MESH, NUMERICAL, FEM };
+  enum class State { INITIAL, EXTERNAL, CONFIG, MESH, NUMERICAL, FEM };
   uint ln;               /// line number
   string line;           /// line being parsed
   State current_state;   /// Current state of the state machine
@@ -38,9 +38,16 @@ private:
   // System state machine
   void parse_sys_file();
   bool next_state();
+
+  // States
   void config_state();
+  void external_state();
   void numerical_state();
   void fem_state();
+
+  // Helper
+  void set_grid_type( string str ) ;
+  void set_origin( double x, double y, double z ) ;
 
   friend SolverConfig;
   friend ostream& operator<<(ostream& os, const SolverReader & m);

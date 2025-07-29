@@ -26,11 +26,8 @@ namespace libMesh { class ExplicitSystem; }
 class ThermalSolverExplicit : public Solver 
 {
 public:
-  ThermalSolverExplicit( ViscoplasticSolver & ref_solver_, string name_ );
+  ThermalSolverExplicit( Solver * ref_solver_, string name_ );
   virtual ~ThermalSolverExplicit() {};
-
-  /// Init explicit materials (the ones to do the projections)
-  void init_materials();
 
   /// The solver workers
   virtual void solve();
@@ -40,6 +37,9 @@ public:
 
 private:
   ThermalPostProc * get_postproc( const Elem & elem );
+
+  /// Init explicit materials (the ones to do the projections)
+  void init_materials();
 
   void project_to_system();
   void update_reference_solver();
@@ -51,7 +51,6 @@ private:
 
   friend ostream& operator<<(ostream& os, const ThermalSolverExplicit & m);
 
-  ViscoplasticSolver * ref_solver;
 
 };
 

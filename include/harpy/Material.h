@@ -33,12 +33,17 @@ class Material
 {
   public:
     Material( suint sid_, const MaterialConfig & config_ );
-    Material( Material & refmat_ );
+    Material( Material * refmat_ );
     virtual ~Material();
 
     // Interface to any material
     /// Returns a material with the BC definitions and tools
     virtual void init_fem() 
+              { flog << "Must be redifined in the child classes."; }
+
+    virtual void reinit( const Elem & elem_, uint side=255 )
+              { flog << "Must be redifined in the child classes."; }
+    virtual void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side=255 )
               { flog << "Must be redifined in the child classes."; }
 
     virtual bool is_bc() { return 0; }  /// Defaults to false. Reimplement in the BC classes to return true;

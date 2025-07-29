@@ -21,7 +21,7 @@ class ViscoPlasticMaterial;
 class ThermalPostProc : public ExplicitMaterial
 {
 public:
-  ThermalPostProc( ViscoPlasticMaterial & ref_material, ExplicitSystem & sys_ );
+  ThermalPostProc( Material * ref_material, ExplicitSystem & sys_ );
   virtual ~ThermalPostProc() {};
   virtual void init_fem();
 };

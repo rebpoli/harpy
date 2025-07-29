@@ -4,7 +4,6 @@
 #include "config/ModelConfig.h"
 #include "harpy/Timestep.h"
 #include "harpy/DirManager.h"
-#include "material/ViscoPlasticMaterial.h"
 #include "postproc/StressPostProc.h"
 #include "util/MeshUtils.h"
 #include "util/Messages.h"
@@ -152,29 +151,7 @@ void ViscoplasticSolver::init_materials()
   }
 }
 
-/**
- *   Returns the material for a given element.
- *   Fails if not existing.
- */
-ViscoPlasticMaterial * ViscoplasticSolver::get_material( const Elem & elem )
-{
-  uint sid = elem.subdomain_id();
-  return get_material( sid );
-}
-/**
- *   Returns a material by subdomain id
- */
-ViscoPlasticMaterial * ViscoplasticSolver::get_material( uint sid )
-{
-  // Consistency check
-  if  ( ! material_by_sid.count( sid ) ) 
-  {
-    string sname = get_mesh().subdomain_name( sid );
-    flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
-  }
-
-  return dynamic_cast<ViscoPlasticMaterial *> ( material_by_sid.at(sid) );
-}
+//  return dynamic_cast<ViscoPlasticMaterial *> ( material_by_sid.at(sid) );
 
 /**
  *
@@ -407,7 +384,7 @@ void ViscoplasticSolver::do_ts_cut()
   MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    ViscoPlasticMaterial * mat = get_material( *elem );
+    ViscoPlasticMaterial * mat = get_vp_material( *elem );
     mat->rewind( *elem );
   }
 
@@ -460,7 +437,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
 
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    ViscoPlasticMaterial * mat = get_material( *elem );
+    ViscoPlasticMaterial * mat = get_vp_material( *elem );
     mat->residual_and_jacobian( *elem, soln, jacobian, residual );
   }
 
@@ -474,7 +451,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
     if ( ! elem.active() ) continue;
     if ( elem.processor_id() != mesh.processor_id() ) continue;
 
-    ViscoPlasticMaterial * mat = get_material( elem );
+    ViscoPlasticMaterial * mat = get_vp_material( elem );
     ViscoPlasticMaterialBC * bcmat = mat->get_bc_material();
     bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
     bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
@@ -492,7 +469,7 @@ void ViscoplasticSolver::posproc_stresses()
   MeshBase & mesh = get_mesh();
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
-    ViscoPlasticMaterial * mat = get_material( *elem );
+    ViscoPlasticMaterial * mat = get_vp_material( *elem );
     mat->project_stress( *elem );
   }
   stress_system.solution->close();

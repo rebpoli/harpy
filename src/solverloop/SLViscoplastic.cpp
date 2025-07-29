@@ -19,20 +19,31 @@
  *
  */
 SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic( "viscoplastic", ts ) , 
-  thermal( viscoplastic, "thermal" )
+  Solverloop(ts_), viscoplastic(0), thermal(0) 
 {
   SCOPELOG(1);
 
+  viscoplastic = new ViscoplasticSolver( "viscoplastic", ts );
+  thermal = new ThermalSolverExplicit( viscoplastic, "thermal" );
+
   // Initialize the ES
-  EquationSystems & es = viscoplastic.es;
+  EquationSystems & es = viscoplastic->es;
 
   dlog(1) << "ES.init...";
   es.init();
 
   // Init the solvers (must be after the es.init)
-  viscoplastic.init();
-  thermal.init();
+  viscoplastic->init();
+  thermal->init();
+}
+
+/**
+ *
+ */
+SLViscoplastic::~SLViscoplastic()
+{
+  delete(viscoplastic);
+  delete(thermal);
 }
 
 /**
@@ -44,11 +55,11 @@ void SLViscoplastic::solve()
   SCOPELOG(1);
   
   // Update the temperature, sync the coupler
-  thermal.solve(); 
+  thermal->solve(); 
 
   // Run the viscoplastic
-  viscoplastic.solve();
+  viscoplastic->solve();
 
-  viscoplastic.export_exo("viscoplastic");
+  viscoplastic->export_exo("viscoplastic");
 }
 

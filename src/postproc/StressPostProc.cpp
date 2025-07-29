@@ -13,7 +13,7 @@
 /**
  *
  */
-StressPostProc::StressPostProc( Material & refmat , ExplicitSystem & sys_ ) :
+StressPostProc::StressPostProc( Material * refmat , ExplicitSystem & sys_ ) :
   ExplicitMaterial( refmat, sys_ )
 {
   SCOPELOG(1);

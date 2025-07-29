@@ -7,6 +7,7 @@
 #include "harpy/Solver.h"
 #include "harpy/Material.h"
 #include "postproc/ViscoplasticReport.h"
+#include "material/ViscoPlasticMaterial.h"
 #include "solver/BC.h"
 
 #include "base/HarpyInit.h"
@@ -70,15 +71,15 @@ class ViscoplasticSolver : public Solver,
     /// Updates the plastic strain in the coupler from info from the coupler itself
     void update_plastic_strain();
 
+    /// Helper
+    ViscoPlasticMaterial * get_vp_material( const Elem & elem ) { return dynamic_cast<ViscoPlasticMaterial *> ( get_material(elem) ); }
+    ViscoPlasticMaterial * get_vp_material( uint sid ) { return dynamic_cast<ViscoPlasticMaterial *> ( get_material(sid) ); }
+
     /// A specialized system object
     TransientNonlinearImplicitSystem & system;
 
     /// A system to output intermediate and posproc variables
     ExplicitSystem & stress_system;
-
-    /// The material can be provided for the dependent solvers
-    ViscoPlasticMaterial * get_material( const Elem & elem );
-    ViscoPlasticMaterial * get_material( uint sid );
 
   private:
 

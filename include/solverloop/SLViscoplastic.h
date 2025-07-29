@@ -22,11 +22,11 @@ class SLViscoplastic : public Solverloop
 
   public:
     SLViscoplastic( Timestep & ts_ );
+    ~SLViscoplastic();
 
     void solve();
 
   private:
 
-    ViscoplasticSolver viscoplastic;
-    ThermalSolverExplicit thermal;
+    Solver * viscoplastic, * thermal;
 };
