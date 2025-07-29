@@ -148,6 +148,7 @@ void ThermalSolverFromFile::solve()
 
 //  // Feed the element solver with the temperatures
   project_to_system();
+  export_exo("thermal.e");
 //  update_reference_solver();
 }
 
@@ -176,11 +177,12 @@ void ThermalSolverFromFile::project_to_system()
 
     vector<double> temp_qp;
     uint nqp = mat->qrule.n_points();
+    temp_qp.resize(nqp);
     for ( uint qp=0 ; qp<nqp ; qp++ ) 
     {
-      Point p = xyz_qp[qp] - origin ;
-      dlog(1) << "p:" << p << "  time:" << ts.time;
+      Point p = xyz_qp[qp] + origin ;
       temp_qp[qp] = grid->at( ts.time, p(0), p(1), p(2) );
+//      dlog(1) << "p:" << p << "  time:" << ts.time << "  T:" << temp_qp[qp];
     } 
 
     mat->project( temp_qp, "T" );

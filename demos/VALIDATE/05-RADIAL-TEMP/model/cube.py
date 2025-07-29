@@ -8,19 +8,20 @@ gmsh.initialize(sys.argv)
 gmsh.model.add("cube")
 
 # Parameters
-cube_size = 10.0
+cube_width  = 100
+cube_height = 50
 
 # Create geometry
-cube_tag = gmsh.model.occ.addBox(-cube_size/2, -cube_size/2, -cube_size/2, cube_size, cube_size, cube_size)
+cube_tag = gmsh.model.occ.addBox(-cube_width/2, -cube_width/2, -cube_height/2, cube_width, cube_width, cube_height)
 gmsh.model.occ.synchronize()
 
 gmsh.model.addPhysicalGroup(3, [cube_tag], name="TEST_FRAME")
 
 # Get and label cube faces
 cube_boundaries = gmsh.model.getBoundary([(3, cube_tag)], oriented=False)
-face_labels = {"XN": lambda c: abs(c[0] + cube_size/2) < 1e-6, "XP": lambda c: abs(c[0] - cube_size/2) < 1e-6,
-               "YN": lambda c: abs(c[1] + cube_size/2) < 1e-6, "YP": lambda c: abs(c[1] - cube_size/2) < 1e-6,
-               "ZN": lambda c: abs(c[2] + cube_size/2) < 1e-6, "ZP": lambda c: abs(c[2] - cube_size/2) < 1e-6}
+face_labels = {"XN": lambda c: abs(c[0] + cube_width/2) < 1e-6,  "XP": lambda c: abs(c[0] - cube_width/2) < 1e-6,
+               "YN": lambda c: abs(c[1] + cube_width/2) < 1e-6,  "YP": lambda c: abs(c[1] - cube_width/2) < 1e-6,
+               "ZN": lambda c: abs(c[2] + cube_height/2) < 1e-6, "ZP": lambda c: abs(c[2] - cube_height/2) < 1e-6}
 
 # Apply labels to faces
 for dim, tag in cube_boundaries:
@@ -31,7 +32,7 @@ for dim, tag in cube_boundaries:
             break
 
 # Generate mesh
-gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 1)
+gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 5)
 gmsh.model.mesh.generate(3)
 
 # Save mesh and show GUI if requested

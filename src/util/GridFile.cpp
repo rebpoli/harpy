@@ -98,6 +98,7 @@ GridRadialFile::GridRadialFile(const string & filename)
  */
 double GridRadialFile::at(double qt, double qr, double qz) const 
 {
+//  dlog(1) << "qt:" << qt << " qr:"<< qr <<" qz:" <<qz;
   auto find_index = [](const vector<double>& vec, double val) {
     auto it = upper_bound(vec.begin(), vec.end(), val);
     size_t i = max<size_t>(1, it - vec.begin()) - 1;
@@ -108,25 +109,31 @@ double GridRadialFile::at(double qt, double qr, double qz) const
          ir = find_index(r, qr),
          iz = find_index(z, qz);
 
+
   double dt = (qt - t[it]) / (t[it+1] - t[it]),
          dr = (qr - r[ir]) / (r[ir+1] - r[ir]),
          dz = (qz - z[iz]) / (z[iz+1] - z[iz]);
+
 
   auto at = [&](size_t i, size_t j, size_t k) {
     return grid[index(i, j, k)];
   };
 
+
   auto lerp = [](double a, double b, double w) {
     return a * (1 - w) + b * w;
   };
+
 
   double c00 = lerp(at(it,   ir,   iz),     at(it,   ir+1, iz),     dr),
          c01 = lerp(at(it,   ir,   iz+1),   at(it,   ir+1, iz+1),   dr),
          c10 = lerp(at(it+1, ir,   iz),     at(it+1, ir+1, iz),     dr),
          c11 = lerp(at(it+1, ir,   iz+1),   at(it+1, ir+1, iz+1),   dr);
 
+
   double c0 = lerp(c00, c01, dz);
   double c1 = lerp(c10, c11, dz);
+
   return lerp(c0, c1, dt);
 }
 

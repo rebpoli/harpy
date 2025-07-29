@@ -7,9 +7,9 @@ THERMAL EXTERNAL
 STRESS BASE
 
 .TIMESTEP 
-DT0           0.5
-DTK           1.3
-DTMAX         31e6
+DT0           1e6
+DTK           3
+DTMAX         1e8
 TMAX          1e10 # 300 years
 MAX_STEPS     100000
 
