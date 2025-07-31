@@ -186,8 +186,9 @@ void SolverReader::external_state()
     string key = match[1];
     string val = match[2];
 
-    if ( iequals( key, "file" ) ) { config.external_file.filename = abs_filepath(val); return; }
-    if ( iequals( key, "grid" ) ) { set_grid_type(val);         return; }
+    if ( iequals( key, "file" ) )       { config.external_file.filename = abs_filepath(val); return; }
+    if ( iequals( key, "grid" ) )       { set_grid_type(val);                                return; }
+    if ( iequals( key, "min_radius" ) ) { config.external_file.min_radius = stod(val);       return; }
   }
 
   //

@@ -62,6 +62,7 @@ public:
     optional<string> filename;
     optional<GRID_TYPE> grid_type;
     optional<libMesh::Point> grid_origin;
+    optional<double> min_radius;
     bool check();
     bool is_defined() { if (filename && grid_type && grid_origin) return true ; return false; }
   };

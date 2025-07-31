@@ -1,20 +1,21 @@
-#!/usr/bin/env -S python
+#!/usr/bin/env -S python -i
 
 import os, time
 import re
 import numpy as np
 import pandas as pd
+import gzip
 
 # Parse the dat to capture the radial grid
-dat_fn = "STARS/test3-explicit_well.dat"
-temp_fn = "STARS/test3-refine-dates Temperature.txt"
+dat_fn = "STARS/test3-refine-dates-expon.dat"
+temp_fn = "STARS/test3-refine-dates-expon Temperature.txt.gz"
 
 # Precompile regex patterns for performance
 patterns = {
     "GRID":    re.compile(r"^\s*\*?GRID\s+(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\S+)\s+([0-9.]+)$"),
-    "DI":      re.compile(r"^\s*\*?DI\s+(\S+)\s+(.+)$"),
-    "DJ":      re.compile(r"^\s*\*?DJ\s+(\S+)\s+(.+)$"),
-    "DK":      re.compile(r"^\s*\*?DK\s+(\S+)\s+(.+)$"),
+    "DI":      re.compile(r"^\s*\*?DI\s+(\S+)\s+(.+)?$"),
+    "DJ":      re.compile(r"^\s*\*?DJ\s+(\S+)\s+(.+)?$"),
+    "DK":      re.compile(r"^\s*\*?DK\s+(\S+)\s+(.+)?$"),
     "DEPTH":   re.compile(r"^\s*\*?DEPTH\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9.]+)\s*$"),
 }
 
@@ -137,6 +138,8 @@ di = data["DI"]
 dj = data["DJ"]
 dk = data["DK"]
 
+print(di)
+
 # Initialize coordinate arrays for cell centers
 x = np.zeros((ni, nj, nk))
 y = np.zeros((ni, nj, nk))
@@ -168,16 +171,26 @@ for k in range(nk):
 #
 
 patterns = {
-    "TIME":    re.compile(r"TIME\s+=\s+(\d+)"),
+    "TIME":    re.compile(r"TIME\s+=\s+(\d+)\s+(\S+)(?:\s+(\S+))?"),
     "TEMP":    re.compile(r"^\s*\*?TEMP\s+ALL\s*"),
 }
+
+##
+#
+#
+def fraction_of_day(curr_time) :
+    from datetime import datetime, timedelta
+    t = datetime.strptime(curr_time, "%H:%M:%S")
+    td = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
+    return round( td.total_seconds() / 86400 , 6 )
+
 
 data = { }
 prop = []
 
 state = "START"
 curr_time_days = 0
-with open(temp_fn, 'r') as file:
+with gzip.open(temp_fn, 'rt') as file:
     ln = 0
     for line in file:
         ln += 1
@@ -186,7 +199,13 @@ with open(temp_fn, 'r') as file:
         if m := patterns["TIME"].search(line) :
             state = "START"
             curr_time_days = float(m.group(1))
+            curr_date = m.group(2)
+            curr_time = m.group(3)
+            if not curr_time : curr_time = "00:00:00"
+
+            curr_time_days += fraction_of_day( curr_time )
             data[curr_time_days] = {}
+            print(f"Reading time {curr_time_days} ({curr_date} {curr_time})")
 
         line = re.sub(r'\s*\*\*.*', '', line)
 
@@ -203,6 +222,7 @@ with open(temp_fn, 'r') as file:
 #
 #  Temperature for each cell
 #
+print("Building dataframe ...")
 from itertools import product
 records = []
 for t_days, entry in data.items():
@@ -216,13 +236,14 @@ for t_days, entry in data.items():
 df_temp = pd.DataFrame(records, columns=['t', 'i', 'j', 'k', 'TEMP'])
 df_temp.set_index(['t', 'i', 'j', 'k'], inplace=True)
 
-print(df_temp)
+print(df_temp.index.get_level_values("t"))
 
 
 
 #
 #  Create dataframe
 #
+print("Organizing dataframe ...")
 import pandas as pd
 from itertools import product  # All combinations
 data = [    (i, j, k, x[i, j, k], z[i, j, k])
@@ -234,6 +255,7 @@ df.set_index(['i', 'j', 'k'], inplace=True)
 #
 # Merge both dataframes
 #
+print("Merging dataframe ...")
 df_coords = df.reset_index()
 df_temp_reset = df_temp.reset_index()
 df_merged = pd.merge(df_temp_reset, df_coords, on=['i', 'j', 'k'])
@@ -247,20 +269,23 @@ from scipy.interpolate import griddata
 
 from matplotlib.ticker import FuncFormatter
 
-# Custom formatter: divide x labels by 10
-xscale = 10
-def scale_x_ticks(x, _): return f"{x / xscale:.1f}"
-def format_time_days(t_days):
-    total_hours = int(t_days * 24)
-    years, rem_hours = divmod(total_hours, 365 * 24)
-    months, rem_hours = divmod(rem_hours, 30 * 24)
-    days, hours = divmod(rem_hours, 24)
-    return f"{years}y {months}m {days}d {hours}h"
+print(df.index.get_level_values("t"))
 
+print("Exporting pickle ...")
 df.to_pickle( "db/temp.pkl" )
+print("Exporting gzip ...")
 df.reset_index()[["t","x","z","TEMP"]].to_csv("db/temperature.csv.gz", index=False, float_format="%.6e", compression="gzip")
-print(df)
 
+
+# # Custom formatter: divide x labels by 10
+# xscale = 10
+# def scale_x_ticks(x, _): return f"{x / xscale:.1f}"
+# def format_time_days(t_days):
+#     total_hours = int(t_days * 24)
+#     years, rem_hours = divmod(total_hours, 365 * 24)
+#     months, rem_hours = divmod(rem_hours, 30 * 24)
+#     days, hours = divmod(rem_hours, 24)
+#     return f"{years}y {months}m {days}d {hours}h"
 # #
 # # Heat map for each time
 # #

@@ -98,6 +98,8 @@ GridRadialFile::GridRadialFile(const string & filename)
  */
 double GridRadialFile::at(double qt, double qr, double qz) const 
 {
+  if ( qr < min_radius ) qr = min_radius;
+
 //  dlog(1) << "qt:" << qt << " qr:"<< qr <<" qz:" <<qz;
   auto find_index = [](const vector<double>& vec, double val) {
     auto it = upper_bound(vec.begin(), vec.end(), val);

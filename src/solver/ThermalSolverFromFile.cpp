@@ -51,19 +51,29 @@ ThermalSolverFromFile::~ThermalSolverFromFile()
  */
 void ThermalSolverFromFile::read_from_file()
 {
+  auto & ef = config->external_file;
+
   // Check if we have a complete description from a file
-  config->external_file.check(); 
+  ef.check(); 
 
   // Resolve stuff
+<<<<<<< Updated upstream
   grid_origin = *(config->external_file.grid_origin);
 
   string filename = *(config->external_file.filename);
   auto grid_type = *(config->external_file.grid_type);
+=======
+  grid_origin = *(ef.grid_origin);
+
+  string filename = *(ef.filename);
+  auto grid_type = *(ef.grid_type);
+>>>>>>> Stashed changes
 
   using enum GRID_TYPE;
   if ( grid_type != RADIAL ) flog << "We only support radial grids so far ...";
 
   grid = new GridRadialFile(filename);
+  if (ef.min_radius) grid->min_radius = *(ef.min_radius);
 }
 
 /**

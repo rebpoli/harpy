@@ -62,6 +62,7 @@ ostream& operator<<(ostream& os, const SolverConfig::ExternalFile & m)
   os << "            filename:      " << setw(15) << m.filename << endl;
   os << "            grid_type:     " << setw(15) << m.grid_type << endl;
   os << "            grid_origin:   " << setw(15) << m.grid_origin << endl;
+  os << "            min_radius:    " << setw(15) << m.min_radius << endl;
   return os;
 }
 
