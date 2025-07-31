@@ -7,9 +7,9 @@ THERMAL EXTERNAL
 STRESS BASE
 
 .TIMESTEP 
-DT0           1e6
+DT0           1000
 DTK           3
-DTMAX         1e8
+DTMAX         1e4
 TMAX          1e10 # 300 years
 MAX_STEPS     100000
 
@@ -27,23 +27,13 @@ K0    1e15    0
 .INITIAL 
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               UY            0
-BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         SIDEBURDEN          T          400
-DOMAIN         TEST_FRAME        T            400
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   0
 BOUNDARY       XN               UX            0
-BOUNDARY       XP               UX            0
 BOUNDARY       YN               UY            0
-BOUNDARY       YP               UY            0
-BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-BOUNDARY       ZP               UZ            0
-DOMAIN         SIDEBURDEN        T            400
-DOMAIN         TEST_FRAME        T            350
 
 

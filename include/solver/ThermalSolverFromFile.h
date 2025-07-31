@@ -53,6 +53,9 @@ private:
   /// Data holder
   GridFile * grid;
 
+  /// Helper stuff
+  libMesh::Point grid_origin;
+
   friend ostream& operator<<(ostream& os, const ThermalSolverFromFile & m);
 
 

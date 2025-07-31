@@ -55,8 +55,9 @@ void ThermalSolverFromFile::read_from_file()
   config->external_file.check(); 
 
   // Resolve stuff
+  grid_origin = *(config->external_file.grid_origin);
+
   string filename = *(config->external_file.filename);
-  libMesh::Point origin = *(config->external_file.grid_origin);
   auto grid_type = *(config->external_file.grid_type);
 
   using enum GRID_TYPE;
@@ -148,8 +149,7 @@ void ThermalSolverFromFile::solve()
 
 //  // Feed the element solver with the temperatures
   project_to_system();
-  export_exo("thermal.e");
-//  update_reference_solver();
+  update_reference_solver();
 }
 
 /**
@@ -162,8 +162,6 @@ void ThermalSolverFromFile::project_to_system()
 {
   SCOPELOG(1);
 
-  libMesh::Point origin = *(config->external_file.grid_origin);
-
   MeshBase & mesh = get_mesh();
   for (const auto & elem : mesh.active_element_ptr_range()) 
   {
@@ -171,18 +169,15 @@ void ThermalSolverFromFile::project_to_system()
     mat->reinit( *elem );
 
     const vector<Point> & xyz_qp = mat->fe->get_xyz();
-
     string mname = mat->name;
-
 
     vector<double> temp_qp;
     uint nqp = mat->qrule.n_points();
     temp_qp.resize(nqp);
     for ( uint qp=0 ; qp<nqp ; qp++ ) 
     {
-      Point p = xyz_qp[qp] + origin ;
+      Point p = xyz_qp[qp] + grid_origin ;
       temp_qp[qp] = grid->at( ts.time, p(0), p(1), p(2) );
-//      dlog(1) << "p:" << p << "  time:" << ts.time << "  T:" << temp_qp[qp];
     } 
 
     mat->project( temp_qp, "T" );
@@ -207,81 +202,47 @@ void ThermalSolverFromFile::update_reference_solver()
   // The mesh is the same as the reference coupler
   MeshBase & mesh = get_mesh();
 
-//  /**
-//   *   Update the quadrature points
-//   */
-//  for (const auto & elem : mesh.active_local_element_ptr_range()) 
-//  {
-//    uint eid = elem->id();
-//    suint sid = elem->subdomain_id();
+  /**
+   *   Update the quadrature points
+   */
+  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+  {
+    uint eid = elem->id();
+    suint sid = elem->subdomain_id();
 
-//    // init the fe in the explicit material (same qrule as the reference element,
-//    // different shape function - the one used in project_to_system)
-//    ExplicitMaterial * mat = get_explicit_material( *elem );
-//    mat->reinit( *elem ); 
+    // We need to feed the reference interface
+    //
+    // TODO: Fix this gambiarra. We need to split the VP interface in thermal, elastic etc and
+    //       only propagate what we need.
+    Material * vpmat_ = ref_solver->get_material( *elem );
+    ViscoPlasticMaterial *vpmat = dynamic_cast< ViscoPlasticMaterial *> ( vpmat_ );
 
-//    string mname = mat->name;
+    vpmat->reinit( *elem ); 
+    const vector<Point> & xyz_qp = vpmat->fe->get_xyz();
 
-//    // We need to feed the reference interface
-//    //
-//    // TODO: Fix this gambiarra. We need to split the VP interface in thermal, elastic etc and
-//    //       only propagate what we need.
-//    Material * vpmat_ = ref_solver->get_material( *elem );
-//    ViscoPlasticMaterial *vpmat = dynamic_cast< ViscoPlasticMaterial *> ( vpmat_ );
+    auto & vp_ifc = vpmat->vp_ifc;
+    auto & props = vp_ifc.by_elem[eid];
 
-//    vpmat->reinit( *elem ); 
+    uint nqp = vpmat->qrule.n_points();
+    props.resize(nqp); /// Is this correct?
 
-//    auto & vp_ifc = vpmat->vp_ifc;
-//    auto & props = vp_ifc.by_elem[eid];
+    /**  Update props **/
+    for ( uint qp=0 ; qp< nqp ; qp++ )
+    {
+      Point pt = xyz_qp[qp] + grid_origin ;
+      props[qp].temperature = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      props[qp].initial_temperature = grid->at( -1, pt(0), pt(1), pt(2) );
+    }
 
-//    //
-//    // TODO: This should work, but it seems that in the first iteration vpmat->qrule.n_points=0?
-//    //
-////     Validation - reference and thermal quadratures must be identical
-//    if ( vpmat->qrule.n_points() != mat->qrule.n_points() )
-//      wlog << "Reference and thermal quadrature points are different? Mat.nqp=" << mat->qrule.n_points() << " != VPMat->nqp=" << vpmat->qrule.n_points();
+    /* Update probes */
+    for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem ) // m1: ProbeByElemMap
+    for ( ProbeIFC * probe : m1[eid] )  // p: ProbeIFC*
+    {
+      Point pt = probe->pt + grid_origin;
+      probe->props.temperature = grid->at( ts.time, pt(0), pt(1), pt(2) );
+    }
 
-//    uint nqp = vpmat->qrule.n_points();
-//    props.resize(nqp); /// Is this correct?
-
-//    /**
-//     * Update the initial temperature
-//     */
-//    {
-//      double initial_temperature = 0;
-//      if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
-//      initial_temperature = initial_temperature_by_sid[ sid ];
-
-//      // Update the props
-//      for ( uint qp=0 ; qp< nqp ; qp++ )
-//        props[qp].initial_temperature = initial_temperature;
-
-//      /// Updates the probes
-//      for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-//      for ( auto & p : m1[eid] ) 
-//        p->props.initial_temperature = initial_temperature;
-//    }
-
-//    /**
-//     *    Update the temperature from the system solution
-//     */
-//    {
-//      /* Quadrature points */
-//      vector<double> vals_qp;
-//      mat->eval( vals_qp , "T" );
-//      // debug
-//      bool dd=0; // for ( double v : vals_qp ) if ( abs(v-400) > 0.1) dd = 1;
-//      if ( sid == 1 ) dd = 1;
-//      if ( dd ) dlog(1) << "[" << mesh.subdomain_name(sid) << "] VALS_QP: " << vals_qp;
-//      for ( uint qp=0 ; qp< nqp ; qp++ )
-//        props[qp].temperature = vals_qp[qp];
-
-//      /* Update probes */
-//      for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem )
-//      for ( auto & p : m1[eid] ) 
-//        p->props.temperature = mat->eval( p->pt, "T" );
-//    }
-//  }
+  }
 }
 
 
