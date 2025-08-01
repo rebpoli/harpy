@@ -8,8 +8,8 @@ gmsh.initialize(sys.argv)
 gmsh.model.add("cube")
 
 # Parameters
-cube_width  = 100
-cube_height = 50
+cube_width  = 200
+cube_height = 100
 
 # Create geometry
 cube_tag = gmsh.model.occ.addBox(-cube_width/2, -cube_width/2, -cube_height/2, cube_width, cube_width, cube_height)
