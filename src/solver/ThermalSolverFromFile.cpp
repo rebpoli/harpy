@@ -57,17 +57,10 @@ void ThermalSolverFromFile::read_from_file()
   ef.check(); 
 
   // Resolve stuff
-<<<<<<< Updated upstream
-  grid_origin = *(config->external_file.grid_origin);
-
-  string filename = *(config->external_file.filename);
-  auto grid_type = *(config->external_file.grid_type);
-=======
   grid_origin = *(ef.grid_origin);
 
   string filename = *(ef.filename);
   auto grid_type = *(ef.grid_type);
->>>>>>> Stashed changes
 
   using enum GRID_TYPE;
   if ( grid_type != RADIAL ) flog << "We only support radial grids so far ...";
@@ -107,7 +100,9 @@ void ThermalSolverFromFile::init_materials()
 void ThermalSolverFromFile::setup_variables()
 {
   dlog(1) << "Adding variable T ...";
-  system.add_variable( "T", FIRST, L2_LAGRANGE ); /// L2_LAGRANGE for discontinuous
+  system.add_variable( "T", FIRST, L2_LAGRANGE ); 
+  system.add_variable( "T0", FIRST, L2_LAGRANGE ); 
+  system.add_variable( "Delta_T", FIRST, L2_LAGRANGE ); 
 }
 
 /**
@@ -181,16 +176,30 @@ void ThermalSolverFromFile::project_to_system()
     const vector<Point> & xyz_qp = mat->fe->get_xyz();
     string mname = mat->name;
 
-    vector<double> temp_qp;
     uint nqp = mat->qrule.n_points();
+
+    vector<double> temp_qp, temp0_qp, dtemp_qp;
     temp_qp.resize(nqp);
+    temp0_qp.resize(nqp);
+    dtemp_qp.resize(nqp);
+
     for ( uint qp=0 ; qp<nqp ; qp++ ) 
     {
-      Point p = xyz_qp[qp] + grid_origin ;
-      temp_qp[qp] = grid->at( ts.time, p(0), p(1), p(2) );
+      Point pt = xyz_qp[qp] + grid_origin ;
+
+      double T = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      double T0 = grid->at( -1, pt(0), pt(1), pt(2) );
+      // This is a hack to avoid noisy temperature
+      if ( abs( T - T0 ) < 1 ) T = T0; 
+
+      temp_qp[qp]  = T;
+      temp0_qp[qp] = T0;
+      dtemp_qp[qp] = T - T0;
     } 
 
-    mat->project( temp_qp, "T" );
+    mat->project( temp_qp,  "T" );
+    mat->project( temp0_qp, "T0" );
+    mat->project( dtemp_qp, "Delta_T" );
   }
 
   // Close the system
@@ -240,8 +249,14 @@ void ThermalSolverFromFile::update_reference_solver()
     for ( uint qp=0 ; qp< nqp ; qp++ )
     {
       Point pt = xyz_qp[qp] + grid_origin ;
-      props[qp].temperature = grid->at( ts.time, pt(0), pt(1), pt(2) );
-      props[qp].initial_temperature = grid->at( -1, pt(0), pt(1), pt(2) );
+      double T = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      double T0 = grid->at( -1, pt(0), pt(1), pt(2) );
+
+      // This is a hack to avoid noisy temperature
+      if ( abs( T - T0 ) < 1 ) T = T0; 
+
+      props[qp].temperature = T;
+      props[qp].initial_temperature = T0;
     }
 
     /* Update probes */

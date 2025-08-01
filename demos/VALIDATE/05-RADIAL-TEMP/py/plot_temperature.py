@@ -13,22 +13,13 @@ x = df[1]  # Second column
 y = df[2]  # Third column
 z = df[3]  # Fourth column, for color
 
-# Create a grid to interpolate onto
-xi = np.linspace(min(x), max(x), 300)
-yi = np.linspace(min(y), max(y), 300)
-xi, yi = np.meshgrid(xi, yi)
-
-# Interpolate z values onto the grid
-zi = griddata((x, y), z, (xi, yi), method='cubic')  # use 'linear' or 'nearest' as alternatives
-
-# Plot
-plt.figure(figsize=(8, 6))
-contour = plt.imshow(zi, extent=[x.min(), x.max(), y.min(), y.max()],
-                     origin='lower', cmap='viridis', aspect='auto')
+contour = plt.scatter(x, y, c=z, s=10, linestyle="None")
 
 plt.colorbar(contour, label='Interpolated Value (Column 4)')
 plt.xlabel('X (Column 2)')
 plt.ylabel('Y (Column 3)')
 plt.title('Interpolated Colormap from CSV Data')
+
+plt.xlim( 0, 1 )
 plt.tight_layout()
 plt.show()

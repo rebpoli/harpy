@@ -7,7 +7,7 @@ THERMAL EXTERNAL
 STRESS BASE
 
 .TIMESTEP 
-DT0           1000
+DT0           10
 DTK           3
 DTMAX         1e4
 TMAX          1e10 # 300 years

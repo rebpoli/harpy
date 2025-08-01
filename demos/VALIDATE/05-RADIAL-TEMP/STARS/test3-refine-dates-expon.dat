@@ -1,14 +1,14 @@
 
 
 
-** Modelagem tÈrmica de B˙zios
-** Sistema modelado: fundo do mar atÈ o embasamento (grid geomec‚nico)
+** Modelagem t√©rmica de B√∫zios
+** Sistema modelado: fundo do mar at√© o embasamento (grid geomec√¢nico)
 
 
 ** SECTION 1: INPUT/OUTPUT CONTROL  ==============================================
 
-*TITLE1 'CAMPO DE B⁄ZIOS'
-*TITLE2 'SIMULA«√O T…RMICA COM GRID GEOMEC¬NICO'
+*TITLE1 'CAMPO DE B√öZIOS'
+*TITLE2 'SIMULA√á√ÉO T√âRMICA COM GRID GEOMEC√ÇNICO'
 *TITLE3 'FUNDO DO MAR A EMBASAMENTO'
 *CASEID 'CASOBASE'
 *XDR *ON
@@ -17,15 +17,15 @@
 *OUTUNIT *SI
   *EXCEPT  3 4   ** pressao em kgf/cm2
 
-** *RESTART  237  ** sem argumentos --> partir do ˙ltimo disponÌvel
+** *RESTART  237  ** sem argumentos --> partir do √∫ltimo dispon√≠vel
 ** *WRST *TIME
 ** *REWIND 5
 
-** SAÕDA PARA ARQUIVO .OUT
+** SA√çDA PARA ARQUIVO .OUT
 
 
 
-** SAÕDA PARA ARQUIVOS .IRF e .MRF
+** SA√çDA PARA ARQUIVOS .IRF e .MRF
 
 *OUTPRN *GRID *NONE
 ** *OUTPRN *WELL *LAYER
@@ -59,7 +59,7 @@ KDIR DOWN
 MOD 
 1:5 1 1:30 = 0.12
 
-** *CPOR 3.0001E-07     **  1/(kPa) - valor atualizado com input do estudo geomec‚nico. Email do Luis Carlos em 28/05/2015
+** *CPOR 3.0001E-07     **  1/(kPa) - valor atualizado com input do estudo geomec√¢nico. Email do Luis Carlos em 28/05/2015
 ** *PRPOR 63448.7       **  kPa
 
 *PERMI *KVAR  30*0. 10*1000. 30*0.               
@@ -134,7 +134,7 @@ MOD
 ** *THCONO 1.122E+04    **Thermal conductivity of oil   (J/m-day-C) = 1.8 (BTU/ft-day-F)
 ** *THCONG 3.740E+03    **Thermal conductivity of gas   (J/m-day-C) = 0.6 (BTU/ft-day-F)
 ** 
-** *ROCKTYPE 4 ** EMBASAMENTO   --- topo da talco-estevensita atÈ 12km
+** *ROCKTYPE 4 ** EMBASAMENTO   --- topo da talco-estevensita at√© 12km
 ** 
 ** *PRPOR   640.0       **Reference pressure for rock compressibility   (kgf) = 3043.298 (KPa)
 ** *CPOR   50.0E-06      **Effective rock compressibility              (1/KPa) = 7.00E-4 (1/psi)
@@ -148,7 +148,7 @@ MOD
 ** *THCONO 1.122E+04    **Thermal conductivity of oil   (J/m-day-C) = 1.8 (BTU/ft-day-F)
 ** *THCONG 3.740E+03    **Thermal conductivity of gas   (J/m-day-C) = 0.6 (BTU/ft-day-F)
 ** 
-** *ROCKTYPE 5 ** LAYER 1 (CAPACIDADE CALORÕFERA AUMENTADA)
+** *ROCKTYPE 5 ** LAYER 1 (CAPACIDADE CALOR√çFERA AUMENTADA)
 ** 
 ** *PRPOR   640.0       **Reference pressure for rock compressibility   (kgf) = 3043.298 (KPa)
 ** *CPOR   50.0E-06      **Effective rock compressibility              (1/KPa) = 7.00E-4 (1/psi)

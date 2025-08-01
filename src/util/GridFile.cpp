@@ -100,7 +100,6 @@ double GridRadialFile::at(double qt, double qr, double qz) const
 {
   if ( qr < min_radius ) qr = min_radius;
 
-//  dlog(1) << "qt:" << qt << " qr:"<< qr <<" qz:" <<qz;
   auto find_index = [](const vector<double>& vec, double val) {
     auto it = upper_bound(vec.begin(), vec.end(), val);
     size_t i = max<size_t>(1, it - vec.begin()) - 1;
@@ -146,5 +145,8 @@ double GridRadialFile::at(double qt, double qx, double qy, double qz) const
 {
   // Calculate the radius we want to query in the radial geometry
   double qr = sqrt( qx*qx + qy*qy );
-  return at( qt, qr, qz );
+  double T = at( qt, qr, qz );
+//  dlog(1) << "qt:" << qt << " qr:"<< qr <<" qz:" <<qz << "  T:" << T;
+  return T;
+
 }

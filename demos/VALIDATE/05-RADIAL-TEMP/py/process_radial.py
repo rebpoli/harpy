@@ -60,6 +60,7 @@ def _to_list( vstr ) :
 #
 #
 with open(dat_fn, 'r') as file:
+    print(f"Openin ... {dat_fn}")
     ln = 0
     for line in file:
         line = line.strip()
@@ -89,7 +90,7 @@ with open(dat_fn, 'r') as file:
             rwstr = m.group(5).lstrip("*")
             rw = float(m.group(6))
             state = "START"
-#             print(f"ni:{ni} nj:{nj} nk:{nk} rwstr:{rwstr} rw:{rw}")
+            print(f"ni:{ni} nj:{nj} nk:{nk} rwstr:{rwstr} rw:{rw}")
             continue
 
         if m := patterns["DI"].match(line):
