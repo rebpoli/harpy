@@ -9,7 +9,7 @@ gmsh.model.add("cube")
 
 # Parameters
 cube_width  = 200
-cube_height = 200
+cube_height = 100
 
 # Create geometry
 cube_tag = gmsh.model.occ.addBox(0, 0, -cube_height/2, cube_width/2, cube_width/2, cube_height)
@@ -39,11 +39,11 @@ for dim, tag in cube_boundaries:
             break
 
 # Generate mesh
-gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 10)
+gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 5)
 gmsh.model.mesh.generate(3)
 
 # Save mesh and show GUI if requested
 gmsh.write("model/cube.msh")
-gmsh.fltk.run()
-gmsh.finalize()
+# gmsh.fltk.run()
+# gmsh.finalize()
 

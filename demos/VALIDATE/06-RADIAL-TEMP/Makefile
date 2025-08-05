@@ -47,4 +47,9 @@ gdb: gdb-dbg
 plot: .force
 	py/plot_lin0.py
 
+videos:
+	ffmpeg -framerate 10 -pattern_type glob -i 'sigtotxx_and_temp/sigtotxx_and_temp.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 sigtotxx.mp4
+	ffmpeg -framerate 10 -pattern_type glob -i 'von_mises_and_temp/von_mises_and_temp.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 vonmises.mp4
+
+
 .force:
