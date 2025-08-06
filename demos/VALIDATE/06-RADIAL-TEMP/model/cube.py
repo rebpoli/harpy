@@ -12,7 +12,7 @@ cube_width  = 200
 cube_height = 100
 
 # Create geometry
-cube_tag = gmsh.model.occ.addBox(0, 0, -cube_height/2, cube_width/2, cube_width/2, cube_height)
+cube_tag = gmsh.model.occ.addBox(-cube_width/2, -cube_width/2, -cube_height/2, cube_width, cube_width, cube_height)
 gmsh.model.occ.synchronize()
 
 gmsh.model.addPhysicalGroup(3, [cube_tag], name="TEST_FRAME")
@@ -22,9 +22,9 @@ cube_boundaries = gmsh.model.getBoundary([(3, cube_tag)], oriented=False)
 
 
 face_labels = {
-    "XN": lambda c: abs(c[0] - 0) < 1e-6,                       # X = 0 plane (Symmetry)
+    "XN": lambda c: abs(c[0] + cube_width / 2) < 1e-6,          # X = -cube_width/2
     "XP": lambda c: abs(c[0] - cube_width / 2) < 1e-6,          # X = +cube_width/2
-    "YN": lambda c: abs(c[1] - 0) < 1e-6,                       # Y = 0 plane (Symmetry)
+    "YN": lambda c: abs(c[1] + cube_width / 2) < 1e-6,          # Y = -cube_width/2
     "YP": lambda c: abs(c[1] - cube_width / 2) < 1e-6,          # Y = +cube_width/2
     "ZN": lambda c: abs(c[2] + cube_height / 2) < 1e-6,         # Z = -cube_height/2
     "ZP": lambda c: abs(c[2] - cube_height / 2) < 1e-6          # Z = +cube_height/2
