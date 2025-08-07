@@ -25,9 +25,12 @@
 # BASEDIR = /raid/bfq9
 
 # WSL
-SINGULARITY_CACHEDIR := /home/renato/temp/singularity_cache
-BASEDIR = /home/renato/build
+# SINGULARITY_CACHEDIR := /home/renato/temp/singularity_cache
+# BASEDIR = /home/renato/build
 
+#Alien
+SINGULARITY_CACHEDIR := /tmp/sing_cache
+BASEDIR = build/
 
 SINGULARITY_TMPDIR := $(SINGULARITY_CACHEDIR)
 export SINGULARITY_CACHEDIR
@@ -57,6 +60,7 @@ build: $(TARFILE)
 	@echo "**"
 	@echo "** Rodando singularity (Docker tar => sif)"
 	@echo "**"
+	mkdir -p $(INSTALLDIR)
 	singularity build --force $(SIFFILE) docker-archive:$(TARFILE)
 
 $(TARFILE): $(DOCKERFILE)

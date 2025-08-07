@@ -8,7 +8,7 @@ export CHDEBUG=0
 export N=8
 
 # PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 
-PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-4 -snes_max_it 20 -ksp_rtol 1e-15 -snes_linesearch_type basic -snes_atol 1e-7 -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 -ksp_max_it 1000 # -ksp_monitor_true_residual 
+PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-4 -snes_max_it 8 -ksp_rtol 1e-15 -snes_linesearch_type basic -snes_atol 1e-7 -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 -ksp_max_it 1000 # -ksp_monitor_true_residual 
 
 # PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -ksp_monitor -pc_type lu -ksp_type gmres -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20
 # PETSC_OPT=-snes_monitor -log_view -ksp_monitor -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7
@@ -48,8 +48,7 @@ plot: .force
 	py/plot_lin0.py
 
 videos:
-	ffmpeg -framerate 10 -pattern_type glob -i 'sigtotxx_and_temp/sigtotxx_and_temp.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 sigtotxx.mp4
-	ffmpeg -framerate 10 -pattern_type glob -i 'von_mises_and_temp/von_mises_and_temp.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 vonmises.mp4
+	ffmpeg -framerate 10 -pattern_type glob -i 'refined_mesh/refined_mesh_sigxx.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 refined_mesh_sigtotxx.mp4
 
 
 .force:

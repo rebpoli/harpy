@@ -118,3 +118,5 @@ Stage0 += packages( ospackages=[ 'qtwayland5', 'libxkbcommon-x11-0', 'libxcb-cur
 Stage0 += packages( ospackages=[ 'zathura' ] )
 #  For autodiff
 Stage0 += packages( ospackages=[ 'libeigen3-dev' ] )   
+
+Stage0 += packages( ospackages=[ 'xauth' ] )   
