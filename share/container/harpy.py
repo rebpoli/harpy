@@ -120,3 +120,5 @@ Stage0 += packages( ospackages=[ 'zathura' ] )
 Stage0 += packages( ospackages=[ 'libeigen3-dev' ] )   
 
 Stage0 += packages( ospackages=[ 'xauth' ] )   
+
+Stage0 += environment( variables={ 'SINGTAG' :'HARPY' } )
