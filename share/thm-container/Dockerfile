@@ -7,7 +7,7 @@ FROM docker.io/ubuntu:24.04
 # FROM nvcr.io/nvidia/nvhpc:25.3-devel-cuda_multi-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV SINGTAG=THM
+ENV SINGTAG=KRAKEN
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 

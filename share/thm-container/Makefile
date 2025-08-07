@@ -9,7 +9,7 @@ export TMPDIR
 
 BUILD_DIR = build
 INSTALL_DIR = /opt/container/
-TAG = thm-dealii
+TAG = kraken
 DOCKERFILE = Dockerfile
 TARFILE = $(BUILD_DIR)/$(TAG).tar
 SIFFILE = $(TAG).sif
