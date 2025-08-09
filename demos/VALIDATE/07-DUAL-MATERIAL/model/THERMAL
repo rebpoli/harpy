@@ -2,4 +2,4 @@
 FILE temperature.csv.gz
 GRID RADIAL
 ORIGIN 0 0 5495  # The translation of our domain into the physical space (the value is ADDED to the FEM points xyz)
-MIN_RADIUS 3
+MIN_RADIUS 1

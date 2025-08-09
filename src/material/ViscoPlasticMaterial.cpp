@@ -278,6 +278,7 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
 
   PropsTranspose Pt( vp_ifc.by_qp );
   stress_postproc.project_tensor( Pt.sigtot, "sigtot" );
+  stress_postproc.project_tensor_invariants( Pt.sigtot , "S" );
   stress_postproc.project_tensor( Pt.sigeff, "sigeff" );
   stress_postproc.project_tensor( Pt.deviatoric, "deviatoric" );
   stress_postproc.project_tensor( Pt.plastic_strain, "plastic_strain" );

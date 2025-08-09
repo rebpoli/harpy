@@ -115,4 +115,5 @@ RUN apt-get update -y && \
         zathura && \
     rm -rf /var/lib/apt/lists/*
 
+ENV SINGTAG=HARPY
 

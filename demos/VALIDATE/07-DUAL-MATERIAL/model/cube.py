@@ -6,13 +6,13 @@ import sys
 gmsh.initialize()
 gmsh.model.add("three_layers")
 
-lx, ly = 100.0, 100.0
-z_zero = -40.0
+lx, ly = 500.0, 500.0
+z_zero = -200.0
 tol = 1e-6
 
 layers = [
-    {"name": "CAPROCK",         "thickness": 40.0},
-    {"name": "RESERVOIR",       "thickness": 100.0},
+    {"name": "CAPROCK",         "thickness": -z_zero},
+    {"name": "RESERVOIR",       "thickness": 300.0},
 #     {"name": "UNDERBURDEN",     "thickness": 20.0},
 ]
 
@@ -44,7 +44,7 @@ face_labels = {
     "XP": lambda c: abs(c[0] - lx) < tol,
     "YN": lambda c: abs(c[1]) < tol,
     "YP": lambda c: abs(c[1] - ly) < tol,
-    "ZN": lambda c: abs(c[2] + 40.0) < tol,
+    "ZN": lambda c: abs(c[2] - z_zero) < tol,
     "ZP": lambda c: abs(c[2] - z_base) < tol
 }
 
@@ -72,11 +72,11 @@ line = gmsh.model.occ.addLine(pt1, pt2)
 ## SYNC ALL UPDATES
 gmsh.model.occ.synchronize()
 
-gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 10)
+# gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 10)
 
 target_size = 3
 min_size = target_size
-max_size = 10
+max_size = 50
 dmax = 20.0
 
 # Field 1: Refine near (0, 0, z) in a column
@@ -95,9 +95,9 @@ f2 = gmsh.model.mesh.field.add("Box")
 gmsh.model.mesh.field.setNumber(f2, "VIn", 3)
 gmsh.model.mesh.field.setNumber(f2, "VOut", 1000)
 gmsh.model.mesh.field.setNumber(f2, "XMin", 0)
-gmsh.model.mesh.field.setNumber(f2, "XMax",  lx)
+gmsh.model.mesh.field.setNumber(f2, "XMax",  100)
 gmsh.model.mesh.field.setNumber(f2, "YMin", 0)
-gmsh.model.mesh.field.setNumber(f2, "YMax",  ly)
+gmsh.model.mesh.field.setNumber(f2, "YMax",  100)
 gmsh.model.mesh.field.setNumber(f2, "ZMin", interface_z - 5)
 gmsh.model.mesh.field.setNumber(f2, "ZMax", interface_z + 5)
 

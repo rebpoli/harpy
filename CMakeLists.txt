@@ -117,6 +117,7 @@ ADD_LIBRARY(Modules
   src/postproc/Probe.cpp
   src/postproc/ViscoplasticReport.cpp
   src/postproc/StressPostProc.cpp
+  src/postproc/TensorInvariants.cpp
   src/solver/BC.cpp
   src/solver/ViscoplasticSolver.cpp
   src/solver/ThermalSolverConstant.cpp

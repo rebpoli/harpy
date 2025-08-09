@@ -2,6 +2,7 @@
 #include "harpy/ExplicitMaterial.h"
 #include "libmesh/explicit_system.h"
 #include "util/OutputOperators.h"
+#include "postproc/TensorInvariants.h"
 
 /**
  *   Reinits the FE strucutures and assign the element to the material.
@@ -181,6 +182,60 @@ void ExplicitMaterial::project_tensor( vector<RealTensor> & vals_qp, string vnam
         system.solution->set(dof_i, X(B));
     }
   }
+}
+
+
+/**
+ *
+ *
+ */
+void ExplicitMaterial::project_tensor_invariants( vector<RealTensor> & vals_qp, string vname )
+{
+  uint nqp = qrule.n_points();
+
+  /* Initialize the vectors to prepare the projection */
+  vector<double> invarQ_qp(nqp), invarP_qp(nqp);
+  vector<double> S1_qp(nqp), S2_qp(nqp), S3_qp(nqp);
+
+  /* Principal stresses [i:012=S1,S2,S3 ; j:012=X,Y,Z] */
+  vector<double> Sij_qp[3][3];
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++) 
+    Sij_qp[i][j] = vector<double>( nqp );
+
+  /** Do the calculations **/
+  for (uint qp=0; qp<nqp; qp++)
+  {
+    TensorInvariants tinv( vals_qp[qp] );
+
+    // S1_j, S2_j, S3_j
+    for (uint i=0; i<3; i++)
+    for (uint j=0; j<3; j++) 
+      Sij_qp[i][j][qp] = tinv.get_Sij( i, j );
+    
+    invarP_qp[qp] = tinv.get_P();
+    invarQ_qp[qp] = tinv.get_Q();
+
+    // Magnitude of the principal stresses
+    S1_qp[qp] = tinv.S1_eval();
+    S2_qp[qp] = tinv.S2_eval();
+    S3_qp[qp] = tinv.S3_eval();
+  }
+
+  /* Project the invariants */
+  vector< vector<string> > sij_ = { { vname+"1X", vname+"1Y", vname+"1Z" } , 
+                                    { vname+"2X", vname+"2Y", vname+"2Z" } , 
+                                    { vname+"3X", vname+"3Y", vname+"3Z" } };
+  for (uint i=0; i<3; i++)
+  for (uint j=0; j<3; j++) 
+    project( Sij_qp[i][j], sij_[i][j] );
+
+  project( invarQ_qp, vname+"_invarQ" );
+  project( invarP_qp, vname+"_invarP" );
+
+  project( S1_qp, vname+"1_mag" );
+  project( S2_qp, vname+"2_mag" );
+  project( S3_qp, vname+"3_mag" );
 }
 
 /**

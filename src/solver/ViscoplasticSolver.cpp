@@ -97,6 +97,21 @@ void ViscoplasticSolver::setup_variables()
     stress_system.add_variable( "von_mises", order, fef);
     stress_system.add_variable( "epskk", order, fef );
     stress_system.add_variable( "F", order, fef );
+
+    // Invariants
+    sdir  = { "X",  "Y",  "Z" };
+    for ( uint i=0 ; i<3; i++ )
+    for ( auto sd : sdir )
+    {
+      string vn = "S"+to_string(i+1)+sd;
+      stress_system.add_variable( vn, order, fef );
+      dlog(1) << "Added variable '" << vn << "'";
+    }
+
+    for ( uint i=0 ; i<3; i++ )
+      stress_system.add_variable( "S"+to_string(i+1)+"_mag" , order, fef);
+    stress_system.add_variable( "S_invarQ" , order, fef);
+    stress_system.add_variable( "S_invarP" , order, fef);
   }
 
   // Scalars and penalties
