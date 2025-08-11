@@ -112,5 +112,5 @@ gmsh.model.mesh.field.setAsBackgroundMesh(fmin)
 gmsh.model.mesh.generate(3)
 
 gmsh.write("model/cube.msh")
-gmsh.fltk.run()
-gmsh.finalize()
+# gmsh.fltk.run()
+# gmsh.finalize()

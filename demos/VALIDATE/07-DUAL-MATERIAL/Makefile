@@ -48,7 +48,7 @@ plot: .force
 	py/plot_lin0.py
 
 videos:
-	ffmpeg -framerate 10 -pattern_type glob -i 'refined_mesh/refined_mesh_sigxx.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 refined_mesh_sigtotxx.mp4
+	ffmpeg -framerate 10 -pattern_type glob -i 's3_anim4/s3*.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 s3_anim.mp4
 
 
 .force:
