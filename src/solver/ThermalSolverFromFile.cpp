@@ -90,7 +90,7 @@ void ThermalSolverFromFile::init_materials()
     // to the thermal material
     Material * ref_material = ref_solver->get_material( *elem );
 
-    material_by_sid[sid] = new ExplicitMaterial( ref_material, system );
+    material_by_sid[sid] = new ExplicitThermalMaterial( ref_material, system );
   }
 }
 
@@ -113,46 +113,8 @@ void ThermalSolverFromFile::setup_variables()
 void ThermalSolverFromFile::solve()
 {
   SCOPELOG(1);
-//  temperature_by_sid.clear();
-//  initial_temperature_by_sid.clear();
 
-//  MeshBase & mesh = get_mesh();
-
-
-//  ///
-//  double reftime = bc_config.get_reftime( ts.time ) ;
-//  if ( ! bc_config.entry_by_time.count( reftime ) ) flog << "Inconsistency in BCConfig. All _reftime_ must have an entry in entry_by_time.";
-//  const BCConfig::TimeEntry & timeentry = bc_config.entry_by_time.at( reftime );
-//  ///
-//  for ( auto & [ sid_name, dbcs ] : timeentry.domain_bcs )
-//  {
-//    uint sid = mesh.get_id_by_name(sid_name);
-//    for ( auto & dbc : dbcs )
-//    {
-//      if ( ! iequals ( dbc.vname , "T" ) ) continue;
-//      temperature_by_sid[ sid ] = dbc.value;
-//      dlog(1) << "Temperature for '" << sid_name << "(" << sid << ")" << "': " << dbc.value; 
-//    }
-//  }
-
-//  /// Fetch the initial (reference) time, where the equilibrium temperature is set
-//  const auto & mapit = bc_config.entry_by_time.cbegin();
-//  if ( mapit == bc_config.entry_by_time.end() ) flog << "No time entry? Cannot continue.";
-//  if ( mapit->first >=0 ) flog << "The initial timeentry should be negative, indicating thne initial condition!";
-//  const BCConfig::TimeEntry & init_timeentry = mapit->second;
-//  ///
-//  for ( auto & [ sid_name, dbcs ] : init_timeentry.domain_bcs )
-//  {
-//    uint sid = mesh.get_id_by_name(sid_name);
-//    for ( auto & dbc : dbcs )
-//    {
-//      if ( ! iequals ( dbc.vname , "T" ) ) continue;
-//      initial_temperature_by_sid[ sid ] = dbc.value;
-//      dlog(1) << "Initial temperature for '" << sid_name << "(" << sid << ")" << "': " << dbc.value; 
-//    }
-//  }
-
-//  // Feed the element solver with the temperatures
+  // Feed the element solver with the temperatures
   project_to_system();
   update_reference_solver();
 }

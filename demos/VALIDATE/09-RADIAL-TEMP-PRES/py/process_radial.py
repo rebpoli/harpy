@@ -6,9 +6,12 @@ import numpy as np
 import pandas as pd
 import gzip
 
+# PROP = "Pressure"
+PROP = "Temperature"
+
 # Parse the dat to capture the radial grid
-dat_fn = "STARS/test3-refine-dates-expon.dat"
-temp_fn = "STARS/test3-refine-dates-expon Temperature.txt.gz"
+dat_fn = "stars/test3-refine-dates-expon.dat"
+temp_fn = f"stars/test3-refine-dates-expon {PROP}.txt.gz"
 
 # Precompile regex patterns for performance
 patterns = {
@@ -59,7 +62,7 @@ def _to_list( vstr ) :
 #
 #
 #
-with open(dat_fn, 'r') as file:
+with open(dat_fn, 'r', encoding="latin1") as file:
     print(f"Openin ... {dat_fn}")
     ln = 0
     for line in file:
@@ -174,6 +177,7 @@ for k in range(nk):
 patterns = {
     "TIME":    re.compile(r"TIME\s+=\s+(\d+)\s+(\S+)(?:\s+(\S+))?"),
     "TEMP":    re.compile(r"^\s*\*?TEMP\s+ALL\s*"),
+    "PRES":    re.compile(r"^\s*\*?PRES\s+ALL\s*"),
 }
 
 ##
@@ -216,29 +220,54 @@ with gzip.open(temp_fn, 'rt') as file:
             data[curr_time_days]["TEMP_C"] = prop
             continue
 
+        if m := patterns["PRES"].search(line) :
+            state = "READING"
+            prop = []
+            data[curr_time_days]["PRES_KGF"] = prop
+            continue
+
         if state == "READING" :
             ll = _to_list( line )
             prop.extend(ll)
 
 #
-#  Temperature for each cell
+#  Each cell Temp or Pres
 #
+
 print("Building dataframe ...")
 from itertools import product
-records = []
-for t_days, entry in data.items():
-    t_sec = t_days * 24 * 60 * 60
-    temp_vals = np.array(entry['TEMP_C']) + 273
-    ii = 0
-    for k, j, i in product(range(nk), range(nj), range(ni)):
-        records.append((t_sec, i, j, k, temp_vals[ii]))
-        ii += 1
 
-df_temp = pd.DataFrame(records, columns=['t', 'i', 'j', 'k', 'TEMP'])
-df_temp.set_index(['t', 'i', 'j', 'k'], inplace=True)
+if PROP == "Temperature" :
+    records = []
+    for t_days, entry in data.items():
+        t_sec = t_days * 24 * 60 * 60
+        temp_vals = np.array(entry['TEMP_C']) + 273
+        ii = 0
+        for k, j, i in product(range(nk), range(nj), range(ni)):
+            if len(temp_vals) :
+                records.append((t_sec, i, j, k, temp_vals[ii]))
+            ii += 1
 
-print(df_temp.index.get_level_values("t"))
+    df_temp = pd.DataFrame(records, columns=['t', 'i', 'j', 'k', 'TEMP'])
+    df_temp.set_index(['t', 'i', 'j', 'k'], inplace=True)
 
+    print(df_temp.index.get_level_values("t"))
+
+if PROP == "Pressure" :
+    records = []
+    for t_days, entry in data.items():
+        t_sec = t_days * 24 * 60 * 60
+        pres_vals = np.array(entry['PRES_KGF']) * 98066.5
+        ii = 0
+        for k, j, i in product(range(nk), range(nj), range(ni)):
+            if len(pres_vals) :
+                records.append((t_sec, i, j, k, pres_vals[ii]))
+            ii += 1
+
+    df_temp = pd.DataFrame(records, columns=['t', 'i', 'j', 'k', 'PRES'])
+    df_temp.set_index(['t', 'i', 'j', 'k'], inplace=True)
+
+    print(df_temp.index.get_level_values("t"))
 
 
 #
@@ -273,70 +302,10 @@ from matplotlib.ticker import FuncFormatter
 print(df.index.get_level_values("t"))
 
 print("Exporting pickle ...")
-df.to_pickle( "db/temp.pkl" )
-print("Exporting gzip ...")
-df.reset_index()[["t","x","z","TEMP"]].to_csv("db/temperature.csv.gz", index=False, float_format="%.6e", compression="gzip")
+# df.to_pickle( "model/temp.pkl" )
+# print("Exporting gzip ...")
+if PROP == "Temperature" : field = "TEMP"
+if PROP == "Pressure" : field = "PRES"
 
+df.reset_index()[["t","x","z",field]].to_csv(f"model/{PROP.lower()}.csv.gz", index=False, float_format="%.6e", compression="gzip")
 
-# # Custom formatter: divide x labels by 10
-# xscale = 10
-# def scale_x_ticks(x, _): return f"{x / xscale:.1f}"
-# def format_time_days(t_days):
-#     total_hours = int(t_days * 24)
-#     years, rem_hours = divmod(total_hours, 365 * 24)
-#     months, rem_hours = divmod(rem_hours, 30 * 24)
-#     days, hours = divmod(rem_hours, 24)
-#     return f"{years}y {months}m {days}d {hours}h"
-# #
-# # Heat map for each time
-# #
-# tempmin = df["TEMP"].min()
-# tempmax = df["TEMP"].max()
-# for t in df.index.get_level_values('t').unique():
-#     print(f"Plotting {format_time_days(t)} ... ")
-#     df_t = df.loc[t].reset_index()
-#     print(df_t)
-#     plt.figure()
-#     x_vals = df_t['x'].values * xscale
-#     z_vals = df_t['z'].values
-#     v_vals = df_t["TEMP"].values
-#     xi = np.linspace(x_vals.min(), x_vals.max(), 10000)
-#     zi = np.linspace(z_vals.min(), z_vals.max(), 300)
-#     xi, zi = np.meshgrid(xi, zi)
-#     vi = griddata((x_vals, z_vals), v_vals, (xi, zi), method='linear', fill_value=0)
-#     plt.imshow(vi, extent=[x_vals.min(), x_vals.max(), z_vals.min(), z_vals.max()],
-#                origin='lower', aspect='auto', cmap='coolwarm', interpolation='bilinear',
-#                vmin=tempmin, vmax=tempmax)
-#     plt.colorbar(label='Value')
-#     plt.xlabel('$R$ (m)')
-#     plt.ylabel('$TVDSS$ (m)')
-#     plt.xlim([0,200*xscale])
-#     plt.gca().xaxis.set_major_formatter(FuncFormatter(scale_x_ticks))
-#     plt.title(f'Interpolated Heatmap (t={format_time_days(t)})')
-#     plt.gca().invert_yaxis()
-#     plt.tight_layout()
-#     plt.savefig(f'png/temperature_t{t}.png', dpi=150)
-#     plt.close()
-
-
-# # # #
-# # # # Scatter
-# # # #
-# # for t in df.index.get_level_values('t').unique():
-# #     df_t = df.loc[t].reset_index()
-# #     plt.figure()
-# #     x_vals = df_t['x'].values * xscale
-# #     z_vals = df_t['z'].values
-# #     v_vals = df_t["TEMP"].values
-# #     plt.scatter(x_vals, z_vals, c=v_vals, s=1)
-# #     plt.xlabel('x')
-# #     plt.ylabel('z')
-# #     plt.title(f'Scatter (t={format_time_days(t)})')
-# #     plt.xlim([0,200*xscale])
-# #     plt.gca().xaxis.set_major_formatter(FuncFormatter(scale_x_ticks))
-# #     plt.grid(True)
-# #     plt.gca().invert_yaxis()
-# #     plt.tight_layout()
-
-# #     plt.savefig(f'png/scatter_temperature_t{t}.png', dpi=150)
-# #    plt.close()

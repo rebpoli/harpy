@@ -326,6 +326,12 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint i=0;  i<3;  i++)
     Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * ( P->temperature - P->initial_temperature );
 
+  // Pressure
+  //       - ( \phi_i,i , biot P ) ==> term in the RHS.
+  for (uint B=0;  B<n_dofsv;  B++)
+  for (uint i=0;  i<3;  i++)
+    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->biot  * ( P->pressure - P->initial_pressure );
+
   // For visualization and debugging
   AD::real epskk = 0;
   for (uint k=0; k<3; k++ ) epskk += grad_u(k,k);
@@ -346,6 +352,8 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
     sigtot(k,k) -= P->alpha_d * ( P->temperature - P->initial_temperature );
+  for (uint k=0; k<3; k++ ) 
+    sigtot(k,k) -= P->biot * ( P->pressure - P->initial_pressure );
 
   AD::Mat deviatoric = sigtot;
   for (uint i=0; i<3; i++ )

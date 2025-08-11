@@ -14,6 +14,7 @@
 // Import children
 #include "solver/ThermalSolverConstant.h"
 #include "solver/ThermalSolverFromFile.h"
+#include "solver/PressureSolverFromFile.h"
 
 /**
  *
@@ -121,4 +122,18 @@ Solver * SolverFactory::new_thermal( Solver * ref )
     return new ThermalSolverFromFile( ref,  sname );
   
   return new ThermalSolverConstant( ref,  sname );
+}
+
+/** **/
+Solver * SolverFactory::new_pressure( Solver * ref )
+{
+  string sname = "pressure";
+  SolverConfig * config = MODEL->solver_config( sname );
+
+  if ( config->external_file.is_defined() ) 
+    return new PressureSolverFromFile( ref,  sname );
+  
+  flog << "Unknown pressure solver!";
+  return new PressureSolverFromFile( ref,  sname );  // Dummy line, to keep consistency
+//  return new PressureSolverConstant( ref,  sname );
 }

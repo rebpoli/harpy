@@ -33,8 +33,32 @@ public:
 
   void close_system();
 
-  void init_fem();
+  virtual void init_fem()
+  { flog << "Must be defined in the child object"; }
 
 protected:
   ExplicitSystem & system;
+};
+
+/**
+ *
+ */
+class ExplicitThermalMaterial : public ExplicitMaterial
+{
+public:
+  ExplicitThermalMaterial( Material * ref_material, ExplicitSystem & sys_ ) :
+    ExplicitMaterial( ref_material, sys_ ) {}
+
+  virtual void init_fem();
+};
+
+/**
+ *
+ */
+class ExplicitPressureMaterial : public ExplicitMaterial
+{
+public:
+  ExplicitPressureMaterial( Material * ref_material, ExplicitSystem & sys_ ) :
+    ExplicitMaterial( ref_material, sys_ ) {}
+  virtual void init_fem();
 };

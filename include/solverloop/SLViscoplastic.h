@@ -27,5 +27,5 @@ class SLViscoplastic : public Solverloop
 
   private:
 
-    Solver * viscoplastic, * thermal;
+    Solver * viscoplastic, * thermal, * pressure;
 };

@@ -22,12 +22,16 @@ struct VPProps
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
 
+  // Poroelasticity
+  double biot;
+
   CreepMD creep_md; // Defined in MaterialConfig
 
   // State variables
   RealTensor GRAD_U;
   RealVectorValue U;
   double temperature, initial_temperature;
+  double pressure, initial_pressure;
 
   // Stresses
   RealTensor sigtot, sigeff, deviatoric;

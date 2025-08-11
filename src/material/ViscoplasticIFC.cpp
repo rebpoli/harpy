@@ -65,6 +65,7 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
  */
 void VPProps::init_from_config( const MaterialConfig & config, const Point & pt )
 {
+  biot               = config.get_property( "biot",            pt,     "porothermoelastic" );
   alpha_d            = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
   beta_e             = config.get_property( "beta_e",          pt,     "porothermoelastic" );
   lame_mu            = config.get_property( "lame_mu",         pt,     "porothermoelastic" );
@@ -93,7 +94,10 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
 
   sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
+  {
     sigtot(k,k) -= alpha_d * ( temperature - initial_temperature );
+    sigtot(k,k) -= biot    * ( pressure - initial_pressure );
+  }
 
   deviatoric = sigtot;
   for (uint i=0; i<3; i++ )
@@ -183,13 +187,17 @@ ostream& operator<<(ostream& os, const VPProps & p)
   os << "    Static variables:" << endl;
   os << right << setw(20) << "lame_mu:" << setw(15) << p.lame_mu << endl;
   os << right << setw(20) << "lame_lambda:" << setw(15) << p.lame_lambda << endl;
+  os << right << setw(20) << "biot:" << setw(15) << p.biot << endl;
   os << right << setw(20) << "alpha_d:" << setw(15) << p.alpha_d << endl;
   os << right << setw(20) << "beta_e:" << setw(15) << p.beta_e << endl;
 
   os << right << setw(20) << "creep_md:" << setw(15) << p.creep_md << endl;
   os << "    State variables:" << endl;
   os << right << setw(20) << "U:" << setw(15) << Print(p.U) << endl;
+  os << right << setw(20) << "Initial Temperature:" << setw(15) << p.initial_temperature << endl;
   os << right << setw(20) << "Temperature:" << setw(15) << p.temperature << endl;
+  os << right << setw(20) << "Initial Pressure:" << setw(15) << p.initial_pressure << endl;
+  os << right << setw(20) << "Pressure:" << setw(15) << p.pressure << endl;
   os << right << setw(20) << "Plastic_strain:" << setw(15) << Print(p.plastic_strain) << endl;
   os << right << setw(20) << "Plastic_strain_n:" << setw(15) << Print(p.plastic_strain_n) << endl;
   os << right << setw(20) << "Plastic_strain_rate:" << setw(15) << Print(p.plastic_strain_rate) << endl;

@@ -24,6 +24,7 @@ ThermalSolverConstant::ThermalSolverConstant( Solver * ref_solver_, string name_
   init_materials(); 
 }
 
+
 /**
  *
  */
@@ -51,7 +52,7 @@ void ThermalSolverConstant::init_materials()
     if  ( material_by_sid.count( sid ) ) continue;
 
     Material * ref_material = ref_solver->get_material( *elem );
-    material_by_sid[sid] = new ExplicitMaterial( ref_material, system );
+    material_by_sid[sid] = new ExplicitThermalMaterial( ref_material, system );
   }
 }
 

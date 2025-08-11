@@ -74,7 +74,8 @@ gmsh.model.occ.synchronize()
 
 # gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 10)
 
-target_size = 3
+# target_size = 3
+target_size = 10
 min_size = target_size
 max_size = 50
 dmax = 20.0
@@ -92,7 +93,7 @@ gmsh.model.mesh.field.setString(
 # Field 2: Thin slab at caprock-reservoir interface
 interface_z = 0
 f2 = gmsh.model.mesh.field.add("Box")
-gmsh.model.mesh.field.setNumber(f2, "VIn", 3)
+gmsh.model.mesh.field.setNumber(f2, "VIn", target_size)
 gmsh.model.mesh.field.setNumber(f2, "VOut", 1000)
 gmsh.model.mesh.field.setNumber(f2, "XMin", 0)
 gmsh.model.mesh.field.setNumber(f2, "XMax",  100)

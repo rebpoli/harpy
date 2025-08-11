@@ -16,17 +16,18 @@
  * This is a single mesh workflow. The viscoplastic solver is 
  * the master solver, to load the mesh and the equation systems.
  *
- * The thermal is the slave solver, to use the ES and mesh from 
+ * The thermal and pressure are slave solvers, to use the ES and mesh from 
  * the master.
  *
  */
 SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
-  Solverloop(ts_), viscoplastic(0), thermal(0) 
+  Solverloop(ts_), viscoplastic(0), thermal(0) , pressure(0)
 {
   SCOPELOG(1);
 
   viscoplastic = new ViscoplasticSolver( "viscoplastic", ts );
   thermal = SolverFactory::new_thermal( viscoplastic );
+  pressure = SolverFactory::new_pressure( viscoplastic );
 
   // Initialize the ES
   EquationSystems & es = viscoplastic->es;
@@ -37,6 +38,7 @@ SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
   // Init the solvers (must be after the es.init)
   viscoplastic->init();
   thermal->init();
+  pressure->init();
 }
 
 /**
@@ -46,6 +48,7 @@ SLViscoplastic::~SLViscoplastic()
 {
   delete(viscoplastic);
   delete(thermal);
+  delete(pressure);
 }
 
 /**
@@ -56,8 +59,9 @@ void SLViscoplastic::solve()
 {
   SCOPELOG(1);
   
-  // Update the temperature, sync the coupler
+  // Update the temperature and pressure, sync the coupler
   thermal->solve(); 
+  pressure->solve(); 
 
   // Run the viscoplastic
   viscoplastic->solve();

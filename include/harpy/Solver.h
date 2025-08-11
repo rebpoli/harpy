@@ -69,4 +69,5 @@ class Solver
 struct SolverFactory
 {
   static Solver * new_thermal( Solver * ref );
+  static Solver * new_pressure( Solver * ref );
 };
