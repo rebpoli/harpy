@@ -17,11 +17,11 @@ BIOT          0.0
 POISSON       0.3
 YOUNG         2e10
 BETA_E        1e-5        # Thermal
-BETA_D        0 #1e-4        # Thermal
+BETA_D        1e-4        # Thermal
 
 # Defines the creep model - multiple definitions define multiple modes
 # SS     [sig0]   [n]   [q]    [stretch]    # repeat as many times as needed for each mechanism
 # TR_2   [sig0]   [m]   [c]    [alpha_w]
-# .CREEP MD
-# SS    10e6   8.6   51600   1.08 
-# SS    50e6   0.7   51600   1.08 
+.CREEP MD
+SS    10e6   8.6   51600   1.08 
+SS    50e6   0.7   51600   1.08 

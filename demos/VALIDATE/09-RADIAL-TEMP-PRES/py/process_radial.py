@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import gzip
 
-# PROP = "Pressure"
-PROP = "Temperature"
+PROP = "Pressure"
+# PROP = "Temperature"
 
 # Parse the dat to capture the radial grid
 dat_fn = "stars/test3-refine-dates-expon.dat"
