@@ -33,11 +33,17 @@ PropsTranspose::PropsTranspose( vector<VPProps> * by_qp )
     sigtot.push_back( p.sigtot );
     sigeff.push_back( p.sigeff );
     von_mises.push_back( p.von_mises );
+    pressure.push_back( p.pressure );
     epskk.push_back( p.epskk );
     F.push_back( p.F );
     deviatoric.push_back( p.deviatoric );
     plastic_strain.push_back( p.plastic_strain );
     plastic_strain_rate.push_back( p.plastic_strain_rate );
+
+    // Sign convention: compresion is negative
+    RealTensor s_ = p.sigtot;
+    for ( uint i=0; i<3; i++ ) s_(i,i) += p.pressure;
+    sigeff_terz.push_back( s_ );
   }
 }
 

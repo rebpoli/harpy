@@ -93,49 +93,91 @@ GridRadialFile::GridRadialFile(const string & filename)
   }
 }
 
-/** 
- *   Trilinear interpolation
- */
-double GridRadialFile::at(double qt, double qr, double qz) const 
+///** 
+// *   Trilinear interpolation
+// */
+//double GridRadialFile::at(double qt, double qr, double qz) const 
+//{
+//  if ( qr < min_radius ) qr = min_radius;
+
+//  auto find_index = [](const vector<double>& vec, double val) {
+//    auto it = upper_bound(vec.begin(), vec.end(), val);
+//    size_t i = max<size_t>(1, it - vec.begin()) - 1;
+//    return min(i, vec.size() - 2);
+//  };
+
+//  size_t it = find_index(t, qt),
+//         ir = find_index(r, qr),
+//         iz = find_index(z, qz);
+
+
+//  double dt = (qt - t[it]) / (t[it+1] - t[it]),
+//         dr = (qr - r[ir]) / (r[ir+1] - r[ir]),
+//         dz = (qz - z[iz]) / (z[iz+1] - z[iz]);
+
+
+//  auto at = [&](size_t i, size_t j, size_t k) {
+//    return grid[index(i, j, k)];
+//  };
+
+
+//  auto lerp = [](double a, double b, double w) {
+//    return a * (1 - w) + b * w;
+//  };
+
+
+//  double c00 = lerp(at(it,   ir,   iz),     at(it,   ir+1, iz),     dr),
+//         c01 = lerp(at(it,   ir,   iz+1),   at(it,   ir+1, iz+1),   dr),
+//         c10 = lerp(at(it+1, ir,   iz),     at(it+1, ir+1, iz),     dr),
+//         c11 = lerp(at(it+1, ir,   iz+1),   at(it+1, ir+1, iz+1),   dr);
+
+
+//  double c0 = lerp(c00, c01, dz);
+//  double c1 = lerp(c10, c11, dz);
+
+//  return lerp(c0, c1, dt);
+//}
+
+
+double GridRadialFile::at(double qt, double qr, double qz) const
 {
-  if ( qr < min_radius ) qr = min_radius;
-
-  auto find_index = [](const vector<double>& vec, double val) {
-    auto it = upper_bound(vec.begin(), vec.end(), val);
-    size_t i = max<size_t>(1, it - vec.begin()) - 1;
-    return min(i, vec.size() - 2);
+  // --- time: choose the previous time index (or the first if qt < t[0]) ---
+  auto prev_time_index = [](const std::vector<double>& vec, double val) {
+    auto it = std::upper_bound(vec.begin(), vec.end(), val);
+    if (it == vec.begin()) return size_t(0);          // before first -> use first
+    return size_t(it - vec.begin() - 1);               // previous entry (ok even if val >= last)
   };
+  const size_t it = prev_time_index(t, qt);
 
-  size_t it = find_index(t, qt),
-         ir = find_index(r, qr),
-         iz = find_index(z, qz);
+  // --- r,z: clamp query to [first, last] then find cell (lower index) ---
+  auto clamp = [](double v, double lo, double hi) {
+    return std::max(lo, std::min(v, hi));
+  };
+  qr = clamp(qr, r.front(), r.back());
+  qz = clamp(qz, z.front(), z.back());
 
+  auto find_index = [](const std::vector<double>& vec, double val) {
+    auto it = std::upper_bound(vec.begin(), vec.end(), val);
+    size_t i = std::max<size_t>(1, it - vec.begin()) - 1;
+    return std::min(i, vec.size() - 2); // ensure i+1 valid
+  };
+  const size_t ir = find_index(r, qr);
+  const size_t iz = find_index(z, qz);
 
-  double dt = (qt - t[it]) / (t[it+1] - t[it]),
-         dr = (qr - r[ir]) / (r[ir+1] - r[ir]),
-         dz = (qz - z[iz]) / (z[iz+1] - z[iz]);
+  // --- local fractions in r and z (bilinear in space only) ---
+  const double dr = (qr - r[ir]) / (r[ir+1] - r[ir]);
+  const double dz = (qz - z[iz]) / (z[iz+1] - z[iz]);
 
-
-  auto at = [&](size_t i, size_t j, size_t k) {
+  auto at_cell = [&](size_t i, size_t j, size_t k) {
     return grid[index(i, j, k)];
   };
+  auto lerp = [](double a, double b, double w) { return a * (1.0 - w) + b * w; };
 
+  // values at chosen time 'it', bilinear in (r,z)
+  const double c00 = lerp(at_cell(it, ir,   iz),   at_cell(it, ir+1, iz),   dr);
+  const double c01 = lerp(at_cell(it, ir,   iz+1), at_cell(it, ir+1, iz+1), dr);
 
-  auto lerp = [](double a, double b, double w) {
-    return a * (1 - w) + b * w;
-  };
-
-
-  double c00 = lerp(at(it,   ir,   iz),     at(it,   ir+1, iz),     dr),
-         c01 = lerp(at(it,   ir,   iz+1),   at(it,   ir+1, iz+1),   dr),
-         c10 = lerp(at(it+1, ir,   iz),     at(it+1, ir+1, iz),     dr),
-         c11 = lerp(at(it+1, ir,   iz+1),   at(it+1, ir+1, iz+1),   dr);
-
-
-  double c0 = lerp(c00, c01, dz);
-  double c1 = lerp(c10, c11, dz);
-
-  return lerp(c0, c1, dt);
+  return lerp(c00, c01, dz);
 }
 
 /** 

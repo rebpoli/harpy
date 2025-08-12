@@ -106,12 +106,22 @@ void ViscoplasticSolver::setup_variables()
       string vn = "S"+to_string(i+1)+sd;
       stress_system.add_variable( vn, order, fef );
       dlog(1) << "Added variable '" << vn << "'";
+
+      vn = "Sterz"+to_string(i+1)+sd;
+      stress_system.add_variable( vn, order, fef );
     }
 
     for ( uint i=0 ; i<3; i++ )
       stress_system.add_variable( "S"+to_string(i+1)+"_mag" , order, fef);
     stress_system.add_variable( "S_invarQ" , order, fef);
     stress_system.add_variable( "S_invarP" , order, fef);
+    stress_system.add_variable( "S_invarQ_div_P" , order, fef);
+
+    for ( uint i=0 ; i<3; i++ )
+      stress_system.add_variable( "Sterz"+to_string(i+1)+"_mag" , order, fef);
+    stress_system.add_variable( "Sterz_invarQ" , order, fef);
+    stress_system.add_variable( "Sterz_invarP" , order, fef);
+    stress_system.add_variable( "Sterz_invarQ_div_P" , order, fef);
   }
 
   // Scalars and penalties

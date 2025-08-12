@@ -52,8 +52,9 @@ struct PropsTranspose
 {
   PropsTranspose( vector<VPProps> * by_qp ) ;
 
-  vector<RealTensor> sigtot, sigeff, deviatoric, plastic_strain, plastic_strain_rate;
-  vector<double> von_mises, epskk, F;
+  vector<RealTensor> sigtot, sigeff, sigeff_terz;
+  vector<RealTensor> deviatoric, plastic_strain, plastic_strain_rate;
+  vector<double> von_mises, epskk, F, pressure;
 };
 
 /// Probe interface

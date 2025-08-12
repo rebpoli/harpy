@@ -194,7 +194,7 @@ void ExplicitMaterial::project_tensor_invariants( vector<RealTensor> & vals_qp, 
   uint nqp = qrule.n_points();
 
   /* Initialize the vectors to prepare the projection */
-  vector<double> invarQ_qp(nqp), invarP_qp(nqp);
+  vector<double> invarQ_qp(nqp), invarP_qp(nqp), invarQ_div_P_qp(nqp);
   vector<double> S1_qp(nqp), S2_qp(nqp), S3_qp(nqp);
 
   /* Principal stresses [i:012=S1,S2,S3 ; j:012=X,Y,Z] */
@@ -215,6 +215,7 @@ void ExplicitMaterial::project_tensor_invariants( vector<RealTensor> & vals_qp, 
     
     invarP_qp[qp] = tinv.get_P();
     invarQ_qp[qp] = tinv.get_Q();
+    invarQ_div_P_qp[qp] = tinv.get_Q() / tinv.get_P();
 
     // Magnitude of the principal stresses
     S1_qp[qp] = tinv.S1_eval();
@@ -232,6 +233,7 @@ void ExplicitMaterial::project_tensor_invariants( vector<RealTensor> & vals_qp, 
 
   project( invarQ_qp, vname+"_invarQ" );
   project( invarP_qp, vname+"_invarP" );
+  project( invarQ_div_P_qp, vname+"_invarQ_div_P" );
 
   project( S1_qp, vname+"1_mag" );
   project( S2_qp, vname+"2_mag" );
