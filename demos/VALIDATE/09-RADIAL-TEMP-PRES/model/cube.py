@@ -74,8 +74,8 @@ gmsh.model.occ.synchronize()
 
 # gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 10)
 
-# target_size = 3
-target_size = 10
+target_size = 3
+# target_size = 10
 min_size = target_size
 max_size = 50
 dmax = 20.0

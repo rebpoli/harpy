@@ -293,11 +293,11 @@ df_merged = pd.merge(df_temp_reset, df_coords, on=['i', 'j', 'k'])
 df = df_merged.set_index(['t', 'i', 'j', 'k'])
 
 
-import matplotlib.pyplot as plt
-from scipy.interpolate import griddata
+# import matplotlib.pyplot as plt
+# from scipy.interpolate import griddata
 
 
-from matplotlib.ticker import FuncFormatter
+# from matplotlib.ticker import FuncFormatter
 
 print(df.index.get_level_values("t"))
 
