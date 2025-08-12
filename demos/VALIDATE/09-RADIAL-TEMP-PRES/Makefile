@@ -48,7 +48,7 @@ plot: .force
 	py/plot_lin0.py
 
 video:
-	ffmpeg -framerate 10 -pattern_type glob -i 's3-nocreep3/s3-nocreep.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 sr-nocreep.mp4
+	ffmpeg -framerate 10 -pattern_type glob -i 'S3-pres-temp/s3-pres-temp.*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 s2-pres-temp.mp4
 
 
 .force:
