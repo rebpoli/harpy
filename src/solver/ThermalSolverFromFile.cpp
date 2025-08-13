@@ -226,7 +226,14 @@ void ThermalSolverFromFile::update_reference_solver()
     for ( ProbeIFC * probe : m1[eid] )  // p: ProbeIFC*
     {
       Point pt = probe->pt + grid_origin;
-      probe->props.temperature = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      double temp = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      double temp0 = grid->at( -1, pt(0), pt(1), pt(2) );
+      probe->props.temperature = temp;
+      probe->props.initial_temperature = temp0;
+
+//      dlog(1) << "THERMALSOLVERFROMFILE : UPDATE PROBES @ " << pt << "  t=" << ts.time;
+//      dlog(1) << "        initial_temperature:" << temp0;
+//      dlog(1) << "                temperature:" << temp ;
     }
 
   }

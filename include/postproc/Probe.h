@@ -39,6 +39,17 @@ public:
 /**
  *
  */
+struct PlanarProbe : public Probe
+{ 
+  PlanarProbe( ProbeConfig & config ); 
+  ~PlanarProbe() = default;
+
+  void print( ostream & os ) const;
+};
+
+/**
+ *
+ */
 struct RadialProbe : public Probe
 { 
   RadialProbe( ProbeConfig & config ); 

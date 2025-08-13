@@ -54,6 +54,7 @@ struct DataEntry
  */
 GridRadialFile::GridRadialFile(const string & filename) 
 {
+  ilog1 << "Reading grid file '" << filename << "' ...";
   GzStream file(filename);
   string line;
   file.getline(line); // skip header
@@ -141,6 +142,8 @@ GridRadialFile::GridRadialFile(const string & filename)
 
 double GridRadialFile::at(double qt, double qr, double qz) const
 {
+  if ( qr < min_radius ) qr = min_radius;
+
   // --- time: choose the previous time index (or the first if qt < t[0]) ---
   auto prev_time_index = [](const std::vector<double>& vec, double val) {
     auto it = std::upper_bound(vec.begin(), vec.end(), val);

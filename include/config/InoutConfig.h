@@ -17,12 +17,18 @@ public:
   string name;
   optional<string> type;
 
-  // Radial
-  optional<libMesh::Point> center, normal;
-  optional<double> radius, dtheta;
+  // Planar
+  optional<libMesh::Point> p0, p1, p2;
 
   // Linear
   optional<libMesh::Point> from, to;
+
+  // Radial
+  optional<libMesh::Point> center;
+  optional<libMesh::Point> normal;
+  optional<double> radius, dtheta;
+
+  // Multiple
   optional<uint> npts;
   
   // Gauss

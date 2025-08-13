@@ -227,6 +227,8 @@ void PressureSolverFromFile::update_reference_solver()
     {
       Point pt = probe->pt + grid_origin;
       probe->props.pressure = grid->at( ts.time, pt(0), pt(1), pt(2) );
+      probe->props.initial_pressure = grid->at( -1, pt(0), pt(1), pt(2) );
+//      ilog << "PROBE->PRESSURE @ " << pt << " = " << probe->props.pressure;
     }
 
   }

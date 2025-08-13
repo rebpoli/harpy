@@ -686,6 +686,7 @@ void ViscoPlasticMaterial::props_at( VPProps & p,
     GRAD_U(i,j) += dphi[B][0](j) * val( Uib(i,B) );
 
   // Update the VPProps stresses, plasticity etc
+  dlog(1) << "PROPS_AT @ " << pt;
   p.update( U, GRAD_U, vpsolver.ts.dt );
 }
 

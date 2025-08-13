@@ -114,7 +114,7 @@ void InoutReader::probe_state()
   string vname;
 
   // Types
-  CISet PT_PROPS    = { "from", "to", "center", "normal" };
+  CISet PT_PROPS    = { "from", "to", "center", "normal", "p0", "p1", "p2" };
   CISet UINT_PROPS  = { "npts" };
   CISet DBL_PROPS   = { "radius", "dtheta" };
   CISet STR_PROPS   = { "type", "boundary", "order" };
@@ -134,6 +134,10 @@ void InoutReader::probe_state()
     if ( iequals( k, "to" ) )     curr_probe_config->to = v;
     if ( iequals( k, "center" ) ) curr_probe_config->center = v;
     if ( iequals( k, "normal" ) ) curr_probe_config->normal = v;
+
+    if ( iequals( k, "p0" ) ) curr_probe_config->p0 = v;
+    if ( iequals( k, "p1" ) ) curr_probe_config->p1 = v;
+    if ( iequals( k, "p2" ) ) curr_probe_config->p2 = v;
 
     return;
   }

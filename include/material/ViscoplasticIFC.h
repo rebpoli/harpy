@@ -155,7 +155,10 @@ void serialize(Archive & ar, VPProps & p, const unsigned int version)
 {
   UNUSED(version);
   ar & p.lame_mu; ar & p.lame_lambda; ar & p.GRAD_U;
-  ar & p.U; ar & p.sigtot; ar & p.temperature;
+  ar & p.U; ar & p.sigtot; ar & p.sigeff;
+  ar & p.temperature; ar & p.initial_temperature;
+  ar & p.pressure; ar & p.initial_pressure;
+  ar & p.von_mises; 
 } 
 /** **/
 template<class Archive>

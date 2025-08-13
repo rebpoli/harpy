@@ -31,6 +31,9 @@ Probe * Probe::Factory( vector<Probe *> & ret, ProbeConfig & config )
   if ( iequals( type, "radial" ) ) 
     return ret.emplace_back( new RadialProbe(config) );
 
+  if ( iequals( type, "planar" ) ) 
+    return ret.emplace_back( new PlanarProbe(config) );
+
   if ( iequals( type, "linear" ) ) 
     return ret.emplace_back( new LinearProbe(config) );
 
@@ -47,6 +50,50 @@ Probe * Probe::Factory( vector<Probe *> & ret, ProbeConfig & config )
  */
 Probe::Probe( ProbeConfig & config ) : name(config.name), filename("run/csv/" + name + ".csv")
 { }
+
+/**
+ *   Create a planar probe from the config.
+ */
+PlanarProbe::PlanarProbe( ProbeConfig & config ) : Probe(config)
+{
+  if ( ! config.p0 )   flog << "P0 not defined for probe '" << config.name << "'!";
+  if ( ! config.p1 )   flog << "P1 not defined for probe '" << config.name << "'!";
+  if ( ! config.p2 )   flog << "P2 not defined for probe '" << config.name << "'!";
+  if ( ! config.npts ) flog << "NPTS not defined for probe '" << config.name << "'!";
+
+  Point p0 = *config.p0,
+        p1 = *config.p1,
+        p2 = *config.p2;
+  
+  // Grab nx and ny (minimum of 5 in each direction)
+  uint base = max( 5u, uint( sqrt( double(*config.npts) ) ) ) ,
+       nx = base ,
+       ny = base ;  
+
+  Point e1 = p1 - p0;           // edge 1
+  Point raw_e2 = p2 - p0;       // edge 2 (to be made independent of e1)
+
+  // Remove component of raw_e2 along e1 for a clean sweep basis
+  // operator* is a dot product
+  double alpha = (raw_e2 * e1) / (e1 * e1);
+  Point e2 = raw_e2 - e1 * alpha;
+
+  // Increments
+  Point  step1  = e1 / double(nx) ;
+  Point  step2  = e2 / double(ny) ;
+
+  Point row_start = p0;
+  for (uint j = 0; j <= ny; ++j) {
+      Point p = row_start;
+      for (uint i = 0; i <= nx; ++i) {
+          points.emplace_back(p);
+          p += step1;
+      }
+      row_start += step2;
+  }
+
+  dlog(1) << "PLANAR PROBE '" << config.name << "': " << *this;
+}
 
 /**
  *
@@ -230,6 +277,9 @@ GaussProbe::GaussProbe( ProbeConfig & config ):
  *
  *
  */
+void PlanarProbe::print( ostream& os ) const
+{ os << setw(20) << "PlanarProbe:" << setw(20) << "" << Print(points) << endl; }
+//
 void RadialProbe::print( ostream& os ) const
 { os << setw(20) << "RadialProbe:" << setw(20) << "" << Print(points) << endl; }
 //

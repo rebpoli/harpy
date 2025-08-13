@@ -45,6 +45,14 @@ ostream& operator<<(ostream& os, const ProbeConfig & m)
   if (! m.type ) return os;
   string type = *m.type;
 
+  if ( iequals(type, "planar") ) 
+  {
+    os << right << setw(20) << "P0"     << setw(20) << " " << m.p0 << endl;
+    os << right << setw(20) << "P1"     << setw(20) << " " << m.p1 << endl;
+    os << right << setw(20) << "P2"     << setw(20) << " " << m.p2 << endl;
+    os << right << setw(20) << "Npts"   << setw(20) << " " << m.npts << endl;
+  }
+
   if ( iequals(type, "radial") ) 
   {
     os << right << setw(20) << "Center"     << setw(20) << " " << m.center << endl;

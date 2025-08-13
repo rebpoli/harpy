@@ -5,6 +5,7 @@
 #include "harpy/Timestep.h"
 #include "util/OutputOperators.h"
 #include "util/String.h"
+#include "postproc/TensorInvariants.h"
 
 #include "libmesh/mesh.h"
 
@@ -144,6 +145,10 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       ofile << t_step << time << CSVSci(time_d) << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
       ofile << t_step << time << CSVSci(time_d) << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
 
+      /**
+       *    ATTENTION - ALL THIS PROPERTIES MUST BE SERIALIZED ! SEE serialize(...VPProps...)
+       */
+
       auto & stot = p.sigtot;
       ofile << t_step << time << CSVSci(time_d) << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
       ofile << t_step << time << CSVSci(time_d) << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
@@ -152,9 +157,23 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       ofile << t_step << time << CSVSci(time_d) << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
       ofile << t_step << time << CSVSci(time_d) << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
 
-      auto & T = p.temperature;
-      ofile << t_step << time << CSVSci(time_d) << "T" << pt(0) << pt(1) << pt(2) << T << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "T" << pt(0) << pt(1) << pt(2) << p.temperature << endrow;
       ofile << t_step << time << CSVSci(time_d) << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
+
+      ofile << t_step << time << CSVSci(time_d) << "P" << pt(0) << pt(1) << pt(2) << p.pressure << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "INITIAL_P" << pt(0) << pt(1) << pt(2) << p.initial_pressure << endrow;
+
+      // Invariants
+      TensorInvariants ti( stot );
+      ofile << t_step << time << CSVSci(time_d) << "S1" << pt(0) << pt(1) << pt(2) << ti.S1_eval() << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "S2" << pt(0) << pt(1) << pt(2) << ti.S2_eval() << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "invarP" << pt(0) << pt(1) << pt(2) << ti.get_P() << endrow;
+      double p_eff = ti.get_P() + p.pressure ;
+      double q_div_p_eff = ti.get_Q() / p_eff;
+      ofile << t_step << time << CSVSci(time_d) << "invarPeff" << pt(0) << pt(1) << pt(2) << p_eff << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "invarQ" << pt(0) << pt(1) << pt(2) << ti.get_Q() << endrow;
+      ofile << t_step << time << CSVSci(time_d) << "invarQ_div_Peff" << pt(0) << pt(1) << pt(2) << q_div_p_eff << endrow;
     }
   }
 }

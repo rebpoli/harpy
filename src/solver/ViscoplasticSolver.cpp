@@ -455,8 +455,9 @@ bool ViscoplasticSolver::update_adaptive_timestep()
 void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & soln, NumericVector<Number> * residual,
                             SparseMatrix<Number> * jacobian, NonlinearImplicitSystem & sys)
 {
-  UNUSED(sys);
   Stopwatch sw("ViscoplasticSolver::residual_and_jacobian (ts="+to_string(ts.t_step)+")");
+  const DofMap & dof_map = sys.get_dof_map();
+  ilog1 << "Assembling poroelastic problem - total DoFs=" << dof_map.n_dofs();
 
   MeshBase & mesh = get_mesh();
 

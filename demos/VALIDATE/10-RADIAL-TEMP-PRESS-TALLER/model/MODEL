@@ -29,6 +29,9 @@ K0    1e15    0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZP               UZ            0
+BOUNDARY       XP               SXX           -90e6
+BOUNDARY       YP               SYY           -90e6
+BOUNDARY       ZN               SZZ           -90e6
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
@@ -36,5 +39,6 @@ BOUNDARY       ZP               UZ            0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       ZP               UZ            0
-
-
+BOUNDARY       XP               SXX           -90e6
+BOUNDARY       YP               SYY           -90e6
+BOUNDARY       ZN               SZZ           -90e6
