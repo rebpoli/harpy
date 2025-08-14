@@ -71,6 +71,7 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
  */
 void VPProps::init_from_config( const MaterialConfig & config, const Point & pt )
 {
+  density            = config.get_property( "density",         pt,     "porothermoelastic" );
   biot               = config.get_property( "biot",            pt,     "porothermoelastic" );
   alpha_d            = config.get_property( "alpha_d",         pt,     "porothermoelastic" );
   beta_e             = config.get_property( "beta_e",          pt,     "porothermoelastic" );

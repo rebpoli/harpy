@@ -23,7 +23,7 @@ struct VPProps
   double lame_mu, lame_lambda, alpha_d, beta_e;
 
   // Poroelasticity
-  double biot;
+  double biot, density;
 
   CreepMD creep_md; // Defined in MaterialConfig
 

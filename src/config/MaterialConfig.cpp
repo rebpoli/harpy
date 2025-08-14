@@ -40,6 +40,7 @@ optional<string> & MaterialConfig::file_param( string & vname, string context )
   {
     if ( iequals( vname, "porosity" ) )      return porosity_file;
     if ( iequals( vname, "permeability" ) )  return permeability_file;
+    if ( iequals( vname, "density" ) )       return density_file;
     if ( iequals( vname, "biot" ) )          return biot_file;
     if ( iequals( vname, "young" ) )         return young_file;
     if ( iequals( vname, "poisson" ) )       return poisson_file;
@@ -61,6 +62,7 @@ optional<double> & MaterialConfig::con_param( string & vname, string context )
     if ( iequals( vname, "porosity" ) )      return porosity;
     if ( iequals( vname, "permeability" ) )  return permeability;
     if ( iequals( vname, "biot" ) )          return biot;
+    if ( iequals( vname, "density" ) )       return density;
     if ( iequals( vname, "young" ) )         return young;
     if ( iequals( vname, "poisson" ) )       return poisson;
     if ( iequals( vname, "beta_e" ) )        return beta_e;
@@ -118,6 +120,7 @@ ostream& operator<<(ostream& os, const MaterialConfig & m)
   os << "                                    Por:              " << setw(15) << m.porosity     << setw(15) << m.porosity_file << endl;
   os << "                                    Permeability:     " << setw(15) << m.permeability << setw(15) << m.permeability_file << endl;
   os << "                                    Biot:             " << setw(15) << m.biot         << setw(15) << m.biot_file << endl;
+  os << "                                    Density:          " << setw(15) << m.density      << setw(15) << m.density_file << endl;
   os << "                                    Young Modulus:    " << setw(15) << m.young        << setw(15) << m.young_file << endl;
   os << "                                    Poisson Coef:     " << setw(15) << m.poisson      << setw(15) << m.poisson_file << endl;
   os << "                                    Lame_mu:          " << setw(15) << m.lame_mu << endl;

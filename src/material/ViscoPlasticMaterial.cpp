@@ -302,6 +302,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   const vector<Real> & JxW = fe->get_JxW();
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+  const vector<vector<Real>> & phi = fe->get_phi();
 
 //  bool deb = 0;
 //  if ( ( elem->id() == 36330 ) && ( ! QP ) ) deb = 1;
@@ -321,6 +322,10 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
     Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;
+
+  // - ( \phi , \rho g )
+  for (uint B=0;  B<n_dofsv;  B++)
+    Fib(2,B) -= JxW[QP] *  phi[B][QP] * P->density * GRAVITY_FORCE;   // Assuming Z increases with depth (Z axis points downward)
 
   // Temperature
   //       alpha_d = beta_d * K_bulk

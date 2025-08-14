@@ -54,3 +54,5 @@ class Math {
 
 class Tester;
 
+// Universal constants
+const double GRAVITY_FORCE = 9.80665;

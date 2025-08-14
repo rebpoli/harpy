@@ -46,7 +46,7 @@ public:
 
   // Poroelastic
   optional<double> porosity, permeability;
-  optional<double> biot, young, poisson;
+  optional<double> biot, young, poisson, density;
   // Thermal
   optional<double> beta_e, beta_d, alpha_d;
 
@@ -58,7 +58,7 @@ public:
   // Files
   // Poroelastic
   optional<string> porosity_file, permeability_file;
-  optional<string> biot_file, young_file, poisson_file;
+  optional<string> biot_file, young_file, poisson_file, density_file;
   // Thermal
   optional<string> beta_e_file, beta_d_file;
 

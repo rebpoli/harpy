@@ -9,7 +9,6 @@
 
 using namespace std;
 
-const double GRAVITY_FORCE = 9.80665;
 class ConfigValidate;
 
 /**
