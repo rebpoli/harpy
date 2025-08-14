@@ -39,6 +39,11 @@ SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
   viscoplastic->init();
   thermal->init();
   pressure->init();
+
+  // From the configuration setup, initialize the strain
+  thermal->solve(); 
+  pressure->solve(); 
+  viscoplastic->solve_initial_strain();
 }
 
 /**

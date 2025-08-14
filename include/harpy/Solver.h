@@ -40,6 +40,8 @@ class Solver
 
     virtual void solve()
       { flog << "Must be defined in the child class."; }
+    virtual void solve_initial_strain()
+      { flog << "Must be defined in the child class."; }
 
     /// The material can be provided for the dependent solvers
     Material * get_material( const Elem & elem );

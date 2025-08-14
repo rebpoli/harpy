@@ -353,6 +353,45 @@ void ViscoplasticSolver::set_scalar_bcs()
   //
 }
 
+/**
+ *  From the configuration file, solve a minimum initial timestep,
+ *  derive the initial_strain and update the interfaces.
+ */
+void ViscoplasticSolver::solve_initial_strain()
+{
+  ilog1 << "Initialization step: find initial strain ...";
+  ilog1 << "      t_step:"<< ts.t_step<<" @ " << ts.time << "s (dt=" << ts.dt << ") ...";
+  SCOPELOG(1);
+  curr_bc.update( ts );
+  set_dirichlet_bcs();
+  es.reinit();
+  
+  system.solve();
+
+  ilog1 << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
+    << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
+
+  // Update all interfaces in all materials
+  // Iterate through the interfaces to update the initial strain
+  MeshBase & mesh = get_mesh();
+  for ( auto & [ sid, mat_ ] : material_by_sid ) 
+  {
+    ViscoPlasticMaterial * mat = get_vp_material( sid );
+    for ( auto & [ eid, pvec ] : mat->vp_ifc.by_elem )
+    for ( VPProps & p : pvec ) 
+      p.update_initial_strain();
+  }
+
+  // Zero the solution (we have the stress in initial_strain)
+  system.solution->zero();
+  system.update();
+//  system.get_dof_map().enforce_constraints_exactly(system);
+//  system.update();
+//  posproc_stresses();
+
+  export_exo("initial_strain");
+//  flog << "Fail, please.";
+}
 
 /**
  *   Implements the workflow of the system solution.

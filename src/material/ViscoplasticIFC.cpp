@@ -80,9 +80,26 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
 
   if ( config.creep_md ) creep_md = *(config.creep_md);
 
-  sigtot = RealTensor();
+  sigtot           = RealTensor();
   plastic_strain_n = RealTensor();
   plastic_strain   = RealTensor();
+  initial_strain   = RealTensor();
+}
+
+/**
+ *
+ */
+void VPProps::update_initial_strain()
+{
+  dlog(1) << "[" << this << "] VPProps::GRAD_U: " << GRAD_U.norm();
+  initial_strain.zero();
+  for (uint i=0; i<3; i++)
+  for (uint j=0; j<3; j++) 
+    initial_strain(i,j) = 0.5 * GRAD_U(i,j) + 0.5 * GRAD_U(j,i);
+
+  // Zero out U and GRAD_U (the initial_strain should now take care of it)
+  U.zero();
+  GRAD_U.zero();
 }
 
 /**

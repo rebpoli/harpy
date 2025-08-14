@@ -18,6 +18,8 @@ struct VPProps
   inline double C_ijkl( uint i, uint j, uint k, uint l);
   // Calculate stresses from displacements
   void update( const RealVectorValue & U_, const RealTensor & GRAD_U_, double dt );
+  // Updates the initial strain (typically after initialization solve)
+  void update_initial_strain();
   
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
@@ -36,6 +38,9 @@ struct VPProps
   // Stresses
   RealTensor sigtot, sigeff, deviatoric;
   double von_mises, epskk, F;
+
+  // Stress Initialization
+  RealTensor initial_strain;
 
   // Plasticity
   RealTensor plastic_strain, plastic_strain_n, plastic_strain_k;

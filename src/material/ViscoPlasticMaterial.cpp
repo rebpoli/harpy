@@ -304,6 +304,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   const vector<vector<RealGradient>> & dphi = fe->get_dphi();
   const vector<vector<Real>> & phi = fe->get_phi();
 
+
 //  bool deb = 0;
 //  if ( ( elem->id() == 36330 ) && ( ! QP ) ) deb = 1;
 
@@ -315,13 +316,16 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint M=0;  M<n_dofsv;  M++) 
     grad_u(i, j) += dphi[M][QP](j) * Uib(i,M); /** Jacobian **/ // ****
 
-  // ( \phi_j , Cijkl U_k,l ) 
+//  dlog(1) << "grad_u? " << grad_u;
+//  dlog(1) << "initial_strain? " << P->initial_strain;
+
+  // ( \phi_j , Cijkl U_k,l - Cijkl U^0_k,l ) 
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;
+    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * ( grad_u(k,l) + P->initial_strain(k,l) ) ;
 
   // - ( \phi , \rho g )
   for (uint B=0;  B<n_dofsv;  B++)
@@ -355,7 +359,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) );
+    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) + P->initial_strain(k,l) );
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
@@ -427,6 +431,12 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   AD::dump( deviatoric, P->deviatoric );
   AD::dump( plastic_strain_rate, P->plastic_strain_rate );
   AD::dump( plastic_strain, P->plastic_strain);
+  AD::dump( grad_u, P->GRAD_U);
+
+  // Debug
+  const vector<Point> & xyz = fe->get_xyz();
+  dlog(1) << "[" << P << "] dumping grad_u @ " << xyz[QP] << ": " << P->GRAD_U.norm();
+  dlog(1) << "[" << P << "] initial_strain @ " << xyz[QP] << ": " << P->initial_strain.norm();
 
   P->von_mises = val(von_mises);
   P->epskk = val(epskk);
@@ -476,6 +486,8 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 {
   // Lambda function to compatibilize stuff
   auto f = [this](const AD::Vec & x) { return this->residual_qp(x);  };
+
+  dlog(1) << "----";
 
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
