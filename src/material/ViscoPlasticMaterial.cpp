@@ -286,6 +286,7 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   stress_postproc.project_tensor( Pt.deviatoric, "deviatoric" );
   stress_postproc.project_tensor( Pt.plastic_strain, "plastic_strain" );
   stress_postproc.project_tensor( Pt.plastic_strain_rate, "plastic_strain_rate" );
+  stress_postproc.project_tensor( Pt.initial_strain, "initial_strain" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
   stress_postproc.project( Pt.epskk, "epskk" );
   stress_postproc.project( Pt.F, "F" );
@@ -647,7 +648,47 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
   }
 }
 
+/**
+ *
+ */
+void ViscoPlasticMaterial::apply_strain_initialization_method()
+{
+  using enum MatInitializeMethod;
 
+  /** Hydrostatic ? **/
+  if ( config.initialize.method == HYDROSTATIC ) 
+  {
+    ilog1 << "Forcing initial strain to hydrostatic in material '" << name << "'.";
+    for ( auto & [ eid, pvec ] : vp_ifc.by_elem )
+    for ( VPProps & p : pvec ) 
+      p.force_initial_strain_to_hydrostatic();
+
+    // Probes
+    for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+    for ( auto & probe_ifc : m1[elem->id()] ) 
+      probe_ifc->props.force_initial_strain_to_hydrostatic();
+  }
+
+}
+
+/**
+ *  PUT THE INITIAL STRAIN IN PLACE 
+ */
+void ViscoPlasticMaterial::update_initial_strain()
+{
+  // Gauss points of the elements
+  for ( auto & [ eid, pvec ] : vp_ifc.by_elem )
+  for ( VPProps & p : pvec ) 
+    p.update_initial_strain();
+
+  // Probes
+  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
+  for ( auto & probe_ifc : m1[elem->id()] ) 
+    probe_ifc->props.update_initial_strain();
+  
+  /** Do the necessary adjustments **/
+  apply_strain_initialization_method();
+}
 
 /**
  *  This should be called before the probes export data.

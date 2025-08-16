@@ -28,6 +28,14 @@ struct CreepMD {
   CreepMD() : etr(0), etr_n(0) {}
 };
 
+/** Initialization methods **/
+enum class MatInitializeMethod { GRAVITY, HYDROSTATIC };
+struct MatInitialize {
+  using enum MatInitializeMethod;
+  MatInitialize() : method( GRAVITY ) {}
+  MatInitializeMethod method;
+};
+
 /**
  *
  */
@@ -54,6 +62,8 @@ public:
   optional<double> lame_mu, lame_lambda, bulk_modulus;
 
   optional<CreepMD> creep_md;
+
+  MatInitialize initialize;
 
   // Files
   // Poroelastic

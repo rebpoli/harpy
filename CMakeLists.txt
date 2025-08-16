@@ -113,6 +113,8 @@ ADD_LIBRARY(Modules
   src/main/harpy.cpp
   src/material/ViscoPlasticMaterial.cpp
   src/material/ViscoplasticIFC.cpp
+  src/material/VPProps.cpp
+  src/material/ProbeIFC.cpp
   src/material/ThermalIFC.cpp
   src/postproc/Probe.cpp
   src/postproc/ViscoplasticReport.cpp

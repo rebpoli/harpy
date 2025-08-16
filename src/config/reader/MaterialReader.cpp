@@ -65,6 +65,7 @@ void MaterialReader::parse_material_file()
     {
       case State::POROTHERMOELASTIC: { porothermoelastic_state(); break; }
       case State::CREEP_MD: { creep_md_state(); break; }
+      case State::INITIALIZE: { initialize_state(); break; }
       default: { wlog << "Ignoring line " << ln << " >> " << line; break; }
     }
   }
@@ -81,7 +82,8 @@ bool MaterialReader::next_state()
   CIMap<State> nextState = {
     { "engine",                  State::INITIAL  },
     { "porothermoelastic",       State::POROTHERMOELASTIC     },
-    { "creep",                   State::CREEP     }
+    { "creep",                   State::CREEP     },
+    { "initialize",              State::INITIALIZE     }
   };
 
   // Resets the state
@@ -117,6 +119,30 @@ bool MaterialReader::next_state()
   dlog(1) << "NEXT STATE: " << current_state;
 
   return true;
+
+}
+
+/**
+ *
+ */
+void MaterialReader::initialize_state() 
+{
+  SCOPELOG(1);
+  smatch match;
+
+  if ( ! regex_search( line, match, RE_STR_STR ) ) return;
+  string var_type = match[1]; // stress, pressure etc
+  string method = match[2];
+
+//  if (! config.creep_md ) config.creep_md = CreepMD{};
+//  auto & creep_md = config.creep_md;
+
+  // Steady state mechanism
+  if ( iequals( var_type, "STRESS" ) ) 
+  {
+    using enum MatInitializeMethod;
+    if ( iequals( method, "hydrostatic" ) ) config.initialize.method = HYDROSTATIC;
+  }
 
 }
 

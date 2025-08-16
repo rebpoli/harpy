@@ -61,6 +61,10 @@ public:
   /// Updates the interface data at the probe points
   void update_probes();
 
+  /// 
+  void apply_strain_initialization_method();
+  void update_initial_strain();
+
   /// Calculate the stress_system stuff
   void project_stress( Elem & elem_ );
   void props_at( VPProps & props, const Point & pt, const Elem * elem );
