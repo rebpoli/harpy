@@ -5,6 +5,7 @@
 
 #include "material/ProbeIFC.h"
 #include "material/VPProps.h"
+#include "material/InitVPPropsByElemMap.h"
 
 using namespace libMesh;
 struct ViscoplasticIFC;
@@ -42,7 +43,7 @@ struct ViscoplasticIFC
   void load_initial_strain( const string & filename );
 
 private:
-  InitVPPropsByElemMap snapshot_initial_strain()
+  InitVPPropsByElemMap snapshot_initial_strain();
 };
 
 /** OUTPUT STREAMS **/

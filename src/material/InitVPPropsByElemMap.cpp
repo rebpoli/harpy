@@ -4,6 +4,8 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/mpi/collectives.hpp>
 
+#include <fstream>
+
 /**
  *
  */
@@ -26,7 +28,7 @@ void InitVPPropsByElemMap::write_to_file( const string & filename )
   {
     ofstream ofs( filename, ios::binary );
     boost::archive::binary_oarchive oa( ofs );
-    oa << global_map();
+    oa << global_map;
   }
 }
 
