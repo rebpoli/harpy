@@ -111,6 +111,8 @@ ADD_LIBRARY(Modules
   src/base/Log.cpp
   src/base/PetscLogger.cpp
   src/main/harpy.cpp
+  src/material/InitVPPropsByElemMap.cpp
+  src/material/VPProps.cpp
   src/material/ViscoPlasticMaterial.cpp
   src/material/ViscoplasticIFC.cpp
   src/material/VPProps.cpp

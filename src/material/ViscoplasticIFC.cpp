@@ -45,6 +45,42 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
 /**
  *
  */
+InitVPPropsByElemMap ViscoplasticIFC::snapshot_initial_strain()
+{
+  InitVPPropsByElemMap ret;
+  for ( auto & [k,vec] : by_elem )
+  {
+    auto & dst = ret[k];
+    for ( auto & v : vec ) 
+    {
+      // Create the snapshot on the fly
+      InitVPProps e;
+      e.initial_strain = v.initial_strain;
+      // Register the snapshot in the map
+      dst.push_back( e );
+    }
+  }
+  return ret;
+};
+
+/**
+ *
+ */
+void ViscoplasticIFC::save_initial_strain( const string & filename )
+{
+  // This should be done only in rank=0
+  InitVPPropsByElemMap ivmap = snapshot_initial_strain();
+  ivmap.write_to_file(filename);
+}
+
+void ViscoplasticIFC::load_initial_strain( const string & filename )
+{
+
+}
+
+/**
+ *
+ */
 ostream& operator<<(ostream& os, const ViscoplasticIFC & m)
 {
   os << "VISCOPLASTIC INTERFACE:" << endl;

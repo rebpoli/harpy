@@ -12,10 +12,6 @@ struct ViscoplasticIFC;
 /// Full data
 using VPPropsByElemMap = map< uint, vector<VPProps> >;
 
-/// Snapshot of the data (only a selected part of the data) that is used to interface
-/// with the initialization procedure (gravity activation)
-using InitVPPropsByElemMap = map< uint, vector<InitVPProps> >; 
-
 /** 
  * Holds the data to feed viscoplastic properties into/from the material 
  **/
@@ -42,8 +38,12 @@ struct ViscoplasticIFC
 
   void add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt );
 
+  void save_initial_strain( const string & filename );
+  void load_initial_strain( const string & filename );
+
+private:
+  InitVPPropsByElemMap snapshot_initial_strain()
 };
 
 /** OUTPUT STREAMS **/
 ostream& operator<<(ostream& os, const ViscoplasticIFC & m);
-

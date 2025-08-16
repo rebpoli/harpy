@@ -21,7 +21,7 @@ struct VPProps
   void update_initial_strain();
   // Update the stress to by hydrostatic
   void force_initial_strain_to_hydrostatic();
-  
+
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
 
@@ -53,13 +53,6 @@ struct VPProps
   RealTensor plast0_t;
 };
 
-/** Snapshot of data - only the part that is needed from 
- * gravity activation (a stress initialization run) to the
- * analysis run.
- */
-struct InitVPProps 
-{ RealTensor initial_strain; };
-
 
 /// Transposed version of the properties
 struct PropsTranspose
@@ -73,7 +66,7 @@ struct PropsTranspose
 };
 
 /**
- * Add serialization for the specific types
+ * Add serialization capability for VPProps
  */
 namespace boost {
 namespace serialization {
@@ -88,15 +81,6 @@ namespace serialization {
     ar & p.pressure; ar & p.initial_pressure;
     ar & p.von_mises; 
   } 
-
-  /** **/
-  template<class Archive>
-  void serialize(Archive & ar, InitVPProps & p, const unsigned int version)
-  {
-    UNUSED(version);
-    ar & p.initial_strain; 
-  } 
-
 } }  // Namespaces
 
 /** 
