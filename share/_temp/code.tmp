@@ -306,3 +306,7 @@ void MpiFileOps<Derived>::read_file(const string& path, MapT& m) const
   ia >> m;
 }
 
+
+
+  using base_map = map<uint, vector<MyStruct>>;
+
