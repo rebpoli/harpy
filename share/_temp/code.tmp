@@ -277,3 +277,10 @@ void MpiFileOps<MapT>::read_file(const string& path, MapT& m) const
   ia >> m;
 }
 
+
+
+
+
+src/material/ViscoplasticIFC.cpp|73 col 13| required from here
+include/util/MpiFileOps.h|75 col 22| error: invalid ‘static_cast’ from type ‘const MpiFileOps<std::map<unsigned int, std::vector<InitVPProps> > >’ to type ‘const std::map<unsigned int, std::vector<InitVPProps> >&’
+||    78 |   auto const& self = static_cast<MapT const&>(*this);

@@ -70,7 +70,7 @@ void ViscoplasticIFC::save_initial_strain( const string & filename )
 {
   // This should be done only in rank=0
   InitVPPropsByElemMap ivmap = snapshot_initial_strain();
-  ivmap.write_to_file(filename);
+  ivmap.save(filename);
 }
 
 void ViscoplasticIFC::load_initial_strain( const string & filename )
