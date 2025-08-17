@@ -35,7 +35,7 @@ private:
   void serialize(Ar& ar, const unsigned /*version*/) { ar & name & value; }
 };
 
-// ---------- MpiFileOps works with any MapT ----------
+// ---------- Generic MPI mixin for any MapT ----------
 template<class MapT>
 struct MpiFileOps {
   // Public communicator (defaults to MPI_COMM_WORLD)
@@ -48,24 +48,18 @@ struct MpiFileOps {
   static constexpr int TAG_OK   = 101;
   static constexpr int TAG_KEYS = 102;
 
-  // Save: root merges shards and writes once (first-wins by key)
+  // API
   void save(const string& path) const;
-
-  // Load (no filtering): every rank gets the full map
   void load(const string& path);
-
-  // Load (sharded): each rank passes the keys it should own
   void load(const string& path, const set<typename MapT::key_type>& local_keys);
 
 private:
-  // Serializer: archives the MapT base subobject of the most-derived
+  // Boost.Serialization hook (declared here, defined below)
   friend class ser::access;
   template<class Ar>
-  void serialize(Ar& ar, const unsigned /*version*/) {
-    ar & ser::base_object<MapT>(*this);
-  }
+  void serialize(Ar& ar, const unsigned /*version*/);
 
-  // Helpers (defined in .cpp via explicit instantiation for base_map)
+  // Helpers (declared here, defined below)
   static void assign_key_by_key_(MapT& dst, const MapT& src);
   static MapT slice_by_keys_(const MapT& m, const set<typename MapT::key_type>& keys);
   static void write_file_(const string& path, const MapT& m);
@@ -74,36 +68,30 @@ private:
 
 // ---------- Final MapStore ----------
 using base_map = map<uint, vector<MyStruct>>;
+
 struct MapStore
   : public base_map,
     public MpiFileOps<base_map>
 {
-  using base_map::base_map; // inherit std::map constructors
+  using base_map::base_map; // optional: inherit std::map ctors
 };
 
-// Tell the compiler we will instantiate MpiFileOps<base_map> in the .cpp
-extern template struct MpiFileOps<base_map>;
+// =========================
+// Template IMPLEMENTATIONS
+// (kept outside the class)
+// =========================
 
+template<class MapT>
+template<class Ar>
+void MpiFileOps<MapT>::serialize(Ar& ar, const unsigned /*version*/) {
+  ar & ser::base_object<MapT>(*this);
+}
 
-
-
-//////// CPP
-
-
-// MapStore.cpp
-#include "MapStore.hpp"
-
-// ------- Explicit template instantiation for base_map -------
-template struct MpiFileOps<base_map>;
-
-// ------- Definitions for MpiFileOps<base_map> -------
-
-template<>
-void MpiFileOps<base_map>::save(const string& path) const {
+template<class MapT>
+void MpiFileOps<MapT>::save(const string& path) const {
   const int rank   = comm.rank();
   const int nprocs = comm.size();
-
-  auto const& self = static_cast<base_map const&>(*this);
+  auto const& self = static_cast<MapT const&>(*this);
 
   if (nprocs == 1) {
     write_file_(path, self);
@@ -111,21 +99,25 @@ void MpiFileOps<base_map>::save(const string& path) const {
   }
 
   if (rank == 0) {
-    base_map merged = self;
+    MapT merged = self;
 
     // Receive shards from ranks 1..n-1
     for (int src = 1; src < nprocs; ++src) {
-      base_map shard;
+      MapT shard;
       comm.recv(src, TAG_MAP, shard);
-      // Merge policy: first-wins (insert). For concatenation, expand this.
+      // Merge policy: first-wins by key. Swap to concat if desired.
       merged.insert(shard.begin(), shard.end());
+      // Concatenate alternative:
+      // for (auto& kv : shard) {
+      //   auto& dst = merged[kv.first];
+      //   dst.insert(dst.end(), kv.second.begin(), kv.second.end());
+      // }
     }
 
     int ok = 1;
     try { write_file_(path, merged); }
     catch (...) { ok = 0; }
 
-    // Notify all ranks whether write succeeded
     for (int dst = 1; dst < nprocs; ++dst) comm.send(dst, TAG_OK, ok);
     if (!ok) throw runtime_error("MapStore::save: root failed to write");
   } else {
@@ -137,93 +129,83 @@ void MpiFileOps<base_map>::save(const string& path) const {
   }
 }
 
-template<>
-void MpiFileOps<base_map>::load(const string& path) {
-  // Default: no filtering — everyone ends up with the full map
+template<class MapT>
+void MpiFileOps<MapT>::load(const string& path) {
+  // Default: no filtering — everyone gets the full map
   const int rank   = comm.rank();
   const int nprocs = comm.size();
-
-  auto& self = static_cast<base_map&>(*this);
+  auto& self       = static_cast<MapT&>(*this);
 
   if (nprocs == 1) {
-    base_map full;
+    MapT full;
     read_file_(path, full);
     assign_key_by_key_(self, full);
     return;
   }
 
   if (rank == 0) {
-    base_map full;
+    MapT full;
     read_file_(path, full);
-
-    // Root updates itself key-by-key, then sends full map to others
     assign_key_by_key_(self, full);
     for (int dst = 1; dst < nprocs; ++dst) comm.send(dst, TAG_MAP, full);
   } else {
-    base_map full;
+    MapT full;
     comm.recv(0, TAG_MAP, full);
     assign_key_by_key_(self, full);
   }
 }
 
-template<>
-void MpiFileOps<base_map>::load(
+template<class MapT>
+void MpiFileOps<MapT>::load(
   const string& path,
-  const set<base_map::key_type>& local_keys)
+  const set<typename MapT::key_type>& local_keys)
 {
-  using K = base_map::key_type;
+  using K = typename MapT::key_type;
 
   const int rank   = comm.rank();
   const int nprocs = comm.size();
-
-  auto& self = static_cast<base_map&>(*this);
+  auto& self       = static_cast<MapT&>(*this);
 
   if (nprocs == 1) {
-    base_map full;
+    MapT full;
     read_file_(path, full);
-    base_map slice = slice_by_keys_(full, local_keys);
+    MapT slice = slice_by_keys_(full, local_keys);
     assign_key_by_key_(self, slice);
     return;
   }
 
   if (rank == 0) {
-    // Root reads full map, applies its own key filter,
-    // then serves slices to other ranks based on their requested keys.
-    base_map full;
+    // Root reads full map, installs its slice, then serves slices to others
+    MapT full;
     read_file_(path, full);
 
-    base_map my_slice = slice_by_keys_(full, local_keys);
+    MapT my_slice = slice_by_keys_(full, local_keys);
     assign_key_by_key_(self, my_slice);
 
-    // Receive key sets from others, send back slices
     for (int src = 1; src < nprocs; ++src) {
       set<K> req;
       comm.recv(src, TAG_KEYS, req);
-
-      base_map slice = slice_by_keys_(full, req);
+      MapT slice = slice_by_keys_(full, req);
       comm.send(src, TAG_MAP, slice);
     }
   } else {
-    // Non-root sends its requested keys, receives slice, and installs it
+    // Non-root sends requested keys, receives slice, installs it
     comm.send(0, TAG_KEYS, local_keys);
-    base_map slice;
+    MapT slice;
     comm.recv(0, TAG_MAP, slice);
     assign_key_by_key_(self, slice);
   }
 }
 
-template<>
-void MpiFileOps<base_map>::assign_key_by_key_(base_map& dst, const base_map& src) {
+template<class MapT>
+void MpiFileOps<MapT>::assign_key_by_key_(MapT& dst, const MapT& src) {
   dst.clear();
-  for (const auto& kv : src) dst.insert(kv); // copies key and vector<MyStruct>
+  for (const auto& kv : src) dst.insert(kv); // copies key and vector
 }
 
-template<>
-base_map MpiFileOps<base_map>::slice_by_keys_(
-  const base_map& m,
-  const set<base_map::key_type>& keys)
-{
-  base_map out;
+template<class MapT>
+MapT MpiFileOps<MapT>::slice_by_keys_(const MapT& m, const set<typename MapT::key_type>& keys) {
+  MapT out;
   for (const auto& k : keys) {
     auto it = m.find(k);
     if (it != m.end()) out.insert(*it);
@@ -231,16 +213,16 @@ base_map MpiFileOps<base_map>::slice_by_keys_(
   return out;
 }
 
-template<>
-void MpiFileOps<base_map>::write_file_(const string& path, const base_map& m) {
+template<class MapT>
+void MpiFileOps<MapT>::write_file_(const string& path, const MapT& m) {
   ofstream ofs(path, ios::binary);
   if (!ofs) throw runtime_error("MapStore::save: cannot open " + path);
   arch::binary_oarchive oa(ofs);
   oa << m;
 }
 
-template<>
-void MpiFileOps<base_map>::read_file_(const string& path, base_map& m) {
+template<class MapT>
+void MpiFileOps<MapT>::read_file_(const string& path, MapT& m) {
   ifstream ifs(path, ios::binary);
   if (!ifs) throw runtime_error("MapStore::load: cannot open " + path);
   arch::binary_iarchive ia(ifs);
