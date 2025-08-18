@@ -10,6 +10,8 @@
 #include "libmesh/dense_submatrix.h"
 #include "libmesh/dense_subvector.h"
 
+#include <boost/serialization/access.hpp>
+
 /**
  *
  * This is an abstract class to be the common inteface 
@@ -72,5 +74,10 @@ class Material
 
     QGauss qrule;
     const Elem * elem;   /// The element that the material has been reinit'ed to
+                         ///
+  private:
+    /* Serialization routines - polymorphic serialization. */
+    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/) { }
+    friend class boost::serialization::access;
 };
 

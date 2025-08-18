@@ -12,8 +12,10 @@ class File;
 struct Header {
   File * f;
 
-  uint version; uint N; string S; 
-  const string MAGIC = "ABCD";
+  /// Number of entries in 
+  long unsigned int N; 
+  /// For checking if we are in sync
+  string MAGIC = "ABCD";
 
   void write();
   void read();

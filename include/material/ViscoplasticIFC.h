@@ -7,6 +7,8 @@
 #include "material/VPProps.h"
 #include "material/InitVPPropsByElemMap.h"
 
+#include <boost/serialization/access.hpp>
+
 using namespace libMesh;
 struct ViscoplasticIFC;
 
@@ -44,6 +46,11 @@ struct ViscoplasticIFC
 
 private:
   InitVPPropsByElemMap snapshot_initial_strain();
+
+  /* Serialization routines - polymorphic serialization. */
+  friend class boost::serialization::access;
+  template<class Ar> void serialize(Ar& ar, const unsigned /*version*/) 
+  { }
 };
 
 /** OUTPUT STREAMS **/

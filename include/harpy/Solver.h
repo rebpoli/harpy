@@ -65,10 +65,10 @@ class Solver
 
     Solver * ref_solver;
 
-    /* Serialization routines */
-    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/)
-    { dlog(1) << "Solver::serialize."; } //ar & *viscoplastic; }
+    /* Serialization routines - polymorphic serialization. */
     friend class boost::serialization::access;
+    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/)
+    { ar & material_by_sid; }
 };
 
 

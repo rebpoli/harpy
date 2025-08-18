@@ -46,21 +46,27 @@ void File::write( const Solver * svr )
  */
 void File::write( const ViscoplasticSolver * svr )
 {
-  // TODO: Collect stuff from all procs into the root (collective)
+  // Localize the svr->material_by_sid to the root processor
+  //
+  // svr->material_by_sid < uint , Material * >
+  //        mat->by_elem  < uint , vector<VPProps> > VPPropsByElemMap
+  //
+  // Binary organization:
+  //     HEADER( material_by_sid )
+  //        HEADER( by_elem )
+  //          HEADER( vector<VPProps> )
+  //             VPProps
 
-  if ( ! is_root() ) return; // only writes in the root. 
+  if ( is_root() ) 
+  {
+    Header h{ this, svr->material_by_sid.size(), "MATERIAL_MAP" };
+    h.write();
+  }
+
+
 
   SCOPELOG(1);
   dlog(1) << "VISCOPLASTICSOLVER";
-
-  Header h{ this, 5, 100, "abcd"};
-  h.write();
-
-  for ( uint i=0 ; i<10 ; i++ )
-  {
-    _write(os, i);
-    _write(os, to_string(i));
-  }
 }
 
 /**
@@ -105,18 +111,6 @@ void File::read( const ViscoplasticSolver * svr )
   Header header{ this };
   header.read();
 
-  dlog(1) << "  HEADER ver(" << header.version << ") N(" << header.N << ") S(" << header.S << ")" ;
-  for ( uint i=0 ; i<10 ; i++ )
-  {
-    uint I;
-    _read(is, I);
-
-    string S;
-    _read(is, S);
-
-
-    dlog(1) << "  (" << i << ") " << S ;
-  }
 }
 
 /**
