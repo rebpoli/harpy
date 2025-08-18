@@ -5,7 +5,11 @@
 #include <type_traits>
 #include <fstream>
 
+#include "libmesh/tensor_value.h"
+
 namespace restart {
+
+using namespace libMesh;
 
 /**
  *
@@ -26,5 +30,9 @@ void _read(ifstream& is, T& v)
 /// Functions - implementation in cpp
 void _write(ofstream& os, const string& s) ;
 void _read(ifstream& is, string& s) ;
+
+/// Libmesh stuff
+void _write(ofstream& os, const RealTensor & A) ;
+void _read(ifstream& is, RealTensor & A) ;
 
 }

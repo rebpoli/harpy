@@ -9,7 +9,6 @@
 
 #include "libmesh/exodusII_io.h"
 
-#include <boost/serialization/access.hpp>
 #include "util/MpiFileOps.h"
 #include "harpy/Material.h"
 
@@ -27,16 +26,6 @@ class BCConfig;
 
 namespace libMesh { class Elem ; class MeshBase; } 
 using namespace libMesh;
-
-/// TODO: adjust this. Put in a better place this mess
-/// TODO: add a operator<<
-struct MaterialBySidMap : public map< uint, Material * >
-{
-  MpiFileOps< map<uint, Material *> > eng;
-  MaterialBySidMap() : eng(*this) {}
-  void localize_to_one( MaterialBySidMap & global_map ) const
-  { eng.localize_to_one(global_map); };
-};
 
 /**
  *
@@ -66,7 +55,7 @@ class Solver
 
     string name;
     Timestep & ts;
-    MaterialBySidMap material_by_sid;
+    map< uint, Material *> material_by_sid;
     bool own_es;
 
     SolverConfig * config;
@@ -75,11 +64,6 @@ class Solver
     EquationSystems & es;
 
     Solver * ref_solver;
-
-    /* Serialization routines - polymorphic serialization. */
-    friend class boost::serialization::access;
-    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/)
-    { ar & material_by_sid; }
 };
 
 

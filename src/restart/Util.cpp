@@ -25,4 +25,30 @@ void _read(ifstream& is, string& s)
     is.read(&s[0], static_cast<streamsize>(n));
 }
 
+// Write a 3x3 RealTensor
+void _write(ofstream& os, const RealTensor& A)
+{
+    array<double, 9> buf;
+    size_t k = 0;
+    for (unsigned i = 0; i < 3; ++i)
+        for (unsigned j = 0; j < 3; ++j)
+            buf[k++] = A(i, j);
+
+    os.write(reinterpret_cast<const char*>(buf.data()),
+             static_cast<streamsize>(buf.size() * sizeof(buf[0])));
+}
+
+// Read a 3x3 RealTensor
+void _read(ifstream& is, RealTensor& A)
+{
+    array<double, 9> buf{};
+    is.read(reinterpret_cast<char*>(buf.data()),
+            static_cast<streamsize>(buf.size() * sizeof(buf[0])));
+
+    size_t k = 0;
+    for (unsigned i = 0; i < 3; ++i)
+        for (unsigned j = 0; j < 3; ++j)
+            A(i, j) = buf[k++];
+}
+
 }

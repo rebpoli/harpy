@@ -331,7 +331,7 @@ void ViscoplasticSolver::set_scalar_bcs()
 
             DofConstraintRow cr;
             cr.insert( make_pair(rdofi[0], 1) );
-            dlog(1) << "Adding constraint row: vid:" << vid << " rvid:" << rvid << " dofi:" << dofi << " rdofi:" << rdofi << "";
+            dlog(2) << "Adding constraint row: vid:" << vid << " rvid:" << rvid << " dofi:" << dofi << " rdofi:" << rdofi << "";
             dof_map.add_constraint_row(dofi[c], cr, 0, true);
             
             n_dofs_by_rvid[rvid]++; // Some reporting information

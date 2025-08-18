@@ -1917,8 +1917,6 @@ Material	include/harpy/Material.h	/^    Material() : qrule(3) {}$/;"	f	class:Mat
 Material	include/harpy/Material.h	/^class Material $/;"	c
 Material	src/harpy/Material.cpp	/^Material::Material( Material * refmat_ ) :$/;"	f	class:Material
 Material	src/harpy/Material.cpp	/^Material::Material( suint sid_, const MaterialConfig * config_ ) :$/;"	f	class:Material
-MaterialBySidMap	include/harpy/Solver.h	/^  MaterialBySidMap() : eng(*this) {}$/;"	f	struct:MaterialBySidMap
-MaterialBySidMap	include/harpy/Solver.h	/^struct MaterialBySidMap : public map< uint, Material * >$/;"	s
 MaterialConfig	include/config/MaterialConfig.h	/^  MaterialConfig( const string & name_, const string & cfg_ ) : name(name_), cfg(cfg_) {};$/;"	f	class:MaterialConfig
 MaterialConfig	include/config/MaterialConfig.h	/^class MaterialConfig$/;"	c
 MaterialConfig	src/config/MaterialConfig.cpp	/^MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ )   :$/;"	f	class:MaterialConfig
@@ -3295,6 +3293,8 @@ Utility	/opt/libmesh/src/utils/string_to_enum.C	/^namespace Utility {$/;"	n	name
 Utility	/opt/libmesh/src/utils/timestamp.C	/^namespace Utility$/;"	n	namespace:libMesh	file:
 Utils	/opt/libmesh/include/parallel/parallel_conversion_utils.h	/^namespace Utils {$/;"	n	namespace:libMesh::Parallel
 VPProps	include/material/VPProps.h	/^struct VPProps $/;"	s
+VPPropsByElemMap	include/material/ViscoplasticIFC.h	/^  VPPropsByElemMap() : eng(*this) {}$/;"	f	struct:VPPropsByElemMap
+VPPropsByElemMap	include/material/ViscoplasticIFC.h	/^struct VPPropsByElemMap : public VPPropsByElemMap_base$/;"	s
 VTKIO	/opt/libmesh/include/mesh/vtk_io.h	/^class VTKIO : public MeshInput<MeshBase>,$/;"	c	namespace:libMesh
 VTKIO	/opt/libmesh/src/mesh/vtk_io.C	/^VTKIO::VTKIO (MeshBase & mesh) :$/;"	f	class:libMesh::VTKIO
 VTKIO	/opt/libmesh/src/mesh/vtk_io.C	/^VTKIO::VTKIO (const MeshBase & mesh) :$/;"	f	class:libMesh::VTKIO
@@ -7571,8 +7571,8 @@ enforce_max_value	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  boo
 enforce_min_value	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  bool enforce_min_value;$/;"	m	struct:libMesh::EIMVarGroupPlottingInfo
 enforce_mismatch_limit_prior_to_refinement	/opt/libmesh/include/mesh/mesh_refinement.h	/^inline bool & MeshRefinement::enforce_mismatch_limit_prior_to_refinement()$/;"	f	class:libMesh::MeshRefinement
 enforce_mismatch_limit_prior_to_refinement	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/^bool MeshRefinement::enforce_mismatch_limit_prior_to_refinement(Elem * elem,$/;"	f	class:libMesh::MeshRefinement
-eng	include/harpy/Solver.h	/^  MpiFileOps< map<uint, Material *> > eng;$/;"	m	struct:MaterialBySidMap
 eng	include/material/InitVPPropsByElemMap.h	/^  MpiFileOps<InitVPPropsByElemMap_basemap> eng;$/;"	m	class:InitVPPropsByElemMap
+eng	include/material/ViscoplasticIFC.h	/^  MpiFileOps<VPPropsByElemMap_base> eng;$/;"	m	struct:VPPropsByElemMap
 engine	include/config/MaterialConfig.h	/^  string engine;   \/\/\/ Poroelastic, viscoplastic, porothermoelastic ...$/;"	m	class:MaterialConfig
 enrich_C_J	/opt/libmesh/src/reduced_basis/rb_scm_construction.C	/^void RBSCMConstruction::enrich_C_J(unsigned int new_C_J_index)$/;"	f	class:libMesh::RBSCMConstruction
 enrich_RB_space	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::enrich_RB_space()$/;"	f	class:libMesh::RBConstruction
@@ -12097,7 +12097,7 @@ localize_to_one	/opt/libmesh/src/numerics/laspack_vector.C	/^void LaspackVector<
 localize_to_one	/opt/libmesh/src/numerics/petsc_vector.C	/^void PetscVector<Complex>::localize_to_one (std::vector<Complex> & v_local,$/;"	f	class:libMesh::PetscVector
 localize_to_one	/opt/libmesh/src/numerics/petsc_vector.C	/^void PetscVector<Real>::localize_to_one (std::vector<Real> & v_local,$/;"	f	class:libMesh::PetscVector
 localize_to_one	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<T>::localize_to_one (std::vector<T> &  v_local,$/;"	f	class:libMesh::EpetraVector
-localize_to_one	include/harpy/Solver.h	/^  void localize_to_one( MaterialBySidMap & global_map ) const$/;"	f	struct:MaterialBySidMap
+localize_to_one	include/material/ViscoplasticIFC.h	/^  void localize_to_one( VPPropsByElemMap & global_map )$/;"	f	struct:VPPropsByElemMap
 localize_to_one	include/util/MpiFileOps.h	/^void MpiFileOps<MapT>::localize_to_one( MapT & global_map ) const$/;"	f	class:MpiFileOps
 localize_to_one	src/material/ProbeIFC.cpp	/^void ProbeByElemMap::localize_to_one(ProbeByElemMap & global_map)$/;"	f	class:ProbeByElemMap
 localized_vectors_iterator	/opt/libmesh/include/systems/diff_context.h	/^  typedef std::map<const NumericVector<Number> *, std::pair<DenseVector<Number>, std::vector<DenseSubVector<Number>>>>::iterator localized_vectors_iterator;$/;"	t	class:libMesh::DiffContext
@@ -12278,7 +12278,7 @@ mat	/opt/libmesh/include/numerics/trilinos_preconditioner.h	/^  Epetra_FECrsMatr
 mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^Mat PetscShellMatrix<T>::mat()$/;"	f	class:libMesh::PetscShellMatrix
 mat_config_by_name	include/config/SolverConfig.h	/^  MatConfigMap mat_config_by_name; \/\/\/ the chosen configuration for this run$/;"	m	class:SolverConfig
 matches_cache	/opt/libmesh/src/fe/fe.C	/^bool FE<Dim,T>::matches_cache(const Elem * elem)$/;"	f	class:libMesh::FE
-material_by_sid	include/harpy/Solver.h	/^    MaterialBySidMap material_by_sid;$/;"	m	class:Solver
+material_by_sid	include/harpy/Solver.h	/^    map< uint, Material *> material_by_sid;$/;"	m	class:Solver
 materials	include/config/ModelConfig.h	/^  set< MaterialConfig > materials;   \/\/\/ Material configurations$/;"	m	class:ModelConfig
 matrices	/opt/libmesh/include/numerics/sum_shell_matrix.h	/^  std::vector<ShellMatrix<T> *> matrices;$/;"	m	class:libMesh::SumShellMatrix
 matrices_begin	/opt/libmesh/include/systems/system.h	/^System::const_matrices_iterator System::matrices_begin () const$/;"	f	class:libMesh::System
@@ -17534,13 +17534,10 @@ serialization	include/material/InitVPPropsByElemMap.h	/^namespace boost { namesp
 serialization	include/material/ProbeIFC.h	/^namespace serialization {$/;"	n	namespace:boost
 serialization	include/material/VPProps.h	/^namespace serialization {$/;"	n	namespace:boost
 serialization	include/util/Serialize.h	/^namespace serialization {$/;"	n	namespace:boost
-serialize	include/harpy/Material.h	/^    template<class Ar> void serialize(Ar& ar, const unsigned \/*version*\/) { }$/;"	f	class:Material
-serialize	include/harpy/Solver.h	/^    template<class Ar> void serialize(Ar& ar, const unsigned \/*version*\/)$/;"	f	class:Solver
 serialize	include/material/InitVPPropsByElemMap.h	/^  void serialize(Archive & ar, InitVPProps & p, const unsigned int \/*ver*\/)$/;"	f	namespace:boost::serialization
 serialize	include/material/ProbeIFC.h	/^  void serialize(Archive & ar, ProbeIFC & p, const unsigned int version)$/;"	f	namespace:boost::serialization
 serialize	include/material/ProbeIFC.h	/^  void serialize(Archive& ar, const unsigned int version) {$/;"	f	struct:ProbeByElemMap
-serialize	include/material/VPProps.h	/^  void serialize(Archive & ar, VPProps & p, const unsigned int version)$/;"	f	namespace:boost::serialization
-serialize	include/material/ViscoPlasticMaterial.h	/^    template<class Ar> void serialize(Ar& ar, const unsigned \/*version*\/) $/;"	f	class:ViscoPlasticMaterial
+serialize	include/material/VPProps.h	/^  void serialize(Archive & ar, VPProps & p, const unsigned int \/*ver*\/)$/;"	f	namespace:boost::serialization
 serialize	include/material/ViscoplasticIFC.h	/^  template<class Ar> void serialize(Ar& ar, const unsigned \/*version*\/) $/;"	f	struct:ViscoplasticIFC
 serialize	include/util/MpiFileOps.h	/^  void serialize(Ar& ar, const unsigned \/*version*\/)$/;"	f	struct:MpiFileOps
 serialize	include/util/Serialize.h	/^void serialize(Archive & ar, libMesh::Point & p, const unsigned int \/*version*\/ )$/;"	f	namespace:boost::serialization

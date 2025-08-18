@@ -45,6 +45,7 @@ struct MpiFileOps
   void load(const string& path);
 
   void localize_to_one( MapT & global_map ) const;
+  void localize( MapT & global_map ) const;
 
 private:
   friend class ser::access;
@@ -56,6 +57,30 @@ private:
   void write_file(const string& path) const;
   void read_file(const string& path) const;
 };
+
+/**
+ *
+ */
+template<class MapT>
+void MpiFileOps<MapT>::localize( MapT & global_map ) const
+{
+  const int rank   = world.rank();
+  const int nprocs = world.size();
+
+  // serial
+  if (nprocs == 1) { global_map = the_map; return; }
+
+  global_map.clear();
+
+  std::vector<MapT> maps;
+  all_gather(world, the_map, maps);
+
+  global_map.clear();
+
+  for (const auto& m : maps)
+    for (const auto& [k, v] : m)
+      global_map[k] = v;
+}
 
 /**
  *
@@ -75,14 +100,16 @@ void MpiFileOps<MapT>::localize_to_one( MapT & global_map ) const
   if (rank != 0)
   { world.send(0,0,the_map); }
 
-  // Receiver
+  // Receiver (root)
   else 
   {
     global_map = the_map; // Add my own data
+
     for ( uint i=1 ; i<nprocs ; ++i )
     {
       MapT remote_map;
       world.recv(i, 0, remote_map );
+
       for (const auto& [ key, val ] : remote_map) 
         global_map[key] = val;
     }

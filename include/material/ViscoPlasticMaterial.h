@@ -18,8 +18,6 @@
 
 #include "util/CsvFile.h"
 
-#include <boost/serialization/access.hpp>
-
 /**
  *
  */
@@ -139,11 +137,7 @@ public:
 
   CsvFile dfile; // Debugging file
   int res_jac_k; // Debugging counter
-private:
-    /* Serialization routines - polymorphic serialization. */
-    friend class boost::serialization::access;
-    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/) 
-    { ar & vp_ifc; }
+
 };
 
 /**
@@ -186,4 +180,3 @@ inline bool ViscoPlasticMaterial::next_qp( bool inc )
 
   return true; 
 }
-

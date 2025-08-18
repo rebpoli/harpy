@@ -33,12 +33,10 @@ class File
     void write( const SLViscoplastic & sloop );
     void write( const Solver * svr );
     void write( const ViscoplasticSolver * svr );
-    void write( const ViscoPlasticMaterial * mat );
 
     void read( const SLViscoplastic & sloop );
     void read( const Solver * svr );
     void read( const ViscoplasticSolver * svr );
-    void read( const ViscoPlasticMaterial * mat );
 
     inline bool is_root() { return world.rank() == 0; }
   private:

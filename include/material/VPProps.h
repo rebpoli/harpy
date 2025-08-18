@@ -72,14 +72,14 @@ namespace boost {
 namespace serialization {
   /** **/
   template<class Archive>
-  void serialize(Archive & ar, VPProps & p, const unsigned int version)
+  void serialize(Archive & ar, VPProps & p, const unsigned int /*ver*/)
   {
-    UNUSED(version);
     ar & p.lame_mu; ar & p.lame_lambda; ar & p.GRAD_U;
     ar & p.U; ar & p.sigtot; ar & p.sigeff;
     ar & p.temperature; ar & p.initial_temperature;
     ar & p.pressure; ar & p.initial_pressure;
     ar & p.von_mises; 
+    ar & p.initial_strain; 
   } 
 } }  // Namespaces
 
