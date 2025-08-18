@@ -1,5 +1,5 @@
 #include "harpy/Timeloop.h"
-#include "harpy/Restart.h"
+#include "restart/File.h"
 #include "solverloop/SLViscoplastic.h"
 
 using namespace libMesh;
@@ -27,7 +27,7 @@ void Timeloop::main_loop()
   SLViscoplastic sloop( ts ); 
 
   // TODO: Move as object member
-  harpy::Restart::File restart( MODEL->model_dir + "/restart.bin" );
+  restart::File restart( MODEL->model_dir + "/restart.bin" );
 
   while ( true )
   {

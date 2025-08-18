@@ -22,7 +22,7 @@ class SolverConfig;
 class Timestep;
 class ViscoPlasticMaterial;
 
-namespace harpy { namespace Restart { class File; } }
+namespace restart { class File; } 
 
 namespace libMesh {
   class Elem;
@@ -107,6 +107,6 @@ class ViscoplasticSolver : public Solver,
 
     unique_ptr<NumericVector<Number>> old_sol;
 
-    friend class harpy::Restart::File;
+    friend class restart::File;
 };
 

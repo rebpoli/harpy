@@ -84,7 +84,6 @@ ADD_LIBRARY(Modules
   src/harpy/Material.cpp
   src/harpy/DirManager.cpp
   src/harpy/ExplicitMaterial.cpp
-  src/harpy/Restart.cpp
   src/harpy/Solver.cpp
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp
@@ -128,6 +127,9 @@ ADD_LIBRARY(Modules
   src/solver/ThermalSolverConstant.cpp
   src/solver/ThermalSolverFromFile.cpp
   src/solverloop/SLViscoplastic.cpp
+  src/restart/File.cpp
+  src/restart/Header.cpp
+  src/restart/Util.cpp
 
 
 

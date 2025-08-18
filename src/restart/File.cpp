@@ -1,11 +1,13 @@
 
-#include "harpy/Restart.h"
+#include "restart/File.h"
+#include "restart/Header.h"
+#include "restart/Util.h"
 
 #include "solverloop/SLViscoplastic.h"
 
 namespace mpi  = boost::mpi;
 
-namespace harpy { namespace Restart {
+namespace restart { 
 
 /**
  * 
@@ -30,7 +32,7 @@ void File::write( const SLViscoplastic & sloop )
   if ( is_root() ) os.close(); 
 
   // MPI sync
-  comm.barrier();
+  world.barrier();
 }
 
 /**
@@ -131,25 +133,5 @@ void File::read( const ViscoPlasticMaterial * mat )
  *
  */
 
-/**
- *
- */
-void _write(ofstream& os, const string& s) 
-{
-    uint n = static_cast<uint>(s.size());
-    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
-    os.write(s.data(), static_cast<streamsize>(n));
-}
 
-/**
- *
- */
-void _read(ifstream& is, string& s) 
-{
-    uint n = 0;
-    is.read(reinterpret_cast<char*>(&n), sizeof(n));
-    s.resize(static_cast<size_t>(n));
-    is.read(&s[0], static_cast<streamsize>(n));
-}
-
-}} // ns
+} // ns
