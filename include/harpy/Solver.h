@@ -9,6 +9,8 @@
 
 #include "libmesh/exodusII_io.h"
 
+#include <boost/serialization/access.hpp>
+
 class Timestep;
 class SolverConfig;
 
@@ -62,6 +64,11 @@ class Solver
     EquationSystems & es;
 
     Solver * ref_solver;
+
+    /* Serialization routines */
+    template<class Ar> void serialize(Ar& ar, const unsigned /*version*/)
+    { dlog(1) << "Solver::serialize."; } //ar & *viscoplastic; }
+    friend class boost::serialization::access;
 };
 
 

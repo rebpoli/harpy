@@ -436,8 +436,6 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   // Debug
   const vector<Point> & xyz = fe->get_xyz();
-  dlog(1) << "[" << P << "] dumping grad_u @ " << xyz[QP] << ": " << P->GRAD_U.norm();
-  dlog(1) << "[" << P << "] initial_strain @ " << xyz[QP] << ": " << P->initial_strain.norm();
 
   P->von_mises = val(von_mises);
   P->epskk = val(epskk);
@@ -487,8 +485,6 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
 {
   // Lambda function to compatibilize stuff
   auto f = [this](const AD::Vec & x) { return this->residual_qp(x);  };
-
-  dlog(1) << "----";
 
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
@@ -744,7 +740,6 @@ void ViscoPlasticMaterial::props_at( VPProps & p,
     GRAD_U(i,j) += dphi[B][0](j) * val( Uib(i,B) );
 
   // Update the VPProps stresses, plasticity etc
-  dlog(1) << "PROPS_AT @ " << pt;
   p.update( U, GRAD_U, vpsolver.ts.dt );
 }
 

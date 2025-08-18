@@ -75,7 +75,16 @@ void ViscoplasticIFC::save_initial_strain( const string & filename )
 
 void ViscoplasticIFC::load_initial_strain( const string & filename )
 {
+  InitVPPropsByElemMap ivmap;
+  ivmap.load(filename);
 
+  // TODO : add some validations here
+  for ( auto & [k,vec] : by_elem )
+  {
+    auto & src = ivmap[k];
+    for ( uint i=0; i<vec.size(); i++ )
+      vec[i].initial_strain = src[i].initial_strain;
+  }
 }
 
 /**

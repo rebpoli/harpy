@@ -27,5 +27,8 @@ class SLViscoplastic : public Solverloop
 
   private:
 
-    Solver * viscoplastic, * thermal, * pressure;
+    ViscoplasticSolver *viscoplastic;
+    Solver *thermal, *pressure;
+
+    friend harpy::Restart::File;
 };

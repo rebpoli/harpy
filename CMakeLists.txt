@@ -84,6 +84,7 @@ ADD_LIBRARY(Modules
   src/harpy/Material.cpp
   src/harpy/DirManager.cpp
   src/harpy/ExplicitMaterial.cpp
+  src/harpy/Restart.cpp
   src/harpy/Solver.cpp
   src/harpy/Timeloop.cpp
   src/harpy/Timestep.cpp

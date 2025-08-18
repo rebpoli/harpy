@@ -32,7 +32,7 @@ namespace arch = boost::archive;
 template<class MapT>
 struct MpiFileOps
 {
-  mpi::communicator comm;
+  boost::mpi::communicator comm;
   MapT & the_map;
 
   MpiFileOps( MapT & a_map ) : comm(), the_map(a_map) {}
@@ -129,7 +129,7 @@ template<class MapT>
 void MpiFileOps<MapT>::write_file(const string& path) const
 {
   ofstream ofs(path, ios::binary);
-  if (!ofs) flog << "MapStore::save: cannot open '" << path << "'.";
+  if (!ofs) flog << "Cannot open '" << path << "'.";
 
   arch::binary_oarchive oa(ofs);
   oa << the_map;
@@ -142,7 +142,7 @@ template<class MapT>
 void MpiFileOps<MapT>::read_file(const string& path) const
 {
   ifstream ifs(path, ios::binary);
-  if (!ifs) flog << "MapStore::load: cannot open '" << path << "'.";
+  if (!ifs) flog << "Cannot open '" << path << "'.";
 
   arch::binary_iarchive ia(ifs);
   ia >> the_map;
