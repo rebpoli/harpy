@@ -67,7 +67,7 @@ void File::write( const ViscoplasticSolver * svr )
     VPPropsByElemMap global_map;
     local_map.localize_to_one( global_map );
 
-    // Now we have all data in rank=0 for this _sid_ . Write the file.
+//     Now we have all data in rank=0 for this _sid_ . Write the file.
     if ( is_root() ) 
     {
       _write( os , sid );                                 /* WRITE */
@@ -162,6 +162,9 @@ void File::read( const ViscoplasticSolver * svr )
         VPProps &p = vec[qp];
 
         p.initial_strain = initial_strain;
+        
+        // Debug - Check if we are ok
+//        if ( (p.sigtot - sigtot).norm() > 1e-10 ) flog << "Error found";
       }
     }
 

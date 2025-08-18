@@ -7,21 +7,15 @@
 #include "material/VPProps.h"
 #include "material/InitVPPropsByElemMap.h"
 
+#include "util/MpiFileOps.h"
 #include <boost/serialization/access.hpp>
 
 using namespace libMesh;
 struct ViscoplasticIFC;
 
 /// Full data
-using VPPropsByElemMap_base =  map< uint, vector<VPProps> > ;
-struct VPPropsByElemMap : public VPPropsByElemMap_base
-{
-  VPPropsByElemMap() : eng(*this) {}
-  void localize_to_one( VPPropsByElemMap & global_map ) { eng.localize_to_one(global_map); }
-  void localize( VPPropsByElemMap & global_map ) { eng.localize(global_map); }
-
-  MpiFileOps<VPPropsByElemMap_base> eng;
-};
+struct VPPropsByElemMap : public MpiFileOps< map<uint, vector<VPProps> > >
+{ };
 
 /** 
  * Holds the data to feed viscoplastic properties into/from the material 

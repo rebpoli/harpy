@@ -1004,6 +1004,10 @@ HarpyInit	src/base/HarpyInit.cpp	/^HarpyInit::HarpyInit( int argc, char ** argv 
 HasNormInf	/opt/libmesh/src/numerics/trilinos_preconditioner.C	/^TrilinosPreconditioner<T>::HasNormInf() const$/;"	f	class:libMesh::TrilinosPreconditioner
 HashFunction	/opt/libmesh/include/mesh/sides_to_elem_map.h	/^  struct HashFunction$/;"	s	class:libMesh::MeshTools::SidesToElemMap
 Header	include/restart/Header.h	/^struct Header {$/;"	s	namespace:restart
+HeaderRead	include/restart/Header.h	/^  HeaderRead( File * f_ , string MAGIC ) :$/;"	f	struct:restart::HeaderRead
+HeaderRead	include/restart/Header.h	/^struct HeaderRead : public Header {$/;"	s	namespace:restart
+HeaderWrite	include/restart/Header.h	/^  HeaderWrite( File * f_ , long unsigned int N, string MAGIC ) :$/;"	f	struct:restart::HeaderWrite
+HeaderWrite	include/restart/Header.h	/^struct HeaderWrite : public Header {$/;"	s	namespace:restart
 HessianFunctionPointer	/opt/libmesh/include/error_estimation/exact_error_estimator.h	/^  typedef Tensor (*HessianFunctionPointer)(const Point & p,$/;"	t	class:libMesh::ExactErrorEstimator
 HessianFunctionPointer	/opt/libmesh/include/error_estimation/exact_solution.h	/^  typedef Tensor (*HessianFunctionPointer)(const Point & p,$/;"	t	class:libMesh::ExactSolution
 Hex	/opt/libmesh/include/geom/cell_hex.h	/^  Hex(const unsigned int nn, Elem * p, Node ** nodelinkdata) :$/;"	f	class:libMesh::Hex
@@ -1121,8 +1125,7 @@ InfQuad6	/opt/libmesh/include/geom/face_inf_quad6.h	/^  InfQuad6 (Elem * p=nullp
 InfQuad6	/opt/libmesh/include/geom/face_inf_quad6.h	/^class InfQuad6 : public InfQuad$/;"	c	namespace:libMesh
 InitMutex	/opt/libmesh/src/geom/reference_elem.C	/^typedef Threads::spin_mutex InitMutex;$/;"	t	namespace:__anon66	file:
 InitVPProps	include/material/InitVPPropsByElemMap.h	/^struct InitVPProps $/;"	s
-InitVPPropsByElemMap	include/material/InitVPPropsByElemMap.h	/^  InitVPPropsByElemMap() : eng(*this) {}$/;"	f	class:InitVPPropsByElemMap
-InitVPPropsByElemMap	include/material/InitVPPropsByElemMap.h	/^class InitVPPropsByElemMap : public InitVPPropsByElemMap_basemap$/;"	c
+InitVPPropsByElemMap	include/material/InitVPPropsByElemMap.h	/^class InitVPPropsByElemMap : public MpiFileOps<InitVPPropsByElemMap_basemap>$/;"	c
 Initialization	/opt/libmesh/include/systems/system.h	/^  class Initialization$/;"	c	class:libMesh::System
 InoutConfig	include/config/InoutConfig.h	/^struct InoutConfig $/;"	s
 InoutConfig	src/config/InoutConfig.cpp	/^InoutConfig::InoutConfig() : model_dir(MODEL->model_dir) $/;"	f	class:InoutConfig
@@ -2003,8 +2006,8 @@ ModelReader	src/config/reader/ModelReader.cpp	/^ModelReader::ModelReader( ModelC
 Modification	/opt/libmesh/include/mesh/mesh_modification.h	/^namespace Modification$/;"	n	namespace:libMesh::MeshTools
 MortonSFCPartitioner	/opt/libmesh/include/partitioning/morton_sfc_partitioner.h	/^  MortonSFCPartitioner ()$/;"	f	class:libMesh::MortonSFCPartitioner
 MortonSFCPartitioner	/opt/libmesh/include/partitioning/morton_sfc_partitioner.h	/^class MortonSFCPartitioner : public SFCPartitioner$/;"	c	namespace:libMesh
-MpiFileOps	include/util/MpiFileOps.h	/^  MpiFileOps( MapT & a_map ) : world(), the_map(a_map) {}$/;"	f	struct:MpiFileOps
-MpiFileOps	include/util/MpiFileOps.h	/^struct MpiFileOps$/;"	s
+MpiFileOps	include/util/MpiFileOps.h	/^  MpiFileOps() : world() {}$/;"	f	struct:MpiFileOps
+MpiFileOps	include/util/MpiFileOps.h	/^struct MpiFileOps : public MapT$/;"	s
 Mq_Mq_representor_innerprods	/opt/libmesh/include/reduced_basis/transient_rb_evaluation.h	/^  std::vector<std::vector<std::vector<Number>>> Mq_Mq_representor_innerprods;$/;"	m	class:libMesh::TransientRBEvaluation
 MulCost	include/autodiff/forward/dual/eigen.hpp	/^        MulCost = 3$/;"	e	enum:Eigen::NumTraits::__anon5
 MulCost	include/autodiff/forward/real/eigen.hpp	/^        MulCost = 3$/;"	e	enum:Eigen::NumTraits::__anon4
@@ -3293,8 +3296,7 @@ Utility	/opt/libmesh/src/utils/string_to_enum.C	/^namespace Utility {$/;"	n	name
 Utility	/opt/libmesh/src/utils/timestamp.C	/^namespace Utility$/;"	n	namespace:libMesh	file:
 Utils	/opt/libmesh/include/parallel/parallel_conversion_utils.h	/^namespace Utils {$/;"	n	namespace:libMesh::Parallel
 VPProps	include/material/VPProps.h	/^struct VPProps $/;"	s
-VPPropsByElemMap	include/material/ViscoplasticIFC.h	/^  VPPropsByElemMap() : eng(*this) {}$/;"	f	struct:VPPropsByElemMap
-VPPropsByElemMap	include/material/ViscoplasticIFC.h	/^struct VPPropsByElemMap : public VPPropsByElemMap_base$/;"	s
+VPPropsByElemMap	include/material/ViscoplasticIFC.h	/^struct VPPropsByElemMap : public MpiFileOps< map<uint, vector<VPProps> > >$/;"	s
 VTKIO	/opt/libmesh/include/mesh/vtk_io.h	/^class VTKIO : public MeshInput<MeshBase>,$/;"	c	namespace:libMesh
 VTKIO	/opt/libmesh/src/mesh/vtk_io.C	/^VTKIO::VTKIO (MeshBase & mesh) :$/;"	f	class:libMesh::VTKIO
 VTKIO	/opt/libmesh/src/mesh/vtk_io.C	/^VTKIO::VTKIO (const MeshBase & mesh) :$/;"	f	class:libMesh::VTKIO
@@ -4606,6 +4608,7 @@ _rb_scm_eval	/opt/libmesh/include/reduced_basis/rb_data_serialization.h	/^  RBSC
 _rb_solve_data_cached	/opt/libmesh/include/reduced_basis/transient_rb_evaluation.h	/^  bool _rb_solve_data_cached;$/;"	m	class:libMesh::TransientRBEvaluation
 _rcut	/opt/libmesh/include/solution_transfer/radial_basis_functions.h	/^  const Real _rcut;$/;"	m	class:libMesh::WendlandRBF
 _read	include/restart/Util.h	/^void _read(ifstream& is, T& v) $/;"	f	namespace:restart
+_read	src/restart/Util.cpp	/^void _read(ifstream& is, RealTensor& A)$/;"	f	namespace:restart
 _read	src/restart/Util.cpp	/^void _read(ifstream& is, string& s) $/;"	f	namespace:restart
 _read_in_stream	/opt/libmesh/include/base/getpot.h	/^GetPot::_read_in_stream(std::istream& istr)$/;"	f	class:GETPOT_NAMESPACE::GetPot
 _read_materials	/opt/libmesh/src/mesh/gmv_io.C	/^void GMVIO::_read_materials()$/;"	f	class:libMesh::GMVIO
@@ -5010,6 +5013,7 @@ _weights	/opt/libmesh/include/systems/system_norm.h	/^  std::vector<Real> _weigh
 _weights_sq	/opt/libmesh/include/systems/system_norm.h	/^  std::vector<Real> _weights_sq;$/;"	m	class:libMesh::SystemNorm
 _widths	/opt/libmesh/src/mesh/mesh_generation.C	/^  std::vector<Real> _widths;$/;"	m	class:libMesh::MeshTools::Generation::Private::GaussLobattoRedistributionFunction	file:
 _write	include/restart/Util.h	/^void _write(ofstream& os, const T& v) {$/;"	f	namespace:restart
+_write	src/restart/Util.cpp	/^void _write(ofstream& os, const RealTensor& A)$/;"	f	namespace:restart
 _write	src/restart/Util.cpp	/^void _write(ofstream& os, const string& s) $/;"	f	namespace:restart
 _write_as_dimension	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^  unsigned _write_as_dimension;$/;"	m	class:libMesh::ExodusII_IO_Helper
 _write_complex_abs	/opt/libmesh/include/mesh/exodusII_io.h	/^  bool _write_complex_abs;$/;"	m	class:libMesh::ExodusII_IO
@@ -7571,8 +7575,6 @@ enforce_max_value	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  boo
 enforce_min_value	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  bool enforce_min_value;$/;"	m	struct:libMesh::EIMVarGroupPlottingInfo
 enforce_mismatch_limit_prior_to_refinement	/opt/libmesh/include/mesh/mesh_refinement.h	/^inline bool & MeshRefinement::enforce_mismatch_limit_prior_to_refinement()$/;"	f	class:libMesh::MeshRefinement
 enforce_mismatch_limit_prior_to_refinement	/opt/libmesh/src/mesh/mesh_refinement_smoothing.C	/^bool MeshRefinement::enforce_mismatch_limit_prior_to_refinement(Elem * elem,$/;"	f	class:libMesh::MeshRefinement
-eng	include/material/InitVPPropsByElemMap.h	/^  MpiFileOps<InitVPPropsByElemMap_basemap> eng;$/;"	m	class:InitVPPropsByElemMap
-eng	include/material/ViscoplasticIFC.h	/^  MpiFileOps<VPPropsByElemMap_base> eng;$/;"	m	struct:VPPropsByElemMap
 engine	include/config/MaterialConfig.h	/^  string engine;   \/\/\/ Poroelastic, viscoplastic, porothermoelastic ...$/;"	m	class:MaterialConfig
 enrich_C_J	/opt/libmesh/src/reduced_basis/rb_scm_construction.C	/^void RBSCMConstruction::enrich_C_J(unsigned int new_C_J_index)$/;"	f	class:libMesh::RBSCMConstruction
 enrich_RB_space	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::enrich_RB_space()$/;"	f	class:libMesh::RBConstruction
@@ -11970,7 +11972,6 @@ ln	include/config/reader/MaterialReader.h	/^  uint ln;               \/\/\/ line
 ln	include/config/reader/ModelReader.h	/^  uint ln;               \/\/\/ line number$/;"	m	class:ModelReader
 ln	include/config/reader/SolverReader.h	/^  uint ln;               \/\/\/ line number$/;"	m	class:SolverReader
 ln10	include/autodiff/reverse/var/var.hpp	/^    constexpr static auto ln10 = static_cast<VariableValueType<T>>(2.3025850929940456840179914546843);$/;"	m	struct:autodiff::reverse::detail::Log10Expr
-load	include/material/InitVPPropsByElemMap.h	/^  void load( string fn ) { eng.load(fn); }$/;"	f	class:InitVPPropsByElemMap
 load	include/util/MpiFileOps.h	/^void MpiFileOps<MapT>::load(const string& path)$/;"	f	class:MpiFileOps
 load_basis_function	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::load_basis_function(unsigned int i)$/;"	f	class:libMesh::RBConstruction
 load_initial_strain	src/material/ViscoplasticIFC.cpp	/^void ViscoplasticIFC::load_initial_strain( const string & filename )$/;"	f	class:ViscoplasticIFC
@@ -12091,13 +12092,13 @@ localize	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<
 localize	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<T>::localize (const numeric_index_type first_local_idx,$/;"	f	class:libMesh::EpetraVector
 localize	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<T>::localize (std::vector<T> & v_local) const$/;"	f	class:libMesh::EpetraVector
 localize	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<T>::localize (std::vector<T> & v_local,$/;"	f	class:libMesh::EpetraVector
+localize	include/util/MpiFileOps.h	/^void MpiFileOps<MapT>::localize( MapT & global_map ) const$/;"	f	class:MpiFileOps
 localize_to_one	/opt/libmesh/src/numerics/distributed_vector.C	/^void DistributedVector<T>::localize_to_one (std::vector<T> & v_local,$/;"	f	class:libMesh::DistributedVector
 localize_to_one	/opt/libmesh/src/numerics/eigen_sparse_vector.C	/^void EigenSparseVector<T>::localize_to_one (std::vector<T> & v_local,$/;"	f	class:libMesh::EigenSparseVector
 localize_to_one	/opt/libmesh/src/numerics/laspack_vector.C	/^void LaspackVector<T>::localize_to_one (std::vector<T> & v_local,$/;"	f	class:libMesh::LaspackVector
 localize_to_one	/opt/libmesh/src/numerics/petsc_vector.C	/^void PetscVector<Complex>::localize_to_one (std::vector<Complex> & v_local,$/;"	f	class:libMesh::PetscVector
 localize_to_one	/opt/libmesh/src/numerics/petsc_vector.C	/^void PetscVector<Real>::localize_to_one (std::vector<Real> & v_local,$/;"	f	class:libMesh::PetscVector
 localize_to_one	/opt/libmesh/src/numerics/trilinos_epetra_vector.C	/^void EpetraVector<T>::localize_to_one (std::vector<T> &  v_local,$/;"	f	class:libMesh::EpetraVector
-localize_to_one	include/material/ViscoplasticIFC.h	/^  void localize_to_one( VPPropsByElemMap & global_map )$/;"	f	struct:VPPropsByElemMap
 localize_to_one	include/util/MpiFileOps.h	/^void MpiFileOps<MapT>::localize_to_one( MapT & global_map ) const$/;"	f	class:MpiFileOps
 localize_to_one	src/material/ProbeIFC.cpp	/^void ProbeByElemMap::localize_to_one(ProbeByElemMap & global_map)$/;"	f	class:ProbeByElemMap
 localized_vectors_iterator	/opt/libmesh/include/systems/diff_context.h	/^  typedef std::map<const NumericVector<Number> *, std::pair<DenseVector<Number>, std::vector<DenseSubVector<Number>>>>::iterator localized_vectors_iterator;$/;"	t	class:libMesh::DiffContext
@@ -16941,7 +16942,6 @@ read	/opt/libmesh/src/systems/equation_systems_io.C	/^void EquationSystems::read
 read	/opt/libmesh/src/utils/plt_loader_read.C	/^void PltLoader::read (const std::string & name)$/;"	f	class:libMesh::PltLoader
 read	src/restart/File.cpp	/^void File::read( const SLViscoplastic & sloop )$/;"	f	class:restart::File
 read	src/restart/File.cpp	/^void File::read( const Solver * svr )$/;"	f	class:restart::File
-read	src/restart/File.cpp	/^void File::read( const ViscoPlasticMaterial * mat )$/;"	f	class:restart::File
 read	src/restart/File.cpp	/^void File::read( const ViscoplasticSolver * svr )$/;"	f	class:restart::File
 read	src/restart/Header.cpp	/^void Header::read( )   $/;"	f	class:restart::Header
 readFromFile	src/config/reader/SpatialDataReader.cpp	/^void SpatialDataReader::readFromFile() $/;"	f	class:SpatialDataReader
@@ -17384,7 +17384,6 @@ runtime_topology	/opt/libmesh/include/geom/elem.h	/^  virtual bool runtime_topol
 s	/opt/libmesh/src/solvers/petscdmlibmeshimpl.C	/^  const  char * s;$/;"	m	struct:token	file:
 same_preconditioner	/opt/libmesh/include/solvers/linear_solver.h	/^  bool same_preconditioner;$/;"	m	class:libMesh::LinearSolver
 satisfy_predicate	/opt/libmesh/include/base/variant_filter_iterator.h	/^  void satisfy_predicate()$/;"	f	class:variant_filter_iterator
-save	include/material/InitVPPropsByElemMap.h	/^  void save( string fn ) { eng.save(fn); }$/;"	f	class:InitVPPropsByElemMap
 save	include/util/MpiFileOps.h	/^void MpiFileOps<MapT>::save(const string& path) const$/;"	f	class:MpiFileOps
 saveState	include/util/CsvFile.h	/^  void saveState() { savedFlags = fs_.flags(); savedPrecision = fs_.precision(); savedFill = fs_.fill(); }$/;"	f	class:CsvFile
 saveState	include/util/CsvFile.h	/^  void saveState() { savedFlags = fs_.flags(); savedPrecision = fs_.precision(); savedFill = fs_.fill(); }$/;"	f	class:CsvFile1
@@ -19435,7 +19434,6 @@ tetrahedral_number_column	/opt/libmesh/src/utils/number_lookups.C	/^const unsign
 tetrahedral_number_page	/opt/libmesh/src/utils/number_lookups.C	/^const unsigned char tetrahedral_number_page[] = {$/;"	m	namespace:libMesh	file:
 tetrahedral_number_row	/opt/libmesh/src/utils/number_lookups.C	/^const unsigned char tetrahedral_number_row[] = {$/;"	m	namespace:libMesh	file:
 tgt_bin_size	/opt/libmesh/include/utils/tree_node.h	/^  const unsigned int tgt_bin_size;$/;"	m	class:libMesh::TreeNode
-the_map	include/util/MpiFileOps.h	/^  MapT & the_map;$/;"	m	struct:MpiFileOps
 the_time_start	/opt/libmesh/include/utils/perfmon.h	/^  struct timeval the_time_start;$/;"	m	class:libMesh::PerfMon	typeref:struct:libMesh::PerfMon::timeval
 the_time_stop	/opt/libmesh/include/utils/perfmon.h	/^  struct timeval the_time_stop;$/;"	m	class:libMesh::PerfMon	typeref:struct:libMesh::PerfMon::timeval
 thermal	include/solverloop/SLViscoplastic.h	/^    Solver *thermal, *pressure;$/;"	m	class:SLViscoplastic
@@ -20172,7 +20170,6 @@ write	include/util/CsvFile.h	/^  CsvFile& write (const double & val)$/;"	f	class
 write	include/util/CsvFile.h	/^  CsvFile1& write (const double & val)$/;"	f	class:CsvFile1
 write	src/restart/File.cpp	/^void File::write( const SLViscoplastic & sloop )$/;"	f	class:restart::File
 write	src/restart/File.cpp	/^void File::write( const Solver * svr )$/;"	f	class:restart::File
-write	src/restart/File.cpp	/^void File::write( const ViscoPlasticMaterial * mat )$/;"	f	class:restart::File
 write	src/restart/File.cpp	/^void File::write( const ViscoplasticSolver * svr )$/;"	f	class:restart::File
 write	src/restart/Header.cpp	/^void Header::write() $/;"	f	class:restart::Header
 write_SCALAR_dofs	/opt/libmesh/src/systems/system_io.C	/^unsigned int System::write_SCALAR_dofs (const NumericVector<Number> & vec,$/;"	f	class:libMesh::System

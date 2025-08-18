@@ -26,15 +26,6 @@ namespace boost { namespace serialization {
  */
 
 using InitVPPropsByElemMap_basemap = map< uint, vector<InitVPProps> >;
-class InitVPPropsByElemMap : public InitVPPropsByElemMap_basemap
-{ 
-  MpiFileOps<InitVPPropsByElemMap_basemap> eng;
-
-public:
-  InitVPPropsByElemMap() : eng(*this) {}
-
-  // Delegate to MpiFileOps
-  void save( string fn ) { eng.save(fn); }
-  void load( string fn ) { eng.load(fn); }
-};
+class InitVPPropsByElemMap : public MpiFileOps<InitVPPropsByElemMap_basemap>
+{ };
 
