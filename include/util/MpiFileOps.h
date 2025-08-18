@@ -32,10 +32,10 @@ namespace arch = boost::archive;
 template<class MapT>
 struct MpiFileOps
 {
-  boost::mpi::communicator comm;
+  boost::mpi::communicator world;
   MapT & the_map;
 
-  MpiFileOps( MapT & a_map ) : comm(), the_map(a_map) {}
+  MpiFileOps( MapT & a_map ) : world(), the_map(a_map) {}
 
   // Tags
   enum { TAG_MAP = 100, TAG_OK = 101, TAG_KEYS = 102 };
@@ -43,6 +43,8 @@ struct MpiFileOps
   // API
   void save(const string& path) const;
   void load(const string& path);
+
+  void localize_to_one( MapT & global_map ) const;
 
 private:
   friend class ser::access;
@@ -59,10 +61,42 @@ private:
  *
  */
 template<class MapT>
+void MpiFileOps<MapT>::localize_to_one( MapT & global_map ) const
+{
+  const int rank   = world.rank();
+  const int nprocs = world.size();
+
+  // serial
+  if (nprocs == 1) { global_map = the_map; return; }
+
+  global_map.clear();
+
+  // Sender
+  if (rank != 0)
+  { world.send(0,0,the_map); }
+
+  // Receiver
+  else 
+  {
+    global_map = the_map; // Add my own data
+    for ( uint i=1 ; i<nprocs ; ++i )
+    {
+      MapT remote_map;
+      world.recv(i, 0, remote_map );
+      for (const auto& [ key, val ] : remote_map) 
+        global_map[key] = val;
+    }
+  }
+}
+
+/**
+ *
+ */
+template<class MapT>
 void MpiFileOps<MapT>::save(const string& path) const
 {
-  const int rank   = comm.rank();
-  const int nprocs = comm.size();
+  const int rank   = world.rank();
+  const int nprocs = world.size();
 
   // serial
   if (nprocs == 1) { write_file(path); return; }
@@ -73,7 +107,7 @@ void MpiFileOps<MapT>::save(const string& path) const
     for (int src = 1; src < nprocs; ++src)
     {
       MapT shard;
-      comm.recv(src, TAG_MAP, shard);
+      world.recv(src, TAG_MAP, shard);
       the_map.insert(shard.begin(), shard.end());
     }
 
@@ -81,17 +115,17 @@ void MpiFileOps<MapT>::save(const string& path) const
 
     int ok = 0;
     for (int dst = 1; dst < nprocs; ++dst)
-      comm.send(dst, TAG_OK, ok);
+      world.send(dst, TAG_OK, ok);
 
     if (!ok) flog << "MapStore::save: root reported send failure.";
   }
 
   else // Rank != 0
   {
-    comm.send(0, TAG_MAP, the_map);
+    world.send(0, TAG_MAP, the_map);
 
     int ok = 0;
-    comm.recv(0, TAG_OK, ok);
+    world.recv(0, TAG_OK, ok);
 
     if (!ok) flog << "MapStore::save: root reported write failure.";
   }
@@ -103,8 +137,8 @@ void MpiFileOps<MapT>::save(const string& path) const
 template<class MapT>
 void MpiFileOps<MapT>::load(const string& path)
 {
-  const int rank   = comm.rank();
-  const int nprocs = comm.size();
+  const int rank   = world.rank();
+  const int nprocs = world.size();
 
   if (nprocs == 1) { read_file(path); return; }
 
@@ -113,12 +147,12 @@ void MpiFileOps<MapT>::load(const string& path)
   {
     read_file(path);
     for (int dst = 1; dst < nprocs; ++dst)
-      comm.send(dst, TAG_MAP, the_map);
+      world.send(dst, TAG_MAP, the_map);
   }
   else // Rank != 0
   {
     the_map.clear();
-    comm.recv(0, TAG_MAP, the_map);
+    world.recv(0, TAG_MAP, the_map);
   }
 }
 

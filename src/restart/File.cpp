@@ -56,6 +56,9 @@ void File::write( const ViscoplasticSolver * svr )
   //        HEADER( by_elem )
   //          HEADER( vector<VPProps> )
   //             VPProps
+  MaterialBySidMap global_map;
+  const MaterialBySidMap & local_map = svr->material_by_sid;
+  local_map.localize_to_one( global_map );
 
   if ( is_root() ) 
   {

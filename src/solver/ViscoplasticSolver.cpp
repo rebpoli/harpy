@@ -171,7 +171,7 @@ void ViscoplasticSolver::init_materials()
 
     dlog(1) << "Resoved material:" << mat_conf;
     ViscoPlasticMaterial * vpmat =
-      new ViscoPlasticMaterial( sid, mat_conf, system, *this );
+      new ViscoPlasticMaterial( sid, &mat_conf, system, *this );
     material_by_sid[sid] = vpmat;
   }
 }

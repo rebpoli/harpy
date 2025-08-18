@@ -33,7 +33,7 @@ class ViscoplasticSolver;
 class ViscoPlasticMaterial : public Material
 {
 public:
-  ViscoPlasticMaterial( suint sid_, const MaterialConfig & config,
+  ViscoPlasticMaterial( suint sid_, const MaterialConfig * config,
                         TransientNonlinearImplicitSystem & sys_,
                         ViscoplasticSolver & vpsolver_,
                         bool called_from_bc_constructor = false);
@@ -156,7 +156,7 @@ private:
 class ViscoPlasticMaterialBC : public ViscoPlasticMaterial
 {
 public:
-  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
+  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,
                           TransientNonlinearImplicitSystem & sys_, 
                           ViscoplasticSolver & vpsolver_ );
 

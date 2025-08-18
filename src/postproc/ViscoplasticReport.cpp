@@ -63,7 +63,7 @@ void ViscoplasticReport::init_material( Probe & probe  )
 
     ViscoPlasticMaterial * mat = solver.get_vp_material( *elem );
     ViscoplasticIFC & vp_ifc = mat->vp_ifc;
-    vp_ifc.add_probe_point( mat->config, probe.name, elem->id(), pt );
+    vp_ifc.add_probe_point( *(mat->config), probe.name, elem->id(), pt );
   }
 }
 

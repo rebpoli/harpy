@@ -15,7 +15,7 @@ namespace libMesh { class MeshBase; class ExplicitSystem; class Elem; }
 class ExplicitMaterial : public Material
 {
 public:
-  ExplicitMaterial( suint sid_, const MaterialConfig & config_,
+  ExplicitMaterial( suint sid_, const MaterialConfig * config_,
           ExplicitSystem & sys_ ) : Material( sid_, config_ ), system(sys_) {}
 
   ExplicitMaterial( Material * ref_material, ExplicitSystem & sys_ ) :

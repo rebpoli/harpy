@@ -34,7 +34,8 @@ using namespace libMesh;
 class Material 
 {
   public:
-    Material( suint sid_, const MaterialConfig & config_ );
+    Material() : qrule(3) {}
+    Material( suint sid_, const MaterialConfig * config_ );
     Material( Material * refmat_ );
     virtual ~Material();
 
@@ -59,7 +60,7 @@ class Material
 
     Material * refmat;
 
-    const MaterialConfig & config;
+    const MaterialConfig * config;
     string name;
 
   protected:

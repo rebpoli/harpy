@@ -22,7 +22,7 @@
  *    BC_OBJECT is true when this is being called from the children constructor
  */
 ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
-                                            const MaterialConfig & config, 
+                                            const MaterialConfig * config, 
                                             TransientNonlinearImplicitSystem & sys_,
                                             ViscoplasticSolver & vpsolver_,
                                             bool called_from_bc_constructor ) :
@@ -32,7 +32,7 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   vpsolver(vpsolver_), system( sys_ ), 
   stress_system( vpsolver.stress_system ),
   stress_postproc( this, stress_system ),
-  dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config.name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
+  dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config->name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
   res_jac_k(0)
 {
   // Setup cariables only if on the parent
@@ -72,7 +72,7 @@ void ViscoPlasticMaterial::init_properties()
   for ( auto & pt : xyz )
   {
     auto & prop = vp_ifc.get( qp++ );
-    prop.init_from_config( config, pt );
+    prop.init_from_config( *config, pt );
   }
 
   vp_ifc.valid = 1;
@@ -93,7 +93,7 @@ ViscoPlasticMaterialBC * ViscoPlasticMaterial::get_bc_material()
 /**
  *
  */
-ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig & config_,
+ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,
                                                 TransientNonlinearImplicitSystem & sys_,
                                                 ViscoplasticSolver & vpsolver_ ) :
   ViscoPlasticMaterial( sid_, config_, sys_, vpsolver_, true )
@@ -652,7 +652,7 @@ void ViscoPlasticMaterial::apply_strain_initialization_method()
   using enum MatInitializeMethod;
 
   /** Hydrostatic ? **/
-  if ( config.initialize.method == HYDROSTATIC ) 
+  if ( config->initialize.method == HYDROSTATIC ) 
   {
     ilog1 << "Forcing initial strain to hydrostatic in material '" << name << "'.";
     for ( auto & [ eid, pvec ] : vp_ifc.by_elem )

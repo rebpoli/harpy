@@ -20,8 +20,8 @@ const regex RE_PROPERTY ( R"(^)" + prop_name + R"(\.)" + prop_name + R"($)");
  *
  *
  */
-Material::Material( suint sid_, const MaterialConfig & config_ ) :
-                          refmat(0), config(config_), name(config.name),
+Material::Material( suint sid_, const MaterialConfig * config_ ) :
+                          refmat(0), config(config_), name(config->name),
                           sid(sid_), qrule(3), elem(0)
 { }
 
