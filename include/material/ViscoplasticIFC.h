@@ -5,7 +5,6 @@
 
 #include "material/ProbeIFC.h"
 #include "material/VPProps.h"
-#include "material/InitVPPropsByElemMap.h"
 
 #include "util/MpiFileOps.h"
 #include <boost/serialization/access.hpp>
@@ -43,11 +42,7 @@ struct ViscoplasticIFC
 
   void add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt );
 
-  void save_initial_strain( const string & filename );
-  void load_initial_strain( const string & filename );
-
 private:
-  InitVPPropsByElemMap snapshot_initial_strain();
 
   /* Serialization routines - polymorphic serialization. */
   friend class boost::serialization::access;

@@ -48,7 +48,10 @@ Probe * Probe::Factory( vector<Probe *> & ret, ProbeConfig & config )
  *
  *
  */
-Probe::Probe( ProbeConfig & config ) : name(config.name), filename("run/csv/" + name + ".csv")
+Probe::Probe( ProbeConfig & config ) : 
+  name(config.name),
+  filename("run/csv/" + name + ".csv"),
+  filename_pq("run/csv/" + name + "-pq.csv")
 { }
 
 /**

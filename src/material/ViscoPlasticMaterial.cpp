@@ -287,7 +287,6 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   stress_postproc.project_tensor( Pt.plastic_strain, "plastic_strain" );
   stress_postproc.project_tensor( Pt.plastic_strain_rate, "plastic_strain_rate" );
   stress_postproc.project_tensor( Pt.initial_stress, "initial_stress" );
-  stress_postproc.project_tensor( Pt.initial_strain, "initial_strain" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
   stress_postproc.project( Pt.epskk, "epskk" );
   stress_postproc.project( Pt.F, "F" );
@@ -318,16 +317,13 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint M=0;  M<n_dofsv;  M++) 
     grad_u(i, j) += dphi[M][QP](j) * Uib(i,M); /** Jacobian **/ // ****
 
-//  dlog(1) << "grad_u? " << grad_u;
-//  dlog(1) << "initial_strain? " << P->initial_strain;
-
   // ( \phi_j , Cijkl U_k,l - Cijkl U^0_k,l ) 
   for (uint B=0;  B<n_dofsv;  B++)
   for (uint i=0; i<3; i++) 
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;// - P->initial_strain(k,l) ) ;
+    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;
 
   // Init sigeff with the initial stuff
   for (uint B=0;  B<n_dofsv;  B++)
@@ -653,48 +649,6 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
     dof_map.constrain_element_vector (Re, dof_indices);
     residual->add_vector (Re, dof_indices);
   }
-}
-
-/**
- *
- */
-void ViscoPlasticMaterial::apply_strain_initialization_method()
-{
-  using enum MatInitializeMethod;
-
-  /** Hydrostatic ? **/
-  if ( config->initialize.method == HYDROSTATIC ) 
-  {
-    ilog1 << "Forcing initial strain to hydrostatic in material '" << name << "'.";
-    for ( auto & [ eid, pvec ] : vp_ifc.by_elem )
-    for ( VPProps & p : pvec ) 
-      p.force_initial_strain_to_hydrostatic();
-
-    // Probes
-    for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-    for ( auto & probe_ifc : m1[elem->id()] ) 
-      probe_ifc->props.force_initial_strain_to_hydrostatic();
-  }
-
-}
-
-/**
- *  PUT THE INITIAL STRAIN IN PLACE 
- */
-void ViscoPlasticMaterial::update_initial_strain()
-{
-  // Gauss points of the elements
-  for ( auto & [ eid, pvec ] : vp_ifc.by_elem )
-  for ( VPProps & p : pvec ) 
-    p.update_initial_strain();
-
-  // Probes
-  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-  for ( auto & probe_ifc : m1[elem->id()] ) 
-    probe_ifc->props.update_initial_strain();
-  
-  /** Do the necessary adjustments **/
-  apply_strain_initialization_method();
 }
 
 /**

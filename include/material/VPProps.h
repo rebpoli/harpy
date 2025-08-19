@@ -17,10 +17,6 @@ struct VPProps
   inline double C_ijkl( uint i, uint j, uint k, uint l);
   // Calculate stresses from displacements
   void update( const RealVectorValue & U_, const RealTensor & GRAD_U_, double dt );
-  // Updates the initial strain (typically after initialization solve)
-  void update_initial_strain();
-  // Update the stress to by hydrostatic
-  void force_initial_strain_to_hydrostatic();
 
   // Static variables
   double lame_mu, lame_lambda, alpha_d, beta_e;
@@ -41,7 +37,7 @@ struct VPProps
   double von_mises, epskk, F;
 
   // Stress Initialization
-  RealTensor initial_strain, initial_stress;
+  RealTensor initial_stress;
 
   // Plasticity
   RealTensor plastic_strain, plastic_strain_n, plastic_strain_k;
@@ -61,7 +57,7 @@ struct PropsTranspose
 
   vector<RealTensor> sigtot, sigeff, sigeff_terz;
   vector<RealTensor> deviatoric, plastic_strain, plastic_strain_rate;
-  vector<RealTensor> initial_strain, initial_stress;
+  vector<RealTensor> initial_stress;
   vector<double> von_mises, epskk, F, pressure;
 };
 
@@ -79,7 +75,6 @@ namespace serialization {
     ar & p.temperature; ar & p.initial_temperature;
     ar & p.pressure; ar & p.initial_pressure;
     ar & p.von_mises; 
-    ar & p.initial_strain; 
     ar & p.initial_stress; 
     ar & p.plastic_strain; 
   } 

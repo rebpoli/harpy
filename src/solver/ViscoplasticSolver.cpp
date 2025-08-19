@@ -86,7 +86,7 @@ void ViscoplasticSolver::setup_variables()
     FEFamily fef = L2_LAGRANGE;
     if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-    vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate", "initial_stress", "initial_strain" };
+    vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate", "initial_stress" };
     vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
     dlog(1) << "Adding variables in stress post proc ...";
@@ -351,42 +351,6 @@ void ViscoplasticSolver::set_scalar_bcs()
     dlog(1) << "    - Boundaries assigned to '" << system.variable_name(rvid) << "' (" << rvid << "): " << os.str();
   }
   //
-}
-
-/**
- *  From the configuration file, solve a minimum initial timestep,
- *  derive the initial_strain and update the interfaces.
- */
-void ViscoplasticSolver::solve_initial_strain()
-{
-  ilog1 << "Initialization step: find initial strain ...";
-  ilog1 << "      t_step:"<< ts.t_step<<" @ " << ts.time << "s (dt=" << ts.dt << ") ...";
-  SCOPELOG(1);
-  curr_bc.update( ts );
-  set_dirichlet_bcs();
-  es.reinit();
-  
-  system.solve();
-
-  ilog1 << "System solved at nonlinear iteration " << system.n_nonlinear_iterations()
-    << " , final nonlinear residual norm: " << system.final_nonlinear_residual();
-
-  MeshBase & mesh = get_mesh();
-
-  // Iterate through the materials
-  for ( auto & [ sid, mat_ ] : material_by_sid ) 
-    get_vp_material(sid)->update_initial_strain();
-
-  // Zero the solution (we have the stress in initial_strain)
-  system.solution->zero();
-  system.update();
-
-//  system.get_dof_map().enforce_constraints_exactly(system);
-//  system.update();
-//  posproc_stresses();
-
-  export_exo("initial_stress");
-//  flog << "Fail, please.";
 }
 
 /**

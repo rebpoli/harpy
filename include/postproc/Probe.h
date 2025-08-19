@@ -26,7 +26,7 @@ public:
 
   virtual bool is_gauss() { return false; }
 
-  string name, filename;
+  string name, filename, filename_pq;
   string header;
 
   vector<Point> points;

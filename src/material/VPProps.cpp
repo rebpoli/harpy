@@ -19,38 +19,7 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
   sigtot           = RealTensor();
   plastic_strain_n = RealTensor();
   plastic_strain   = RealTensor();
-  initial_strain   = RealTensor();
   initial_stress   = RealTensor();
-}
-
-/**
- *
- *
- */
-void VPProps::force_initial_strain_to_hydrostatic()
-{
-//  for (uint i=0; i<2; i++)
-//    initial_strain(i,i) = ( initial_strain(2,2) - initial_strain(i,i) );  // Force the difference
-
-//  for (uint i=0; i<3; i++)
-//  for (uint j=0; j<3; j++)
-//  if ( i != j ) initial_strain(i,j) = 0;
-}
-
-/**
- *
- */
-void VPProps::update_initial_strain()
-{
-//  dlog(1) << "[" << this << "] VPProps::GRAD_U: " << GRAD_U.norm();
-//  initial_strain.zero();
-//  for (uint i=0; i<3; i++)
-//  for (uint j=0; j<3; j++) 
-//    initial_strain(i,j) = 0.5 * GRAD_U(i,j) + 0.5 * GRAD_U(j,i);
-
-//  // Zero out U and GRAD_U (the initial_strain should now take care of it)
-//  U.zero();
-//  GRAD_U.zero();
 }
 
 /**
@@ -67,7 +36,7 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
     sigeff(i,j) += 
       C_ijkl(i,j,k,l) *
-      ( GRAD_U(k,l) - plastic_strain(k,l) + initial_strain(k,l) );
+      ( GRAD_U(k,l) - plastic_strain(k,l) );
 
   sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 
@@ -149,7 +118,6 @@ PropsTranspose::PropsTranspose( vector<VPProps> * by_qp )
     deviatoric.push_back( p.deviatoric );
     plastic_strain.push_back( p.plastic_strain );
     plastic_strain_rate.push_back( p.plastic_strain_rate );
-    initial_strain.push_back( p.initial_strain );
     initial_stress.push_back( p.initial_stress );
 
     // Sign convention: compresion is negative

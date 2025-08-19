@@ -42,50 +42,6 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
   vec_e.push_back( probe_ifc );   ///PROBE
 };
 
-/**
- *
- */
-InitVPPropsByElemMap ViscoplasticIFC::snapshot_initial_strain()
-{
-  InitVPPropsByElemMap ret;
-  for ( auto & [k,vec] : by_elem )
-  {
-    auto & dst = ret[k];
-    for ( auto & v : vec ) 
-    {
-      // Create the snapshot on the fly
-      InitVPProps e;
-      e.initial_strain = v.initial_strain;
-      // Register the snapshot in the map
-      dst.push_back( e );
-    }
-  }
-  return ret;
-};
-
-/**
- *
- */
-void ViscoplasticIFC::save_initial_strain( const string & filename )
-{
-  // This should be done only in rank=0
-  InitVPPropsByElemMap ivmap = snapshot_initial_strain();
-  ivmap.save(filename);
-}
-
-void ViscoplasticIFC::load_initial_strain( const string & filename )
-{
-  InitVPPropsByElemMap ivmap;
-  ivmap.load(filename);
-
-  // TODO : add some validations here
-  for ( auto & [k,vec] : by_elem )
-  {
-    auto & src = ivmap[k];
-    for ( uint i=0; i<vec.size(); i++ )
-      vec[i].initial_strain = src[i].initial_strain;
-  }
-}
 
 /**
  *

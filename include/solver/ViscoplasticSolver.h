@@ -59,7 +59,6 @@ class ViscoplasticSolver : public Solver,
 
     /// Solution workflow
     virtual void solve();
-    virtual void solve_initial_strain();
 
     bool update_adaptive_timestep();
     void do_ts_cut();

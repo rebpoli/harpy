@@ -27,6 +27,11 @@ void ViscoplasticReport::init()
   {
     CsvFile1 ofile(probe->filename, "\t", false);
     ofile << "Timestep" << "Time(s)" << "Time(day)"  << "Var" << "X" << "Y" << "Z" << "Value" << endrow;
+
+    // PQ Diagram
+    CsvFile1 ofile_pq(probe->filename_pq, "\t", false);
+    ofile_pq << "Timestep" << "Time(day)" << "X" << "Y" << "Z" << "Pressure" << "Invar P" << "Invar Q" << endrow;
+
     init_material( *probe );
   }
 
@@ -118,6 +123,7 @@ void ViscoplasticReport::export_by_point( Probe & probe )
 
   dlog(1) << "Processing probe '" << probe.name << "' ...";
   CsvFile1 ofile(probe.filename);
+  CsvFile1 ofile_pq(probe.filename_pq);
 
   double time = solver.ts.time;
   double time_d = time/60/60/24;
@@ -169,11 +175,17 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       ofile << t_step << time << CSVSci(time_d) << "S2" << pt(0) << pt(1) << pt(2) << ti.S2_eval() << endrow;
       ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
       ofile << t_step << time << CSVSci(time_d) << "invarP" << pt(0) << pt(1) << pt(2) << ti.get_P() << endrow;
+
       double p_eff = ti.get_P() + p.pressure ;
       double q_div_p_eff = ti.get_Q() / p_eff;
+
       ofile << t_step << time << CSVSci(time_d) << "invarPeff" << pt(0) << pt(1) << pt(2) << p_eff << endrow;
       ofile << t_step << time << CSVSci(time_d) << "invarQ" << pt(0) << pt(1) << pt(2) << ti.get_Q() << endrow;
       ofile << t_step << time << CSVSci(time_d) << "invarQ_div_Peff" << pt(0) << pt(1) << pt(2) << q_div_p_eff << endrow;
+
+      /**  PQ FILE **/
+      ofile_pq << t_step << CSVSci(time_d) << pt(0) << pt(1) << pt(2) << p.pressure << ti.get_P() << ti.get_Q() << endrow;
+
     }
   }
 }
