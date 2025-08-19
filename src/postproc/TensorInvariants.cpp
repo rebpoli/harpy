@@ -68,7 +68,7 @@ void TensorInvariants::init( const DenseMatrix<Real> & M_ )
   for ( uint j = 0 ; j < 3 ; j++ ) 
     J2 += Sij(i,j) * Sij(i,j) / 2;
 
-  invarQ = sqrt( J2 );
+  invarQ = sqrt( 3 * J2 );
 }
 
 /**

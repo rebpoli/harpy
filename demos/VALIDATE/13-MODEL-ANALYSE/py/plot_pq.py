@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python3 -i
+#!/usr/bin/env -S python3 
 
 import argparse
 import shutil
@@ -223,7 +223,7 @@ ap.add_argument("--skip", type=int, default=1, help="Use every Nth unique time t
 ap.add_argument("--workers", type=int, default=20, help="Parallel workers for frame rendering")
 ap.add_argument("--pkl", type=Path, default=None, help="Path to cache pickle (defaults next to CSV)")
 ap.add_argument("--force-pkl", dest="force_pkl", action="store_true", help="Rebuild the pickle from CSV")
-ap.add_argument("--force_pkl", dest="force_pkl", action="store_true", help="Rebuild the pickle from CSV (alias)")
+ap.add_argument("--square", dest="square", action="store_true", help="Use square axis.")
 args = ap.parse_args()
 
 # Cache / load dataframe
@@ -242,6 +242,8 @@ print(f"[4/7] Using {nframes} frames (skip={args.skip}).")
 xmin, xmax = 0.0, (float(df["p"].max()) * 1.05) if not df.empty else 1.0
 ymin, ymax = 0.0, (float(df["q"].max()) * 1.05) if not df.empty else 1.0
 dzmax = float(np.percentile(df["dz"], 99.0)) if len(df) > 0 else 1.0
+
+if args.square : ymax = xmax;
 
 outdir = Path("_frames")
 if outdir.exists():
