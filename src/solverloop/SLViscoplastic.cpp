@@ -8,6 +8,7 @@
 
 #include "solver/ThermalSolverConstant.h"
 
+#include "restart/File.h"
 
 /**
  *
@@ -43,7 +44,6 @@ SLViscoplastic::SLViscoplastic( Timestep & ts_ ) :
   // From the configuration setup, initialize the strain
   thermal->solve(); 
   pressure->solve(); 
-  viscoplastic->solve_initial_strain();
 }
 
 /**
@@ -74,3 +74,13 @@ void SLViscoplastic::solve()
   viscoplastic->export_exo("viscoplastic");
 }
 
+/**
+ *
+ *
+ */
+void SLViscoplastic::load_sig0_file( string filename )
+{
+  SCOPELOG(1);
+  restart::File restart( filename ) ;
+  restart.read( *this );
+}

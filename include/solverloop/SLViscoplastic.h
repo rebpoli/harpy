@@ -23,6 +23,7 @@ class SLViscoplastic : public Solverloop
     SLViscoplastic( Timestep & ts_ );
     ~SLViscoplastic();
 
+    void load_sig0_file( string filename );
     void solve();
 
   private:

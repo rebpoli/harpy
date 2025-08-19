@@ -26,6 +26,9 @@ void Timeloop::main_loop()
 {
   SLViscoplastic sloop( ts ); 
 
+  // Read initial stress?
+  if ( MODEL->sig0_file ) sloop.load_sig0_file( *(MODEL->sig0_file) );
+
   // TODO: Move as object member
   restart::File restart( MODEL->model_dir + "/restart.bin" );
 
@@ -36,8 +39,9 @@ void Timeloop::main_loop()
 
     sloop.solve();
 
+    // TODO: we are writing a new restart at every timestep. Need to optimize.
     restart.write( sloop );
-    restart.read( sloop );
+//    restart.read( sloop );
 
     ts.next();   
     if ( ts.test_end() ) break;

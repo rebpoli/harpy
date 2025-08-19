@@ -20,6 +20,7 @@ void VPProps::init_from_config( const MaterialConfig & config, const Point & pt 
   plastic_strain_n = RealTensor();
   plastic_strain   = RealTensor();
   initial_strain   = RealTensor();
+  initial_stress   = RealTensor();
 }
 
 /**
@@ -61,7 +62,7 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
 {
   U=U_; GRAD_U = GRAD_U_;
 
-  RealTensor sigeff;
+  RealTensor sigeff = initial_stress;
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
     sigeff(i,j) += 
@@ -149,6 +150,7 @@ PropsTranspose::PropsTranspose( vector<VPProps> * by_qp )
     plastic_strain.push_back( p.plastic_strain );
     plastic_strain_rate.push_back( p.plastic_strain_rate );
     initial_strain.push_back( p.initial_strain );
+    initial_stress.push_back( p.initial_stress );
 
     // Sign convention: compresion is negative
     RealTensor s_ = p.sigtot;

@@ -30,6 +30,8 @@ public:
   TimestepConfig timestep;
   BCConfig boundary_config;
 
+  optional<string> sig0_file;
+
   string model_dir, model_file;
 
 // Getters with validation

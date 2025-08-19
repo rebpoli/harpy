@@ -82,7 +82,6 @@ void File::write( const ViscoplasticSolver * svr )
 
         // Write all we want to store
         for ( VPProps & p : vec ) {
-          _write( os, p.initial_strain );                 /* WRITE */
           _write( os, p.sigtot );                         /* WRITE */
         }
       }
@@ -152,7 +151,6 @@ void File::read( const ViscoplasticSolver * svr )
       // QUADRATURE POINT LOOP
       for ( uint qp=0; qp<h2.N; qp++ )
       {
-        RealTensor initial_strain; _read(is, initial_strain);              /* READ */
         RealTensor sigtot;         _read(is, sigtot);                      /* READ */
 
         if ( ! is_local ) continue;  // it is important to do the dummy runs above to keep sync
@@ -161,7 +159,9 @@ void File::read( const ViscoplasticSolver * svr )
         vector<VPProps> & vec = by_elem.at(eid);
         VPProps &p = vec[qp];
 
-        p.initial_strain = initial_strain;
+        // TODO: currently we are only reading sigtot (file) => initial_stress (database)
+        //       do we need to read other stuff ?
+        p.initial_stress = sigtot;
         
         // Debug - Check if we are ok
 //        if ( (p.sigtot - sigtot).norm() > 1e-10 ) flog << "Error found";

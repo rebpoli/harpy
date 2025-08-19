@@ -286,6 +286,7 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
   stress_postproc.project_tensor( Pt.deviatoric, "deviatoric" );
   stress_postproc.project_tensor( Pt.plastic_strain, "plastic_strain" );
   stress_postproc.project_tensor( Pt.plastic_strain_rate, "plastic_strain_rate" );
+  stress_postproc.project_tensor( Pt.initial_stress, "initial_stress" );
   stress_postproc.project_tensor( Pt.initial_strain, "initial_strain" );
   stress_postproc.project( Pt.von_mises, "von_mises" );
   stress_postproc.project( Pt.epskk, "epskk" );
@@ -326,7 +327,13 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * ( grad_u(k,l) + P->initial_strain(k,l) ) ;
+    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;// - P->initial_strain(k,l) ) ;
+
+  // Init sigeff with the initial stuff
+  for (uint B=0;  B<n_dofsv;  B++)
+  for (uint i=0; i<3; i++ )
+  for (uint j=0; j<3; j++ ) 
+    Fib(i,B) += JxW[QP] * dphi[B][QP](j) * P->initial_stress(i,j);
 
   // - ( \phi , \rho g )
   for (uint B=0;  B<n_dofsv;  B++)
@@ -356,11 +363,15 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   P->plast0 = P->plastic_strain_k.norm();
   P->plast0_t = P->plastic_strain_k;
 
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++) 
+    sigeff(i,j) += P->initial_stress(i,j);
+
 //  if ( deb ) ilog << "plast_k:    " << P->plastic_strain_k.norm();
 
   for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
-    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) + P->initial_strain(k,l) );
+    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) );
 
   AD::Mat sigtot = sigeff;
   for (uint k=0; k<3; k++ ) 

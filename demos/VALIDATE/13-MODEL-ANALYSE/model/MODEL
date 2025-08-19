@@ -1,0 +1,52 @@
+
+# Define the system loop 
+# Then the configuration of each system
+.SYSTEMLOOP VISCOPLASTIC
+VISCOPLASTIC BASE
+THERMAL EXTERNAL
+PRESSURE EXTERNAL
+STRESS BASE
+
+.TIMESTEP 
+DT0           10
+DTK           1.5
+DTMAX         5e6
+TMAX          1e10
+MAX_STEPS     1e10
+
+# List of scalar variables
+.SCALAR
+tri_dx
+tri_dy
+
+# List of penalty variables
+# VNAME    PENALTY   VALUE
+.PENALTY
+K0    1e15    0
+
+.EXTERNAL
+SIG0 sig0.bin
+
+## Initial conditions: used for the first step
+# DOM/BNDY     SIDE           VAR              VAL
+.INITIAL 
+BOUNDARY       XN               UX            0
+BOUNDARY       YN               UY            0
+BOUNDARY       ZP               UZ            0
+BOUNDARY       XP               UX            tri_dx
+BOUNDARY       YP               UY            tri_dy
+BOUNDARY       XP              SXX            -88e6
+BOUNDARY       YP              SYY            -88e6
+BOUNDARY       ZN              SZZ            -88e6
+
+# # Boundary conditions foreach time
+# # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
+.TIME   0
+BOUNDARY       XN               UX            0
+BOUNDARY       YN               UY            0
+BOUNDARY       ZP               UZ            0
+BOUNDARY       XP               UX            tri_dx
+BOUNDARY       YP               UY            tri_dy
+BOUNDARY       XP              SXX            -88e6
+BOUNDARY       YP              SYY            -88e6
+BOUNDARY       ZN              SZZ            -88e6

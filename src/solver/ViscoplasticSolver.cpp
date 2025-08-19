@@ -86,7 +86,7 @@ void ViscoplasticSolver::setup_variables()
     FEFamily fef = L2_LAGRANGE;
     if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
-    vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate", "initial_strain" };
+    vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate", "initial_stress", "initial_strain" };
     vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
     dlog(1) << "Adding variables in stress post proc ...";
@@ -385,7 +385,7 @@ void ViscoplasticSolver::solve_initial_strain()
 //  system.update();
 //  posproc_stresses();
 
-  export_exo("initial_strain");
+  export_exo("initial_stress");
 //  flog << "Fail, please.";
 }
 

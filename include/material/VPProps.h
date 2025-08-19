@@ -41,7 +41,7 @@ struct VPProps
   double von_mises, epskk, F;
 
   // Stress Initialization
-  RealTensor initial_strain;
+  RealTensor initial_strain, initial_stress;
 
   // Plasticity
   RealTensor plastic_strain, plastic_strain_n, plastic_strain_k;
@@ -61,7 +61,7 @@ struct PropsTranspose
 
   vector<RealTensor> sigtot, sigeff, sigeff_terz;
   vector<RealTensor> deviatoric, plastic_strain, plastic_strain_rate;
-  vector<RealTensor> initial_strain;
+  vector<RealTensor> initial_strain, initial_stress;
   vector<double> von_mises, epskk, F, pressure;
 };
 
@@ -80,6 +80,8 @@ namespace serialization {
     ar & p.pressure; ar & p.initial_pressure;
     ar & p.von_mises; 
     ar & p.initial_strain; 
+    ar & p.initial_stress; 
+    ar & p.plastic_strain; 
   } 
 } }  // Namespaces
 

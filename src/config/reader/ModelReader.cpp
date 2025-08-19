@@ -84,6 +84,7 @@ void ModelReader::parse_model_file()
       case State::TIMESTEP:   { timestep_state(); break; }
       case State::SYSTEMLOOP: { system_state() ; break; }
       case State::INITIAL:    { time_state() ; break; }
+      case State::EXTERNAL:   { external_state() ; break; }
       case State::TIME:       { time_state() ; break; }
       case State::SCALAR:     { scalar_state() ; break; }
       case State::PENALTY:    { penalty_state() ; break; }
@@ -105,6 +106,7 @@ bool ModelReader::next_state()
     { "timestep", State::TIMESTEP },
     { "systemloop", State::SYSTEMLOOP },
     { "initial", State::INITIAL },
+    { "external", State::EXTERNAL },
     { "scalar", State::SCALAR },
     { "penalty", State::PENALTY },
     { "time", State::TIME },
@@ -219,9 +221,37 @@ void ModelReader::time_state()
     }
   } else
     flog << "Unrecognized format at MODEL(" << ln << "), INITIAL section. Line: " << line;
-
-
 }
+
+/**
+ * Parse a line in the state
+ */
+void ModelReader::external_state()
+{
+  smatch match;
+
+
+  // Invalid definition!
+  if ( ! regex_search( line, match, RE_STR_STR ) ) flog << "Unrecognized format at MODEL(" << ln << "), EXTERNAL section. Line: " << line;
+
+  string vname    = match[1],
+  filename = match[2];
+
+  // This is the only supported variable for now.
+  if ( ! iequals( vname, "sig0" ) ) flog << "Unsupported variable at MODEL (" << ln << ").";
+
+  // Check if file exists
+  string full_fn = config.model_dir + "/" + filename;
+
+  if ( ! file_exists( full_fn ) ) flog << "File '" << full_fn << "' does not exist. Review MODEL (" << ln << ") file.";
+
+  config.sig0_file = full_fn;
+
+  return; 
+}
+
+
+
 /**
  * Parse a line in the state
  */

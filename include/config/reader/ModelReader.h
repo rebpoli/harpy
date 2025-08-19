@@ -24,7 +24,7 @@ private:
 
   // Parsing stuff
   enum class State { 
-    INITIAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME
+    INITIAL, EXTERNAL, SYSTEMLOOP, TIMESTEP, PENALTY, SCALAR, TIME
   };
 
   uint ln;               /// line number
@@ -41,6 +41,7 @@ private:
   void timestep_state();
   void system_state();
   void time_state();
+  void external_state();
   void scalar_state();
   void penalty_state();
 
