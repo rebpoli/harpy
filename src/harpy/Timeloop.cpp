@@ -41,7 +41,6 @@ void Timeloop::main_loop()
 
     // TODO: we are writing a new restart at every timestep. Need to optimize.
     restart.write( sloop );
-    restart.read( sloop );
 
     ts.next();   
     if ( ts.test_end() ) break;
