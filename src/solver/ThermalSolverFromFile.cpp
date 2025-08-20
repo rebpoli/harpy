@@ -25,7 +25,7 @@ ThermalSolverFromFile::ThermalSolverFromFile( Solver * ref_solver_, string name_
 { 
   SCOPELOG(1);
 
-  SolverConfig * config = MODEL->solver_config(name_);
+//  SolverConfig * config = MODEL->solver_config(name_);
 
 
   setup_variables();
@@ -78,7 +78,7 @@ void ThermalSolverFromFile::init_materials()
   SCOPELOG(1);
   MeshBase & mesh = get_mesh();
 
-  set<MaterialConfig> & materials = MODEL->materials;
+//  set<MaterialConfig> & materials = MODEL->materials;
 
   // ensures creation of all materials to the current mesh (local elems only)
   for ( const auto & elem : mesh.active_element_ptr_range() )
@@ -189,7 +189,7 @@ void ThermalSolverFromFile::update_reference_solver()
   for (const auto & elem : mesh.active_local_element_ptr_range()) 
   {
     uint eid = elem->id();
-    suint sid = elem->subdomain_id();
+//    suint sid = elem->subdomain_id();
 
     // We need to feed the reference interface
     //

@@ -91,7 +91,6 @@ void File::write( const ViscoplasticSolver * svr )
     //  HEADER ( probes_by_pname_by_elem )
     //    HEADER( by_pname )
     //      HEADER( by_elem )
-    ProbeByPnameByElemMap & probes_by_pname_by_elem = vp_ifc.probes_by_pname_by_elem;
     ProbeByPnameByElemMap gl_map;
     vp_ifc.probes_by_pname_by_elem.localize_to_one( gl_map );
 
@@ -263,9 +262,9 @@ void File::read( const ViscoplasticSolver * svr )
 
 
 /** **/
-void File::write( const Solver * svr )
+void File::write( const Solver *  )
 { flog << "Must cast the solver into the right class befor writing."; }
-void File::read( const Solver * svr )
+void File::read( const Solver *  )
 { flog << "Must cast the solver into the right class befor writing."; }
 
 

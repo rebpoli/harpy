@@ -444,7 +444,7 @@ AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & /* ad_Uib */ )
   AD::dump( grad_u, P->GRAD_U);
 
   // Debug
-  const vector<Point> & xyz = fe->get_xyz();
+//  const vector<Point> & xyz = fe->get_xyz();
 
   P->von_mises = val(von_mises);
   P->epskk = val(epskk);

@@ -11,8 +11,8 @@ STRESS BASE
 DT0           10
 DTK           1.5
 DTMAX         5e6
-TMAX          1e10
-MAX_STEPS     2 # 1e10
+TMAX          1e8
+MAX_STEPS     1e10
 
 # List of scalar variables
 .SCALAR

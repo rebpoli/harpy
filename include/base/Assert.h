@@ -236,7 +236,8 @@ inline void fail(const char* expr,
         va_list ap; va_start(ap, fmt);
         ::vdprintf(2, fmt, ap);
         va_end(ap);
-        ::write(2, "\n", 1);
+        [[maybe_unused]] ssize_t ignored = ::write(2, "\n", 1);
+
     }
 
 #ifdef ASSERT_MIN_NO_BT

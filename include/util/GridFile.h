@@ -15,7 +15,7 @@ public:
   GridFile() : min_radius(0) {}
   virtual ~GridFile() {}
 
-  virtual double at(double t, double x, double y, double z) const 
+  virtual double at(double /*t*/, double /*x*/, double /*y*/, double /*z*/) const 
   { flog << "Must be defined in the children"; return 0; };
 
   /// Avoid too small radius under the mesh resolution. 

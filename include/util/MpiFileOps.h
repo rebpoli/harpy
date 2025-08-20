@@ -94,8 +94,8 @@ void MpiFileOps<MapT>::localize_to_one( MapT & global_map ) const
 {
   MapT const& self = static_cast<MapT const&>(*this);
 
-  const int rank   = world.rank();
-  const int nprocs = world.size();
+  uint rank   = world.rank();
+  uint nprocs = world.size();
 
   // serial
   if (nprocs == 1) { global_map = self; return; }

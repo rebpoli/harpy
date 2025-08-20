@@ -43,7 +43,7 @@ void ThermalSolverConstant::init_materials()
   SCOPELOG(1);
   MeshBase & mesh = get_mesh();
 
-  set<MaterialConfig> & materials = MODEL->materials;
+//  set<MaterialConfig> & materials = MODEL->materials;
 
   // ensures creation of all materials to the current mesh (local elems only)
   for ( const auto & elem : mesh.active_element_ptr_range() )

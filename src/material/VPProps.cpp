@@ -61,7 +61,7 @@ void VPProps::update( const RealVectorValue & U_, const RealTensor & GRAD_U_,
   double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
 
   // STEADY STATE CREEP
-  double creep_ss_rate;
+  double creep_ss_rate = 0;
   for ( auto & ss : creep_md.ss ) 
     creep_ss_rate +=  exp( - pow(ss.q / R_ / temperature, ss.stretch) ) *
                       pow( von_mises/ss.sig0 , ss.n );

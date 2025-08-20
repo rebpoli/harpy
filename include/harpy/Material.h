@@ -43,10 +43,10 @@ class Material
     virtual void init_fem() 
               { flog << "Must be redifined in the child classes."; }
 
-    virtual void reinit( const Elem & elem_, uint side=255 )
+    virtual void reinit( const Elem & , uint )
               { flog << "Must be redifined in the child classes."; }
-    virtual void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side=255 )
-              { flog << "Must be redifined in the child classes."; }
+//    virtual void reinit( const NumericVector<Number> & , const Elem & , uint )
+//              { flog << "Must be redifined in the child classes."; }
 
     virtual bool is_bc() { return 0; }  /// Defaults to false. Reimplement in the BC classes to return true;
     virtual string hello() { return "Material."; }
