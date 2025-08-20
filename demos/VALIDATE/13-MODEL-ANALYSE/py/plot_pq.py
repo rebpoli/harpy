@@ -81,7 +81,7 @@ def build_dataframe_from_csv(csv_path: Path) -> pd.DataFrame:
     t        = pd.to_numeric(df_src["Time(day)"], errors="coerce").to_numpy()
     z        = pd.to_numeric(df_src["Z"], errors="coerce").to_numpy()
 
-    p = (pressure + invar_p) / 1e6  # MPa
+    p = - (pressure + invar_p) / 1e6  # MPa
     q = q_raw / 1e6                 # MPa
     dz = np.abs(z)
 
