@@ -14,6 +14,7 @@ message(-----------------)
 message(METHOD: "$ENV{METHOD}")
 
 set(CMAKE_BUILD_TYPE Debug)
+set(METHOD $ENV{METHOD})
 
 # LIBMESH
 set(LIBMESH_DIR $ENV{LIBMESH_DIR})
@@ -130,41 +131,28 @@ ADD_LIBRARY(Modules
   src/restart/File.cpp
   src/restart/Header.cpp
   src/restart/Util.cpp
-
-
-
-#   src/StringUtil.cpp
-#   src/Solver.cpp 
-#   src/Stress.cpp 
-#   src/StressInvariants.cpp 
-#   src/Poroelastic.cpp 
-#   src/Probe.cpp 
-#   src/RadialAnalytic.cpp 
-#   src/Terzaghi.cpp
-#   src/Util.cpp
-#   src/DGConfig.cpp
-#   src/BoundaryConditions.cpp
-#   src/PoroelasticConfig.cpp
-#   src/ProbeConfig.cpp
-#   src/ThermalConfig.cpp
-#   src/Thermal.cpp
-#   src/FECalc.cpp
-#   src/MeshProjection.cpp
-#   src/ElemProjection.cpp
-#   src/PENumericalConfig.cpp
-#   src/FractureBoundary.cpp
-#   src/DamageConfig.cpp
-#   src/InjectionPoint.cpp
-#   src/Report.cpp
-#   src/PEDebugSys.cpp
-#   src/WellMirrors.cpp
-#   src/Volumetric.cpp
-#   src/MeshFracture.cpp
 )
 
-# ADD_LIBRARY(DEMO_EQUIL_MEC
-#   demos/equil_mecanico/elasticity_system.cpp
-# )
+# Common: export symbols so backtrace resolves function names
+# (-rdynamic is key on Linux)
+add_link_options(-Wl,--no-as-needed)
+
+if(METHOD STREQUAL "devel")
+  message(STATUS "METHOD=devel: enabling debug symbols and nice stack traces")
+  add_compile_options(-O0 -g3 -ggdb3 -fno-omit-frame-pointer)
+  add_link_options(-rdynamic)
+elseif(METHOD STREQUAL "asan")
+  message(STATUS "METHOD=asan: AddressSanitizer + symbols")
+  add_compile_options(-O1 -g3 -ggdb3 -fno-omit-frame-pointer -fsanitize=address)
+  add_link_options(-rdynamic -fsanitize=address)
+else() # release
+  message(STATUS "METHOD=release: optimized build (no symbol export)")
+  add_compile_options(-O3)
+  # If you *do* strip in release, do it explicitly; devel will not strip.
+  # add_link_options(-s)
+endif()
+
+
 
 # Indicar bibliotecas compartilhadas no sistema
 # target_link_libraries(Modules ${GMSH_LIB})
@@ -226,4 +214,7 @@ target_link_libraries( ut-radial-temperature Modules )
 #     message(STATUS "${_variableName}=${${_variableName}}")
 # endforeach()
 
+
+
 message(-----------------)
+

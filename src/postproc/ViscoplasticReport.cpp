@@ -22,6 +22,7 @@ ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) :
  */
 void ViscoplasticReport::init()
 {
+  SCOPELOG(1);
   /// PROBE CSV FILES
   for ( Probe * probe : probes ) 
   {
@@ -64,7 +65,7 @@ void ViscoplasticReport::init_material( Probe & probe  )
     if ( ! elem->active() ) continue;
     if ( elem->processor_id() != mesh.processor_id() ) continue;
 
-    dlog(1) << "> Element found at " << Print(pt) << ": " << elem->id();
+    dlog(1) << "> Element found at " << Print(pt) << ": " << elem->id() << " (proc_id=" << elem->processor_id() << ")";
 
     ViscoPlasticMaterial * mat = solver.get_vp_material( *elem );
     ViscoplasticIFC & vp_ifc = mat->vp_ifc;

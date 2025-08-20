@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "libmesh/tensor_value.h"
+#include "libmesh/point.h"
 
 namespace restart {
 
@@ -35,4 +36,6 @@ void _read(ifstream& is, string& s) ;
 void _write(ofstream& os, const RealTensor & A) ;
 void _read(ifstream& is, RealTensor & A) ;
 
+void _write(ofstream& os, const Point & A) ;
+void _read(ifstream& is, Point & A) ;
 }

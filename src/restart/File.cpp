@@ -86,6 +86,37 @@ void File::write( const ViscoplasticSolver * svr )
         }
       }
     }
+
+    /** Save probes **/
+    //  HEADER ( probes_by_pname_by_elem )
+    //    HEADER( by_pname )
+    //      HEADER( by_elem )
+    ProbeByPnameByElemMap & probes_by_pname_by_elem = vp_ifc.probes_by_pname_by_elem;
+    ProbeByPnameByElemMap gl_map;
+    vp_ifc.probes_by_pname_by_elem.localize_to_one( gl_map );
+
+    if ( is_root() )
+    {
+      HeaderWrite( this, gl_map.size(), "PROBES_BYBY" );  /* WRITE */
+      for ( auto &[ pname, by_elem ] : gl_map )
+      {
+        _write( os, pname );                                        /* WRITE */
+        HeaderWrite( this, by_elem.size(), "PROBES_BY_ELEM" );      /* WRITE */
+        for ( auto & [eid, vec] : by_elem ) 
+        {
+          _write( os, eid );                                        /* WRITE */
+          dlog(1) << "WRITING EID:" << eid << " vec.size:" << vec.size();
+          HeaderWrite( this, vec.size(), "VEC_PROBEIFC" );          /* WRITE */
+
+          for ( auto & ifc : vec ) 
+          {
+            _write( os, ifc->pt );
+            _write( os, ifc->props.sigtot );                              /* WRITE */
+          }
+        }
+      }
+    }
+
   }
 }
 
@@ -145,16 +176,15 @@ void File::read( const ViscoplasticSolver * svr )
       // Consistency check 
       if ( is_local ) {
         vector<VPProps> & vec = by_elem.at(eid);
-        if ( vec.size() != h2.N ) flog << "Wrong vec size? " << vec.size() << " != " << h2.N;
+        ASSERT ( vec.size() == h2.N , "Wrong vec size? " ) ; // << vec.size() << " != " << h2.N;
       }
 
       // QUADRATURE POINT LOOP
       for ( uint qp=0; qp<h2.N; qp++ )
       {
         RealTensor sigtot;         _read(is, sigtot);                      /* READ */
-
         if ( ! is_local ) continue;  // it is important to do the dummy runs above to keep sync
-                                     
+                                     //
         // Update the local structures
         vector<VPProps> & vec = by_elem.at(eid);
         VPProps &p = vec[qp];
@@ -162,11 +192,70 @@ void File::read( const ViscoplasticSolver * svr )
         // TODO: currently we are only reading sigtot (file) => initial_stress (database)
         //       do we need to read other stuff ?
         p.initial_stress = sigtot;
-        
-        // Debug - Check if we are ok
-//        if ( (p.sigtot - sigtot).norm() > 1e-10 ) flog << "Error found";
       }
     }
+
+    // The structure to feed
+    ProbeByPnameByElemMap & probes_by_pname_by_elem = vp_ifc.probes_by_pname_by_elem;
+    //
+
+    /** Read Probes **/
+    HeaderRead h3( this, "PROBES_BYBY" );              /* READ */
+
+    for ( uint i=0; i<h3.N; i++ )
+    {
+      string pname; _read(is, pname);                  /* READ */
+
+//      ASSERT( probes_by_pname_by_elem.count(pname) ) << "pname '" << pname << "'not found in gl_map.";
+      auto & by_elem = probes_by_pname_by_elem[ pname ];  // Creates if non existing... No problem
+
+      HeaderRead h4( this, "PROBES_BY_ELEM" );         /* READ */
+      for ( uint j=0; j<h4.N; j++ )
+      {
+        uint eid; _read(is, eid);
+        HeaderRead h5( this, "VEC_PROBEIFC" );         /* READ */
+        bool is_local = ( mesh.processor_id() == mesh.elem_ref(eid).processor_id() );
+
+        // Validation
+//        if ( is_local ) 
+//        {
+//          if ( ! by_elem.count(eid) ) 
+//          {
+//            dlog(1) << "ELEMENTS IN PROCESSOR " << mesh.processor_id() << " (" << world.rank() << ") // pmame:" << pname << "  eid(" << eid << ") - active?" << mesh.elem_ref(eid).active();
+//            for ( auto & [k,v] : by_elem ) dlog(1) << k;
+//          }
+
+//          ASSERT( by_elem.count(eid) , "Element not found in by_elem." );
+//          auto & vec = by_elem.at( eid );
+
+//          ASSERT( vec.size() == h5.N , "Wrong vec size? " ); // << vec.size() << " != " << h5.N;
+//        }
+        //
+        if (is_local) 
+        {
+          if ( ! by_elem.count(eid) ) dlog(1) << " eid:" <<eid << "  N:" << h5.N;
+          ASSERT( by_elem.count(eid) , "Element not found in by_elem." );
+        }
+
+        // For each point in the vector ...
+        for ( uint pt_i=0; pt_i<h5.N; pt_i++ )
+        {
+          Point pt;          _read(is, pt);
+          RealTensor sigtot; _read(is, sigtot);
+
+          if ( ! is_local ) continue;
+
+          if ( ! by_elem.count(eid) ) dlog(1) << "pt:" << pt << " eid:" <<eid;
+          ASSERT( by_elem.count(eid) , "Element not found in by_elem." );
+
+          auto & vec = by_elem.at( eid );
+          ProbeIFC * ifc = vec[pt_i] ;
+          
+          ifc->props.initial_stress = sigtot;
+        }
+      }
+    }
+
 
   }
 }

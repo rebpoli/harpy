@@ -177,6 +177,7 @@ Log::~Log()
     boost::stacktrace::stacktrace st;
     ostringstream os;
     os << st;
+//    ::assert_detail::print_stacktrace(os);
 
     fprintf(_out, "%s", os.str().c_str());
     if ( _dfile ) *_dfile << st;

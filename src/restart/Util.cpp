@@ -51,4 +51,23 @@ void _read(ifstream& is, RealTensor& A)
             A(i, j) = buf[k++];
 }
 
+// Point
+void _write(ofstream& os, const Point & A)
+{
+  _write( os, A(0) );
+  _write( os, A(1) );
+  _write( os, A(2) );
+}
+
+// Point
+void _read(ifstream& is, Point & A)
+{
+  double x,y,z;
+  _read( is, x );
+  _read( is, y );
+  _read( is, z );
+  A = Point(x,y,z);
+}
+
+
 }

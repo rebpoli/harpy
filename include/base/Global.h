@@ -56,3 +56,7 @@ class Tester;
 
 // Universal constants
 const double GRAVITY_FORCE = 9.80665;
+
+// Enables assert tests (can harm performance)
+#define ENABLE_ASSERTS
+#include "base/Assert.h"

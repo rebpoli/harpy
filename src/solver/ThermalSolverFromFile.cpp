@@ -222,8 +222,7 @@ void ThermalSolverFromFile::update_reference_solver()
     }
 
     /* Update probes */
-    for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem ) // m1: ProbeByElemMap
-    for ( ProbeIFC * probe : m1[eid] )  // p: ProbeIFC*
+    for ( auto & probe : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
     {
       Point pt = probe->pt + grid_origin;
       double temp = grid->at( ts.time, pt(0), pt(1), pt(2) );

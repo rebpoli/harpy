@@ -238,10 +238,11 @@ void ViscoPlasticMaterial::rewind( Elem & elem_ )
     P->creep_md.etr = P->creep_md.etr_n;
   } while ( next_qp() );
 
+  uint eid = elem->id();
+
   // Update the probes accordingly   ////PROBE
   // This can go into the IFC interface...
-  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-  for ( auto & probe_ifc : m1[elem->id()] ) 
+  for ( auto & probe_ifc : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
   {
     probe_ifc->props.plastic_strain = probe_ifc->props.plastic_strain_n;
     probe_ifc->props.creep_md.etr = probe_ifc->props.creep_md.etr_n;
@@ -263,10 +264,11 @@ void ViscoPlasticMaterial::project_stress( Elem & elem_ )
     P->creep_md.etr_n = P->creep_md.etr;
   } while ( next_qp() );
 
+  uint eid = elem->id();
+
   // Update the probes accordingly   ////PROBE
   // This can go into the IFC interface...
-  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-  for ( auto & probe_ifc : m1[elem->id()] ) 
+  for ( auto & probe_ifc : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
   {
     probe_ifc->props.plastic_strain_n = probe_ifc->props.plastic_strain;
     probe_ifc->props.creep_md.etr_n = probe_ifc->props.creep_md.etr;
@@ -657,8 +659,8 @@ void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side,
  */
 void ViscoPlasticMaterial::update_probes()
 {
-  for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-  for ( auto & probe_ifc : m1[elem->id()] ) 
+  uint eid = elem->id();
+  for ( auto & probe_ifc : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
   {
     const Point & pt = probe_ifc->pt;
     auto & props = probe_ifc->props;

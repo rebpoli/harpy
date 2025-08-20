@@ -204,8 +204,7 @@ void ThermalSolverConstant::update_reference_solver()
         props[qp].initial_temperature = initial_temperature;
 
       /// Updates the probes
-      for ( auto & [ _, m1 ] : vp_ifc.probes_by_pname_by_elem )
-      for ( auto & p : m1[eid] ) 
+      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
         p->props.initial_temperature = initial_temperature;
     }
 
@@ -224,8 +223,7 @@ void ThermalSolverConstant::update_reference_solver()
         props[qp].temperature = vals_qp[qp];
 
       /* Update probes */
-      for ( auto & [ pname, m1 ] : vp_ifc.probes_by_pname_by_elem )
-      for ( auto & p : m1[eid] ) 
+      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
         p->props.temperature = mat->eval( p->pt, "T" );
     }
   }

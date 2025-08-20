@@ -6,7 +6,8 @@
  */
 void ProbeByElemMap::localize_to_one(ProbeByElemMap & global_map)
 {
-  if (size == 1) { if (rank == 0) global_map = *this; return; }  // single proc.
+  uint rank = world.rank();
+  if (world.size() == 1) { if (rank == 0) global_map = *this; return; }  // single proc.
 
   global_map.clear();
   if (rank != 0) _send(); else _receive( global_map );
@@ -28,7 +29,7 @@ void ProbeByElemMap::_receive( ProbeByElemMap & global_map )
 {
   global_map = *this;  // add my own data
 
-  for (int i = 1; i < size; ++i) 
+  for (int i = 1; i < world.size(); ++i) 
   {
     ProbeByElemMap remote_map;
     world.recv(i, 0, remote_map);
