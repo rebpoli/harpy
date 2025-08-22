@@ -86,6 +86,34 @@ void ViscoplasticSolver::setup_variables()
     FEFamily fef = L2_LAGRANGE;
     if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
 
+
+    /* Vectors */
+
+    // Invariants
+    vector<string> sdir_vec  = { "X",  "Y",  "Z" };
+    for ( uint i=0 ; i<3; i++ )
+    for ( auto sd : sdir_vec )
+    {
+      string vn = "S"+to_string(i+1)+sd;
+      stress_system.add_variable( vn, order, fef );
+      dlog(1) << "Added variable '" << vn << "'";
+    }
+
+    for ( uint i=0 ; i<3; i++ )
+    for ( auto sd : sdir_vec )
+    {
+      string vn = "Sterz"+to_string(i+1)+sd;
+      stress_system.add_variable( vn, order, fef );
+    }
+
+    for ( uint i=0 ; i<3; i++ )
+      stress_system.add_variable( "S"+to_string(i+1)+"_mag" , order, fef);
+
+    for ( uint i=0 ; i<3; i++ )
+      stress_system.add_variable( "Sterz"+to_string(i+1)+"_mag" , order, fef);
+
+    /* TENSORS */
+
     vector<string> sname = { "sigeff", "sigtot", "deviatoric", "plastic_strain", "plastic_strain_rate", "initial_stress" };
     vector<string> sdir  = { "XX",  "YY",  "ZZ",  "XY",  "XZ",   "YZ" };
 
@@ -94,34 +122,18 @@ void ViscoplasticSolver::setup_variables()
     for ( auto sd : sdir )
       stress_system.add_variable( sn+sd, order, fef );
 
+    /* Scalars */
     stress_system.add_variable( "von_mises", order, fef);
     stress_system.add_variable( "epskk", order, fef );
     stress_system.add_variable( "F", order, fef );
 
-    // Invariants
-    sdir  = { "X",  "Y",  "Z" };
-    for ( uint i=0 ; i<3; i++ )
-    for ( auto sd : sdir )
-    {
-      string vn = "S"+to_string(i+1)+sd;
-      stress_system.add_variable( vn, order, fef );
-      dlog(1) << "Added variable '" << vn << "'";
-
-      vn = "Sterz"+to_string(i+1)+sd;
-      stress_system.add_variable( vn, order, fef );
-    }
-
-    for ( uint i=0 ; i<3; i++ )
-      stress_system.add_variable( "S"+to_string(i+1)+"_mag" , order, fef);
     stress_system.add_variable( "S_invarQ" , order, fef);
     stress_system.add_variable( "S_invarP" , order, fef);
     stress_system.add_variable( "S_invarQ_div_P" , order, fef);
-
-    for ( uint i=0 ; i<3; i++ )
-      stress_system.add_variable( "Sterz"+to_string(i+1)+"_mag" , order, fef);
     stress_system.add_variable( "Sterz_invarQ" , order, fef);
     stress_system.add_variable( "Sterz_invarP" , order, fef);
     stress_system.add_variable( "Sterz_invarQ_div_P" , order, fef);
+
   }
 
   // Scalars and penalties
