@@ -134,7 +134,7 @@ public:
   /// The stress engine
   StressPostProc stress_postproc;
 
-  CsvFile dfile; // Debugging file
+//  CsvFile dfile; // Debugging file
   int res_jac_k; // Debugging counter
 
 };

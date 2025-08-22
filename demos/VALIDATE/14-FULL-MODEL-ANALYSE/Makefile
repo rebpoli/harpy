@@ -45,7 +45,8 @@ model/cube.msh: model/cube.py
 gdb: gdb-dbg
 
 plot: .force
-	py/plot_lin0.py
+	py/plot_pq.py run.save/csv/plane_0-pq.csv --force-pkl --skip 1 --fps 4 --square --output pq_square-scale.mp4
+	py/plot_pq.py run.save/csv/plane_0-pq.csv --force-pkl --skip 1 --fps 4 --output pq.mp4
 
 video:
 	ffmpeg -framerate 10 -pattern_type glob -i 'png/*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 output.mp4

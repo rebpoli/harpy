@@ -32,17 +32,17 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   vpsolver(vpsolver_), system( sys_ ), 
   stress_system( vpsolver.stress_system ),
   stress_postproc( this, stress_system ),
-  dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config->name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
+//  dfile( "run/csv/plasticity-"+fmt_i(RANK)+string("-sid_") + fmt_i(sid) + string("-") + config->name + "-" + string(called_from_bc_constructor?"BC":"Body") + string(".csv") ),
   res_jac_k(0)
 {
   // Setup cariables only if on the parent
   if (! called_from_bc_constructor ) 
     bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
 
-  dfile << "sid" << "timestep" << "res_jac_k" << "dt" << "newton_k" << "elem" << "qp" << "von_mises";
-  dfile << "eps_kk" << "gradu" << "sigeff" << "sigtot" << "deviatoric" << "sigeff0" << "plast0";
-  dfile << "F" << "PlStrain_n" << "PlStrain" << "PlStrRate" << "eps_tr" << "eps_tr*" << "zeta" << "U";
-  dfile << endrow;
+//  dfile << "sid" << "timestep" << "res_jac_k" << "dt" << "newton_k" << "elem" << "qp" << "von_mises";
+//  dfile << "eps_kk" << "gradu" << "sigeff" << "sigtot" << "deviatoric" << "sigeff0" << "plast0";
+//  dfile << "F" << "PlStrain_n" << "PlStrain" << "PlStrRate" << "eps_tr" << "eps_tr*" << "zeta" << "U";
+//  dfile << endrow;
 }
 
 /**
@@ -501,35 +501,35 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   // Update plastic_strain_k : the plastic strain after this newton iteration
   P->plastic_strain_k = P->plastic_strain;
 
-  dfile << sid;
-  dfile << vpsolver.ts.t_step;
-  dfile << res_jac_k;
-  dfile << vpsolver.ts.dt;
-  dfile << 0;
-  dfile << elem->id();
-  dfile << QP;
-  dfile << P->von_mises;
-  dfile << P->epskk;
-  dfile << P->grad_norm;
-  dfile << P->sigeff.norm();
-  dfile << P->sigtot.norm();
-  dfile << P->deviatoric.norm();
-  dfile << P->sigeff0;
-  dfile << P->plast0;
-  dfile << P->F;
-  dfile << P->plastic_strain_n.norm();
-  dfile << P->plastic_strain.norm();
-  dfile << P->plastic_strain_rate.norm();
-  dfile << P->creep_md.etr;
-  //Compute the sum of U
-  double u = 0; 
-  for ( uint i=0; i<3; i++ )
-  for ( uint B=0; B<n_dofsv; B++ )
-      u += pow( val(Uib(i,B)) , 2 ) ;
-  dfile << u;
-//  dfile << Print(P->plastic_strain);
-//  dfile << Print(P->plast0_t);
-  dfile << endrow;
+//  dfile << sid;
+//  dfile << vpsolver.ts.t_step;
+//  dfile << res_jac_k;
+//  dfile << vpsolver.ts.dt;
+//  dfile << 0;
+//  dfile << elem->id();
+//  dfile << QP;
+//  dfile << P->von_mises;
+//  dfile << P->epskk;
+//  dfile << P->grad_norm;
+//  dfile << P->sigeff.norm();
+//  dfile << P->sigtot.norm();
+//  dfile << P->deviatoric.norm();
+//  dfile << P->sigeff0;
+//  dfile << P->plast0;
+//  dfile << P->F;
+//  dfile << P->plastic_strain_n.norm();
+//  dfile << P->plastic_strain.norm();
+//  dfile << P->plastic_strain_rate.norm();
+//  dfile << P->creep_md.etr;
+//  //Compute the sum of U
+//  double u = 0; 
+//  for ( uint i=0; i<3; i++ )
+//  for ( uint B=0; B<n_dofsv; B++ )
+//      u += pow( val(Uib(i,B)) , 2 ) ;
+//  dfile << u;
+////  dfile << Print(P->plastic_strain);
+////  dfile << Print(P->plast0_t);
+//  dfile << endrow;
 
   // Map from the AD variable to libmesh datastructures
   for (uint i=0; i<3; i++) for (uint B=0;  B<n_dofsv;  B++)
