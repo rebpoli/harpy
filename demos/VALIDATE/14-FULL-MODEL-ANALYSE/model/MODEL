@@ -10,7 +10,7 @@ STRESS BASE
 .TIMESTEP 
 DT0           10
 DTK           1.5
-DTMAX         9e5
+DTMAX         5e5
 TMAX          2e8
 MAX_STEPS     1e10
 
