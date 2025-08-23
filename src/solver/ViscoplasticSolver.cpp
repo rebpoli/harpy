@@ -91,6 +91,8 @@ void ViscoplasticSolver::setup_variables()
 
     // Invariants
     vector<string> sdir_vec  = { "X",  "Y",  "Z" };
+
+    // S1, S2, S3
     for ( uint i=0 ; i<3; i++ )
     for ( auto sd : sdir_vec )
     {
@@ -99,6 +101,7 @@ void ViscoplasticSolver::setup_variables()
       dlog(1) << "Added variable '" << vn << "'";
     }
 
+    // Sterz1, Sterz2, Sterz3 (Note: X,Y,Z of a vector must be added in sequence)
     for ( uint i=0 ; i<3; i++ )
     for ( auto sd : sdir_vec )
     {
