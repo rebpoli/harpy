@@ -289,14 +289,14 @@ void SolverReader::fem_state()
   if ( regex_search( line, match, RE_STR_STR_STR ) ) 
   {
     string key = match[1], var = match[2], val = match[3];
-    to_upper(key); // upper case
+    to_upper(val); // upper case
 
     using FEMSpec = SolverConfig::FEMSpec;
     FEMSpec & fem = config.fem_by_var[var];
     if ( iequals( key, "type" ) )          fem.type = val;
     else if ( iequals( key, "family") )   
     {
-      if (! KNOWN_FE_FAMILY.count(key) ) flog << "Unknown FE Family '" << key << "'.";
+      if (! KNOWN_FE_FAMILY.count(val) ) flog << "Unknown FE Family '" << val << "'.";
       fem.family = val;
     }
     else if ( iequals( key, "order") )     fem.order = val;
