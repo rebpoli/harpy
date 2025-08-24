@@ -68,6 +68,9 @@ void ViscoplasticSolver::setup_variables()
   auto & femspec = config->fem_by_var.at("U");
 
   {
+    set<string> KNOWN_FAMILY = { "LAGRANGE", "L2_LAGRANGE" };
+    if ( ! KNOWN_FAMILY.count( femspec.family ) ) flog << "FEM family not supported for this solver '" << femspec.family << "'.";
+
     Order order = Utility::string_to_enum<Order>( femspec.order ) ;
     FEFamily fe_family = Utility::string_to_enum<FEFamily>( femspec.family );
 

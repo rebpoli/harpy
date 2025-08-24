@@ -279,15 +279,26 @@ void SolverReader::numerical_state()
 void SolverReader::fem_state() 
 {
   SCOPELOG(1);
+
+  using harpy_string::to_upper;
+
+  const set<string> KNOWN_FE_FAMILY = { "LAGRANGE", "L2_LAGRANGE", "ENRICHED_GALERKIN" };
+
   smatch match;
   string vname;
   if ( regex_search( line, match, RE_STR_STR_STR ) ) 
   {
     string key = match[1], var = match[2], val = match[3];
+    to_upper(key); // upper case
+
     using FEMSpec = SolverConfig::FEMSpec;
     FEMSpec & fem = config.fem_by_var[var];
     if ( iequals( key, "type" ) )          fem.type = val;
-    else if ( iequals( key, "family") )    fem.family = val;
+    else if ( iequals( key, "family") )   
+    {
+      if (! KNOWN_FE_FAMILY.count(key) ) flog << "Unknown FE Family '" << key << "'.";
+      fem.family = val;
+    }
     else if ( iequals( key, "order") )     fem.order = val;
     else if ( iequals( key, "implicit") )  {
       if ( ! regex_search( val, match, RE_NUM ) ) flog << "Invalid value for IMPLICIT. Must be a number.";
