@@ -3,6 +3,8 @@
 #include "util/OutputOperators.h"
 #include "util/String.h"
 
+namespace config {
+
 /**
  *
  * Builds the datastructure from the  model.
@@ -83,6 +85,7 @@ void BCConfig::TimeEntry::add_numerical_bc( string bname, string vname, double v
     return;
   }
 
+  using util::operator<<;
   elog << "Known variables are: " << STOT_VARS << " and " << DBL_VARS;
   flog << "Unknown variable named '" << vname << "'";
 }
@@ -139,7 +142,7 @@ bool BCConfig::has_scalar( string name ) const { return scalars.count( ScalarVar
  *    The object is only indexed by the _name_ variable, case insensitive.
  */
 bool BCConfig::ScalarVar::operator<(const BCConfig::ScalarVar & other) const
-{ harpy_string::ci_cmp c; return c( name, other.name ); }
+{ util::ci_cmp c; return c( name, other.name ); }
 
 /**
  *
@@ -148,6 +151,7 @@ bool BCConfig::ScalarVar::operator<(const BCConfig::ScalarVar & other) const
  */
 ostream& operator<<(ostream& os, const BCConfig & m)
 {
+  using util::operator<<;
   os << endl;
   os << "|-----------------------------------------------" << endl;
   os << "|   BOUNDARY CONDITIONS     " << endl;
@@ -257,3 +261,4 @@ ostream& operator<<(ostream& os, const BCConfig::ScalarVar & m)
   return os;
 }
 
+}

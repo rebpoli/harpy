@@ -26,7 +26,7 @@ ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m)
   return os;
 }
 
-ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m) {
+ostream& operator<<(ostream& os, const util::CIMap<double> & m) {
   os << "[";
   uint i=0;
   for ( auto v : m ) {

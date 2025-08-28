@@ -1,9 +1,11 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/Json.h"
-
 #include <list>
+
+namespace config
+{
 
 class Config;
 
@@ -49,3 +51,5 @@ class ConfigValidate {
     friend ostream& operator<<(ostream& os, const ConfigValidate::Context & m);
 };
 ostream& operator<<(ostream& os, const ConfigValidate::Context & m);
+
+}

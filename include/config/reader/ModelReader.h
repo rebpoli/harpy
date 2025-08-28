@@ -1,9 +1,15 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/String.h"
 
 #include <map>
+
+namespace config {
+
+class ModelConfig;
+
+namespace reader {
 
 /**
  *
@@ -11,7 +17,6 @@
  *
  */
 
-class ModelConfig;
 
 class ModelReader
 {
@@ -47,3 +52,6 @@ private:
 
   friend ModelConfig;
 };
+
+
+}} // ns

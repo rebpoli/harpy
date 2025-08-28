@@ -1,12 +1,12 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include <regex>
 #include <set>
 #include <map>
 
 #include <boost/algorithm/string.hpp>
-namespace harpy_string { 
+namespace util { 
 
   // Some dirty local aliases so we can rewrite or remove
   // of this context if we wish
@@ -49,4 +49,5 @@ namespace harpy_string {
   using CIMap = map<string, T, ci_cmp>;
 
   inline string sci_fmt( double dbl ) { ostringstream ss; ss << scientific << dbl; return ss.str(); }
-}
+
+} // ns

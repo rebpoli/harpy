@@ -1,12 +1,15 @@
 #pragma once
 
-#include "base/Global.h"
-#include "base/Enums.h"
+#include "harpy/Global.h"
+#include "harpy/Enums.h"
 #include "config/SolverConfig.h"
 #include "util/String.h"
 #include "libmesh/point.h"
 
 #include <map>
+
+namespace config
+{
 
 
 /**
@@ -20,7 +23,7 @@
  *
  */
 
-using harpy_string::CIMap;
+using util::CIMap;
 
 class SolverConfig
 {
@@ -86,3 +89,5 @@ ostream& operator<<(ostream& os, const SolverConfig & m);
 ostream& operator<<(ostream& os, const SolverConfig::MatConfigMap & m);
 ostream& operator<<(ostream& os, const SolverConfig::MatNameAndCfg & m);
 ostream& operator<<(ostream& os, const SolverConfig::ExternalFile & m);
+
+} // ns

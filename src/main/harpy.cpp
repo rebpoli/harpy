@@ -1,11 +1,16 @@
 #include <fstream>
 #include <string>
 
-#include "base/Global.h"
-#include "base/HarpyInit.h"
+#include "harpy/Global.h"
+#include "harpy/HarpyInit.h"
 #include "config/ModelConfig.h"
-#include "harpy/Timeloop.h"
+#include "timeloop/Timeloop.h"
 #include "util/Stopwatch.h"
+
+using namespace util;
+using namespace harpy;
+using namespace timeloop;
+using namespace config;
 
 int main (int argc, char ** argv)
 {

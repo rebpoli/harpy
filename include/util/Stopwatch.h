@@ -1,7 +1,9 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/Messages.h"
+
+namespace util {
 
 /*
  * Cronometro para perfilagem de desempenho.
@@ -48,3 +50,4 @@ class Stopwatch {
     static uint _debug_level;
 };
 
+} // ns

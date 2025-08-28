@@ -11,6 +11,8 @@
 #include <sstream>
 #include <type_traits>
 
+namespace util {
+
 /**
  * Parse a CVS line and tokenize
  */
@@ -195,3 +197,5 @@ double GridRadialFile::at(double qt, double qx, double qy, double qz) const
   return T;
 
 }
+
+} // ns

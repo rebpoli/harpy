@@ -1,9 +1,12 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 
 #include "libmesh/point.h"
 #include <optional>
+
+namespace config 
+{
 
 /**
  *   Holdes the probe information, to be used in the
@@ -55,3 +58,5 @@ struct InoutConfig
 /** ** ** ** **/
 ostream& operator<<(ostream& os, const InoutConfig & m);
 ostream& operator<<(ostream& os, const ProbeConfig & m);
+
+} // ns

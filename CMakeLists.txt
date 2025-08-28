@@ -82,55 +82,52 @@ add_compile_options(-Wno-parentheses)   # Avoid stupid warnings
 
 # Compilar arquivos-fonte dentro da biblioteca estática libModules.a
 ADD_LIBRARY(Modules
-  src/harpy/Material.cpp
-  src/harpy/DirManager.cpp
-  src/harpy/ExplicitMaterial.cpp
-  src/harpy/Solver.cpp
-  src/harpy/Timeloop.cpp
-  src/harpy/Timestep.cpp
-  src/config/ConfigValidate.cpp
-  src/config/Config.cpp
   src/config/BCConfig.cpp
+  src/config/Config.cpp
+  src/config/ConfigValidate.cpp
   src/config/InoutConfig.cpp
-  src/config/ModelConfig.cpp
   src/config/MaterialConfig.cpp
+  src/config/ModelConfig.cpp
   src/config/SolverConfig.cpp
   src/config/reader/InoutReader.cpp
   src/config/reader/MaterialReader.cpp
   src/config/reader/ModelReader.cpp
   src/config/reader/SolverReader.cpp
   src/config/reader/SpatialDataReader.cpp
-  src/util/GridFile.cpp
-  src/util/Json.cpp
-  src/util/Stopwatch.cpp
-  src/util/OutputOperators.cpp
-  src/util/TeeBuff.cpp
-  src/util/MeshUtils.cpp
-  src/util/Messages.cpp
-  src/base/Global.cpp
-  src/base/HarpyInit.cpp
-  src/base/Log.cpp
-  src/base/PetscLogger.cpp
-  src/main/harpy.cpp
-  src/material/VPProps.cpp
-  src/material/ViscoPlasticMaterial.cpp
-  src/material/ViscoplasticIFC.cpp
-  src/material/VPProps.cpp
-  src/material/ProbeIFC.cpp
-  src/material/ThermalIFC.cpp
-  src/postproc/Probe.cpp
-  src/postproc/ViscoplasticReport.cpp
-  src/postproc/StressPostProc.cpp
-  src/postproc/TensorInvariants.cpp
-  src/solver/BC.cpp
-  src/solver/ViscoplasticSolver.cpp
-  src/solver/PressureSolverFromFile.cpp
-  src/solver/ThermalSolverConstant.cpp
-  src/solver/ThermalSolverFromFile.cpp
-  src/solverloop/SLViscoplastic.cpp
+  src/harpy/Global.cpp
+  src/harpy/HarpyInit.cpp
+  src/harpy/Log.cpp
+  src/harpy/PetscLogger.cpp
+  src/postproc/probes/Probe.cpp
+  src/postproc/report/VPReport.cpp
+  src/postproc/stress/StressPostProc.cpp
+  src/postproc/stress/TensorInvariants.cpp
   src/restart/File.cpp
   src/restart/Header.cpp
   src/restart/Util.cpp
+  src/solver/common/ExplicitMaterial.cpp
+  src/solver/common/Solver.cpp
+  src/solver/pressure/PSolverFile.cpp
+  src/solver/thermal/TIfc.cpp
+  src/solver/thermal/TSolverCnt.cpp
+  src/solver/thermal/TSolverFile.cpp
+  src/solver/viscoplastic/VPBC.cpp
+  src/solver/viscoplastic/VPIfc.cpp
+  src/solver/viscoplastic/VPMaterial.cpp
+  src/solver/viscoplastic/VPProbe.cpp
+  src/solver/viscoplastic/VPProps.cpp
+  src/solver/viscoplastic/VPSolver.cpp
+  src/solverloop/SLViscoplastic.cpp
+  src/timeloop/Timeloop.cpp
+  src/timeloop/Timestep.cpp
+  src/util/DirManager.cpp
+  src/util/GridFile.cpp
+  src/util/Json.cpp
+  src/util/MeshUtils.cpp
+  src/util/Messages.cpp
+  src/util/OutputOperators.cpp
+  src/util/Stopwatch.cpp
+  src/util/TeeBuff.cpp
 )
 
 # Common: export symbols so backtrace resolves function names

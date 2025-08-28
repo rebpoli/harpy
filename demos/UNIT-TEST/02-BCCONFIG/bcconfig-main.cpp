@@ -1,14 +1,17 @@
 
 #include "config/ModelConfig.h"
 #include "config/BCConfig.h"
-#include "solver/BC.h"
-#include "base/HarpyInit.h"
+#include "solver/viscoplastic/VPBC.h"
+#include "harpy/HarpyInit.h"
 
 #include "libmesh/equation_systems.h"
 #include "libmesh/mesh.h"
 #include "libmesh/linear_implicit_system.h"
 #include "libmesh/transient_system.h"
 
+using namespace harpy;
+using namespace config;
+using namespace solver::viscoplastic;
 
 /*
  *

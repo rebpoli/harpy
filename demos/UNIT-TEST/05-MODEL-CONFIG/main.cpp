@@ -1,8 +1,12 @@
 
 #include "config/ModelConfig.h"
 #include "config/InoutConfig.h"
-#include "postproc/Probe.h"
-#include "base/HarpyInit.h"
+#include "postproc/probes/Probe.h"
+#include "harpy/HarpyInit.h"
+
+using namespace harpy;
+using namespace config;
+using postproc::probes::ProbeCol;
 
 int main (int argc, char ** argv)
 {

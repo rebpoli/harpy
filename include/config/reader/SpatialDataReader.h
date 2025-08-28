@@ -1,14 +1,17 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include <vector>
 
 #include <boost/geometry.hpp>
 #include <boost/geometry/index/rtree.hpp>
 
-    // Builds the RTree
-    namespace bg = boost::geometry;
-    namespace bgi = boost::geometry::index;
+namespace config {
+namespace reader {
+
+// Builds the RTree
+namespace bg = boost::geometry;
+namespace bgi = boost::geometry::index;
 
 class SpatialDataReader 
 {
@@ -44,3 +47,5 @@ class SpatialDataReader
 
 ostream& operator<<(ostream& os, const SpatialDataReader & m);
 ostream& operator<<(ostream& os, const SpatialDataReader::Pt & m);
+
+}} // ns

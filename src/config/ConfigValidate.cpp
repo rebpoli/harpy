@@ -5,6 +5,9 @@
 
 #include <fstream>
 
+namespace config
+{
+
 using namespace rapidjson;
 
 /**
@@ -165,6 +168,8 @@ void ConfigValidate::validate_matrix( RJValue & trg, RJValue & gram )
   string type = get_type(gram);
   if ( type != "matrix" ) return;
 
+  using util::fmt_i;
+
   uint l = 0; // linhas
   uint c = 0; // colunas
   for ( auto& v : trg.GetArray() ) {
@@ -200,6 +205,7 @@ void ConfigValidate::validate_matrix( RJValue & trg, RJValue & gram )
  */
 void ConfigValidate::validate( const Value & trg, const Value & gram )
 {
+  using util::fmt_i;
 
   // Le na gramatica o que esse cara deve ser
   string type = get_type(gram);
@@ -320,4 +326,7 @@ const Value * ConfigValidate::scan( RJValue & gram, string & key )
  */
 ostream& operator<<(ostream& os, const ConfigValidate::Context & m)
 { os << "[" << m.str() << "]"; return os; }
+
+} // ns
+
 

@@ -1,11 +1,14 @@
 
-#include "harpy/Timestep.h"
-#include "base/HarpyInit.h"
+#include "timeloop/Timestep.h"
+#include "harpy/HarpyInit.h"
 #include "config/ModelConfig.h"
+
+using namespace harpy;
+using namespace config;
+using namespace timeloop;
 
 int main (int argc, char ** argv)
 {
-
   // Read configuration file
   HarpyInit init( argc, argv );
 

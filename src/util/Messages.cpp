@@ -1,6 +1,8 @@
 #include "util/Messages.h"
-#include "harpy/Timestep.h"
+#include "timeloop/Timestep.h"
 #include "libmesh/linear_solver.h"
+
+namespace util {
 
 using namespace libMesh;
 using namespace std;
@@ -105,3 +107,4 @@ string MSG_CONVERGED_REASON( const libMesh::TransientLinearImplicitSystem & sys 
   return out.str();
 }
 
+} // ns

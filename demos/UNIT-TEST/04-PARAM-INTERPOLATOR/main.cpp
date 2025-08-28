@@ -1,6 +1,8 @@
 
 #include "config/reader/SpatialDataReader.h"
-#include "base/HarpyInit.h"
+#include "harpy/HarpyInit.h"
+
+using namespace harpy;
 
 /**
  *
@@ -15,6 +17,7 @@
 
 
 using namespace std;
+using config::reader::SpatialDataReader ;
 
 int main (int argc, char ** argv)
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "config/SolverConfig.h"
 #include "config/MaterialConfig.h"
 #include "config/BCConfig.h"
@@ -9,6 +9,8 @@
 
 #include <map>
 
+namespace config {
+
 /**
  *
  * Stores all the model raw information into C++ datastructures.
@@ -16,7 +18,7 @@
  * The reading and parsing is done by ModelReader, SolverReader etc.
  *
  */
-using harpy_string::CIMap;
+using util::CIMap;
 
 class ModelConfig
 {
@@ -47,3 +49,5 @@ ostream& operator<<(ostream& os, const TimestepConfig & m);
 
 /** Global variable with the model configuration */
 extern ModelConfig * MODEL;
+
+} // ns

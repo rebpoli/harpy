@@ -1,11 +1,15 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include <optional>
 #include <map>
 #include <vector>
 
 #include "libmesh/point.h"
+
+namespace config
+{
+
 using namespace libMesh;
 
 /**
@@ -93,3 +97,5 @@ private:
 
 ostream& operator<<(ostream& os, const MaterialConfig & m);
 ostream& operator<<(ostream& os, const CreepMD & m);
+
+} // ns

@@ -1,14 +1,15 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/Json.h"
-
 #include "libmesh/system.h"
-
 #include <string>
 
-using namespace std;
 
+namespace config 
+{
+
+using namespace std;
 class ConfigValidate;
 
 /**
@@ -193,3 +194,5 @@ class _SolverConfig {
     double dtol, atol, rtol, maxits;
     string ksptype, pctype;
 };
+
+} // ns

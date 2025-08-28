@@ -6,9 +6,11 @@
 #include "libmesh/equation_systems.h"
 #include "libmesh/mesh.h"
 
-#include "solver/ThermalSolverConstant.h"
-
 #include "restart/File.h"
+
+namespace solverloop {
+
+using solver::common::SolverFactory;
 
 /**
  *
@@ -84,3 +86,5 @@ void SLViscoplastic::load_sig0_file( string filename )
   restart::File restart( filename ) ;
   restart.read( *this );
 }
+
+} // ns

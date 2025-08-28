@@ -1,5 +1,7 @@
 #include "util/TeeBuff.h"
 
+namespace util {
+
 // Construct a streambuf which tees output to both input
 // streambufs.
 teebuf::teebuf(std::streambuf * sb1, std::streambuf * sb2)
@@ -27,4 +29,4 @@ int teebuf::sync()
   return r1 == 0 && r2 == 0 ? 0 : -1;
 }
 
-
+} // ns

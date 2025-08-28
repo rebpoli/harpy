@@ -1,8 +1,10 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 
 #include <vector>
+
+namespace util {
 
 /**
  * 
@@ -38,3 +40,4 @@ public:
   double at(double qt, double qx, double qy, double qz) const;
 };
 
+} // ns

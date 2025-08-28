@@ -7,7 +7,11 @@
 #include "util/OutputOperators.h"
 #include "util/String.h"
 
-using namespace harpy_string;
+namespace config 
+{
+
+using namespace util;
+using namespace config::reader;
 
 
 /**
@@ -40,6 +44,7 @@ ostream& operator<<(ostream& os, const InoutConfig & m)
  */
 ostream& operator<<(ostream& os, const ProbeConfig & m)
 {
+  using util::operator<<;
   os << right << setw(20) << "Type"       << setw(20) << " " << m.type << endl;
 
   if (! m.type ) return os;
@@ -76,3 +81,5 @@ ostream& operator<<(ostream& os, const ProbeConfig & m)
 
   return os;
 }
+
+} // ns

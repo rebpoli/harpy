@@ -1,5 +1,5 @@
 
-#include "base/HarpyInit.h"
+#include "harpy/HarpyInit.h"
 #include <map>
 #include <vector>
 #include <boost/mpi.hpp>
@@ -14,6 +14,8 @@
 
 namespace mpi = boost::mpi;
 using namespace std;
+using namespace util;
+using namespace harpy;
 
 // Forward declaration of our data class
 class DataObject;

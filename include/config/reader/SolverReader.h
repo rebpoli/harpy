@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/String.h"
 #include "config/SolverConfig.h"
 
@@ -12,6 +12,8 @@
  *
  */
 
+namespace config {
+namespace reader {
 
 class SolverReader
 {
@@ -54,3 +56,5 @@ private:
 };
 
 ostream& operator<<(ostream& os, const SolverReader & m);
+
+}} // ns

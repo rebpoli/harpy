@@ -6,6 +6,9 @@
 #include <fstream>
 #include <regex>
 
+namespace config {
+namespace reader {
+
 // Pt nested class implementation
 SpatialDataReader::Pt::Pt(
     double x_, double y_, double z_, double val_)
@@ -120,3 +123,4 @@ ostream& operator<<(ostream& os, const SpatialDataReader::Pt & m)
     return os;
 }
 
+}} // ns

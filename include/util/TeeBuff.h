@@ -1,8 +1,10 @@
-#include "base/Global.h"
+#include "harpy/Global.h"
 
 #include <streambuf>
 
 using namespace std;
+
+namespace util {
 
 class teebuf : public std::streambuf
 {
@@ -15,3 +17,5 @@ class teebuf : public std::streambuf
     std::streambuf* _sb1;
     std::streambuf* _sb2;
 };
+
+} // ns

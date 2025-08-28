@@ -6,8 +6,12 @@
 
 #include <fstream>
 
+namespace config 
+{
+
 Config CFG;
 using namespace rapidjson;
+
 
 /**
  *
@@ -80,3 +84,4 @@ _SolverConfig::_SolverConfig() {
   CFG.str("solver","pctype",  pctype,  "lu");
 }
 
+} // ns

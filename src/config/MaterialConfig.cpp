@@ -1,15 +1,15 @@
 
 #include "config/MaterialConfig.h"
-
 #include "config/reader/MaterialReader.h"
 #include "util/OutputOperators.h"
-
 #include "util/String.h"
 
+namespace config
+{
 
-using harpy_string::iequals;
-using harpy_string::to_upper_copy;
-using harpy_string::ci_cmp;
+using util::iequals;
+using util::to_upper_copy;
+using util::ci_cmp;
 
 /**
  *  
@@ -17,6 +17,7 @@ using harpy_string::ci_cmp;
 MaterialConfig::MaterialConfig( const string & model_dir_, const string & name_, const string & cfg_ )   :
             model_dir(model_dir_), name(name_), cfg(cfg_) , filename( model_dir + "/" + name + "/" + to_upper_copy(cfg) )
 {
+  using namespace config::reader;
   MaterialReader( *this );
   
   // Compute the secondary properties
@@ -112,6 +113,7 @@ double MaterialConfig::get_property( string pname, const Point & xyz, string con
  */
 ostream& operator<<(ostream& os, const MaterialConfig & m)
 {
+  using util::operator<<;
   os << endl;
   os << "                            MaterialConfig for '" << m.name  << "'/ '" << m.cfg << "'" << endl;
   os << "                                 Filename '" << m.filename << "'" << endl;
@@ -166,3 +168,5 @@ bool MaterialConfig::operator<(const MaterialConfig & other) const
   if ( c( other.name, name ) ) return false;
   return c( cfg, other.cfg );
 }
+
+} // ns

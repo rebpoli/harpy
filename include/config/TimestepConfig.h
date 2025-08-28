@@ -1,8 +1,10 @@
 
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "util/String.h"
+
+namespace config {
 
 struct TimestepConfig
 {
@@ -12,7 +14,7 @@ struct TimestepConfig
 
   void set( string n, double v )
   {
-    harpy_string::CIMap<double * > REFS = 
+    util::CIMap<double * > REFS = 
               { 
                 { "dt0", &dt0 } ,
                 { "dtk", &dtk } ,
@@ -27,3 +29,4 @@ struct TimestepConfig
   };
 };
 
+} // ns

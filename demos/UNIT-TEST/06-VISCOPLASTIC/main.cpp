@@ -1,7 +1,11 @@
 
 #include "config/ModelConfig.h"
-#include "base/HarpyInit.h"
-#include "harpy/Timeloop.h"
+#include "harpy/HarpyInit.h"
+#include "timeloop/Timeloop.h"
+
+using namespace harpy;
+using namespace config;
+using namespace timeloop;
 
 int main (int argc, char ** argv)
 {

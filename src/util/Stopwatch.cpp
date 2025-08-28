@@ -8,6 +8,7 @@
 #include <iostream>     // std::cout, std::fixed
 #include <iomanip>
 
+namespace util {
 
 uint Stopwatch::_debug_level = 5;
 libMesh::PerfLog perf ("GLOBAL_PROFILE");
@@ -88,3 +89,5 @@ Stopwatch::~Stopwatch() {
   if ( _out_time ) *_out_time = ms;
   perf.pop(_name);
 }
+
+} // ns

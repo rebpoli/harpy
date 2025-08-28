@@ -1,7 +1,7 @@
 #pragma once
 
-#include "base/Global.h"
-#include "base/Enums.h"
+#include "harpy/Global.h"
+#include "harpy/Enums.h"
 
 #include "libmesh/vector_value.h"
 #include "libmesh/tensor_value.h"
@@ -13,11 +13,23 @@
 #include <optional>
 
 namespace libMesh { class Point; }
+
+/**
+ *    This is a collection of global operators for input/output.
+ *    If inside a namespace, the compiler needs an additiona lline
+ *
+ *    using util::operator<<
+ *
+ *    to find the functions.
+ */
+
+namespace util {
+
 ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m);
 ostream& operator<<(ostream& os, const set<double> & m);
 
 
-ostream& operator<<(ostream& os, const harpy_string::CIMap<double> & m);
+ostream& operator<<(ostream& os, const util::CIMap<double> & m);
 
 ostream& operator<<(ostream& os, const pair<uint,uint> & m);
 ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m);
@@ -177,3 +189,5 @@ ostream& operator<<(ostream& os, const map<T,U> & m)
   os << "] ("<< m.size() <<")";
   return os;
 }
+
+} // ns

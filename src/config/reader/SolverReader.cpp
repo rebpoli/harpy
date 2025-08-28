@@ -8,8 +8,10 @@
 #include <regex>
 #include <set>
 
+namespace config {
+namespace reader {
 
-using namespace harpy_string;
+using namespace util;
 using namespace MRDEF;
 
 /**
@@ -280,7 +282,7 @@ void SolverReader::fem_state()
 {
   SCOPELOG(1);
 
-  using harpy_string::to_upper;
+  using util::to_upper;
 
   const set<string> KNOWN_FE_FAMILY = { "LAGRANGE", "L2_LAGRANGE", "ENRICHED_GALERKIN" };
 
@@ -326,3 +328,6 @@ ostream& operator<<(ostream& os, const SolverReader & m)
   }
   return os;
 }
+
+
+}} // ns

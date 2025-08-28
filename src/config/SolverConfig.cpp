@@ -5,13 +5,19 @@
 
 #include <iomanip>
 
+namespace config
+{
+
 /**
  *  
  */
 SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ ) :
           model_dir( model_dir_ ), sys_file( model_dir + "/" + sys_name_),
           sys_name(sys_name_), sys_cfg(sys_cfg_)
-{ SolverReader( *this ); }
+{ 
+  using namespace config::reader;
+  SolverReader( *this ); 
+}
 
 /**
  *
@@ -58,6 +64,7 @@ ostream& operator<<(ostream& os, const SolverConfig & m)
 /** **/
 ostream& operator<<(ostream& os, const SolverConfig::ExternalFile & m)
 {
+  using util::operator<<;
   os << "    External_file: " << endl;
   os << "            filename:      " << setw(15) << m.filename << endl;
   os << "            grid_type:     " << setw(15) << m.grid_type << endl;
@@ -87,3 +94,5 @@ ostream& operator<<(ostream& os, const SolverConfig::MatNameAndCfg & m)
   os << setw(20) << m.cfg;
   return os;
 }
+
+} // ns

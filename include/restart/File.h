@@ -1,16 +1,21 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include <fstream>
 #include <boost/mpi.hpp>
 
 // Fwd declarations
-class SLViscoplastic;
-class ViscoplasticSolver;
-class ViscoPlasticMaterial;
-class Solver;
+namespace solverloop { class SLViscoplastic; } 
+namespace solver { 
+  namespace viscoplastic { class ViscoplasticSolver; class ViscoPlasticMaterial; } 
+  namespace common { class Solver; }
+}
 
 namespace restart {
+
+using solver::common::Solver;
+using solver::viscoplastic::ViscoplasticSolver;
+using solverloop::SLViscoplastic;
 
 class Header;
 
@@ -34,9 +39,9 @@ class File
     void write( const Solver * svr );
     void write( const ViscoplasticSolver * svr );
 
-    void read( const SLViscoplastic & sloop );
-    void read( const Solver * svr );
-    void read( const ViscoplasticSolver * svr );
+    void read( SLViscoplastic & sloop );
+    void read( Solver * svr );
+    void read( ViscoplasticSolver * svr );
 
     inline bool is_root() { return world.rank() == 0; }
   private:

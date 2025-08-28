@@ -1,12 +1,17 @@
 
-#include "base/HarpyInit.h"
+#include "harpy/HarpyInit.h"
 #include "config/ModelConfig.h"
-#include "solver/ViscoplasticSolver.h"
+#include "solver/viscoplastic/VPSolver.h"
 
 #include "libmesh/mesh.h"
 #include "libmesh/equation_systems.h"
 
-#include "harpy/Timestep.h"
+#include "timeloop/Timestep.h"
+
+using namespace harpy;
+using namespace solver::viscoplastic;
+using namespace timeloop;
+using namespace config;
 
 int main (int argc, char ** argv)
 {

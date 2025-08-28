@@ -1,12 +1,14 @@
 
 #include "config/reader/InoutReader.h"
-
 #include "config/reader/ReaderRegex.h"
 #include "util/String.h"
 #include "util/File.h"
 
+namespace config {
+namespace reader {
+
 using namespace MRDEF;
-using namespace harpy_string;
+using namespace util;
 using namespace libMesh;
 
 /**
@@ -175,3 +177,5 @@ void InoutReader::probe_state()
     return;
   }
 }
+
+} } // ns

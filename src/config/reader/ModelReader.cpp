@@ -9,8 +9,10 @@
 #include <regex>
 #include <set>
 
+namespace config {
+namespace reader {
 
-using namespace harpy_string;
+using namespace util;
 using namespace MRDEF;
 
 /**
@@ -302,3 +304,4 @@ void ModelReader::penalty_state()
 }
 
 
+}} // ns

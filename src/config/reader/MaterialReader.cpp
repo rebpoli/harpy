@@ -9,8 +9,12 @@
 #include <regex>
 #include <set>
 
+namespace config {
+namespace reader {
+
+
 using namespace MRDEF;
-using namespace harpy_string;
+using namespace util;
 set<string> KNOWN_VAR_TYPES = { "CON", "FILE" };
 
 /**
@@ -221,3 +225,6 @@ void MaterialReader::reg_param_dbl( string vname, string type, double val, strin
 {
   if ( iequals( type, "con" ) )  config.con_param(vname, context) = val ;
 }
+
+
+}} // ns

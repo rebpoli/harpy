@@ -1,18 +1,23 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 
-#include "harpy/Solverloop.h"
+#include "solverloop/Solverloop.h"
 
-#include "solver/ViscoplasticSolver.h"
+#include "solver/viscoplastic/VPSolver.h"
 
-class Timestep;
+namespace timeloop { class Timestep; }
 
 /**
  *
  * This is an abstract class.
  *
  */
+
+namespace solverloop {
+
+using solver::viscoplastic::ViscoplasticSolver;
+using solver::common::Solver;
 
 using namespace libMesh;
 
@@ -33,3 +38,5 @@ class SLViscoplastic : public Solverloop
 
     friend restart::File;
 };
+
+} // ns

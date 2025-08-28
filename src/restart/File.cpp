@@ -4,10 +4,15 @@
 #include "restart/Util.h"
 
 #include "solverloop/SLViscoplastic.h"
+#include "solver/viscoplastic/VPMaterial.h"
+#include "libmesh/elem.h"
 
 namespace mpi  = boost::mpi;
 
 namespace restart { 
+
+using namespace solver::viscoplastic;
+
 
 /**
  * 
@@ -53,15 +58,14 @@ void File::write( const ViscoplasticSolver * svr )
   //        HEADER( by_elem )            -- need to localize
   //          HEADER( vector<VPProps> )
 
-  const map< uint, Material *> & material_by_sid = svr->material_by_sid;
+  const map< uint, ViscoPlasticMaterial *> & material_by_sid = svr->material_by_sid;
 
   // Wrtie a header for teh map
   if ( is_root() ) 
     HeaderWrite( this, material_by_sid.size(), "MAT_BY_SID" );   /* WRITE */
 
-  for ( auto & [ sid, mat ] : material_by_sid )
+  for ( auto & [ sid, vp_mat ] : material_by_sid )
   {
-    ViscoPlasticMaterial * vp_mat = dynamic_cast<ViscoPlasticMaterial *>(mat);
     ViscoplasticIFC & vp_ifc = vp_mat->vp_ifc;
     VPPropsByElemMap local_map = vp_ifc.by_elem;
     VPPropsByElemMap global_map;
@@ -129,7 +133,7 @@ void File::write( const ViscoplasticSolver * svr )
 /**
  *
  */
-void File::read( const SLViscoplastic & sloop )
+void File::read( SLViscoplastic & sloop )
 {
   is.open( filename , ios::binary );
 
@@ -142,14 +146,13 @@ void File::read( const SLViscoplastic & sloop )
 /**
  *
  */
-void File::read( const ViscoplasticSolver * svr )
+void File::read( ViscoplasticSolver * svr )
 {
   SCOPELOG(1);
   HeaderRead h0( this, "MAT_BY_SID" );
 
   // Our target map to feed
   // NOTE: the map is build. We only feed selected data
-  const map< uint, Material *> & material_by_sid = svr->material_by_sid;
   const MeshBase & mesh = svr->get_mesh();
 
   // SID LOOP
@@ -159,7 +162,7 @@ void File::read( const ViscoplasticSolver * svr )
     HeaderRead h1( this, "VEC_BY_EID" );                                   /* READ */
 
     // Feed the data read from file - only in the processor owning the element
-    ViscoPlasticMaterial * vp_mat = dynamic_cast<ViscoPlasticMaterial *>( material_by_sid.at(sid) );
+    ViscoPlasticMaterial * vp_mat = svr->get_material(sid);
     ViscoplasticIFC & vp_ifc = vp_mat->vp_ifc;
     VPPropsByElemMap & by_elem = vp_ifc.by_elem;
 
@@ -264,7 +267,7 @@ void File::read( const ViscoplasticSolver * svr )
 /** **/
 void File::write( const Solver *  )
 { flog << "Must cast the solver into the right class befor writing."; }
-void File::read( const Solver *  )
+void File::read( Solver *  )
 { flog << "Must cast the solver into the right class befor writing."; }
 
 

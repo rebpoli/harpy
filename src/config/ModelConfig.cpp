@@ -3,6 +3,9 @@
 #include "config/reader/ModelReader.h"
 #include <iomanip>
 
+namespace config
+{
+
 /**
  *
  * Global instance of the model configuration, read in
@@ -16,7 +19,10 @@ ModelConfig * MODEL;
  */
 ModelConfig::ModelConfig( string model_dir_ ) :
           model_dir( model_dir_ ), model_file( model_dir + "/MODEL") 
-{ ModelReader( *this ); }
+{
+  using namespace config::reader;
+  ModelReader( *this ); 
+}
 
 /**
  *
@@ -84,3 +90,5 @@ ostream& operator<<(ostream& os, const TimestepConfig & m)
   os << "     max_steps:" << setw(10) << m.max_steps << endl;
   return os;
 }
+
+} // ns

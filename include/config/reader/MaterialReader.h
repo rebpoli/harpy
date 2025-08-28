@@ -6,9 +6,13 @@
  *
  */
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 
+namespace config {
 class MaterialConfig;
+
+namespace reader {
+
 
 class MaterialReader
 {
@@ -37,3 +41,6 @@ private:
   void reg_param_str( string vname, string type, string val, string context );
   void reg_param_dbl( string vname, string type, double val, string context );
 };
+
+
+}} // ns

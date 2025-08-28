@@ -1,10 +1,12 @@
 #pragma once
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 
 #include <set>
 #include <map>
 #include <vector>
+
+namespace config {
 
 // Numero de variaveis para indexacao
 enum { SIGEFF=0, SIGTOT, HEAT };
@@ -108,3 +110,5 @@ ostream& operator<<(ostream& os, const map<double,BCConfig::TimeEntry> & m);
 ostream& operator<<(ostream& os, const BCConfig::ItemTensor & m);
 ostream& operator<<(ostream& os, const set<BCConfig::ScalarVar> & m);
 ostream& operator<<(ostream& os, const BCConfig::ScalarVar & m);
+
+} // ns

@@ -7,9 +7,13 @@
  *
  */
 
-#include "base/Global.h"
+#include "harpy/Global.h"
 #include "config/InoutConfig.h"
 
+namespace config {
+namespace reader {
+
+/* */
 class InoutReader
 {
 public:
@@ -31,3 +35,6 @@ public:
   bool next_state();
   void probe_state();
 };
+
+
+}} // ns

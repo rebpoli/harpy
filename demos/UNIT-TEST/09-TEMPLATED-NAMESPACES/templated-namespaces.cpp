@@ -1,5 +1,5 @@
 
-#include "base/HarpyInit.h"
+#include "harpy/HarpyInit.h"
 
 #ifndef AUTODIFF_EIGEN_FOUND 
 #define AUTODIFF_EIGEN_FOUND ON
@@ -24,6 +24,7 @@ struct N2 {
 };
 
 using namespace std;
+using namespace harpy;
 
 class TestClass
 {
