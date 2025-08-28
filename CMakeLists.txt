@@ -112,10 +112,12 @@ ADD_LIBRARY(Modules
   src/solver/thermal/TIfc.cpp
   src/solver/thermal/TSolverCnt.cpp
   src/solver/thermal/TSolverFile.cpp
+  src/solver/viscoplastic/EGDataStruct.cpp
   src/solver/viscoplastic/VPBC.cpp
   src/solver/viscoplastic/VPIfc.cpp
   src/solver/viscoplastic/VPMaterial.cpp
   src/solver/viscoplastic/VPMatBC.cpp
+  src/solver/viscoplastic/VPMatEG.cpp
   src/solver/viscoplastic/VPProbe.cpp
   src/solver/viscoplastic/VPProps.cpp
   src/solver/viscoplastic/VPSolver.cpp

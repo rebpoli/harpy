@@ -30,12 +30,14 @@ public:
                           TransientNonlinearImplicitSystem & sys_, 
                           ViscoplasticSolver & vpsolver_ );
 
+  ~ViscoPlasticMaterialBC() {}
+
   void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side );
   void residual_and_jacobian_qp();
   void residual_and_jacobian ( Elem & elem, uint side, const NumericVector<Number> & soln, 
                                SparseMatrix<Number> * jacobian , NumericVector<Number> * residual );
 
-  virtual void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }
+  void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }
   inline bool next_qp( bool inc=true );       /// QP control
 
   void init_fem();

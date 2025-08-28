@@ -47,7 +47,7 @@ void ViscoPlasticMaterialBC::init_fem()
   fe = move( FEBase::build(3, fe_type) );
 
   // Setup gauss quadrature
-  qrule = QGauss( 3, fe_type.default_quadrature_order() );
+  qrule = QGauss( 2, fe_type.default_quadrature_order() );
 
   fe->attach_quadrature_rule (&qrule);
 
@@ -86,13 +86,14 @@ void ViscoPlasticMaterialBC::reinit( const NumericVector<Number> & soln, const E
     vector<dof_id_type> dof_indices_eg;
     dof_map.dof_indices (elem, dof_indices_eg, 3);
     n_dofs_eg = dof_indices_eg.size();
+    dlog(1) << "n_dofs_eg: " << n_dofs_eg;
   }
 
   Re.resize (n_dofs);
 
   // Update the current element in the interfacse
-  uint eid = elem->id();
-  uint nqp = qrule.size();
+//  uint eid = elem->id();
+//  uint nqp = qrule.size();
 
   next_qp(0);
 

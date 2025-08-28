@@ -43,6 +43,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
+                   vpmat_eg( 0 ) ,
                    report(*this), curr_bc( system )
 {
   SCOPELOG(1);
@@ -61,7 +62,11 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
 /**
  *
  */
-ViscoplasticSolver::~ViscoplasticSolver() {}
+ViscoplasticSolver::~ViscoplasticSolver() {
+  if ( vpmat_eg ) delete(vpmat_eg);
+  for ( auto & [ sid, mat ] : material_by_sid ) delete( mat );
+  for ( auto & [ sid, mat ] : matbc_by_sid ) delete( mat );
+}
 
 /**  **/
 void ViscoplasticSolver::init()
@@ -72,6 +77,13 @@ void ViscoplasticSolver::init()
 
   for ( auto & [ sid, mat ] : matbc_by_sid )
     mat->init_fem();
+
+  // Initialize EG 
+  if ( is_eg() ) 
+  {
+    vpmat_eg = new VPMatEG( system, *this );
+    vpmat_eg->init();
+  }
 }
 
 /**

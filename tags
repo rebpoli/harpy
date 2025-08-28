@@ -561,6 +561,9 @@ DynaIO	/opt/libmesh/src/mesh/dyna_io.C	/^DynaIO::DynaIO (MeshBase & mesh,$/;"	f	
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^  DynamicCastFailure() : std::runtime_error( "Failed dynamic cast!" ) {}$/;"	f	class:libMesh::DynamicCastFailure
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^class DynamicCastFailure:  public std::runtime_error$/;"	c	namespace:libMesh
 EDGE	/opt/libmesh/include/mesh/mesh_refinement.h	/^  enum NeighborType {POINT, EDGE};$/;"	e	enum:libMesh::MeshRefinement::NeighborType
+EGFEM	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFEM {$/;"	s	namespace:solver::viscoplastic
+EGFEM	src/solver/viscoplastic/EGDataStruct.cpp	/^EGFEM::EGFEM( System & sys ) : $/;"	f	class:solver::viscoplastic::EGFEM
+EGFacePair	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFacePair { $/;"	s	namespace:solver::viscoplastic
 EIMVarGroupPlottingInfo	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  EIMVarGroupPlottingInfo()$/;"	f	struct:libMesh::EIMVarGroupPlottingInfo
 EIMVarGroupPlottingInfo	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^struct EIMVarGroupPlottingInfo$/;"	s	namespace:libMesh
 EIM_BEST_FIT	/opt/libmesh/include/reduced_basis/rb_eim_construction.h	/^  enum BEST_FIT_TYPE { PROJECTION_BEST_FIT, EIM_BEST_FIT, POD_BEST_FIT };$/;"	e	enum:libMesh::RBEIMConstruction::BEST_FIT_TYPE
@@ -849,6 +852,7 @@ FastPoolAllocator	/opt/libmesh/include/utils/pool_allocator.h	/^  FastPoolAlloca
 FastPoolAllocator	/opt/libmesh/include/utils/pool_allocator.h	/^  FastPoolAllocator(const FastPoolAllocator<U> & o) :$/;"	f	class:libMesh::FastPoolAllocator
 FastPoolAllocator	/opt/libmesh/include/utils/pool_allocator.h	/^class FastPoolAllocator : public boost::fast_pool_allocator<T>$/;"	c	namespace:libMesh
 Fe	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  DenseVector<Number> Fe;$/;"	m	class:libMesh::HPCoarsenTest
+Fib	include/solver/viscoplastic/VPMatBC.h	/^  inline AD::real & Fib( uint i, uint B ) { return ad_Fib[ _idx(i,B) ]; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 Fib	include/solver/viscoplastic/VPMaterial.h	/^  inline AD::real & Fib( uint i, uint B ) { return ad_Fib[ _idx(i,B) ]; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 FieldContainerType	/opt/libmesh/include/solution_transfer/dtk_adapter.h	/^  typedef DataTransferKit::FieldContainer<double>                              FieldContainerType;$/;"	t	class:libMesh::DTKAdapter
 FieldContainerType	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  typedef DataTransferKit::FieldContainer<Number> FieldContainerType;$/;"	t	class:libMesh::DTKEvaluator
@@ -2044,6 +2048,7 @@ NameBasedIO	/opt/libmesh/include/mesh/namebased_io.h	/^NameBasedIO::NameBasedIO 
 NameBasedIO	/opt/libmesh/include/mesh/namebased_io.h	/^class NameBasedIO : public MeshInput<MeshBase>,$/;"	c	namespace:libMesh
 NamesData	/opt/libmesh/include/mesh/exodusII_io_helper.h	/^class ExodusII_IO_Helper::NamesData$/;"	c	class:libMesh::ExodusII_IO_Helper
 NamesData	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^ExodusII_IO_Helper::NamesData::NamesData(size_t n_strings, size_t string_length) :$/;"	f	class:libMesh::ExodusII_IO_Helper::NamesData
+Ndof	include/solver/viscoplastic/VPMatBC.h	/^  inline uint Ndof(uint i) { return i>2 ?  n_dofs_eg : n_dofsv; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 Ndof	include/solver/viscoplastic/VPMaterial.h	/^  inline uint Ndof(uint i) { return i>2 ?  n_dofs_eg : n_dofsv; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 NegOp	include/autodiff/forward/dual/dual.hpp	/^struct NegOp     {};  \/\/ NEGATIVE OPERATOR$/;"	s	namespace:autodiff::detail
 NegativeExpr	include/autodiff/reverse/var/var.hpp	/^struct NegativeExpr : UnaryExpr<T>$/;"	s	namespace:autodiff::reverse::detail
@@ -2456,6 +2461,8 @@ PowConstantRightExpr	include/autodiff/reverse/var/var.hpp	/^struct PowConstantRi
 PowExpr	include/autodiff/reverse/var/var.hpp	/^    PowExpr(const T& v, const ExprPtr<T>& ll, const ExprPtr<T>& rr) : BinaryExpr<T>(v, ll, rr), log_l(log(ll->val)) {}$/;"	f	struct:autodiff::reverse::detail::PowExpr
 PowExpr	include/autodiff/reverse/var/var.hpp	/^struct PowExpr : BinaryExpr<T>$/;"	s	namespace:autodiff::reverse::detail
 PowOp	include/autodiff/forward/dual/dual.hpp	/^struct PowOp     {};  \/\/ POWER OPERATOR$/;"	s	namespace:autodiff::detail
+Pq_n	include/solver/viscoplastic/EGDataStruct.h	/^  vector< VPProps > Pq_n;       \/\/\/ VPProps for each quadrature point$/;"	m	struct:solver::viscoplastic::EGFacePair
+Pq_p	include/solver/viscoplastic/EGDataStruct.h	/^  vector< VPProps > Pq_p;       \/\/\/ VPProps for each quadrature point$/;"	m	struct:solver::viscoplastic::EGFacePair
 Preconditioner	/opt/libmesh/include/numerics/preconditioner.h	/^class Preconditioner : public ReferenceCountedObject<Preconditioner<T>>,$/;"	c	namespace:libMesh
 Preconditioner	/opt/libmesh/src/numerics/preconditioner.C	/^Preconditioner<T>::Preconditioner (const libMesh::Parallel::Communicator & comm_in) :$/;"	f	class:libMesh::Preconditioner
 Preconditioner	/opt/libmesh/src/numerics/preconditioner.C	/^template class LIBMESH_EXPORT Preconditioner<Number>;$/;"	m	namespace:libMesh	typeref:class:libMesh::LIBMESH_EXPORT	file:
@@ -2534,6 +2541,7 @@ QNodal	/opt/libmesh/include/quadrature/quadrature_nodal.h	/^  QNodal (unsigned i
 QNodal	/opt/libmesh/include/quadrature/quadrature_nodal.h	/^class QNodal : public QBase$/;"	c	namespace:libMesh
 QOI	/opt/libmesh/include/systems/system.h	/^  class QOI$/;"	c	class:libMesh::System
 QOIDerivative	/opt/libmesh/include/systems/system.h	/^  class QOIDerivative$/;"	c	class:libMesh::System
+QP	include/solver/viscoplastic/VPMatBC.h	/^  uint QP;                     \/\/\/ The current quadrature point during integration$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 QP	include/solver/viscoplastic/VPMaterial.h	/^  uint QP;  \/\/\/ The current quadrature point during integration$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 QSimpson	/opt/libmesh/include/quadrature/quadrature_simpson.h	/^  QSimpson (unsigned int dim,$/;"	f	class:libMesh::QSimpson
 QSimpson	/opt/libmesh/include/quadrature/quadrature_simpson.h	/^class QSimpson : public QBase$/;"	c	namespace:libMesh
@@ -2687,6 +2695,7 @@ RawType	/opt/libmesh/include/numerics/tensor_value.h	/^struct RawType<libMesh::T
 RawType	/opt/libmesh/include/numerics/type_tensor.h	/^struct RawType<libMesh::TypeTensor<T>>$/;"	s	namespace:MetaPhysicL
 RawType	/opt/libmesh/include/numerics/type_vector.h	/^struct RawType<libMesh::TypeVector<T>>$/;"	s	namespace:MetaPhysicL
 RawType	/opt/libmesh/include/numerics/vector_value.h	/^struct RawType<libMesh::VectorValue<T>>$/;"	s	namespace:MetaPhysicL
+Re	include/solver/viscoplastic/VPMatBC.h	/^  DenseVector<Number> Re;                          \/\/\/ RHS vector for the element$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 Re	include/solver/viscoplastic/VPMaterial.h	/^  DenseVector<Number> Re; \/\/\/ RHS vector for the element$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 ReadCost	include/autodiff/forward/dual/eigen.hpp	/^        ReadCost = 1,$/;"	e	enum:Eigen::NumTraits::__anon5
 ReadCost	include/autodiff/forward/real/eigen.hpp	/^        ReadCost = 1,$/;"	e	enum:Eigen::NumTraits::__anon4
@@ -3269,6 +3278,7 @@ UNVIO	/opt/libmesh/src/mesh/unv_io.C	/^UNVIO::UNVIO (MeshBase & mesh) :$/;"	f	cl
 UNVIO	/opt/libmesh/src/mesh/unv_io.C	/^UNVIO::UNVIO (const MeshBase & mesh) :$/;"	f	class:libMesh::UNVIO
 USE_LIBMESH	/opt/libmesh/include/base/getpot.h	59;"	d
 Uc	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  DenseVector<Number> Uc;$/;"	m	class:libMesh::HPCoarsenTest
+Uib	include/solver/viscoplastic/VPMatBC.h	/^  inline AD::real & Uib( uint i, uint B ) { return ad_Uib[ _idx(i,B) ]; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 Uib	include/solver/viscoplastic/VPMaterial.h	/^  inline AD::real & Uib( uint i, uint B ) { return ad_Uib[ _idx(i,B) ]; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 UnaryExpr	include/autodiff/forward/dual/dual.hpp	/^struct UnaryExpr$/;"	s	namespace:autodiff::detail
 UnaryExpr	include/autodiff/reverse/var/var.hpp	/^    UnaryExpr(const T& v, const ExprPtr<T>& e) : Expr<T>(v), x(e) {}$/;"	f	struct:autodiff::reverse::detail::UnaryExpr
@@ -3293,6 +3303,8 @@ Utility	/opt/libmesh/include/utils/utility.h	/^namespace Utility$/;"	n	namespace
 Utility	/opt/libmesh/src/utils/string_to_enum.C	/^namespace Utility {$/;"	n	namespace:libMesh	file:
 Utility	/opt/libmesh/src/utils/timestamp.C	/^namespace Utility$/;"	n	namespace:libMesh	file:
 Utils	/opt/libmesh/include/parallel/parallel_conversion_utils.h	/^namespace Utils {$/;"	n	namespace:libMesh::Parallel
+VPMatEG	include/solver/viscoplastic/VPMatEG.h	/^class VPMatEG $/;"	c	namespace:solver::viscoplastic
+VPMatEG	src/solver/viscoplastic/VPMatEG.cpp	/^VPMatEG::VPMatEG( TransientNonlinearImplicitSystem & sys_,$/;"	f	class:solver::viscoplastic::VPMatEG
 VPProps	include/solver/viscoplastic/VPProps.h	/^struct VPProps $/;"	s	namespace:solver::viscoplastic
 VPPropsByElemMap	include/solver/viscoplastic/VPIfc.h	/^struct VPPropsByElemMap : public MpiFileOps< map<uint, vector<VPProps> > >$/;"	s	namespace:solver::viscoplastic
 VTKIO	/opt/libmesh/include/mesh/vtk_io.h	/^class VTKIO : public MeshInput<MeshBase>,$/;"	c	namespace:libMesh
@@ -3359,8 +3371,8 @@ VectorizedEvalInput	/opt/libmesh/include/reduced_basis/rb_parametrized_function.
 Vectors	/opt/libmesh/include/mesh/ensight_io.h	/^  struct Vectors$/;"	s	class:libMesh::EnsightIO
 ViscoPlasticMaterial	include/solver/viscoplastic/VPMaterial.h	/^class ViscoPlasticMaterial $/;"	c	namespace:solver::viscoplastic
 ViscoPlasticMaterial	src/solver/viscoplastic/VPMaterial.cpp	/^ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
-ViscoPlasticMaterialBC	include/solver/viscoplastic/VPMaterial.h	/^class ViscoPlasticMaterialBC : public ViscoPlasticMaterial$/;"	c	namespace:solver::viscoplastic
-ViscoPlasticMaterialBC	src/solver/viscoplastic/VPMaterial.cpp	/^ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
+ViscoPlasticMaterialBC	include/solver/viscoplastic/VPMatBC.h	/^class ViscoPlasticMaterialBC $/;"	c	namespace:solver::viscoplastic
+ViscoPlasticMaterialBC	src/solver/viscoplastic/VPMatBC.cpp	/^ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 ViscoplasticIFC	include/solver/viscoplastic/VPIfc.h	/^struct ViscoplasticIFC$/;"	s	namespace:solver::viscoplastic
 ViscoplasticReport	include/postproc/report/VPReport.h	/^class ViscoplasticReport$/;"	c	namespace:postproc::report
 ViscoplasticReport	src/postproc/report/VPReport.cpp	/^ViscoplasticReport::ViscoplasticReport( ViscoplasticSolver & solver_ ) :$/;"	f	class:postproc::report::ViscoplasticReport
@@ -4074,6 +4086,7 @@ _i_off	/opt/libmesh/include/numerics/dense_submatrix.h	/^  unsigned int _i_off;$
 _i_off	/opt/libmesh/include/numerics/dense_subvector.h	/^  unsigned int _i_off;$/;"	m	class:libMesh::DenseSubVector
 _id	/opt/libmesh/include/base/dof_object.h	/^  dof_id_type _id;$/;"	m	class:libMesh::DofObject
 _identify_variable_groups	/opt/libmesh/include/systems/system.h	/^  bool _identify_variable_groups;$/;"	m	class:libMesh::System
+_idx	include/solver/viscoplastic/VPMatBC.h	/^  inline uint _idx( uint i, uint B ) { uint ret = i*n_dofsv + B; if ( i > 2 ) ret += (i-3) * n_dofs_eg; return ret; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 _idx	include/solver/viscoplastic/VPMaterial.h	/^  inline uint _idx( uint i, uint B ) { uint ret = i*n_dofsv + B; if ( i > 2 ) ret += (i-3) * n_dofs_eg; return ret; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 _idx_buf	/opt/libmesh/include/base/dof_object.h	/^  index_buffer_t _idx_buf;$/;"	m	class:libMesh::DofObject
 _imax	/opt/libmesh/include/utils/plt_loader.h	/^  std::vector<unsigned int> _imax;$/;"	m	class:libMesh::PltLoader
@@ -4082,6 +4095,7 @@ _implicit_neighbor_dofs_initialized	/opt/libmesh/include/base/dof_map.h	/^  bool
 _in	/opt/libmesh/include/mesh/abaqus_io.h	/^  std::unique_ptr<std::istream> _in;$/;"	m	class:libMesh::AbaqusIO
 _include_liftfunc	/opt/libmesh/src/systems/fem_system.C	/^  bool _include_liftfunc, _apply_constraints;$/;"	m	class:__anon101::QoIDerivativeContributions	file:
 _indices	/opt/libmesh/include/systems/qoi_set.h	/^  std::vector<bool> _indices;$/;"	m	class:libMesh::QoISet
+_init_autodiff	include/solver/viscoplastic/VPMatBC.h	/^  inline void _init_autodiff() $/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 _init_autodiff	include/solver/viscoplastic/VPMaterial.h	/^  inline void _init_autodiff() $/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 _init_system_function	/opt/libmesh/include/systems/system.h	/^  void (* _init_system_function) (EquationSystems & es,$/;"	m	class:libMesh::System
 _init_system_object	/opt/libmesh/include/systems/system.h	/^  Initialization * _init_system_object;$/;"	m	class:libMesh::System
@@ -5115,8 +5129,10 @@ active_family_tree_by_topological_neighbor	/opt/libmesh/src/geom/elem.C	/^void E
 active_on_subdomain	/opt/libmesh/include/base/variable.h	/^  bool active_on_subdomain (subdomain_id_type sid) const$/;"	f	class:libMesh::Variable
 active_subdomains	/opt/libmesh/include/base/variable.h	/^  const std::set<subdomain_id_type> & active_subdomains() const$/;"	f	class:libMesh::Variable
 active_vars	/opt/libmesh/include/systems/fem_context.h	/^  const std::vector<unsigned int> * active_vars() const { return _active_vars.get(); }$/;"	f	class:libMesh::FEMContext
+ad_Fib	include/solver/viscoplastic/VPMatBC.h	/^  AD::Vec ad_Uib, ad_Fib; \/\/ Flattened autodiff stuff$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 ad_Fib	include/solver/viscoplastic/VPMaterial.h	/^  AD::Vec ad_Uib, ad_Fib; \/\/ Flattened autodiff stuff$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 ad_Jijbm	include/solver/viscoplastic/VPMaterial.h	/^  AD::Mat ad_Jijbm;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
+ad_Uib	include/solver/viscoplastic/VPMatBC.h	/^  AD::Vec ad_Uib, ad_Fib; \/\/ Flattened autodiff stuff$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 ad_Uib	include/solver/viscoplastic/VPMaterial.h	/^  AD::Vec ad_Uib, ad_Fib; \/\/ Flattened autodiff stuff$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 adapter_t	/opt/libmesh/include/utils/point_locator_nanoflann.h	/^  typedef nanoflann::L2_Simple_Adaptor<Real, PointLocatorNanoflann> adapter_t;$/;"	t	class:libMesh::PointLocatorNanoflann
 adapters	/opt/libmesh/include/solution_transfer/dtk_solution_transfer.h	/^  std::map<EquationSystems *, std::unique_ptr<DTKAdapter>> adapters;$/;"	m	class:libMesh::DTKSolutionTransfer
@@ -5723,7 +5739,6 @@ basename_of	/opt/libmesh/src/utils/utility.C	/^std::string_view Utility::basenam
 basis_functions	/opt/libmesh/include/reduced_basis/rb_evaluation.h	/^  std::vector<std::unique_ptr<NumericVector<Number>>> basis_functions;$/;"	m	class:libMesh::RBEvaluation
 bbox	/opt/libmesh/src/mesh/mesh_tools.C	/^  libMesh::BoundingBox & bbox ()$/;"	f	class:__anon81::FindBBox
 bc_config	include/solver/common/Solver.h	/^    BCConfig & bc_config;$/;"	m	class:solver::common::Solver
-bc_material	include/solver/viscoplastic/VPMaterial.h	/^  ViscoPlasticMaterialBC * bc_material;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 before_timestep	/opt/libmesh/include/solvers/time_solver.h	/^  virtual void before_timestep () {}$/;"	f	class:libMesh::TimeSolver
 begin	/opt/libmesh/include/geom/stored_range.h	/^  const_iterator begin () const { return _begin; }$/;"	f	class:libMesh::StoredRange
 begin	/opt/libmesh/include/numerics/coupling_matrix.h	/^ConstCouplingRow::const_iterator ConstCouplingRow::begin() const$/;"	f	class:libMesh::ConstCouplingRow
@@ -6593,6 +6608,8 @@ config	include/solver/pressure/PSolverFile.h	/^namespace config { class BCConfig
 config	include/solver/thermal/TSolverFile.h	/^namespace config { class BCConfig; }$/;"	n
 config	include/solver/viscoplastic/VPBC.h	/^    BCConfig & config;$/;"	m	class:solver::viscoplastic::BC
 config	include/solver/viscoplastic/VPBC.h	/^namespace config { class BCConfig; }$/;"	n
+config	include/solver/viscoplastic/VPMatBC.h	/^  const MaterialConfig * config;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
+config	include/solver/viscoplastic/VPMatBC.h	/^namespace config { class MaterialConfig; } $/;"	n
 config	include/solver/viscoplastic/VPMaterial.h	/^  const MaterialConfig * config;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 config	include/timeloop/Timestep.h	/^    TimestepConfig & config;$/;"	m	class:timeloop::Timestep
 config	include/timeloop/Timestep.h	/^namespace config { class TimestepConfig; }$/;"	n
@@ -7248,6 +7265,8 @@ dof_indices	/opt/libmesh/src/base/dof_map.C	/^void DofMap::dof_indices (const El
 dof_indices	/opt/libmesh/src/base/dof_map.C	/^void DofMap::dof_indices (const Node * const node,$/;"	f	class:libMesh::DofMap
 dof_indices	/opt/libmesh/src/numerics/static_condensation_dof_map.C	/^void StaticCondensationDofMap::dof_indices(const Elem * const elem,$/;"	f	class:libMesh::StaticCondensationDofMap
 dof_indices	/opt/libmesh/src/numerics/static_condensation_dof_map.C	/^void StaticCondensationDofMap::dof_indices(const Node * const,$/;"	f	class:libMesh::StaticCondensationDofMap
+dof_indices	include/solver/viscoplastic/EGDataStruct.h	/^  vector<dof_id_type> dof_indices;$/;"	m	struct:solver::viscoplastic::EGFEM
+dof_indices	include/solver/viscoplastic/VPMatBC.h	/^  vector<dof_id_type> dof_indices;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 dof_indices	include/solver/viscoplastic/VPMaterial.h	/^  vector<dof_id_type> dof_indices;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 dof_map	/opt/libmesh/include/base/sparsity_pattern.h	/^  const DofMap & dof_map;$/;"	m	class:libMesh::SparsityPattern::Build
 dof_map	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  DofMap & dof_map;$/;"	m	class:libMesh::DTKEvaluator
@@ -7444,7 +7463,10 @@ edges_adjacent_to_node	/opt/libmesh/src/geom/face_polygon.C	/^Polygon::edges_adj
 edges_adjacent_to_node	/opt/libmesh/src/geom/face_quad.C	/^Quad::edges_adjacent_to_node(const unsigned int n) const$/;"	f	class:libMesh::Quad
 edges_adjacent_to_node	/opt/libmesh/src/geom/face_tri.C	/^Tri::edges_adjacent_to_node(const unsigned int n) const$/;"	f	class:libMesh::Tri
 edgeset_name	/opt/libmesh/src/mesh/boundary_info.C	/^std::string & BoundaryInfo::edgeset_name(boundary_id_type id)$/;"	f	class:libMesh::BoundaryInfo
+egfacepair_vec	include/solver/viscoplastic/VPMatEG.h	/^  vector< EGFacePair > egfacepair_vec;     \/\/\/ The datastructure$/;"	m	class:solver::viscoplastic::VPMatEG
 eid	include/solver/viscoplastic/VPBC.h	/^        uint eid, side;$/;"	m	class:solver::viscoplastic::BC::ElemSide
+eid_n	include/solver/viscoplastic/EGDataStruct.h	/^  uint eid_n;$/;"	m	struct:solver::viscoplastic::EGFacePair
+eid_p	include/solver/viscoplastic/EGDataStruct.h	/^  uint eid_p, side_p;$/;"	m	struct:solver::viscoplastic::EGFacePair
 eigenPairs	include/postproc/stress/TensorInvariants.h	/^    vector<EigenPair> eigenPairs;$/;"	m	class:postproc::stress::TensorInvariants
 eigen_idx_type	/opt/libmesh/include/numerics/eigen_core_support.h	/^typedef int32_t eigen_idx_type;$/;"	t	namespace:libMesh
 eigen_problem_type	/opt/libmesh/include/solvers/eigen_solver.h	/^  EigenProblemType eigen_problem_type () const { return _eigen_problem_type;}$/;"	f	class:libMesh::EigenSolver
@@ -7458,6 +7480,8 @@ elapsed_ms	src/util/Stopwatch.cpp	/^double Stopwatch::elapsed_ms() {$/;"	f	class
 elapsed_s	src/util/Stopwatch.cpp	/^double Stopwatch::elapsed_s() {$/;"	f	class:util::Stopwatch
 elem	/opt/libmesh/src/base/dof_map_constraints.C	/^    const Elem * elem;$/;"	m	struct:__anon10::ConstrainDirichlet::SingleElemBoundaryInfo	file:
 elem	include/solver/common/ExplicitMaterial.h	/^  const Elem * elem;      \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::common::ExplicitMaterial
+elem	include/solver/viscoplastic/EGDataStruct.h	/^  const Elem * elem;                               \/\/\/ The element that the material has been reinit'ed to$/;"	m	struct:solver::viscoplastic::EGFEM
+elem	include/solver/viscoplastic/VPMatBC.h	/^  const Elem * elem;                               \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 elem	include/solver/viscoplastic/VPMaterial.h	/^  const Elem * elem;   \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 elem_by_point	include/postproc/probes/Probe.h	/^  vector<uint> elem_by_point;$/;"	m	class:postproc::probes::Probe
 elem_cmap_elem_cnts	/opt/libmesh/include/mesh/nemesis_io_helper.h	/^  std::vector<int> elem_cmap_elem_cnts;$/;"	m	class:libMesh::Nemesis_IO_Helper
@@ -7882,6 +7906,8 @@ fdm_points	/opt/libmesh/src/fe/fe.C	/^fdm_points(const unsigned int j, const Poi
 fdm_second_points	/opt/libmesh/src/fe/fe.C	/^fdm_second_points(const unsigned int j, const Point & p)$/;"	f	namespace:libMesh::__anon15
 fe	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  std::unique_ptr<FEBase> fe, fe_coarse;$/;"	m	class:libMesh::HPCoarsenTest
 fe	include/solver/common/ExplicitMaterial.h	/^  unique_ptr<FEBase> fe;  \/\/\/ The finite element object to hold shape funtions, jxw, etc$/;"	m	class:solver::common::ExplicitMaterial
+fe	include/solver/viscoplastic/EGDataStruct.h	/^  unique_ptr<FEBase> fe;                           \/\/\/ The finite element object to hold shape funtions, jxw, etc$/;"	m	struct:solver::viscoplastic::EGFEM
+fe	include/solver/viscoplastic/VPMatBC.h	/^  unique_ptr<FEBase> fe;                           \/\/\/ The finite element object to hold shape funtions, jxw, etc$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 fe	include/solver/viscoplastic/VPMaterial.h	/^  unique_ptr<FEBase> fe;  \/\/\/ The finite element object to hold shape funtions, jxw, etc$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 fe_coarse	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  std::unique_ptr<FEBase> fe, fe_coarse;$/;"	m	class:libMesh::HPCoarsenTest
 fe_family	/opt/libmesh/src/apps/L2system.h	/^  std::string & fe_family() { return _fe_family; }$/;"	f	class:HilbertSystem
@@ -7937,6 +7963,8 @@ fe_type	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  const FEType 
 fe_vector_scalar_error_switch	/opt/libmesh/src/fe/fe_interface.C	192;"	d	file:
 fe_with_vec_switch	/opt/libmesh/src/fe/fe_interface.C	227;"	d	file:
 fem_by_var	include/config/SolverConfig.h	/^  map<string,FEMSpec> fem_by_var;$/;"	m	class:config::SolverConfig
+fem_n	include/solver/viscoplastic/VPMatEG.h	/^  EGFEM fem_p, fem_n;                      \/\/\/ Shape functions to be reinit'ed$/;"	m	class:solver::viscoplastic::VPMatEG
+fem_p	include/solver/viscoplastic/VPMatEG.h	/^  EGFEM fem_p, fem_n;                      \/\/\/ Shape functions to be reinit'ed$/;"	m	class:solver::viscoplastic::VPMatEG
 fem_state	src/config/reader/SolverReader.cpp	/^void SolverReader::fem_state() $/;"	f	class:config::reader::SolverReader
 femsystem_mutex	/opt/libmesh/src/systems/fem_system.C	/^typedef Threads::spin_mutex femsystem_mutex;$/;"	t	namespace:__anon101	file:
 fetype_max	/opt/libmesh/include/parallel/parallel_fe_type.h	/^  static void fetype_max (void * intype, void * inouttype, int * len, MPI_Datatype *)$/;"	f	class:TIMPI::OpFunction
@@ -8568,7 +8596,6 @@ get_base_order	/opt/libmesh/include/quadrature/quadrature.h	/^  Order get_base_o
 get_basis_function	/opt/libmesh/src/reduced_basis/rb_eim_evaluation.C	/^RBEIMEvaluation::get_basis_function(unsigned int i) const$/;"	f	class:libMesh::RBEIMEvaluation
 get_basis_function	/opt/libmesh/src/reduced_basis/rb_evaluation.C	/^NumericVector<Number> & RBEvaluation::get_basis_function(unsigned int i)$/;"	f	class:libMesh::RBEvaluation
 get_basis_function	/opt/libmesh/src/reduced_basis/rb_evaluation.C	/^const NumericVector<Number> & RBEvaluation::get_basis_function(unsigned int i) const$/;"	f	class:libMesh::RBEvaluation
-get_bc_material	src/solver/viscoplastic/VPMaterial.cpp	/^ViscoPlasticMaterialBC * ViscoPlasticMaterial::get_bc_material()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 get_block_id	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^int ExodusII_IO_Helper::get_block_id(int index)$/;"	f	class:libMesh::ExodusII_IO_Helper
 get_block_name	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^std::string ExodusII_IO_Helper::get_block_name(int index)$/;"	f	class:libMesh::ExodusII_IO_Helper
 get_boundary_ids	/opt/libmesh/include/mesh/boundary_info.h	/^  const std::set<boundary_id_type> & get_boundary_ids () const$/;"	f	class:libMesh::BoundaryInfo
@@ -9035,6 +9062,8 @@ get_localized_subvector	/opt/libmesh/src/systems/diff_context.C	/^const DenseSub
 get_localized_vector	/opt/libmesh/src/systems/diff_context.C	/^DenseVector<Number> & DiffContext::get_localized_vector (const NumericVector<Number> & localized_vector)$/;"	f	class:libMesh::DiffContext
 get_localized_vector	/opt/libmesh/src/systems/diff_context.C	/^const DenseVector<Number> & DiffContext::get_localized_vector (const NumericVector<Number> & localized_vector) const$/;"	f	class:libMesh::DiffContext
 get_log	/opt/libmesh/src/utils/perf_log.C	/^std::string PerfLog::get_log() const$/;"	f	class:libMesh::PerfLog
+get_mat_bc	src/solver/viscoplastic/VPSolver.cpp	/^ViscoPlasticMaterialBC * ViscoplasticSolver::get_mat_bc( const Elem & elem )$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
+get_mat_bc	src/solver/viscoplastic/VPSolver.cpp	/^ViscoPlasticMaterialBC * ViscoplasticSolver::get_mat_bc( uint sid )$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
 get_material	src/solver/pressure/PSolverFile.cpp	/^ExplicitPressureMaterial * PressureSolverFromFile::get_material( const Elem & elem )$/;"	f	class:solver::pressure::PressureSolverFromFile
 get_material	src/solver/pressure/PSolverFile.cpp	/^ExplicitPressureMaterial * PressureSolverFromFile::get_material( uint sid )$/;"	f	class:solver::pressure::PressureSolverFromFile
 get_material	src/solver/thermal/TSolverCnt.cpp	/^ExplicitThermalMaterial * ThermalSolverConstant::get_material( const Elem & elem )$/;"	f	class:solver::thermal::ThermalSolverConstant
@@ -9893,6 +9922,7 @@ init	src/postproc/stress/TensorInvariants.cpp	/^void TensorInvariants::init( con
 init	src/solver/pressure/PSolverFile.cpp	/^void PressureSolverFromFile::init()$/;"	f	class:solver::pressure::PressureSolverFromFile
 init	src/solver/thermal/TSolverCnt.cpp	/^void ThermalSolverConstant::init()$/;"	f	class:solver::thermal::ThermalSolverConstant
 init	src/solver/thermal/TSolverFile.cpp	/^void ThermalSolverFromFile::init()$/;"	f	class:solver::thermal::ThermalSolverFromFile
+init	src/solver/viscoplastic/VPMatEG.cpp	/^void VPMatEG::init()$/;"	f	class:solver::viscoplastic::VPMatEG
 init	src/solver/viscoplastic/VPSolver.cpp	/^void ViscoplasticSolver::init()$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
 init	src/util/Stopwatch.cpp	/^void Stopwatch::init() { $/;"	f	class:util::Stopwatch
 init_0D	/opt/libmesh/src/quadrature/quadrature.C	/^void QBase::init_0D()$/;"	f	class:libMesh::QBase
@@ -9975,6 +10005,7 @@ init_face_shape_functions	/opt/libmesh/src/fe/inf_fe_boundary.C	/^void InfFE<Dim
 init_fem	src/postproc/stress/StressPostProc.cpp	/^void StressPostProc::init_fem()$/;"	f	class:postproc::stress::StressPostProc
 init_fem	src/solver/common/ExplicitMaterial.cpp	/^void ExplicitPressureMaterial::init_fem()$/;"	f	class:solver::common::ExplicitPressureMaterial
 init_fem	src/solver/common/ExplicitMaterial.cpp	/^void ExplicitThermalMaterial::init_fem()$/;"	f	class:solver::common::ExplicitThermalMaterial
+init_fem	src/solver/viscoplastic/VPMatBC.cpp	/^void ViscoPlasticMaterialBC::init_fem()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 init_fem	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::init_fem()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 init_filename	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  std::string init_filename;$/;"	m	class:libMesh::TransientRBConstruction
 init_from_config	src/solver/viscoplastic/VPProps.cpp	/^void VPProps::init_from_config( const MaterialConfig & config, const Point & pt )$/;"	f	class:solver::viscoplastic::VPProps
@@ -10306,8 +10337,6 @@ is_adjoint	/opt/libmesh/include/systems/diff_context.h	/^  bool is_adjoint() con
 is_adjoint_already_solved	/opt/libmesh/include/systems/system.h	/^  bool is_adjoint_already_solved() const$/;"	f	class:libMesh::System
 is_ancestor_of	/opt/libmesh/include/geom/elem.h	/^bool Elem::is_ancestor_of(const Elem *$/;"	f	class:libMesh::Elem
 is_attached	/opt/libmesh/src/base/dof_map.C	/^bool DofMap::is_attached (SparseMatrix<Number> & matrix)$/;"	f	class:libMesh::DofMap
-is_bc	include/solver/viscoplastic/VPMaterial.h	/^  virtual bool is_bc() { return false; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
-is_bc	include/solver/viscoplastic/VPMaterial.h	/^  virtual bool is_bc() { return true; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 is_between	/opt/libmesh/src/geom/bounding_box.C	/^inline bool is_between(Real min, Real check, Real max)$/;"	f	namespace:libMesh
 is_bezier_elem	/opt/libmesh/src/mesh/exodusII_io_helper.C	/^  inline bool is_bezier_elem(const char * elem_type_str)$/;"	f	namespace:__anon72
 is_binary_expr	include/autodiff/reverse/var/var.hpp	/^template<typename T, typename U> struct is_binary_expr : std::conditional_t<!(isArithmetic<T> && isArithmetic<U>) && is_expr_v<T> && is_expr_v<U>, std::true_type, std::false_type> {};$/;"	s	namespace:autodiff::reverse::detail
@@ -11793,6 +11822,7 @@ libMesh	include/solver/common/Solver.h	/^namespace libMesh { class Elem ; class 
 libMesh	include/solver/pressure/PSolverFile.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
 libMesh	include/solver/thermal/TSolverCnt.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
 libMesh	include/solver/thermal/TSolverFile.h	/^namespace libMesh { class ExplicitSystem; }$/;"	n
+libMesh	include/solver/viscoplastic/EGDataStruct.h	/^namespace libMesh { class Elem; } $/;"	n
 libMesh	include/solver/viscoplastic/VPSolver.h	/^namespace libMesh { class Elem; class MeshBase; }$/;"	n
 libMesh	include/util/MeshUtils.h	/^namespace libMesh { class MeshBase; }$/;"	n
 libMesh	include/util/OutputOperators.h	/^namespace libMesh { class Point; }$/;"	n
@@ -12325,6 +12355,7 @@ mat	/opt/libmesh/include/numerics/trilinos_epetra_matrix.h	/^  const Epetra_FECr
 mat	/opt/libmesh/include/numerics/trilinos_preconditioner.h	/^  Epetra_FECrsMatrix * mat() { return _mat; }$/;"	f	class:libMesh::TrilinosPreconditioner
 mat	/opt/libmesh/src/numerics/petsc_shell_matrix.C	/^Mat PetscShellMatrix<T>::mat()$/;"	f	class:libMesh::PetscShellMatrix
 mat_config_by_name	include/config/SolverConfig.h	/^  MatConfigMap mat_config_by_name; \/\/\/ the chosen configuration for this run$/;"	m	class:config::SolverConfig
+matbc_by_sid	include/solver/viscoplastic/VPSolver.h	/^    map< uint, ViscoPlasticMaterialBC *> matbc_by_sid;$/;"	m	class:solver::viscoplastic::ViscoplasticSolver
 matches_cache	/opt/libmesh/src/fe/fe.C	/^bool FE<Dim,T>::matches_cache(const Elem * elem)$/;"	f	class:libMesh::FE
 material_by_sid	include/solver/pressure/PSolverFile.h	/^  map< uint, ExplicitPressureMaterial * > material_by_sid;$/;"	m	class:solver::pressure::PressureSolverFromFile
 material_by_sid	include/solver/thermal/TSolverCnt.h	/^  map< uint, ExplicitThermalMaterial * > material_by_sid;$/;"	m	class:solver::thermal::ThermalSolverConstant
@@ -12716,6 +12747,7 @@ n_dofs	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_radial,T_m
 n_dofs	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_radial,T_map>::n_dofs(const FEType & fet,$/;"	f	class:libMesh::InfFE
 n_dofs	/opt/libmesh/src/systems/equation_systems.C	/^std::size_t EquationSystems::n_dofs () const$/;"	f	class:libMesh::EquationSystems
 n_dofs	/opt/libmesh/src/systems/system.C	/^dof_id_type System::n_dofs() const$/;"	f	class:libMesh::System
+n_dofs	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 n_dofs	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_dofs_at_node	/opt/libmesh/src/fe/fe_hierarchic_vec.C	/^template <> unsigned int FE<0,L2_HIERARCHIC_VEC>::n_dofs_at_node(const Elem &, const Order, const unsigned int) { return 0; }$/;"	f	class:libMesh::FE
 n_dofs_at_node	/opt/libmesh/src/fe/fe_hierarchic_vec.C	/^template <> unsigned int FE<0,L2_HIERARCHIC_VEC>::n_dofs_at_node(const ElemType, const Order, const unsigned int) { return 0; }$/;"	f	class:libMesh::FE
@@ -12854,6 +12886,7 @@ n_dofs_at_node	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_ra
 n_dofs_at_node_function	/opt/libmesh/src/fe/fe_interface.C	/^FEInterface::n_dofs_at_node_function(const FEType & fe_t,$/;"	f	class:libMesh::FEInterface
 n_dofs_at_node_function	/opt/libmesh/src/fe/fe_interface.C	/^FEInterface::n_dofs_at_node_function(const unsigned int dim,$/;"	f	class:libMesh::FEInterface
 n_dofs_at_node_ptr	/opt/libmesh/include/fe/fe_interface.h	/^  typedef unsigned int (*n_dofs_at_node_ptr) (const ElemType,$/;"	t	class:libMesh::FEInterface
+n_dofs_eg	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 n_dofs_eg	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_dofs_on_processor	/opt/libmesh/include/base/dof_map_base.h	/^inline dof_id_type DofMapBase::n_dofs_on_processor(const processor_id_type proc) const$/;"	f	class:libMesh::DofMapBase
 n_dofs_per_elem	/opt/libmesh/include/fe/inf_fe.h	/^  static unsigned int n_dofs_per_elem (const Order o_radial)$/;"	f	class:libMesh::InfFERadial
@@ -12991,6 +13024,7 @@ n_dofs_per_elem	/opt/libmesh/src/fe/fe_xyz.C	/^template <> unsigned int FE<3,XYZ
 n_dofs_per_elem	/opt/libmesh/src/fe/fe_xyz.C	/^template <> unsigned int FE<3,XYZ>::n_dofs_per_elem(const ElemType t, const Order o) { return monomial_n_dofs(t, o); }$/;"	f	class:libMesh::FE
 n_dofs_per_elem	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_radial,T_map>::n_dofs_per_elem (const FEType & fet,$/;"	f	class:libMesh::InfFE
 n_dofs_per_processor	/opt/libmesh/include/base/dof_map.h	/^  std::vector<dof_id_type> n_dofs_per_processor(const unsigned int vn) const$/;"	f	class:libMesh::DofMap
+n_dofsv	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 n_dofsv	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_edge_boundary_ids	/opt/libmesh/src/mesh/boundary_info.C	/^unsigned int BoundaryInfo::n_edge_boundary_ids (const Elem * const elem,$/;"	f	class:libMesh::BoundaryInfo
 n_edge_conds	/opt/libmesh/src/mesh/boundary_info.C	/^std::size_t BoundaryInfo::n_edge_conds () const$/;"	f	class:libMesh::BoundaryInfo
@@ -13091,6 +13125,7 @@ n_systems	/opt/libmesh/include/systems/equation_systems.h	/^unsigned int Equatio
 n_threads	/opt/libmesh/include/base/libmesh_base.h	/^unsigned int libMesh::n_threads()$/;"	f	class:libMesh
 n_unpartitioned_elem	/opt/libmesh/include/mesh/mesh_base.h	/^  dof_id_type n_unpartitioned_elem () const$/;"	f	class:libMesh::MeshBase
 n_unpartitioned_nodes	/opt/libmesh/include/mesh/mesh_base.h	/^  dof_id_type n_unpartitioned_nodes () const$/;"	f	class:libMesh::MeshBase
+n_uvars	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 n_uvars	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_var_groups	/opt/libmesh/include/base/dof_object.h	/^unsigned int DofObject::n_var_groups(const unsigned int s) const$/;"	f	class:libMesh::DofObject
 n_variable_groups	/opt/libmesh/include/base/dof_map.h	/^  unsigned int n_variable_groups() const$/;"	f	class:libMesh::DofMap
@@ -13121,6 +13156,7 @@ name	include/config/SolverConfig.h	/^    string name, cfg;$/;"	m	struct:config::
 name	include/postproc/probes/Probe.h	/^  string name, filename, filename_pq;$/;"	m	class:postproc::probes::Probe
 name	include/solver/common/ExplicitMaterial.h	/^  string name;$/;"	m	class:solver::common::ExplicitMaterial
 name	include/solver/common/Solver.h	/^    string name;$/;"	m	class:solver::common::Solver
+name	include/solver/viscoplastic/VPMatBC.h	/^  string name;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 name	include/solver/viscoplastic/VPMaterial.h	/^  string name;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 ncon	/opt/libmesh/include/partitioning/parmetis_helper.h	/^  Parmetis::idx_t ncon;$/;"	m	class:libMesh::ParmetisHelper
 ncv_magic	/opt/libmesh/include/base/dof_object.h	/^  static const index_t ncv_magic = 256; \/\/ = 2^8, in case we want to manually bitshift$/;"	m	class:libMesh::DofObject
@@ -13173,6 +13209,7 @@ next	src/timeloop/Timestep.cpp	/^double Timestep::next() {$/;"	f	class:timeloop:
 next	src/util/GridFile.cpp	/^    T next() {$/;"	f	struct:util::CSVLine
 next_nominus	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus()$/;"	f	class:GETPOT_NAMESPACE::GetPot
 next_nominus_string	/opt/libmesh/include/base/getpot.h	/^GetPot::next_nominus_string()$/;"	f	class:GETPOT_NAMESPACE::GetPot
+next_qp	include/solver/viscoplastic/VPMatBC.h	/^inline bool ViscoPlasticMaterialBC::next_qp( bool inc )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 next_qp	include/solver/viscoplastic/VPMaterial.h	/^inline bool ViscoPlasticMaterial::next_qp( bool inc )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 next_state	src/config/reader/InoutReader.cpp	/^bool InoutReader::next_state() $/;"	f	class:config::reader::InoutReader
 next_state	src/config/reader/MaterialReader.cpp	/^bool MaterialReader::next_state() $/;"	f	class:config::reader::MaterialReader
@@ -16869,6 +16906,8 @@ qps	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  std::vecto
 qrule	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  std::unique_ptr<QBase> qrule;$/;"	m	class:libMesh::HPCoarsenTest
 qrule	/opt/libmesh/include/fe/fe_abstract.h	/^  QBase * qrule;$/;"	m	class:libMesh::FEAbstract
 qrule	include/solver/common/ExplicitMaterial.h	/^  QGauss qrule;$/;"	m	class:solver::common::ExplicitMaterial
+qrule	include/solver/viscoplastic/EGDataStruct.h	/^  QGauss qrule;$/;"	m	struct:solver::viscoplastic::EGFEM
+qrule	include/solver/viscoplastic/VPMatBC.h	/^  QGauss qrule;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 qrule	include/solver/viscoplastic/VPMaterial.h	/^  QGauss qrule;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 qrule_orders	/opt/libmesh/include/reduced_basis/rb_parametrized_function.h	/^  std::vector<Order> qrule_orders;$/;"	m	struct:libMesh::VectorizedEvalInput
 quad_flip	/opt/libmesh/src/fe/fe_szabab_shape_2D.C	/^Real quad_flip(const Elem * elem,$/;"	f	namespace:__anon54
@@ -17239,8 +17278,9 @@ reinit	/opt/libmesh/src/systems/system.C	/^void System::reinit ()$/;"	f	class:li
 reinit	src/solver/common/ExplicitMaterial.cpp	/^void ExplicitMaterial::reinit( const Elem & elem_, uint side ) $/;"	f	class:solver::common::ExplicitMaterial
 reinit	src/solver/thermal/TIfc.cpp	/^void ThermalIFC::reinit( uint eid, uint nqp ) $/;"	f	class:solver::thermal::ThermalIFC
 reinit	src/solver/viscoplastic/VPIfc.cpp	/^void ViscoplasticIFC::reinit( uint eid, uint nqp )$/;"	f	class:solver::viscoplastic::ViscoplasticIFC
-reinit	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
-reinit	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
+reinit	src/solver/viscoplastic/VPMatBC.cpp	/^void ViscoPlasticMaterialBC::reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
+reinit	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::reinit( const Elem & elem_ )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
+reinit	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem_ )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 reinit_constraints	/opt/libmesh/src/systems/system.C	/^void System::reinit_constraints()$/;"	f	class:libMesh::System
 reinit_default_dual_shape_coeffs	/opt/libmesh/include/fe/fe_abstract.h	/^  virtual void reinit_default_dual_shape_coeffs (const Elem * \/*elem*\/)$/;"	f	class:libMesh::FEAbstract
 reinit_default_dual_shape_coeffs	/opt/libmesh/src/fe/fe.C	/^void FE<Dim,T>::reinit_default_dual_shape_coeffs (const Elem * elem)$/;"	f	class:libMesh::FE
@@ -17353,12 +17393,12 @@ reset_preallocation	/opt/libmesh/src/numerics/petsc_matrix.C	/^void PetscMatrix<
 reset_preevaluate_thetas_completed	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::reset_preevaluate_thetas_completed()$/;"	f	class:libMesh::RBConstruction
 reset_to_zero	/opt/libmesh/include/numerics/wrapped_petsc.h	/^  void reset_to_zero()$/;"	f	struct:libMesh::WrappedPetsc
 residual	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  void (* residual) (const NumericVector<Number> & X,$/;"	m	class:libMesh::NonlinearSolver
+residual_and_jacobian	src/solver/viscoplastic/VPMatBC.cpp	/^void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side, $/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 residual_and_jacobian	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVector<Number> & soln, SparseMatrix<Number> * jacobian , NumericVector<Number> * residual )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
-residual_and_jacobian	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side, $/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 residual_and_jacobian	src/solver/viscoplastic/VPSolver.cpp	/^void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & soln, NumericVector<Number> * residual,$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
 residual_and_jacobian_object	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  NonlinearImplicitSystem::ComputeResidualandJacobian * residual_and_jacobian_object;$/;"	m	class:libMesh::NonlinearSolver
+residual_and_jacobian_qp	src/solver/viscoplastic/VPMatBC.cpp	/^void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 residual_and_jacobian_qp	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::residual_and_jacobian_qp ()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
-residual_and_jacobian_qp	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 residual_object	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  NonlinearImplicitSystem::ComputeResidual * residual_object;$/;"	m	class:libMesh::NonlinearSolver
 residual_qp	src/solver/viscoplastic/VPMaterial.cpp	/^AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & \/* ad_Uib *\/ )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 residual_scaling_denom	/opt/libmesh/src/reduced_basis/rb_evaluation.C	/^Real RBEvaluation::residual_scaling_denom(Real alpha_LB)$/;"	f	class:libMesh::RBEvaluation
@@ -17660,7 +17700,7 @@ set_attributes	/opt/libmesh/include/utils/parameters.h	/^  virtual void set_attr
 set_auto_area_function	/opt/libmesh/src/mesh/triangulator_interface.C	/^void TriangulatorInterface::set_auto_area_function(const Parallel::Communicator &comm,$/;"	f	class:libMesh::TriangulatorInterface
 set_auto_parallel	/opt/libmesh/include/mesh/xdr_io.h	/^void XdrIO::set_auto_parallel ()$/;"	f	class:libMesh::XdrIO
 set_basic_system_only	/opt/libmesh/include/systems/system.h	/^void System::set_basic_system_only ()$/;"	f	class:libMesh::System
-set_bc	include/solver/viscoplastic/VPMaterial.h	/^  virtual void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
+set_bc	include/solver/viscoplastic/VPMatBC.h	/^  virtual void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
 set_best_fit_type_flag	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^void RBEIMConstruction::set_best_fit_type_flag (const std::string & best_fit_type_string)$/;"	f	class:libMesh::RBEIMConstruction
 set_beta	/opt/libmesh/include/solvers/newmark_solver.h	/^  void set_beta ( Real beta )$/;"	f	class:libMesh::NewmarkSolver
 set_bounding_box	/opt/libmesh/src/utils/tree_node.C	/^void TreeNode<N>::set_bounding_box (const std::pair<Point, Point> & bbox)$/;"	f	class:libMesh::TreeNode
@@ -18801,6 +18841,7 @@ should_refine_elem	/opt/libmesh/src/mesh/simplex_refiner.C	/^bool SimplexRefiner
 show_msg_lines	include/harpy/Log.h	/^  static bool show_msg_lines;$/;"	m	class:Log
 show_msg_lines	src/harpy/Log.cpp	/^bool Log::show_msg_lines = 1;$/;"	m	class:Log	file:
 sid	include/solver/common/ExplicitMaterial.h	/^  suint sid;   $/;"	m	class:solver::common::ExplicitMaterial
+sid	include/solver/viscoplastic/VPMatBC.h	/^  suint sid;   \/\/\/ Subdomain id$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 sid	include/solver/viscoplastic/VPMaterial.h	/^  suint sid;   \/\/\/ Subdomain id$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 side	/opt/libmesh/include/systems/fem_context.h	/^  unsigned char side;$/;"	m	class:libMesh::FEMContext
 side	include/solver/viscoplastic/VPBC.h	/^        uint eid, side;$/;"	m	class:solver::viscoplastic::BC::ElemSide
@@ -18907,6 +18948,7 @@ side_nodes_map	/opt/libmesh/src/geom/face_tri3.C	/^const unsigned int Tri3::side
 side_nodes_map	/opt/libmesh/src/geom/face_tri6.C	/^const unsigned int Tri6::side_nodes_map[Tri6::num_sides][Tri6::nodes_per_side] =$/;"	m	class:libMesh::Tri6	file:
 side_nodes_map	/opt/libmesh/src/geom/face_tri7.C	/^const unsigned int Tri7::side_nodes_map[Tri7::num_sides][Tri7::nodes_per_side] =$/;"	m	class:libMesh::Tri7	file:
 side_on_boundary	/opt/libmesh/include/geom/elem.h	/^  bool side_on_boundary() const$/;"	f	class:libMesh::Elem::SideIter
+side_p	include/solver/viscoplastic/EGDataStruct.h	/^  uint eid_p, side_p;$/;"	m	struct:solver::viscoplastic::EGFacePair
 side_postprocess	/opt/libmesh/include/systems/diff_system.h	/^  virtual void side_postprocess (DiffContext &) {}$/;"	f	class:libMesh::DifferentiableSystem
 side_ptr	/opt/libmesh/include/geom/elem.h	/^Elem::side_ptr (std::unique_ptr<const Elem> & elem,$/;"	f	class:libMesh::Elem
 side_ptr	/opt/libmesh/include/geom/elem.h	/^std::unique_ptr<const Elem> Elem::side_ptr (unsigned int i) const$/;"	f	class:libMesh::Elem
@@ -19002,7 +19044,7 @@ sigeff0	include/solver/viscoplastic/VPProps.h	/^  double sigeff0, plast0;$/;"	m	
 sigeff_terz	include/solver/viscoplastic/VPProps.h	/^  vector<RealTensor> sigtot, sigeff, sigeff_terz;$/;"	m	struct:solver::viscoplastic::PropsTranspose
 signed_distance	/opt/libmesh/src/geom/bounding_box.C	/^Real BoundingBox::signed_distance(const Point & p) const$/;"	f	class:libMesh::BoundingBox
 signof	/opt/libmesh/src/mesh/mesh_triangle_holes.C	/^  int signof(Real val) {$/;"	f	namespace:__anon83
-sigtot	include/solver/viscoplastic/VPMaterial.h	/^  optional<RealTensor> sigtot;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
+sigtot	include/solver/viscoplastic/VPMatBC.h	/^  optional<RealTensor> sigtot;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 sigtot	include/solver/viscoplastic/VPProps.h	/^  RealTensor sigtot, sigeff, deviatoric;$/;"	m	struct:solver::viscoplastic::VPProps
 sigtot	include/solver/viscoplastic/VPProps.h	/^  vector<RealTensor> sigtot, sigeff, sigeff_terz;$/;"	m	struct:solver::viscoplastic::PropsTranspose
 simple_build_edge_ptr	/opt/libmesh/include/geom/elem.h	/^Elem::simple_build_edge_ptr (const unsigned int i)$/;"	f	class:libMesh::Elem
@@ -19148,8 +19190,11 @@ solver	include/solver/thermal/TIfc.h	/^namespace solver {$/;"	n
 solver	include/solver/thermal/TSolverCnt.h	/^namespace solver {$/;"	n
 solver	include/solver/thermal/TSolverFile.h	/^namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }$/;"	n
 solver	include/solver/thermal/TSolverFile.h	/^namespace solver {$/;"	n
+solver	include/solver/viscoplastic/EGDataStruct.h	/^namespace solver {$/;"	n
 solver	include/solver/viscoplastic/VPBC.h	/^namespace solver {$/;"	n
 solver	include/solver/viscoplastic/VPIfc.h	/^namespace solver {$/;"	n
+solver	include/solver/viscoplastic/VPMatBC.h	/^namespace solver {$/;"	n
+solver	include/solver/viscoplastic/VPMatEG.h	/^namespace solver {$/;"	n
 solver	include/solver/viscoplastic/VPMaterial.h	/^namespace solver {$/;"	n
 solver	include/solver/viscoplastic/VPProbe.h	/^namespace solver {$/;"	n
 solver	include/solver/viscoplastic/VPProps.h	/^namespace solver {$/;"	n
@@ -19161,8 +19206,11 @@ solver	src/solver/pressure/PSolverFile.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/thermal/TIfc.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/thermal/TSolverCnt.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/thermal/TSolverFile.cpp	/^namespace solver {$/;"	n	file:
+solver	src/solver/viscoplastic/EGDataStruct.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/viscoplastic/VPBC.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/viscoplastic/VPIfc.cpp	/^namespace solver {$/;"	n	file:
+solver	src/solver/viscoplastic/VPMatBC.cpp	/^namespace solver {$/;"	n	file:
+solver	src/solver/viscoplastic/VPMatEG.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/viscoplastic/VPMaterial.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/viscoplastic/VPProbe.cpp	/^namespace solver {$/;"	n	file:
 solver	src/solver/viscoplastic/VPProps.cpp	/^namespace solver {$/;"	n	file:
@@ -19468,6 +19516,8 @@ system	include/solver/pressure/PSolverFile.h	/^  ExplicitSystem & system;$/;"	m	
 system	include/solver/thermal/TSolverCnt.h	/^  ExplicitSystem & system;$/;"	m	class:solver::thermal::ThermalSolverConstant
 system	include/solver/thermal/TSolverFile.h	/^  ExplicitSystem & system;$/;"	m	class:solver::thermal::ThermalSolverFromFile
 system	include/solver/viscoplastic/VPBC.h	/^    const System & system;$/;"	m	class:solver::viscoplastic::BC
+system	include/solver/viscoplastic/VPMatBC.h	/^  TransientNonlinearImplicitSystem & system;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
+system	include/solver/viscoplastic/VPMatEG.h	/^  TransientNonlinearImplicitSystem & system;$/;"	m	class:solver::viscoplastic::VPMatEG
 system	include/solver/viscoplastic/VPMaterial.h	/^  TransientNonlinearImplicitSystem & system;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 system	include/solver/viscoplastic/VPSolver.h	/^    TransientNonlinearImplicitSystem & system;$/;"	m	class:solver::viscoplastic::ViscoplasticSolver
 system_cfgid	include/config/ModelConfig.h	/^  CIMap<string> system_cfgid;        \/\/\/ sys_name -> config name$/;"	m	class:config::ModelConfig
@@ -20214,15 +20264,21 @@ viscoplastic	include/solver/common/Solver.h	/^namespace solver { namespace visco
 viscoplastic	include/solver/common/SolverFactory.h	/^namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }$/;"	n	namespace:solver
 viscoplastic	include/solver/pressure/PSolverFile.h	/^namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }$/;"	n	namespace:solver
 viscoplastic	include/solver/thermal/TSolverFile.h	/^namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }$/;"	n	namespace:solver
+viscoplastic	include/solver/viscoplastic/EGDataStruct.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPBC.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPIfc.h	/^namespace viscoplastic {$/;"	n	namespace:solver
+viscoplastic	include/solver/viscoplastic/VPMatBC.h	/^namespace viscoplastic {$/;"	n	namespace:solver
+viscoplastic	include/solver/viscoplastic/VPMatEG.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPMaterial.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPProbe.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPProps.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solver/viscoplastic/VPSolver.h	/^namespace viscoplastic {$/;"	n	namespace:solver
 viscoplastic	include/solverloop/SLViscoplastic.h	/^    ViscoplasticSolver *viscoplastic;$/;"	m	class:solverloop::SLViscoplastic
+viscoplastic	src/solver/viscoplastic/EGDataStruct.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
 viscoplastic	src/solver/viscoplastic/VPBC.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
 viscoplastic	src/solver/viscoplastic/VPIfc.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
+viscoplastic	src/solver/viscoplastic/VPMatBC.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
+viscoplastic	src/solver/viscoplastic/VPMatEG.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
 viscoplastic	src/solver/viscoplastic/VPMaterial.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
 viscoplastic	src/solver/viscoplastic/VPProbe.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
 viscoplastic	src/solver/viscoplastic/VPProps.cpp	/^namespace viscoplastic {$/;"	n	namespace:solver	file:
@@ -20261,6 +20317,8 @@ volume_to_surface_mesh	/opt/libmesh/src/mesh/mesh_tet_interface.C	/^BoundingBox 
 von_mises	include/solver/viscoplastic/VPProps.h	/^  double von_mises, epskk, F;$/;"	m	struct:solver::viscoplastic::VPProps
 von_mises	include/solver/viscoplastic/VPProps.h	/^  vector<double> von_mises, epskk, F, pressure;$/;"	m	struct:solver::viscoplastic::PropsTranspose
 vp_ifc	include/solver/viscoplastic/VPMaterial.h	/^  ViscoplasticIFC vp_ifc;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
+vpsolver	include/solver/viscoplastic/VPMatBC.h	/^  ViscoplasticSolver & vpsolver; $/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
+vpsolver	include/solver/viscoplastic/VPMatEG.h	/^  ViscoplasticSolver & vpsolver; $/;"	m	class:solver::viscoplastic::VPMatEG
 vpsolver	include/solver/viscoplastic/VPMaterial.h	/^  ViscoplasticSolver & vpsolver; $/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 vtk_element_type	/opt/libmesh/include/geom/cell_inf_hex16.h	/^  unsigned int vtk_element_type (const unsigned int) const$/;"	f	class:libMesh::final
 vtk_element_type	/opt/libmesh/include/geom/cell_inf_hex18.h	/^  unsigned int vtk_element_type (const unsigned int) const$/;"	f	class:libMesh::final
