@@ -51,5 +51,7 @@ plot: .force
 video:
 	ffmpeg -framerate 10 -pattern_type glob -i 'png/*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 output.mp4
 
+video-pq:
+	ffmpeg -framerate 10 -pattern_type glob -i '_frames/*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 pq_square-scale.mp4
 
 .force:
