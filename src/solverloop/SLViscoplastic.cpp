@@ -2,11 +2,11 @@
 #include "solverloop/SLViscoplastic.h"
 
 #include "config/Config.h"
+#include "restart/File.h"
+#include "solver/common/SolverFactory.h"
 
 #include "libmesh/equation_systems.h"
 #include "libmesh/mesh.h"
-
-#include "restart/File.h"
 
 namespace solverloop {
 

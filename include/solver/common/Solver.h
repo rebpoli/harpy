@@ -65,14 +65,4 @@ class Solver
     EquationSystems & es;
 };
 
-
-/**
- *   Factories of solvers.
- */
-struct SolverFactory
-{
-  static Solver * new_thermal( ViscoplasticSolver * ref );
-  static Solver * new_pressure( ViscoplasticSolver * ref );
-};
-
 } } // ns

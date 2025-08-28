@@ -107,6 +107,7 @@ ADD_LIBRARY(Modules
   src/restart/Util.cpp
   src/solver/common/ExplicitMaterial.cpp
   src/solver/common/Solver.cpp
+  src/solver/common/SolverFactory.cpp
   src/solver/pressure/PSolverFile.cpp
   src/solver/thermal/TIfc.cpp
   src/solver/thermal/TSolverCnt.cpp
