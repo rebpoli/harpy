@@ -36,11 +36,9 @@ using util::Print;
 ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
                                             const MaterialConfig * config_, 
                                             TransientNonlinearImplicitSystem & sys_,
-                                            ViscoplasticSolver & vpsolver_,
-                                            bool called_from_bc_constructor ) :
+                                            ViscoplasticSolver & vpsolver_ ) :
   config( config_ ),
   P( 0 ),
-  bc_material(0),
   vpsolver(vpsolver_), 
   system( sys_ ), 
   stress_system( vpsolver.stress_system ),
@@ -55,8 +53,8 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
   stress_postproc( this, stress_system )
 {
   // Setup cariables only if on the parent
-  if (! called_from_bc_constructor ) 
-    bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
+//  if (! called_from_bc_constructor ) 
+//    bc_material = new ViscoPlasticMaterialBC( sid, config, system, vpsolver );
 }
 
 //ViscoPlasticMaterial::ViscoPlasticMaterial( ViscoPlasticMaterial * refmat_ ) :
@@ -68,10 +66,7 @@ ViscoPlasticMaterial::ViscoPlasticMaterial( suint sid_,
  *
  */
 ViscoPlasticMaterial::~ViscoPlasticMaterial()
-{
-  if ( bc_material ) delete(bc_material); 
-  bc_material = 0;
-}
+{ }
 
 /**
  *    This function is called every reinit() of the material.
@@ -98,27 +93,6 @@ void ViscoPlasticMaterial::init_properties()
 }
 
 
-/**
- *    Creates an identical Material, but prepared for integrating over boundaries.
- */
-ViscoPlasticMaterialBC * ViscoPlasticMaterial::get_bc_material()
-{
-  SCOPELOG(5);
-  if ( ! bc_material ) flog << "BC material not set? It should have been set in the constructor of the parent class, for all materials.";
-
-  return bc_material;
-}
-
-/**
- *
- */
-ViscoPlasticMaterialBC::ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,
-                                                TransientNonlinearImplicitSystem & sys_,
-                                                ViscoplasticSolver & vpsolver_ ) :
-  ViscoPlasticMaterial( sid_, config_, sys_, vpsolver_, true )
-{
-}
-
 
 /**
  *  This can only be done after EquationSystems init.
@@ -136,10 +110,7 @@ void ViscoPlasticMaterial::init_fem()
   fe = move( FEBase::build(3, fe_type) );
 
   // Setup gauss quadrature
-  if ( ! is_bc() )
-    qrule = QGauss( 3, fe_type.default_quadrature_order() );
-  else 
-    qrule = QGauss( 2, fe_type.default_quadrature_order() );
+  qrule = QGauss( 3, fe_type.default_quadrature_order() );
 
   fe->attach_quadrature_rule (&qrule);
 
@@ -149,21 +120,17 @@ void ViscoPlasticMaterial::init_fem()
   fe->get_dphi();
   fe->get_xyz();
 
-  if ( is_bc() ) 
-    fe->get_normals(); 
-
   // Jacobian
-  for ( uint i=0; i<3; i++ )
+  for ( uint i=0; i<n_uvars; i++ )
   {
     vector<DenseSubMatrix<Number>> kk;
-    for ( uint j=0; j<3; j++ ) kk.emplace_back( Ke );
+    for ( uint j=0; j<n_uvars; j++ ) kk.emplace_back( Ke );
     Ke_var.push_back(kk);
   }
 
   // Initialize the dependent materials/posprocs
 
   stress_postproc.init_fem();
-  if ( bc_material ) bc_material->init_fem();
 }
 
 /**
@@ -171,20 +138,15 @@ void ViscoPlasticMaterial::init_fem()
  *  This function must be called before (or at the beginning of)
  *  the jacobian and residual.
  *
- *  _side_ is an optional parameter, used only when the material
- *  is being initialized for a BC.
  */
-void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
+void ViscoPlasticMaterial::reinit( const Elem & elem_ )
 {
   SCOPELOG(5);
 
   QP = 0;
   elem = &elem_;
 
-  if ( is_bc() ) 
-    fe->reinit( elem, side );
-  else
-    fe->reinit( elem );
+  fe->reinit( elem );
   
   const DofMap & dof_map = system.get_dof_map();
 
@@ -199,9 +161,9 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
   if ( vpsolver.is_eg() ) // EG
   {
     vector<dof_id_type> dof_indices_eg;
-    n_dofs_eg = dof_indices_var.size();
+    dof_map.dof_indices (elem, dof_indices_eg, 3);
+    n_dofs_eg = dof_indices_eg.size();
   }
-
 
   Ke.resize (n_dofs, n_dofs);
 
@@ -229,14 +191,14 @@ void ViscoPlasticMaterial::reinit( const Elem & elem_, uint side )
  *
  *  Then, initializes the solution depending on soln.
  */
-void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side )
+void ViscoPlasticMaterial::reinit( const NumericVector<Number> & soln, const Elem & elem_ )
 {
   SCOPELOG(5);
 
   /*
    * Initializes the FEM structures, not depending on the solution
    */
-  reinit( elem_, side );
+  reinit( elem_ );
 
   /*
    * Now initializes the structures depending on the solution vector
@@ -625,64 +587,6 @@ void ViscoPlasticMaterial::residual_and_jacobian (Elem & elem_, const NumericVec
 
   // Keep the probes in sync with the solution
   update_probes();  ///PROBE
-}
-
-/**
- *
- *   BOUNDARY CONDITIONS
- *
- */
-
-/**
- *
- */
-void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()
-{
-  SCOPELOG(5);
-  const vector<Real> & JxW = fe->get_JxW();
-  const vector<vector<Real>> & phi = fe->get_phi();
-  const vector<Point> & normals = fe->get_normals(); 
-
-  ad_Fib.setZero(); 
-
-  // Note: as the sigtot is constant, we dont need the jacobian
-  //     : Keeping the variable as a AUTODIFF for parallelism
-  //     : with the parent object. 
-  if ( sigtot )
-  for (uint B=0; B<n_dofsv; B++)
-  for (uint i=0; i<3; i++) 
-  for (uint j=0; j<3; j++) 
-    Fib(i,B) -= JxW[QP] * (*sigtot)(i,j) * normals[QP](j) * phi[B][QP];
-
-  // Map from the AD variable to libmesh datastructures
-  for (uint i=0; i<3; i++) 
-  for (uint B=0;  B<n_dofsv;  B++)
-    Re( i*n_dofsv + B ) += val( Fib(i,B) );
-
-}
-
-/**
- *     Builds the RHS of the element and assembles in the global _residual_.
- */
-void ViscoPlasticMaterialBC::residual_and_jacobian ( Elem & elem_, uint side, 
-                                                     const NumericVector<Number> & soln, 
-                                                     SparseMatrix<Number> * jacobian ,
-                                                     NumericVector<Number> * residual )
-{
-  UNUSED(jacobian);
-  // Reinit the object
-  reinit( soln, elem_, side );
-
-  // Build the element jacobian and residual for each quadrature point _qp_.
-  do { residual_and_jacobian_qp(); } while ( next_qp() );
-
-  // Add to the global residual vector
-  if ( residual )
-  {
-    const DofMap & dof_map = system.get_dof_map();
-    dof_map.constrain_element_vector (Re, dof_indices);
-    residual->add_vector (Re, dof_indices);
-  }
 }
 
 /**

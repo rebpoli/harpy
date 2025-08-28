@@ -2,14 +2,11 @@
 
 #include "harpy/Global.h"
 
-
-#include "config/ModelConfig.h"
+//#include "config/ModelConfig.h"
 
 #include "postproc/stress/StressPostProc.h"
 #include "solver/viscoplastic/VPIfc.h"
 #include "solver/thermal/TIfc.h"
-
-#include "util/CsvFile.h"
 
 #include "util/Autodiff.h"
 
@@ -24,7 +21,6 @@ namespace viscoplastic {
  *
  */
 
-class ViscoPlasticMaterialBC;
 class ViscoplasticSolver;
 
 using postproc::stress::StressPostProc;
@@ -37,8 +33,7 @@ class ViscoPlasticMaterial
 public:
   ViscoPlasticMaterial( suint sid_, const MaterialConfig * config,
                         TransientNonlinearImplicitSystem & sys_,
-                        ViscoplasticSolver & vpsolver_,
-                        bool called_from_bc_constructor = false);
+                        ViscoplasticSolver & vpsolver_);
 
   /**  Builds a material inheriting most properties from the reference.  */
 //  ViscoPlasticMaterial( ViscoPlasticMaterial * refmat_ ) ;
@@ -51,11 +46,9 @@ public:
   /// Fetches properties from the configuration file
   void init_properties();
 
-  ViscoPlasticMaterialBC * get_bc_material();
-
-  /// Applies an element (and side?) to the FE objects.
-  void reinit( const Elem & elem_, uint side=255 );
-  void reinit( const NumericVector<Number> & soln, const Elem & elem_, uint side=255 );
+  /// Applies an element  to the FE objects.
+  void reinit( const Elem & elem_ );
+  void reinit( const NumericVector<Number> & soln, const Elem & elem_ );
 
   // Add res and jac to the element Ke and Re
   virtual void residual_and_jacobian_qp ();
@@ -76,9 +69,6 @@ public:
   /// Rewinds the interfaces to the beginning of the timeste (for TS cutting)
   void rewind( Elem & elem_ );
 
-  /// Differentiates ViscoPlasticMaterial and ViscoPlasticMaterialBC in runtime
-  virtual bool is_bc() { return false; }
-
   /// Provide pointers to the outside to feed the material with properties
   ViscoplasticIFC & get_viscoplastic_interface() { return vp_ifc; }
 
@@ -96,9 +86,7 @@ protected:
   inline bool next_qp( bool inc = true);
   uint QP;  /// The current quadrature point during integration
             
-  /// Runtime containers 
   vector<vector< DenseSubMatrix<Number> >> Ke_var;
-
 
   /// Autodiff variables!
   AD::Vec ad_Uib, ad_Fib; // Flattened autodiff stuff
@@ -128,9 +116,6 @@ public:
 
   ViscoplasticIFC vp_ifc;
   VPProps * P;   
-
-  /// Child boundary condition material. Owned by this object because it inherits all its properties
-  ViscoPlasticMaterialBC * bc_material;
 
   /// The parent solver and system to assemble
   ViscoplasticSolver & vpsolver; 
@@ -162,32 +147,6 @@ public:
 //  CsvFile dfile; // Debugging file
 };
 
-/**
- *
- *  THE MATERIAL BOUNDARY CLASS:
- *  Inherits as much as possible from the material.
- *  The FEM structures are one dimension lower
- *
- */
-class ViscoPlasticMaterialBC : public ViscoPlasticMaterial
-{
-public:
-  ViscoPlasticMaterialBC( suint sid_, const MaterialConfig * config_,
-                          TransientNonlinearImplicitSystem & sys_, 
-                          ViscoplasticSolver & vpsolver_ );
-
-  virtual bool is_bc() { return true; }
-
-  void residual_and_jacobian_qp();
-  void residual_and_jacobian ( Elem & elem, uint side, const NumericVector<Number> & soln, 
-                               SparseMatrix<Number> * jacobian , NumericVector<Number> * residual );
-
-  virtual void set_bc( const RealTensor & sigtot_ ) { sigtot = sigtot_ ; }
-
-private:
-  optional<RealTensor> sigtot;
-
-};
 
 /**
  *  Advances in the quadrature integration point.

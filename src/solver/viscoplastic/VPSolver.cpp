@@ -69,6 +69,9 @@ void ViscoplasticSolver::init()
   SCOPELOG(1);
   for ( auto & [ sid, mat ] : material_by_sid )
     mat->init_fem();
+
+  for ( auto & [ sid, mat ] : matbc_by_sid )
+    mat->init_fem();
 }
 
 /**
@@ -210,9 +213,8 @@ void ViscoplasticSolver::init_materials()
     const MaterialConfig & mat_conf = *it;
 
     dlog(1) << "Resoved material:" << mat_conf;
-    ViscoPlasticMaterial * vpmat =
-      new ViscoPlasticMaterial( sid, &mat_conf, system, *this );
-    material_by_sid[sid] = vpmat;
+    material_by_sid[sid] = new ViscoPlasticMaterial( sid, &mat_conf, system, *this );
+    matbc_by_sid[sid]    = new ViscoPlasticMaterialBC( sid, &mat_conf, system, *this );
   }
 }
 
@@ -517,8 +519,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
     if ( ! elem.active() ) continue;
     if ( elem.processor_id() != mesh.processor_id() ) continue;
 
-    ViscoPlasticMaterial * mat = get_material( elem );
-    ViscoPlasticMaterialBC * bcmat = mat->get_bc_material();
+    ViscoPlasticMaterialBC * bcmat = get_mat_bc( elem );
     bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
     bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
   }
@@ -566,6 +567,19 @@ ViscoPlasticMaterial * ViscoplasticSolver::get_material( uint sid )
     flog << "Cannot find material for SID '" << sname << "' (" << sid << ")";
   }
   return material_by_sid.at(sid);
+}
+/** */
+ViscoPlasticMaterialBC * ViscoplasticSolver::get_mat_bc( const Elem & elem )
+{ uint sid = elem.subdomain_id(); return get_mat_bc( sid ); }
+/** */
+ViscoPlasticMaterialBC * ViscoplasticSolver::get_mat_bc( uint sid )
+{
+  if  ( ! matbc_by_sid.count( sid ) ) 
+  {
+    string sname = get_mesh().subdomain_name( sid );
+    flog << "Cannot find material BC for SID '" << sname << "' (" << sid << ")";
+  }
+  return matbc_by_sid.at(sid);
 }
 
 }} // ns

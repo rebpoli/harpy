@@ -7,6 +7,7 @@
 #include "solver/common/Solver.h"
 #include "postproc/report/VPReport.h"
 #include "solver/viscoplastic/VPMaterial.h"
+#include "solver/viscoplastic/VPMatBC.h"
 #include "solver/viscoplastic/VPBC.h"
 
 #include "harpy/HarpyInit.h"
@@ -32,6 +33,7 @@ using timeloop::Timestep;
 using solver::common::Solver;
 
 class ViscoPlasticMaterial; 
+class ViscoPlasticMaterialBC; 
 
 
 /**
@@ -90,11 +92,14 @@ class ViscoplasticSolver : public Solver,
     ExplicitSystem & stress_system;
 
     ///
-    ViscoPlasticMaterial * get_material( const Elem & elem );
     ViscoPlasticMaterial * get_material( uint sid );
+    ViscoPlasticMaterialBC * get_mat_bc( uint sid );
+    ViscoPlasticMaterial * get_material( const Elem & elem );
+    ViscoPlasticMaterialBC * get_mat_bc( const Elem & elem );
 
   private:
     map< uint, ViscoPlasticMaterial *> material_by_sid;
+    map< uint, ViscoPlasticMaterialBC *> matbc_by_sid;
 
     /// Material properties loaded once from configuration
     void load_mesh();

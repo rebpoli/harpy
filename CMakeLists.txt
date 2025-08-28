@@ -115,6 +115,7 @@ ADD_LIBRARY(Modules
   src/solver/viscoplastic/VPBC.cpp
   src/solver/viscoplastic/VPIfc.cpp
   src/solver/viscoplastic/VPMaterial.cpp
+  src/solver/viscoplastic/VPMatBC.cpp
   src/solver/viscoplastic/VPProbe.cpp
   src/solver/viscoplastic/VPProps.cpp
   src/solver/viscoplastic/VPSolver.cpp
