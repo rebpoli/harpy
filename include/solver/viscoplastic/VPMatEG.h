@@ -21,6 +21,10 @@ public:
            ViscoplasticSolver & vpsolver_ );
 
   void init();                             /// Create datastructures from the mesh
+                                            
+  void residual_and_jacobian ( const NumericVector<Number> & soln, 
+                               NumericVector<Number> * residual,
+                               SparseMatrix<Number> * jacobian );
 
 private:
   vector< EGFacePair > gamma_I;        /// Internal skeleton
@@ -30,9 +34,11 @@ private:
   ViscoplasticSolver & vpsolver; 
 
   EGFEM fem_p, fem_n;                      /// Shape functions to be reinit'ed
+  QGauss qrule;                            /// QRULE in the fem_p struct
 
-private:
+  friend ostream& operator<<(ostream& os, const VPMatEG & m);
 };
 
+ostream& operator<<(ostream& os, const VPMatEG & m);
 
 }} // ns

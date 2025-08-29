@@ -83,6 +83,7 @@ void ViscoplasticSolver::init()
   {
     vpmat_eg = new VPMatEG( system, *this );
     vpmat_eg->init();
+    dlog(1) << *vpmat_eg;
   }
 }
 
@@ -535,6 +536,11 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
     bcmat->set_bc( stotitem->val );  /// TODO: This is not good.
     bcmat->residual_and_jacobian( elem, elemside.side, soln, jacobian, residual );
   }
+  harpy_sync_check();
+
+  // Add EG stuff
+  if ( vpmat_eg ) vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
+
   harpy_sync_check();
 }
 

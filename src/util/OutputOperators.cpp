@@ -3,6 +3,8 @@
 #include "libmesh/system.h"
 #include "libmesh/point.h"
 
+namespace util {
+
 ostream& operator<<(ostream& os, const set<double> & m) {
   os << "[";
   uint i=0;
@@ -55,3 +57,4 @@ ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m) {
   return os;
 }
 
+}

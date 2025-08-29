@@ -38,10 +38,15 @@ struct EGFacePair {
  */
 struct EGFEM {
   EGFEM( System & sys );
-  QGauss qrule;
   const Elem * elem;                               /// The element that the material has been reinit'ed to
   vector<dof_id_type> dof_indices;
   unique_ptr<FEBase> fe;                           /// The finite element object to hold shape funtions, jxw, etc
+
+  void attach_qrule( QBase * qrule );
 };
+
+/** **/
+ostream& operator<<(ostream& os, const EGFace & m);
+ostream& operator<<(ostream& os, const EGFacePair & m);
 
 }} // ns
