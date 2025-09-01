@@ -54,6 +54,9 @@ private:
    */
   inline uint Ndof(uint i) { return i>2 ?  n_dofs_eg : n_dofsv; }
 
+  DenseMatrix<Number> Ke; /// Jacobian for the element
+  DenseVector<Number> Re; /// RHS vector for the element
+
   uint QP;
   util::AD::ContextEG ad;
 

@@ -103,6 +103,9 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
   /* 2. Update dofmaps and dof counters. */
   setup_dofs( fp );
 
+  Ke.resize (n_dofs, n_dofs);
+  Re.resize (n_dofs);
+
   /* 3. Init QP counter and resolve autodiff solution vectors */
   QP = 0;
   // TODO: at some point the elements might have different number of dofs 
@@ -175,7 +178,21 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
  */
 void VPMatEG::residual_and_jacobian_qp()
 {
+  /* */
 
+  // Map from the AD variable to libmesh datastructures
+  for (uint e=0; e<2; e++) 
+  for (uint i=0; i<n_uvars; i++) 
+  for (uint j=0; j<n_uvars; j++)
+  for (uint B=0; B<Ndof(i);  B++)
+  for (uint M=0; M<Ndof(j);  M++)
+    Ke( ad.idx(e,i,B) , ad.idx(e,j,M) ) += val( ad.Jeijbm(e,i,j,B,M) );
+
+  // Map from the AD variable to libmesh datastructures
+  for (uint e=0; e<2; e++) 
+  for (uint i=0; i<n_uvars; i++) 
+  for (uint B=0;  B<Ndof(i);  B++)
+    Re( ad.idx(e,i,B) ) += val( ad.Feib(e,i,B) );
 }
 
 /**
@@ -186,10 +203,24 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
                                       SparseMatrix<Number> * jacobian )
 {
   SCOPELOG(1);
+  const DofMap & dof_map = system.get_dof_map();
+
   for ( EGFacePair & fp : gamma_I )
   {
     reinit( soln, fp );
     do { residual_and_jacobian_qp(); } while ( next_qp() );
+  }
+
+  // Add to the residual 
+  if ( residual ) {
+    dof_map.constrain_element_vector ( Re, dof_indices );
+    residual->add_vector ( Re, dof_indices );
+  }
+
+  // Add the the global matrix
+  if ( jacobian ) {
+    dof_map.constrain_element_matrix (Ke, dof_indices);
+    jacobian->add_matrix (Ke, dof_indices);
   }
 }
 
