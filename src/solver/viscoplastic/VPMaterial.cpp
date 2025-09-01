@@ -7,6 +7,7 @@
 #include "libmesh/equation_systems.h"
 
 #include "libmesh/fe.h"
+#include "libmesh/fe_map.h"
 #include "libmesh/quadrature_gauss.h"
 #include "libmesh/dof_map.h"
 #include "libmesh/sparse_matrix.h"
@@ -628,7 +629,7 @@ void ViscoPlasticMaterial::props_at( VPProps & p,
   // Reinit FE in the point we want
   std::vector<Point> pts_from = { pt };
   std::vector<Point> pts_to;
-  FEInterface::inverse_map (3, fe->get_fe_type(), elem, pts_from, pts_to, 1E-10);
+  FEMap::inverse_map (3, elem, pts_from, pts_to, 1E-10);
   fe->reinit( elem, & pts_to );
 
   // Compute U and GRAD_U at the point

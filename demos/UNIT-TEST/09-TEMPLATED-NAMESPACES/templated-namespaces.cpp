@@ -9,6 +9,8 @@
 #include "libmesh/tensor_value.h"
 #include "libmesh/vector_value.h"
 
+using namespace util;
+
 // Autodiff
 struct N1 {
   using Real = AD::real; 

@@ -86,7 +86,6 @@ void ViscoPlasticMaterialBC::reinit( const NumericVector<Number> & soln, const E
     vector<dof_id_type> dof_indices_eg;
     dof_map.dof_indices (elem, dof_indices_eg, 3);
     n_dofs_eg = dof_indices_eg.size();
-    dlog(1) << "n_dofs_eg: " << n_dofs_eg;
   }
 
   Re.resize (n_dofs);

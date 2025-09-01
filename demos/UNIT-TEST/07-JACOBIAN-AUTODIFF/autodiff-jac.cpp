@@ -9,6 +9,8 @@
 
 using namespace std;
 
+using namespace util;
+
 // The vector function for which the Jacobian is needed
 AD::Vec f(const AD::Vec & x)
 {

@@ -25,6 +25,9 @@ class ViscoplasticSolver;
 
 using postproc::stress::StressPostProc;
 
+// AD Types
+using namespace util;
+
 /**
  *  THE MATERIAL CLASS
  */

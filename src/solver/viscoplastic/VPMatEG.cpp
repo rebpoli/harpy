@@ -6,6 +6,7 @@
 
 #include "libmesh/mesh.h"
 #include "libmesh/dof_map.h"
+#include "libmesh/fe_map.h"
 #include "libmesh/sparse_matrix.h"
 #include "libmesh/numeric_vector.h"
 #include "libmesh/dense_submatrix.h"
@@ -20,7 +21,12 @@ system(sys_),
 vpsolver(vpsolver_),
 fem_p(system),
 fem_n(system),
-qrule(2)
+qrule(2),
+n_dofs(0),
+n_dofsv(0),
+n_uvars( vpsolver.is_eg() ? 6 : 3 ),
+QP(0),
+ad(n_uvars)
 { 
   // Init Qrule
   if ( ! system.has_variable( "UegX" ) )    flog << "Only EG systems should be here.";
@@ -28,9 +34,10 @@ qrule(2)
   DofMap & dof_map = system.get_dof_map();
   FEType fe_type = dof_map.variable_type(vid);
   qrule = QGauss( 2, fe_type.default_quadrature_order() );
-  // Do not attach quadrature in fem_n -- it should be mapped by points (slave mapping)
-  fem_p.attach_qrule( & qrule );
 
+  // Do not attach quadrature in fem_n -- it should be mapped by 
+  // points during reinit (slave mapping)
+  fem_p.attach_qrule( & qrule );
 }
 
 /**
@@ -78,6 +85,99 @@ void VPMatEG::init()
   }
 }
 
+/* Reinit structures for the face pair fp */
+void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
+{
+  MeshBase & mesh = system.get_mesh();
+  Elem * elem_p = mesh.elem_ptr(fp.eid_p);
+  Elem * elem_n = mesh.elem_ptr(fp.eid_n);
+
+  /* 1. Init FEM structs */
+  const std::vector<Point> & xyz_p = fem_p.fe->get_xyz();
+  fem_p.fe->reinit( elem_p , fp.side_p );
+
+  vector<Point> pts;
+  FEMap::inverse_map (3, elem_n, xyz_p, pts, 1E-10);
+  fem_n.fe->reinit(elem_n, & pts);
+
+  /* 2. Update dofmaps and dof counters. */
+  setup_dofs( fp );
+
+  /* 3. Init QP counter and resolve autodiff solution vectors */
+  QP = 0;
+  // TODO: at some point the elements might have different number of dofs 
+  ad.init( n_dofsv, n_dofs_eg, 2 ); 
+
+  /* 4. Feed Uib with current solution */
+  for ( uint e=0; e<2; e++ )
+  for ( uint i=0; i<n_uvars; i++ )
+  for ( uint B=0; B<Ndof(i); B++ )
+    ad.Ueib(e,i,B) = soln( dof_indices[ad.idx(e,i,B)] );
+}
+
+/**
+ *
+ */
+void VPMatEG::setup_dofs( EGFacePair & fp )
+{
+  MeshBase & mesh = system.get_mesh();
+  Elem * elem_p = mesh.elem_ptr(fp.eid_p);
+  Elem * elem_n = mesh.elem_ptr(fp.eid_n);
+
+  const DofMap & dof_map = system.get_dof_map();
+  vector<Elem*> ee = { elem_p, elem_n };
+
+  fem_p.dof_indices.clear();
+  fem_n.dof_indices.clear();
+
+  /* Feed the dof indices in our datastructures */
+  // 0..5 = "UX", "UY", "UZ", "UegX", "UegY", "UegZ"
+  for ( uint vi=0; vi<6; vi++ )
+  {
+    vector<dof_id_type> dofi;
+
+    dof_map.dof_indices ( elem_p, dofi, vi );
+    fem_p.dof_indices.insert( fem_p.dof_indices.end(), dofi.begin(), dofi.end() );
+
+    dof_map.dof_indices ( elem_n, dofi, vi );
+    fem_n.dof_indices.insert( fem_n.dof_indices.end(), dofi.begin(), dofi.end() );
+  }
+
+  n_dofs  = fem_p.dof_indices.size();
+
+  // Fill the unique dof_indices with all dofs
+  dof_indices.clear();
+  dof_indices.reserve( fem_p.dof_indices.size() + fem_n.dof_indices.size() );
+  dof_indices.insert( dof_indices.end(), fem_p.dof_indices.begin() , fem_p.dof_indices.end() );
+  dof_indices.insert( dof_indices.end(), fem_n.dof_indices.begin() , fem_n.dof_indices.end() );
+
+  // 
+  vector<dof_id_type> dof_indices_var;
+  dof_map.dof_indices ( elem_p, dof_indices_var, 0 );
+  n_dofsv = dof_indices_var.size();
+
+  ASSERT( vpsolver.is_eg() , "Must be an EG solver to be here." );
+  vector<dof_id_type> dof_indices_eg;
+  dof_map.dof_indices (elem_p, dof_indices_eg, 3);
+  n_dofs_eg = dof_indices_eg.size();
+
+  /* Useful validation */
+  dof_map.dof_indices (elem_n, dof_indices_eg, 3);
+  ASSERT( n_dofs_eg == dof_indices_eg.size()  , "The elements of the interface have different number of EG DOFs (" << n_dofs_eg << " != " << dof_indices_eg.size() << ")");
+  ASSERT( fp.Pq_p.size() == fp.Pq_n.size()    , "Size of the properties vector should be equal (" <<  fp.Pq_p.size() << " != " << fp.Pq_n.size() << ")" );
+  ASSERT( fp.Pq_p.size() == qrule.n_points() , "Size of the properties vector should be equal to nqp (" << fp.Pq_p.size() << " != " << qrule.n_points() << ")" );
+
+
+}
+
+/**
+ *
+ */
+void VPMatEG::residual_and_jacobian_qp()
+{
+
+}
+
 /**
  *
  */
@@ -88,9 +188,8 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
   SCOPELOG(1);
   for ( EGFacePair & fp : gamma_I )
   {
-      // Reinit
-//      reinit( soln, fp )
-//      do { residual_and_jacobian_qp(); } while ( next_qp() );
+    reinit( soln, fp );
+    do { residual_and_jacobian_qp(); } while ( next_qp() );
   }
 }
 

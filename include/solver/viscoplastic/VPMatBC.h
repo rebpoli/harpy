@@ -16,6 +16,9 @@ class ViscoplasticSolver;
 using config::MaterialConfig;
 using namespace libMesh;
 
+// AD Types
+using namespace util;
+
 /**
  *
  *  THE MATERIAL BOUNDARY CLASS:

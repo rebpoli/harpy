@@ -5,6 +5,7 @@
 #include "util/OutputOperators.h"
 #include "postproc/stress/TensorInvariants.h"
 
+#include "libmesh/fe_map.h"
 #include "libmesh/dof_map.h"
 #include "libmesh/numeric_vector.h"
 #include "libmesh/explicit_system.h"
@@ -80,7 +81,7 @@ double ExplicitMaterial::eval( const Point & pt, string vname )
 
   std::vector<Point> pts_from = { pt };
   std::vector<Point> pts_to;
-  FEInterface::inverse_map (3, fetype, elem, pts_from, pts_to, 1E-10);
+  FEMap::inverse_map (3, elem, pts_from, pts_to, 1E-10);
   _fe->reinit( elem, & pts_to );
 
   uint n_dofs = phi.size();
