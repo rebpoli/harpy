@@ -11,12 +11,14 @@ namespace libMesh { class Elem; }
 
 namespace solver {
 namespace viscoplastic {
+
 using namespace libMesh;
 
 /**
  *
  */
-struct EGFace { 
+struct EGFace 
+{ 
   EGFace( uint e, uint s ) : eid(e), side(s) {}
   uint eid, side;
   vector< VPProps > Pq;         /// VPProps for each quadrature point
@@ -25,7 +27,8 @@ struct EGFace {
 /**
  *
  */
-struct EGFacePair { 
+struct EGFacePair 
+{ 
   EGFacePair( uint ep, uint sp, uint en ) : eid_p(ep), side_p(sp), eid_n(en) {}
   uint eid_p, side_p;
   uint eid_n;
@@ -36,13 +39,14 @@ struct EGFacePair {
 /**
  *
  */
-struct EGFEM {
+struct EGFEM 
+{
   EGFEM( System & sys );
-  const Elem * elem;                               /// The element that the material has been reinit'ed to
-  vector<dof_id_type> dof_indices;
   unique_ptr<FEBase> fe;                           /// The finite element object to hold shape funtions, jxw, etc
+  vector<dof_id_type> dofi_eg, dofi_cg;
 
   void attach_qrule( QBase * qrule );
+  void set_dofs( System & sys, const Elem * elem );
 };
 
 /** **/

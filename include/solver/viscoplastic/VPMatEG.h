@@ -46,8 +46,8 @@ private:
   QGauss qrule;                            /// QRULE in the fem_p struct
 
   /// This must include both elements (P and N concatenated)
-  vector<dof_id_type> dof_indices;
-  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;
+  vector<dof_id_type> dof_indices_eg;
+  uint n_dofsv, n_uvars, n_dofs_eg;
 
   /* For the internal loops:
    *       0,1,2 = Ux,Uy,Uz ; 3,4,5:UegX,UegY,UegZ

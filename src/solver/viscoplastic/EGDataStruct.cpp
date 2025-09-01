@@ -6,8 +6,7 @@
 namespace solver {
 namespace viscoplastic {
 
-EGFEM::EGFEM( System & sys ) : 
-  elem(0) 
+EGFEM::EGFEM( System & sys ) 
 {
   if ( ! sys.has_variable( "UegX" ) )    // We are not EG?
     flog << "Only EG systems should be here.";
@@ -30,6 +29,33 @@ EGFEM::EGFEM( System & sys ) :
 /** **/
 void EGFEM::attach_qrule( QBase * qrule ) {
   fe->attach_quadrature_rule( qrule ); 
+}
+
+/** **/
+void EGFEM::set_dofs( System & sys, const Elem * elem )
+{
+  const DofMap & dof_map = sys.get_dof_map();
+  vector<dof_id_type> di;
+
+  dofi_cg.clear();
+  dofi_eg.clear();
+
+  // 0..5 = "UX", "UY", "UZ", "UegX", "UegY", "UegZ"
+
+  // CG
+  for ( uint vi=0; vi<3; vi++ )
+  {
+    dof_map.dof_indices ( elem, di, vi );
+    dofi_cg.insert( dofi_cg.end(), di.begin(), di.end() );
+  }
+
+  // EG
+  for ( uint vi=3; vi<6; vi++ )
+  {
+    dof_map.dof_indices ( elem, di, vi );
+    dofi_eg.insert( dofi_eg.end(), di.begin(), di.end() );
+  }
+
 }
 
 /** **/

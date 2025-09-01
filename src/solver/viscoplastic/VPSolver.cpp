@@ -57,6 +57,10 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
 
   system.nonlinear_solver->residual_and_jacobian_object = this;
   system.attach_constraint_object( *this );
+
+  /** Include the neighbors in the sparsivity so we can relate them in the jacobian **/
+  system.get_dof_map().set_implicit_neighbor_dofs(1);
+
 }
 
 /**
@@ -515,7 +519,6 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
   ilog1 << "Assembling poroelastic problem - total DoFs=" << dof_map.n_dofs();
 
   MeshBase & mesh = get_mesh();
-
   for ( const auto & elem : mesh.active_local_element_ptr_range() )
   {
     ViscoPlasticMaterial * mat = get_material( *elem );
@@ -539,7 +542,10 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
   harpy_sync_check();
 
   // Add EG stuff
-  if ( vpmat_eg ) vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
+  if ( vpmat_eg ) 
+  {
+    vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
+  }
 
   harpy_sync_check();
 }

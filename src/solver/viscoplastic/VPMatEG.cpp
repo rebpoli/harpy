@@ -22,14 +22,15 @@ vpsolver(vpsolver_),
 fem_p(system),
 fem_n(system),
 qrule(2),
-n_dofs(0),
 n_dofsv(0),
 n_uvars( vpsolver.is_eg() ? 6 : 3 ),
 QP(0),
 ad(n_uvars)
 { 
+  ASSERT( vpsolver.is_eg() , "Must be an EG solver to be here." );
+  ASSERT( system.has_variable("UegX"), "Must be an EG solver to be here." );
+
   // Init Qrule
-  if ( ! system.has_variable( "UegX" ) )    flog << "Only EG systems should be here.";
   uint vid = system.variable_number( "UegX" );
   DofMap & dof_map = system.get_dof_map();
   FEType fe_type = dof_map.variable_type(vid);
@@ -103,19 +104,25 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
   /* 2. Update dofmaps and dof counters. */
   setup_dofs( fp );
 
-  Ke.resize (n_dofs, n_dofs);
-  Re.resize (n_dofs);
+  uint nd = dof_indices_eg.size();
+  Ke.resize (nd, nd);
+  Re.resize (nd);
 
   /* 3. Init QP counter and resolve autodiff solution vectors */
   QP = 0;
-  // TODO: at some point the elements might have different number of dofs 
-  ad.init( n_dofsv, n_dofs_eg, 2 ); 
 
-  /* 4. Feed Uib with current solution */
+  // TODO: at some point the elements might have different number of dofs 
+  //     : Only EG dofs
+  ad.init( 0, n_dofs_eg, 2 ); 
+
+  /* 4. Feed Uib with current solution - just EG part */
   for ( uint e=0; e<2; e++ )
-  for ( uint i=0; i<n_uvars; i++ )
-  for ( uint B=0; B<Ndof(i); B++ )
-    ad.Ueib(e,i,B) = soln( dof_indices[ad.idx(e,i,B)] );
+  for ( uint i=3; i<6; i++ )
+  for ( uint B=0; B<n_dofs_eg; B++ )
+  {
+    dlog(1) << "n_dofs_eg:" << n_dofs_eg << " e:" << e << " i:" << i << " B" << B  << " ad.idx:" << ad.idx(e,i,B);
+    ad.Ueib(e,i,B) = soln( dof_indices_eg[ad.idx(e,i,B)] );
+  }
 }
 
 /**
@@ -127,50 +134,28 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
   Elem * elem_p = mesh.elem_ptr(fp.eid_p);
   Elem * elem_n = mesh.elem_ptr(fp.eid_n);
 
-  const DofMap & dof_map = system.get_dof_map();
-  vector<Elem*> ee = { elem_p, elem_n };
-
-  fem_p.dof_indices.clear();
-  fem_n.dof_indices.clear();
 
   /* Feed the dof indices in our datastructures */
-  // 0..5 = "UX", "UY", "UZ", "UegX", "UegY", "UegZ"
-  for ( uint vi=0; vi<6; vi++ )
-  {
-    vector<dof_id_type> dofi;
+  fem_p.set_dofs( system, elem_p );
+  fem_n.set_dofs( system, elem_n );
 
-    dof_map.dof_indices ( elem_p, dofi, vi );
-    fem_p.dof_indices.insert( fem_p.dof_indices.end(), dofi.begin(), dofi.end() );
+  // Flat structure with EG dofs - for the dof assemblage
+  dof_indices_eg.clear();
+  dof_indices_eg.reserve( fem_p.dofi_eg.size() + fem_n.dofi_eg.size() );
+  dof_indices_eg.insert( dof_indices_eg.end(), fem_p.dofi_eg.begin() , fem_p.dofi_eg.end() );
+  dof_indices_eg.insert( dof_indices_eg.end(), fem_n.dofi_eg.begin() , fem_n.dofi_eg.end() );
 
-    dof_map.dof_indices ( elem_n, dofi, vi );
-    fem_n.dof_indices.insert( fem_n.dof_indices.end(), dofi.begin(), dofi.end() );
-  }
-
-  n_dofs  = fem_p.dof_indices.size();
-
-  // Fill the unique dof_indices with all dofs
-  dof_indices.clear();
-  dof_indices.reserve( fem_p.dof_indices.size() + fem_n.dof_indices.size() );
-  dof_indices.insert( dof_indices.end(), fem_p.dof_indices.begin() , fem_p.dof_indices.end() );
-  dof_indices.insert( dof_indices.end(), fem_n.dof_indices.begin() , fem_n.dof_indices.end() );
-
-  // 
-  vector<dof_id_type> dof_indices_var;
-  dof_map.dof_indices ( elem_p, dof_indices_var, 0 );
-  n_dofsv = dof_indices_var.size();
-
-  ASSERT( vpsolver.is_eg() , "Must be an EG solver to be here." );
-  vector<dof_id_type> dof_indices_eg;
-  dof_map.dof_indices (elem_p, dof_indices_eg, 3);
-  n_dofs_eg = dof_indices_eg.size();
+  // Init dofs counters
+  const DofMap & dof_map = system.get_dof_map();
+  vector<dof_id_type> di;
+  dof_map.dof_indices ( elem_p, di, 0 );
+  n_dofsv = di.size();
+  dof_map.dof_indices ( elem_p, di, 3 );
+  n_dofs_eg = di.size();
 
   /* Useful validation */
-  dof_map.dof_indices (elem_n, dof_indices_eg, 3);
-  ASSERT( n_dofs_eg == dof_indices_eg.size()  , "The elements of the interface have different number of EG DOFs (" << n_dofs_eg << " != " << dof_indices_eg.size() << ")");
   ASSERT( fp.Pq_p.size() == fp.Pq_n.size()    , "Size of the properties vector should be equal (" <<  fp.Pq_p.size() << " != " << fp.Pq_n.size() << ")" );
   ASSERT( fp.Pq_p.size() == qrule.n_points() , "Size of the properties vector should be equal to nqp (" << fp.Pq_p.size() << " != " << qrule.n_points() << ")" );
-
-
 }
 
 /**
@@ -182,15 +167,15 @@ void VPMatEG::residual_and_jacobian_qp()
 
   // Map from the AD variable to libmesh datastructures
   for (uint e=0; e<2; e++) 
-  for (uint i=0; i<n_uvars; i++) 
-  for (uint j=0; j<n_uvars; j++)
+  for (uint i=3; i<6; i++) 
+  for (uint j=3; j<6; j++)
   for (uint B=0; B<Ndof(i);  B++)
   for (uint M=0; M<Ndof(j);  M++)
     Ke( ad.idx(e,i,B) , ad.idx(e,j,M) ) += val( ad.Jeijbm(e,i,j,B,M) );
 
   // Map from the AD variable to libmesh datastructures
   for (uint e=0; e<2; e++) 
-  for (uint i=0; i<n_uvars; i++) 
+  for (uint i=3; i<6; i++) 
   for (uint B=0;  B<Ndof(i);  B++)
     Re( ad.idx(e,i,B) ) += val( ad.Feib(e,i,B) );
 }
@@ -213,14 +198,14 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
 
   // Add to the residual 
   if ( residual ) {
-    dof_map.constrain_element_vector ( Re, dof_indices );
-    residual->add_vector ( Re, dof_indices );
+    dof_map.constrain_element_vector ( Re, dof_indices_eg );
+    residual->add_vector ( Re, dof_indices_eg );
   }
 
   // Add the the global matrix
   if ( jacobian ) {
-    dof_map.constrain_element_matrix (Ke, dof_indices);
-    jacobian->add_matrix (Ke, dof_indices);
+    dof_map.constrain_element_matrix (Ke, dof_indices_eg);
+    jacobian->add_matrix (Ke, dof_indices_eg);
   }
 }
 
