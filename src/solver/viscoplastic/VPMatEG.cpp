@@ -1,5 +1,6 @@
 #include "solver/viscoplastic/VPMatEG.h"
 
+#include "config/ModelConfig.h"
 #include "config/MaterialConfig.h"
 #include "solver/viscoplastic/VPSolver.h"
 #include "util/OutputOperators.h"
@@ -22,6 +23,7 @@ vpsolver(vpsolver_),
 fem_p(system),
 fem_n(system),
 qrule(2),
+Pp(0), Pn(0),
 n_dofsv(0),
 n_uvars( vpsolver.is_eg() ? 6 : 3 ),
 QP(0),
@@ -39,6 +41,33 @@ ad(n_uvars)
   // Do not attach quadrature in fem_n -- it should be mapped by 
   // points during reinit (slave mapping)
   fem_p.attach_qrule( & qrule );
+}
+
+/**
+ *
+ */
+void VPMatEG::init_properties()
+{
+  SCOPELOG(1);
+  for ( EGFacePair & fp : gamma_I )
+  {
+    const MaterialConfig & cfg_p = vpsolver.get_material_config( fp.eid_p );
+    const MaterialConfig & cfg_n = vpsolver.get_material_config( fp.eid_n );
+
+    reinit( fp );
+
+    const std::vector<Point> & xyz_p = fem_p.fe->get_xyz();
+    const std::vector<Point> & xyz_n = fem_n.fe->get_xyz();
+    for ( uint qp=0 ; qp<xyz_n.size() ; qp++ )
+    {
+      ASSERT( (xyz_p[qp]-xyz_n[qp]).norm() < 1e-8 , "These points should coincide.");
+      const Point & pt = xyz_p[qp];
+      fp.get_Pp(qp)->init_from_config( cfg_p, pt );
+      fp.get_Pn(qp)->init_from_config( cfg_n, pt );
+    }
+
+    dlog(1) << fp;
+  }
 }
 
 /**
@@ -84,10 +113,12 @@ void VPMatEG::init()
       gamma_H.emplace_back( egf );
     }
   }
+
+  init_properties();
 }
 
 /* Reinit structures for the face pair fp */
-void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
+void VPMatEG::reinit( EGFacePair & fp )
 {
   MeshBase & mesh = system.get_mesh();
   Elem * elem_p = mesh.elem_ptr(fp.eid_p);
@@ -100,6 +131,13 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
   vector<Point> pts;
   FEMap::inverse_map (3, elem_n, xyz_p, pts, 1E-10);
   fem_n.fe->reinit(elem_n, & pts);
+}
+
+/* Reinit structures for the face pair fp */
+void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
+{
+  /* 1. Basic reinit */
+  reinit(fp);
 
   /* 2. Update dofmaps and dof counters. */
   setup_dofs( fp );
@@ -119,10 +157,7 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
   for ( uint e=0; e<2; e++ )
   for ( uint i=3; i<6; i++ )
   for ( uint B=0; B<n_dofs_eg; B++ )
-  {
-    dlog(1) << "n_dofs_eg:" << n_dofs_eg << " e:" << e << " i:" << i << " B" << B  << " ad.idx:" << ad.idx(e,i,B);
     ad.Ueib(e,i,B) = soln( dof_indices_eg[ad.idx(e,i,B)] );
-  }
 }
 
 /**
@@ -159,11 +194,220 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
 }
 
 /**
+ * 
+ * This is the actual calculation of the residual using the AutoDiff types.
  *
  */
-void VPMatEG::residual_and_jacobian_qp()
+AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
 {
-  /* */
+  ASSERT( Pp->lame_mu || Pn->lame_mu, "Null lame_mu?" );
+  return ad.ad_Fib;
+
+//  const vector<Real> & JxW = fe->get_JxW();
+//  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
+//  const vector<vector<Real>> & phi = fe->get_phi();
+
+
+////  bool deb = 0;
+////  if ( ( elem->id() == 36330 ) && ( ! QP ) ) deb = 1;
+
+//  ad_Fib.setZero(); 
+
+//  AD::Mat grad_u(3,3);
+//  for (uint i=0; i<3; i++)
+//  for (uint j=0; j<3; j++) 
+//  for (uint M=0;  M<n_dofsv;  M++) 
+//    grad_u(i, j) += dphi[M][QP](j) * Uib(i,M); /** Jacobian **/ // ****
+
+//  // EG part - n_uvars > 3 only if EG is in use ; we could also use vpsolver.is_eg()
+//  for (uint i=3; i<n_uvars; i++)
+//  for (uint j=3; j<n_uvars; j++) 
+//  for (uint M=0;  M<n_dofs_eg;  M++) 
+//    grad_u(i, j) += dphi[M][QP](j) * Uib(i,M); /** Jacobian **/ // ****
+
+//  // ( \phi_j , Cijkl U_k,l - Cijkl U^0_k,l ) 
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0; i<3; i++) 
+//  for (uint j=0; j<3; j++) 
+//  for (uint k=0; k<3; k++) 
+//  for (uint l=0; l<3; l++) 
+//    Fib(i,B) += JxW[QP] *  dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * grad_u(k,l) ;
+
+//  // Init sigeff with the initial stuff
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0; i<3; i++ )
+//  for (uint j=0; j<3; j++ ) 
+//    Fib(i,B) += JxW[QP] * dphi[B][QP](j) * P->initial_stress(i,j);
+
+//  // - ( \phi , \rho g )
+//  for (uint B=0;  B<n_dofsv;  B++)
+//    Fib(2,B) -= JxW[QP] *  phi[B][QP] * P->density * GRAVITY_FORCE;   // Assuming Z increases with depth (Z axis points downward)
+
+//  // Temperature
+//  //       alpha_d = beta_d * K_bulk
+//  //       - ( \phi_i,i , \alpha_d T ) ==> term in the RHS.
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0;  i<3;  i++)
+//    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->alpha_d  * ( P->temperature - P->initial_temperature );
+
+//  // Pressure
+//  //       - ( \phi_i,i , biot P ) ==> term in the RHS.
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0;  i<3;  i++)
+//    Fib(i,B) -= JxW[QP] *  dphi[B][QP](i) * P->biot  * ( P->pressure - P->initial_pressure );
+
+//  // For visualization and debugging
+//  AD::real epskk = 0;
+//  for (uint k=0; k<3; k++ ) epskk += grad_u(k,k);
+
+//  // Update stresses and plastic strain
+//  AD::Mat sigeff(3,3);
+
+//  P->sigeff0 = AD::norm(sigeff);
+//  P->plast0 = P->plastic_strain_k.norm();
+//  P->plast0_t = P->plastic_strain_k;
+
+//  for (uint i=0; i<3; i++) 
+//  for (uint j=0; j<3; j++) 
+//    sigeff(i,j) += P->initial_stress(i,j);
+
+////  if ( deb ) ilog << "plast_k:    " << P->plastic_strain_k.norm();
+
+//  for (uint i=0; i<3; i++) for (uint j=0; j<3; j++) 
+//  for (uint k=0; k<3; k++) for (uint l=0; l<3; l++)
+//    sigeff(i,j) += P->C_ijkl(i,j,k,l) * ( grad_u(k,l) - P->plastic_strain_k(k,l) );
+
+//  AD::Mat sigtot = sigeff;
+//  for (uint k=0; k<3; k++ ) 
+//    sigtot(k,k) -= P->alpha_d * ( P->temperature - P->initial_temperature );
+//  for (uint k=0; k<3; k++ ) 
+//    sigtot(k,k) -= P->biot * ( P->pressure - P->initial_pressure );
+
+//  AD::Mat deviatoric = sigtot;
+//  for (uint i=0; i<3; i++ )
+//  for (uint k=0; k<3; k++ ) 
+//    deviatoric(i,i) -= (1./3.) * sigtot(k,k);
+
+//  AD::real J2=0;
+//  for (uint i=0; i<3; i++ )
+//  for (uint j=0; j<3; j++ ) 
+//    J2 += (1./2.) * deviatoric(i,j) * deviatoric(i,j);
+
+//  AD::real von_mises = sqrt( 3 * J2 );
+
+//  double R_ = 8.3144;   // Universal gas constant [ J/mol/K ]
+
+//  // Steadystate crep
+//  AD::real creep_ss_rate = 0;
+//  for ( auto & ss : P->creep_md.ss )
+//    creep_ss_rate += exp( - pow(ss.q/R_/P->temperature, ss.stretch) ) *
+//                     pow( von_mises/ss.sig0 , ss.n );
+
+//  // Transient creep
+//  AD::real F = 1;
+//  for ( auto & tr : P->creep_md.tr )
+//  {
+//    AD::real etr_star = exp( tr.c * P->temperature ) * 
+//                        pow( ( von_mises/tr.sig0 ), tr.m );
+
+//    AD::real zeta = 0;
+//    if ( abs(val(etr_star)) > 1e-20 ) zeta = 1 - P->creep_md.etr / etr_star;
+
+//    double alpha = tr.alpha_w;
+//    if ( zeta <= 0 ) alpha = 0;
+//    F = F * exp( alpha * zeta * zeta );
+//  }
+
+//  AD::real etr_rate = ( F - 1 ) * creep_ss_rate;
+
+//  P->creep_md.etr = P->creep_md.etr_n + val(etr_rate) * vpsolver.ts.dt;
+
+//  /// NOTE: This must match the calculations in the update function (ViscoplasticIFC)
+//  // Compute plastic strain rate
+//  AD::Mat plastic_strain_rate = AD::Mat::Zero(3,3);
+
+//  // If von_mises=0, the strain rate is zero
+//  if ( von_mises )
+//  for ( auto & ss : P->creep_md.ss )
+//    plastic_strain_rate += 
+//              3./2. * F * 
+//              exp( - pow(ss.q/R_/P->temperature, ss.stretch) ) *
+//              pow( von_mises/ss.sig0 , ss.n-1 ) *
+//              deviatoric / ss.sig0;
+
+//  // Update the plasteic strain
+//  AD::Mat plastic_strain = vpsolver.ts.dt * plastic_strain_rate;
+//  for (uint i=0; i<3; i++ )
+//  for (uint j=0; j<3; j++ ) 
+//    plastic_strain(i,j) += P->plastic_strain_n(i,j);
+
+//  /// Set the results into the quadrature point
+//  AD::dump( sigtot, P->sigtot );
+//  AD::dump( sigeff, P->sigeff );
+//  AD::dump( deviatoric, P->deviatoric );
+//  AD::dump( plastic_strain_rate, P->plastic_strain_rate );
+//  AD::dump( plastic_strain, P->plastic_strain);
+//  AD::dump( grad_u, P->GRAD_U);
+
+//  // Debug
+////  const vector<Point> & xyz = fe->get_xyz();
+
+//  P->von_mises = val(von_mises);
+//  P->epskk = val(epskk);
+//  P->F = val(F);
+//  double g=0; 
+//  for (uint i=0; i<3; i++ ) for (uint j=0; j<3; j++ ) g += pow( val(grad_u(i,j)), 2 );
+//  P->grad_norm = g;
+
+//  // 
+//  // Subtract the plastic strain as a body force
+//  //
+//  // - ( \phi_j , Cijkl \varepsilon^p_kl ) 
+//  for (uint B=0;  B<n_dofsv;  B++)
+//  for (uint i=0; i<3; i++) 
+//  for (uint j=0; j<3; j++) 
+//  for (uint k=0; k<3; k++) 
+//  for (uint l=0; l<3; l++) 
+//    Fib(i,B) -= JxW[QP] * dphi[B][QP](j) * P->C_ijkl(i,j,k,l) * plastic_strain(k,l) ;
+
+//  //   Hunting NaN
+//  for (uint i=0; i<3; i++) 
+//  for (uint B=0;  B<n_dofsv;  B++)
+//    if ( P->plastic_strain.norm() > 1e30 ) 
+//    {
+//      ilog << "ELEM:" << elem->id();
+//      ilog << "QP:" << QP;
+//      ilog << "grad_u:" << Print(grad_u);
+//      ilog << "sigeff:" << Print(sigeff);
+//      ilog << "sigtot:" << Print(sigtot);
+//      ilog << "deviatoric:" << Print(deviatoric);
+//      ilog << "J2:" << J2;
+//      ilog << "K:" << P->creep_md;
+//      ilog << "T:" << P->temperature;
+//      ilog << "VM:" << von_mises;
+//      flog << "Found NaN in residual! " << *P;
+//    }
+// 
+//  return ad_Fib;
+}
+
+/**
+ *
+ */
+void VPMatEG::residual_and_jacobian_qp( EGFacePair & fp )
+{
+  // Lambda function to compatibilize stuff
+  auto f = [this](const AD::Vec & x) { return this->residual_qp(x);  };
+
+  Pp = fp.get_Pp(QP);
+  Pn = fp.get_Pn(QP);
+
+  AD::Vec F;
+  ad.ad_Jijbm = AD::jacobian( f, wrt(ad.ad_Uib), at(ad.ad_Uib), F );
+
+  // Update plastic_strain_k : the plastic strain after this newton iteration
+  Pp->plastic_strain_k = Pp->plastic_strain;
+  Pn->plastic_strain_k = Pn->plastic_strain;
 
   // Map from the AD variable to libmesh datastructures
   for (uint e=0; e<2; e++) 
@@ -193,7 +437,7 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
   for ( EGFacePair & fp : gamma_I )
   {
     reinit( soln, fp );
-    do { residual_and_jacobian_qp(); } while ( next_qp() );
+    do { residual_and_jacobian_qp( fp ); } while ( next_qp() );
   }
 
   // Add to the residual 

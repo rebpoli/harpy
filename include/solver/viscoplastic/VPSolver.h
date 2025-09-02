@@ -98,6 +98,8 @@ class ViscoplasticSolver : public Solver,
     ViscoPlasticMaterial * get_material( const Elem & elem );
     ViscoPlasticMaterialBC * get_mat_bc( const Elem & elem );
 
+    const MaterialConfig & get_material_config( uint eid );
+
   private:
     map< uint, ViscoPlasticMaterial *> material_by_sid;
     map< uint, ViscoPlasticMaterialBC *> matbc_by_sid;

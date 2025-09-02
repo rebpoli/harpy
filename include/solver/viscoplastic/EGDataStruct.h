@@ -34,6 +34,17 @@ struct EGFacePair
   uint eid_n;
   vector< VPProps > Pq_p;       /// VPProps for each quadrature point
   vector< VPProps > Pq_n;       /// VPProps for each quadrature point
+
+  ///
+  inline VPProps * get_Pp( uint qp ) {
+    ASSERT( qp < Pq_p.size() , "Out of bounds request in EGFacePair::get_Pp. QP=" << qp << " size:" << Pq_p.size() );
+    return & ( Pq_p.at(qp) ); 
+  }
+  ///
+  inline VPProps * get_Pn( uint qp ) {
+    ASSERT( qp < Pq_n.size() , "Out of bounds request in EGFacePair::get_Pn. QP=" << qp << "size:" << Pq_n.size() );
+    return & ( Pq_n.at(qp) ); 
+  }
 };
 
 /**

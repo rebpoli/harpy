@@ -12,7 +12,7 @@ namespace viscoplastic {
 class ViscoplasticSolver;
 using namespace libMesh;
 
-//using namespace util;
+using namespace util;
 
 /**
  *
@@ -28,8 +28,11 @@ public:
   void residual_and_jacobian ( const NumericVector<Number> & soln, 
                                NumericVector<Number> * residual,
                                SparseMatrix<Number> * jacobian );
-  void residual_and_jacobian_qp();
+  void residual_and_jacobian_qp( EGFacePair & fp );
+  AD::Vec residual_qp( const AD::Vec & );
 
+  void init_properties();
+  void reinit( EGFacePair & fp );
   void reinit( const NumericVector<Number> & soln , EGFacePair & fp );
 
 private:
@@ -44,6 +47,7 @@ private:
 
   EGFEM fem_p, fem_n;                      /// Shape functions to be reinit'ed
   QGauss qrule;                            /// QRULE in the fem_p struct
+  VPProps * Pp, * Pn;                        /// Pointer to the resolved properties (see next_qp)
 
   /// This must include both elements (P and N concatenated)
   vector<dof_id_type> dof_indices_eg;

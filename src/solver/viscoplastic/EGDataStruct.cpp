@@ -1,5 +1,6 @@
 
 #include "solver/viscoplastic/EGDataStruct.h"
+#include "util/OutputOperators.h"
 
 #include "libmesh/dof_map.h"
 
@@ -72,11 +73,14 @@ ostream& operator<<(ostream& os, const EGFace & m)
 /** **/
 ostream& operator<<(ostream& os, const EGFacePair & m)
 {
+  using util::operator<<;
   os << endl;
   os << "       EGFacePair" << endl;
   os << "            E:S+ : " << m.eid_p << ":" << m.side_p << endl; 
   os << "            E-   : " << m.eid_n << endl;
   os << "            Nqp  : " << m.Pq_p.size() << " , " << m.Pq_n.size() << endl;
+  os << "            Pq_p  : " << m.Pq_p << endl;
+  os << "            Pq_n  : " << m.Pq_n << endl;
   return os;
 }
 

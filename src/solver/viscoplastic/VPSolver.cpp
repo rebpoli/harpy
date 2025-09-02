@@ -198,6 +198,36 @@ void ViscoplasticSolver::constrain()
   set_scalar_bcs();
 }
 
+/** **/
+const MaterialConfig & ViscoplasticSolver::get_material_config( uint eid )
+{
+  SCOPELOG(1);
+  set<MaterialConfig> & materials = MODEL->materials;
+
+  // 1. Resolve stuff
+  MeshBase & mesh = get_mesh();
+  Elem & elem = mesh.elem_ref( eid );
+  uint sid = elem.subdomain_id();
+  string sname = mesh.subdomain_name( sid );
+
+  // 2. Solver configuration setup
+  SolverConfig & svr_config = *( this->config );
+  if ( ! svr_config.mat_config_by_name.count( sname ) ) 
+    flog << "Cannot find material configuration by name for subdomain '" << sname << "'. The model is inconsistent.";
+
+  // 3. Locate MaterialConfig 
+  auto & mat_conf_id = svr_config.mat_config_by_name.at( sname );
+  string mat_name = mat_conf_id.name, mat_cfg = mat_conf_id.cfg;
+  MaterialConfig mckey( mat_name, mat_cfg );
+  auto it = materials.find( mckey );
+
+  if ( it == materials.end() ) 
+    flog << "Cannot find material description for '" << sname << "'. The model is inconsistent.";
+
+  return *it;
+}
+
+
 /**
  *   Creates all the needed materials for the solution (one per subdomain ID).
  *   Initializes the material_by_sid structure.

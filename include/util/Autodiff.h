@@ -93,8 +93,6 @@ namespace AD {
     inline AD::real Jeijbm( uint e, uint i, uint j, uint B, uint M )
     { return ad_Jijbm( idx(e, i,B), idx(e, j,M) ); }
 
-  private:
-
     /* dof counters */
     uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;
 

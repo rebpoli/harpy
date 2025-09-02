@@ -563,12 +563,12 @@ DynaIO	/opt/libmesh/src/mesh/dyna_io.C	/^DynaIO::DynaIO (MeshBase & mesh,$/;"	f	
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^  DynamicCastFailure() : std::runtime_error( "Failed dynamic cast!" ) {}$/;"	f	class:libMesh::DynamicCastFailure
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^class DynamicCastFailure:  public std::runtime_error$/;"	c	namespace:libMesh
 EDGE	/opt/libmesh/include/mesh/mesh_refinement.h	/^  enum NeighborType {POINT, EDGE};$/;"	e	enum:libMesh::MeshRefinement::NeighborType
-EGFEM	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFEM {$/;"	s	namespace:solver::viscoplastic
-EGFEM	src/solver/viscoplastic/EGDataStruct.cpp	/^EGFEM::EGFEM( System & sys ) : $/;"	f	class:solver::viscoplastic::EGFEM
+EGFEM	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFEM $/;"	s	namespace:solver::viscoplastic
+EGFEM	src/solver/viscoplastic/EGDataStruct.cpp	/^EGFEM::EGFEM( System & sys ) $/;"	f	class:solver::viscoplastic::EGFEM
 EGFace	include/solver/viscoplastic/EGDataStruct.h	/^  EGFace( uint e, uint s ) : eid(e), side(s) {}$/;"	f	struct:solver::viscoplastic::EGFace
-EGFace	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFace { $/;"	s	namespace:solver::viscoplastic
+EGFace	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFace $/;"	s	namespace:solver::viscoplastic
 EGFacePair	include/solver/viscoplastic/EGDataStruct.h	/^  EGFacePair( uint ep, uint sp, uint en ) : eid_p(ep), side_p(sp), eid_n(en) {}$/;"	f	struct:solver::viscoplastic::EGFacePair
-EGFacePair	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFacePair { $/;"	s	namespace:solver::viscoplastic
+EGFacePair	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFacePair $/;"	s	namespace:solver::viscoplastic
 EIMVarGroupPlottingInfo	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^  EIMVarGroupPlottingInfo()$/;"	f	struct:libMesh::EIMVarGroupPlottingInfo
 EIMVarGroupPlottingInfo	/opt/libmesh/include/reduced_basis/rb_eim_evaluation.h	/^struct EIMVarGroupPlottingInfo$/;"	s	namespace:libMesh
 EIM_BEST_FIT	/opt/libmesh/include/reduced_basis/rb_eim_construction.h	/^  enum BEST_FIT_TYPE { PROJECTION_BEST_FIT, EIM_BEST_FIT, POD_BEST_FIT };$/;"	e	enum:libMesh::RBEIMConstruction::BEST_FIT_TYPE
@@ -1222,6 +1222,7 @@ K_interp_ptr	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    PetscMatrixBa
 K_restrict_ptr	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    PetscMatrixBase<libMesh::Number> * K_restrict_ptr;$/;"	m	struct:libMesh::PetscDMContext
 K_sub_interp_ptr	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    PetscMatrixBase<libMesh::Number> * K_sub_interp_ptr;$/;"	m	struct:libMesh::PetscDMContext
 Ke	/opt/libmesh/include/error_estimation/hp_coarsentest.h	/^  DenseMatrix<Number> Ke;$/;"	m	class:libMesh::HPCoarsenTest
+Ke	include/solver/viscoplastic/VPMatEG.h	/^  DenseMatrix<Number> Ke; \/\/\/ Jacobian for the element$/;"	m	class:solver::viscoplastic::VPMatEG
 Ke	include/solver/viscoplastic/VPMaterial.h	/^  DenseMatrix<Number> Ke; \/\/\/ Jacobian for the element$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 Ke_var	include/solver/viscoplastic/VPMaterial.h	/^  vector<vector< DenseSubMatrix<Number> >> Ke_var;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 KellyErrorEstimator	/opt/libmesh/include/error_estimation/kelly_error_estimator.h	/^class KellyErrorEstimator : public JumpErrorEstimator$/;"	c	namespace:libMesh
@@ -2427,6 +2428,7 @@ PlottingProperties	/opt/libmesh/include/mesh/gnuplot_io.h	/^  enum PlottingPrope
 PltLoader	/opt/libmesh/include/utils/plt_loader.h	/^PltLoader::PltLoader (const bool v) :$/;"	f	class:libMesh::PltLoader
 PltLoader	/opt/libmesh/include/utils/plt_loader.h	/^PltLoader::PltLoader (const std::string & name, const bool v) :$/;"	f	class:libMesh::PltLoader
 PltLoader	/opt/libmesh/include/utils/plt_loader.h	/^class PltLoader$/;"	c	namespace:libMesh
+Pn	include/solver/viscoplastic/VPMatEG.h	/^  VPProps * Pp, Pn;                        \/\/\/ Pointer to the resolved properties (see next_qp)$/;"	m	class:solver::viscoplastic::VPMatEG
 Point	/opt/libmesh/include/geom/point.h	/^  Point (const Real x=0.,$/;"	f	class:libMesh::Point
 Point	/opt/libmesh/include/geom/point.h	/^  Point (const T x) :$/;"	f	class:libMesh::Point
 Point	/opt/libmesh/include/geom/point.h	/^  Point (const TypeVector<Real> & p) :$/;"	f	class:libMesh::Point
@@ -2471,6 +2473,7 @@ PowConstantRightExpr	include/autodiff/reverse/var/var.hpp	/^struct PowConstantRi
 PowExpr	include/autodiff/reverse/var/var.hpp	/^    PowExpr(const T& v, const ExprPtr<T>& ll, const ExprPtr<T>& rr) : BinaryExpr<T>(v, ll, rr), log_l(log(ll->val)) {}$/;"	f	struct:autodiff::reverse::detail::PowExpr
 PowExpr	include/autodiff/reverse/var/var.hpp	/^struct PowExpr : BinaryExpr<T>$/;"	s	namespace:autodiff::reverse::detail
 PowOp	include/autodiff/forward/dual/dual.hpp	/^struct PowOp     {};  \/\/ POWER OPERATOR$/;"	s	namespace:autodiff::detail
+Pp	include/solver/viscoplastic/VPMatEG.h	/^  VPProps * Pp, Pn;                        \/\/\/ Pointer to the resolved properties (see next_qp)$/;"	m	class:solver::viscoplastic::VPMatEG
 Pq	include/solver/viscoplastic/EGDataStruct.h	/^  vector< VPProps > Pq;         \/\/\/ VPProps for each quadrature point$/;"	m	struct:solver::viscoplastic::EGFace
 Pq_n	include/solver/viscoplastic/EGDataStruct.h	/^  vector< VPProps > Pq_n;       \/\/\/ VPProps for each quadrature point$/;"	m	struct:solver::viscoplastic::EGFacePair
 Pq_p	include/solver/viscoplastic/EGDataStruct.h	/^  vector< VPProps > Pq_p;       \/\/\/ VPProps for each quadrature point$/;"	m	struct:solver::viscoplastic::EGFacePair
@@ -2708,6 +2711,7 @@ RawType	/opt/libmesh/include/numerics/type_tensor.h	/^struct RawType<libMesh::Ty
 RawType	/opt/libmesh/include/numerics/type_vector.h	/^struct RawType<libMesh::TypeVector<T>>$/;"	s	namespace:MetaPhysicL
 RawType	/opt/libmesh/include/numerics/vector_value.h	/^struct RawType<libMesh::VectorValue<T>>$/;"	s	namespace:MetaPhysicL
 Re	include/solver/viscoplastic/VPMatBC.h	/^  DenseVector<Number> Re;                          \/\/\/ RHS vector for the element$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
+Re	include/solver/viscoplastic/VPMatEG.h	/^  DenseVector<Number> Re; \/\/\/ RHS vector for the element$/;"	m	class:solver::viscoplastic::VPMatEG
 Re	include/solver/viscoplastic/VPMaterial.h	/^  DenseVector<Number> Re; \/\/\/ RHS vector for the element$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 ReadCost	include/autodiff/forward/dual/eigen.hpp	/^        ReadCost = 1,$/;"	e	enum:Eigen::NumTraits::__anon5
 ReadCost	include/autodiff/forward/real/eigen.hpp	/^        ReadCost = 1,$/;"	e	enum:Eigen::NumTraits::__anon4
@@ -7278,10 +7282,9 @@ dof_indices	/opt/libmesh/src/base/dof_map.C	/^void DofMap::dof_indices (const El
 dof_indices	/opt/libmesh/src/base/dof_map.C	/^void DofMap::dof_indices (const Node * const node,$/;"	f	class:libMesh::DofMap
 dof_indices	/opt/libmesh/src/numerics/static_condensation_dof_map.C	/^void StaticCondensationDofMap::dof_indices(const Elem * const elem,$/;"	f	class:libMesh::StaticCondensationDofMap
 dof_indices	/opt/libmesh/src/numerics/static_condensation_dof_map.C	/^void StaticCondensationDofMap::dof_indices(const Node * const,$/;"	f	class:libMesh::StaticCondensationDofMap
-dof_indices	include/solver/viscoplastic/EGDataStruct.h	/^  vector<dof_id_type> dof_indices;$/;"	m	struct:solver::viscoplastic::EGFEM
 dof_indices	include/solver/viscoplastic/VPMatBC.h	/^  vector<dof_id_type> dof_indices;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
-dof_indices	include/solver/viscoplastic/VPMatEG.h	/^  vector<dof_id_type> dof_indices;$/;"	m	class:solver::viscoplastic::VPMatEG
 dof_indices	include/solver/viscoplastic/VPMaterial.h	/^  vector<dof_id_type> dof_indices;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
+dof_indices_eg	include/solver/viscoplastic/VPMatEG.h	/^  vector<dof_id_type> dof_indices_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
 dof_map	/opt/libmesh/include/base/sparsity_pattern.h	/^  const DofMap & dof_map;$/;"	m	class:libMesh::SparsityPattern::Build
 dof_map	/opt/libmesh/include/solution_transfer/dtk_evaluator.h	/^  DofMap & dof_map;$/;"	m	class:libMesh::DTKEvaluator
 dof_map	/opt/libmesh/src/base/dof_map_constraints.C	/^  DofMap                  & dof_map;$/;"	m	class:__anon10::AddConstraint	file:
@@ -7289,6 +7292,8 @@ dof_map	/opt/libmesh/src/base/dof_map_constraints.C	/^  DofMap                  
 dof_number	/opt/libmesh/include/base/dof_object.h	/^dof_id_type DofObject::dof_number(const unsigned int s,$/;"	f	class:libMesh::DofObject
 dof_owner	/opt/libmesh/include/base/dof_map.h	/^  processor_id_type dof_owner(const dof_id_type dof) const$/;"	f	class:libMesh::DofMap
 dof_vec	/opt/libmesh/include/solvers/petsc_dm_wrapper.h	/^    std::vector<std::vector<numeric_index_type>> dof_vec;$/;"	m	struct:libMesh::PetscDMContext
+dofi_cg	include/solver/viscoplastic/EGDataStruct.h	/^  vector<dof_id_type> dofi_eg, dofi_cg;$/;"	m	struct:solver::viscoplastic::EGFEM
+dofi_eg	include/solver/viscoplastic/EGDataStruct.h	/^  vector<dof_id_type> dofi_eg, dofi_cg;$/;"	m	struct:solver::viscoplastic::EGFEM
 dofmap_reinit	/opt/libmesh/include/ghosting/ghosting_functor.h	/^  virtual void dofmap_reinit () {};$/;"	f	class:libMesh::GhostingFunctor
 dofobjectkey_max_op	/opt/libmesh/include/parallel/parallel_hilbert.h	/^void dofobjectkey_max_op (libMesh::Parallel::DofObjectKey * in,$/;"	f
 dofobjectkey_min_op	/opt/libmesh/include/parallel/parallel_hilbert.h	/^void dofobjectkey_min_op (libMesh::Parallel::DofObjectKey * in,$/;"	f
@@ -7493,7 +7498,6 @@ elapsed_ms	src/util/Stopwatch.cpp	/^double Stopwatch::elapsed_ms() {$/;"	f	class
 elapsed_s	src/util/Stopwatch.cpp	/^double Stopwatch::elapsed_s() {$/;"	f	class:util::Stopwatch
 elem	/opt/libmesh/src/base/dof_map_constraints.C	/^    const Elem * elem;$/;"	m	struct:__anon10::ConstrainDirichlet::SingleElemBoundaryInfo	file:
 elem	include/solver/common/ExplicitMaterial.h	/^  const Elem * elem;      \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::common::ExplicitMaterial
-elem	include/solver/viscoplastic/EGDataStruct.h	/^  const Elem * elem;                               \/\/\/ The element that the material has been reinit'ed to$/;"	m	struct:solver::viscoplastic::EGFEM
 elem	include/solver/viscoplastic/VPMatBC.h	/^  const Elem * elem;                               \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
 elem	include/solver/viscoplastic/VPMaterial.h	/^  const Elem * elem;   \/\/\/ The element that the material has been reinit'ed to$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 elem_by_point	include/postproc/probes/Probe.h	/^  vector<uint> elem_by_point;$/;"	m	class:postproc::probes::Probe
@@ -8570,6 +8574,8 @@ get_Nmax	/opt/libmesh/include/reduced_basis/rb_construction.h	/^  unsigned int g
 get_Nmax	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^unsigned int RBEIMConstruction::get_Nmax() const$/;"	f	class:libMesh::RBEIMConstruction
 get_P	include/postproc/stress/TensorInvariants.h	/^    double get_P() { return invarP; }$/;"	f	class:postproc::stress::TensorInvariants
 get_POD_tol	/opt/libmesh/include/reduced_basis/transient_rb_construction.h	/^  Real get_POD_tol() const                { return POD_tol; }$/;"	f	class:libMesh::TransientRBConstruction
+get_Pn	include/solver/viscoplastic/EGDataStruct.h	/^  inline VPProps * get_Pn( uint qp ) {$/;"	f	struct:solver::viscoplastic::EGFacePair
+get_Pp	include/solver/viscoplastic/EGDataStruct.h	/^  inline VPProps * get_Pp( uint qp ) {$/;"	f	struct:solver::viscoplastic::EGFacePair
 get_Q	include/postproc/stress/TensorInvariants.h	/^    double get_Q() { return invarQ; }$/;"	f	class:postproc::stress::TensorInvariants
 get_RB_error_bound	/opt/libmesh/src/reduced_basis/rb_construction.C	/^Real RBConstruction::get_RB_error_bound()$/;"	f	class:libMesh::RBConstruction
 get_RB_training_type	/opt/libmesh/src/reduced_basis/rb_construction.C	/^const std::string & RBConstruction::get_RB_training_type() const$/;"	f	class:libMesh::RBConstruction
@@ -12764,7 +12770,6 @@ n_dofs	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_radial,T_m
 n_dofs	/opt/libmesh/src/systems/equation_systems.C	/^std::size_t EquationSystems::n_dofs () const$/;"	f	class:libMesh::EquationSystems
 n_dofs	/opt/libmesh/src/systems/system.C	/^dof_id_type System::n_dofs() const$/;"	f	class:libMesh::System
 n_dofs	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
-n_dofs	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
 n_dofs	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_dofs	include/util/Autodiff.h	/^    uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;$/;"	m	struct:util::AD::ContextEG
 n_dofs_at_node	/opt/libmesh/src/fe/fe_hierarchic_vec.C	/^template <> unsigned int FE<0,L2_HIERARCHIC_VEC>::n_dofs_at_node(const Elem &, const Order, const unsigned int) { return 0; }$/;"	f	class:libMesh::FE
@@ -12905,7 +12910,7 @@ n_dofs_at_node_function	/opt/libmesh/src/fe/fe_interface.C	/^FEInterface::n_dofs
 n_dofs_at_node_function	/opt/libmesh/src/fe/fe_interface.C	/^FEInterface::n_dofs_at_node_function(const unsigned int dim,$/;"	f	class:libMesh::FEInterface
 n_dofs_at_node_ptr	/opt/libmesh/include/fe/fe_interface.h	/^  typedef unsigned int (*n_dofs_at_node_ptr) (const ElemType,$/;"	t	class:libMesh::FEInterface
 n_dofs_eg	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
-n_dofs_eg	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
+n_dofs_eg	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
 n_dofs_eg	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_dofs_eg	include/util/Autodiff.h	/^    uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;$/;"	m	struct:util::AD::ContextEG
 n_dofs_on_processor	/opt/libmesh/include/base/dof_map_base.h	/^inline dof_id_type DofMapBase::n_dofs_on_processor(const processor_id_type proc) const$/;"	f	class:libMesh::DofMapBase
@@ -13045,7 +13050,7 @@ n_dofs_per_elem	/opt/libmesh/src/fe/fe_xyz.C	/^template <> unsigned int FE<3,XYZ
 n_dofs_per_elem	/opt/libmesh/src/fe/inf_fe_static.C	/^unsigned int InfFE<Dim,T_radial,T_map>::n_dofs_per_elem (const FEType & fet,$/;"	f	class:libMesh::InfFE
 n_dofs_per_processor	/opt/libmesh/include/base/dof_map.h	/^  std::vector<dof_id_type> n_dofs_per_processor(const unsigned int vn) const$/;"	f	class:libMesh::DofMap
 n_dofsv	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
-n_dofsv	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
+n_dofsv	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
 n_dofsv	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_dofsv	include/util/Autodiff.h	/^    uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;$/;"	m	struct:util::AD::ContextEG
 n_edge_boundary_ids	/opt/libmesh/src/mesh/boundary_info.C	/^unsigned int BoundaryInfo::n_edge_boundary_ids (const Elem * const elem,$/;"	f	class:libMesh::BoundaryInfo
@@ -13149,7 +13154,7 @@ n_threads	/opt/libmesh/include/base/libmesh_base.h	/^unsigned int libMesh::n_thr
 n_unpartitioned_elem	/opt/libmesh/include/mesh/mesh_base.h	/^  dof_id_type n_unpartitioned_elem () const$/;"	f	class:libMesh::MeshBase
 n_unpartitioned_nodes	/opt/libmesh/include/mesh/mesh_base.h	/^  dof_id_type n_unpartitioned_nodes () const$/;"	f	class:libMesh::MeshBase
 n_uvars	include/solver/viscoplastic/VPMatBC.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterialBC
-n_uvars	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
+n_uvars	include/solver/viscoplastic/VPMatEG.h	/^  uint n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::VPMatEG
 n_uvars	include/solver/viscoplastic/VPMaterial.h	/^  uint n_dofs, n_dofsv, n_uvars, n_dofs_eg;$/;"	m	class:solver::viscoplastic::ViscoPlasticMaterial
 n_uvars	include/util/Autodiff.h	/^    uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;$/;"	m	struct:util::AD::ContextEG
 n_var_groups	/opt/libmesh/include/base/dof_object.h	/^unsigned int DofObject::n_var_groups(const unsigned int s) const$/;"	f	class:libMesh::DofObject
@@ -17427,9 +17432,10 @@ residual_and_jacobian	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlastic
 residual_and_jacobian	src/solver/viscoplastic/VPSolver.cpp	/^void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & soln, NumericVector<Number> * residual,$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
 residual_and_jacobian_object	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  NonlinearImplicitSystem::ComputeResidualandJacobian * residual_and_jacobian_object;$/;"	m	class:libMesh::NonlinearSolver
 residual_and_jacobian_qp	src/solver/viscoplastic/VPMatBC.cpp	/^void ViscoPlasticMaterialBC::residual_and_jacobian_qp ()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterialBC
-residual_and_jacobian_qp	src/solver/viscoplastic/VPMatEG.cpp	/^void VPMatEG::residual_and_jacobian_qp()$/;"	f	class:solver::viscoplastic::VPMatEG
+residual_and_jacobian_qp	src/solver/viscoplastic/VPMatEG.cpp	/^void VPMatEG::residual_and_jacobian_qp( EGFacePair & fp )$/;"	f	class:solver::viscoplastic::VPMatEG
 residual_and_jacobian_qp	src/solver/viscoplastic/VPMaterial.cpp	/^void ViscoPlasticMaterial::residual_and_jacobian_qp ()$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 residual_object	/opt/libmesh/include/solvers/nonlinear_solver.h	/^  NonlinearImplicitSystem::ComputeResidual * residual_object;$/;"	m	class:libMesh::NonlinearSolver
+residual_qp	src/solver/viscoplastic/VPMatEG.cpp	/^AD::Vec VPMatEG::residual_qp( const AD::Vec & \/* ad_Uib *\/ )$/;"	f	class:solver::viscoplastic::VPMatEG
 residual_qp	src/solver/viscoplastic/VPMaterial.cpp	/^AD::Vec ViscoPlasticMaterial::residual_qp( const AD::Vec & \/* ad_Uib *\/ )$/;"	f	class:solver::viscoplastic::ViscoPlasticMaterial
 residual_scaling_denom	/opt/libmesh/src/reduced_basis/rb_evaluation.C	/^Real RBEvaluation::residual_scaling_denom(Real alpha_LB)$/;"	f	class:libMesh::RBEvaluation
 residual_scaling_numer	/opt/libmesh/src/reduced_basis/transient_rb_evaluation.C	/^Real TransientRBEvaluation::residual_scaling_numer(Real)$/;"	f	class:libMesh::TransientRBEvaluation
@@ -17776,6 +17782,7 @@ set_dof_coupling	/opt/libmesh/include/ghosting/point_neighbor_coupling.h	/^  voi
 set_dof_coupling	/opt/libmesh/include/ghosting/sibling_coupling.h	/^  void set_dof_coupling(const CouplingMatrix * dof_coupling)$/;"	f	class:libMesh::SiblingCoupling
 set_dof_coupling	/opt/libmesh/src/ghosting/default_coupling.C	/^void DefaultCoupling::set_dof_coupling(const CouplingMatrix * dof_coupling)$/;"	f	class:libMesh::DefaultCoupling
 set_dof_number	/opt/libmesh/src/base/dof_object.C	/^void DofObject::set_dof_number(const unsigned int s,$/;"	f	class:libMesh::DofObject
+set_dofs	src/solver/viscoplastic/EGDataStruct.cpp	/^void EGFEM::set_dofs( System & sys, const Elem * elem )$/;"	f	class:solver::viscoplastic::EGFEM
 set_edgeset_name_map	/opt/libmesh/include/mesh/boundary_info.h	/^  std::map<boundary_id_type, std::string> & set_edgeset_name_map ()$/;"	f	class:libMesh::BoundaryInfo
 set_eigen_preconditioner_type	/opt/libmesh/src/solvers/eigen_sparse_linear_solver.C	/^void EigenSparseLinearSolver<T>::set_eigen_preconditioner_type ()$/;"	f	class:libMesh::EigenSparseLinearSolver
 set_eigenproblem_type	/opt/libmesh/include/solvers/eigen_solver.h	/^  void set_eigenproblem_type ( EigenProblemType ept)$/;"	f	class:libMesh::EigenSolver
@@ -18035,6 +18042,7 @@ setup	/opt/libmesh/src/fe/fe.C	/^    void setup() { caching = new bool(!on_comma
 setup	/opt/libmesh/src/geom/remote_elem.C	/^  void setup ()$/;"	f	class:__anon67::RemoteElemSetup	file:
 setup	/opt/libmesh/src/numerics/static_condensation.C	/^void StaticCondensation::setup() { libmesh_assert(this->closed()); }$/;"	f	class:libMesh::StaticCondensation
 setup_default_monitor	/opt/libmesh/src/solvers/petsc_nonlinear_solver.C	/^void PetscNonlinearSolver<T>::setup_default_monitor()$/;"	f	class:libMesh::PetscNonlinearSolver
+setup_dofs	src/solver/viscoplastic/VPMatEG.cpp	/^void VPMatEG::setup_dofs( EGFacePair & fp )$/;"	f	class:solver::viscoplastic::VPMatEG
 setup_petsc_data	/opt/libmesh/src/solvers/petsc_diff_solver.C	/^void PetscDiffSolver::setup_petsc_data()$/;"	f	class:libMesh::PetscDiffSolver
 setup_static_condensation_preconditioner	/opt/libmesh/src/systems/implicit_system.C	/^void ImplicitSystem::setup_static_condensation_preconditioner(T & solver)$/;"	f	class:libMesh::ImplicitSystem
 setup_variables	src/solver/pressure/PSolverFile.cpp	/^void PressureSolverFromFile::setup_variables()$/;"	f	class:solver::pressure::PressureSolverFromFile
