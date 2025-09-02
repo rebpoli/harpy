@@ -24,8 +24,8 @@ fem_p(system),
 fem_n(system),
 qrule(2),
 Pp(0), Pn(0),
-n_dofsv(0),
 n_uvars( vpsolver.is_eg() ? 6 : 3 ),
+n_dofs_cg(0), n_dofs_eg(0),
 QP(0),
 ad(n_uvars)
 { 
@@ -158,6 +158,18 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
   for ( uint i=3; i<6; i++ )
   for ( uint B=0; B<n_dofs_eg; B++ )
     ad.Ueib(e,i,B) = soln( dof_indices_eg[ad.idx(e,i,B)] );
+
+  /* 5. Feed Uib with current solution - CG part */
+  Ucg_eib.reserve( idx_cg(2,3,n_dofs_cg)+1 );
+  Ucg_eib.clear();
+  for ( uint e=0; e<2; e++ )
+  for ( uint i=0; i<3; i++ )
+  for ( uint B=0; B<n_dofs_cg; B++ )
+  {
+    uint ii = idx_cg(e,i,B);
+    uint dof = dof_indices_cg[ii];
+    Ucg_eib[ii] = soln(dof);
+  }
 }
 
 /**
@@ -169,7 +181,6 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
   Elem * elem_p = mesh.elem_ptr(fp.eid_p);
   Elem * elem_n = mesh.elem_ptr(fp.eid_n);
 
-
   /* Feed the dof indices in our datastructures */
   fem_p.set_dofs( system, elem_p );
   fem_n.set_dofs( system, elem_n );
@@ -180,11 +191,17 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
   dof_indices_eg.insert( dof_indices_eg.end(), fem_p.dofi_eg.begin() , fem_p.dofi_eg.end() );
   dof_indices_eg.insert( dof_indices_eg.end(), fem_n.dofi_eg.begin() , fem_n.dofi_eg.end() );
 
+  // Flat structure with CG dofs - for the dof assemblage
+  dof_indices_cg.clear();
+  dof_indices_cg.reserve( fem_p.dofi_cg.size() + fem_n.dofi_cg.size() );
+  dof_indices_cg.insert( dof_indices_cg.end(), fem_p.dofi_cg.begin() , fem_p.dofi_cg.end() );
+  dof_indices_cg.insert( dof_indices_cg.end(), fem_n.dofi_cg.begin() , fem_n.dofi_cg.end() );
+
   // Init dofs counters
   const DofMap & dof_map = system.get_dof_map();
   vector<dof_id_type> di;
   dof_map.dof_indices ( elem_p, di, 0 );
-  n_dofsv = di.size();
+  n_dofs_cg = di.size();
   dof_map.dof_indices ( elem_p, di, 3 );
   n_dofs_eg = di.size();
 

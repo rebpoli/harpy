@@ -50,19 +50,29 @@ private:
   VPProps * Pp, * Pn;                        /// Pointer to the resolved properties (see next_qp)
 
   /// This must include both elements (P and N concatenated)
-  vector<dof_id_type> dof_indices_eg;
-  uint n_dofsv, n_uvars, n_dofs_eg;
+  vector<dof_id_type> dof_indices_eg, dof_indices_cg;
+  uint n_uvars, n_dofs_cg, n_dofs_eg;
 
   /* For the internal loops:
    *       0,1,2 = Ux,Uy,Uz ; 3,4,5:UegX,UegY,UegZ
    */
-  inline uint Ndof(uint i) { return i>2 ?  n_dofs_eg : n_dofsv; }
+  inline uint Ndof(uint i) { return i>2 ?  n_dofs_eg : n_dofs_cg; }
 
   DenseMatrix<Number> Ke; /// Jacobian for the element
   DenseVector<Number> Re; /// RHS vector for the element
 
   uint QP;
+
+  // Autodiff holds only the EG part of the solution
   util::AD::ContextEG ad;
+  vector<double> Ucg_eib; // Flat structure to the CG part.
+
+  /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
+  inline uint idx_cg( uint e, uint i, uint B ) 
+  { 
+    uint nd = 2 * 3 * n_dofs_cg;
+    return e * nd + i*n_dofs_cg + B;
+  }
 
   friend ostream& operator<<(ostream& os, const VPMatEG & m);
 };
