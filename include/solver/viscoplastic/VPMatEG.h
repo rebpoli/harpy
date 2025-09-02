@@ -69,10 +69,7 @@ private:
 
   /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
   inline uint idx_cg( uint e, uint i, uint B ) 
-  { 
-    uint nd = 2 * 3 * n_dofs_cg;
-    return e * nd + i*n_dofs_cg + B;
-  }
+  { return e*3*n_dofs_cg + i*n_dofs_cg + B; }
 
   friend ostream& operator<<(ostream& os, const VPMatEG & m);
 };

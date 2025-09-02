@@ -56,8 +56,8 @@ void VPMatEG::init_properties()
 
     reinit( fp );
 
-    const std::vector<Point> & xyz_p = fem_p.fe->get_xyz();
-    const std::vector<Point> & xyz_n = fem_n.fe->get_xyz();
+    const std::vector<Point> & xyz_p = fem_p.fe_cg->get_xyz();
+    const std::vector<Point> & xyz_n = fem_n.fe_cg->get_xyz();
     for ( uint qp=0 ; qp<xyz_n.size() ; qp++ )
     {
       ASSERT( (xyz_p[qp]-xyz_n[qp]).norm() < 1e-8 , "These points should coincide.");
@@ -95,7 +95,8 @@ void VPMatEG::init()
       
       EGFacePair egfp( elem_p->id(), side_p, elem_n->id() );
 
-      fem_p.fe->reinit( elem_p, side_p );
+      fem_p.fe_cg->reinit( elem_p, side_p );
+      fem_p.fe_eg->reinit( elem_p, side_p );
       uint nqp = qrule.n_points();
 
       egfp.Pq_p.resize(nqp);
@@ -125,12 +126,14 @@ void VPMatEG::reinit( EGFacePair & fp )
   Elem * elem_n = mesh.elem_ptr(fp.eid_n);
 
   /* 1. Init FEM structs */
-  const std::vector<Point> & xyz_p = fem_p.fe->get_xyz();
-  fem_p.fe->reinit( elem_p , fp.side_p );
+  const std::vector<Point> & xyz_p = fem_p.fe_cg->get_xyz();
+  fem_p.fe_cg->reinit( elem_p , fp.side_p );
+  fem_p.fe_eg->reinit( elem_p , fp.side_p );
 
   vector<Point> pts;
   FEMap::inverse_map (3, elem_n, xyz_p, pts, 1E-10);
-  fem_n.fe->reinit(elem_n, & pts);
+  fem_n.fe_cg->reinit(elem_n, & pts);
+  fem_n.fe_eg->reinit(elem_n, & pts);
 }
 
 /* Reinit structures for the face pair fp */
@@ -200,8 +203,10 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
   // Init dofs counters
   const DofMap & dof_map = system.get_dof_map();
   vector<dof_id_type> di;
+
   dof_map.dof_indices ( elem_p, di, 0 );
   n_dofs_cg = di.size();
+
   dof_map.dof_indices ( elem_p, di, 3 );
   n_dofs_eg = di.size();
 
@@ -218,23 +223,38 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
 AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
 {
   ASSERT( Pp->lame_mu || Pn->lame_mu, "Null lame_mu?" );
-  return ad.ad_Fib;
+  ad.ad_Fib.setZero(); 
 
 //  const vector<Real> & JxW = fe->get_JxW();
-//  const vector<vector<RealGradient>> & dphi = fe->get_dphi();
 //  const vector<vector<Real>> & phi = fe->get_phi();
 
 
-////  bool deb = 0;
-////  if ( ( elem->id() == 36330 ) && ( ! QP ) ) deb = 1;
 
-//  ad_Fib.setZero(); 
+  const vector<vector<RealGradient>> & dphi_cg_p = fem_p.fe_cg->get_dphi();
+  const vector<vector<RealGradient>> & dphi_cg_n = fem_n.fe_cg->get_dphi();
+  const vector<vector<RealGradient>> & dphi_eg_p = fem_p.fe_eg->get_dphi();
+  const vector<vector<RealGradient>> & dphi_eg_n = fem_n.fe_eg->get_dphi();
 
-//  AD::Mat grad_u(3,3);
-//  for (uint i=0; i<3; i++)
-//  for (uint j=0; j<3; j++) 
-//  for (uint M=0;  M<n_dofsv;  M++) 
-//    grad_u(i, j) += dphi[M][QP](j) * Uib(i,M); /** Jacobian **/ // ****
+  AD::Mat grad_u_p(3,3), grad_u_n(3,3);
+
+  for (uint i=0; i<3; i++)
+  for (uint j=0; j<3; j++) 
+  {
+    // CG
+    for (uint M=0;  M<n_dofs_cg;  M++) 
+    {
+      grad_u_p(i, j) += dphi_cg_p[M][QP](j) * Ucg_eib[ idx_cg(0,i,M) ];
+      grad_u_n(i, j) += dphi_cg_n[M][QP](j) * Ucg_eib[ idx_cg(1,i,M) ];
+    }
+    // EG
+    for (uint M=0;  M<n_dofs_eg;  M++) 
+    {
+      grad_u_p(i, j) += dphi_eg_p[M][QP](j) * ad.Ueib(0,i+3,M);
+      grad_u_n(i, j) += dphi_eg_n[M][QP](j) * ad.Ueib(1,i+3,M);
+    }
+  }
+
+  return ad.ad_Fib;
 
 //  // EG part - n_uvars > 3 only if EG is in use ; we could also use vpsolver.is_eg()
 //  for (uint i=3; i<n_uvars; i++)

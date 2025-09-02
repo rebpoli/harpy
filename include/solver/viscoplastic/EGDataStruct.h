@@ -53,7 +53,7 @@ struct EGFacePair
 struct EGFEM 
 {
   EGFEM( System & sys );
-  unique_ptr<FEBase> fe;                           /// The finite element object to hold shape funtions, jxw, etc
+  unique_ptr<FEBase> fe_cg, fe_eg;               /// The finite element object to hold shape funtions, jxw, etc
   vector<dof_id_type> dofi_eg, dofi_cg;
 
   void attach_qrule( QBase * qrule );

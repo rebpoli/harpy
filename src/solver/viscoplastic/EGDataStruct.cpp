@@ -12,24 +12,41 @@ EGFEM::EGFEM( System & sys )
   if ( ! sys.has_variable( "UegX" ) )    // We are not EG?
     flog << "Only EG systems should be here.";
 
-  uint vid = sys.variable_number( "UegX" );
+  // EG
+  {
+    uint vid = sys.variable_number( "UegX" );
+    // Setup shape functions
+    DofMap & dof_map = sys.get_dof_map();
+    FEType fe_type = dof_map.variable_type(vid);
+    fe_eg = move( FEBase::build(3, fe_type) );
+    // Enable calculations calculations
+    fe_eg->get_JxW();
+    fe_eg->get_phi();
+    fe_eg->get_dphi();
+    fe_eg->get_xyz();
+    fe_eg->get_normals();
+  }
 
-  // Setup shape functions
-  DofMap & dof_map = sys.get_dof_map();
-  FEType fe_type = dof_map.variable_type(vid);
-  fe = move( FEBase::build(3, fe_type) );
-
-  // Enable calculations calculations
-  fe->get_JxW();
-  fe->get_phi();
-  fe->get_dphi();
-  fe->get_xyz();
-  fe->get_normals();
+  // CG
+  {
+    uint vid = sys.variable_number( "UX" );
+    // Setup shape functions
+    DofMap & dof_map = sys.get_dof_map();
+    FEType fe_type = dof_map.variable_type(vid);
+    fe_cg = move( FEBase::build(3, fe_type) );
+    // Enable calculations calculations
+    fe_cg->get_JxW();
+    fe_cg->get_phi();
+    fe_cg->get_dphi();
+    fe_cg->get_xyz();
+    fe_cg->get_normals();
+  }
 }
 
 /** **/
 void EGFEM::attach_qrule( QBase * qrule ) {
-  fe->attach_quadrature_rule( qrule ); 
+  fe_cg->attach_quadrature_rule( qrule ); 
+  fe_eg->attach_quadrature_rule( qrule ); 
 }
 
 /** **/
