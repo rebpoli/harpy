@@ -119,6 +119,7 @@ class ViscoplasticSolver : public Solver,
 
     // Post processing
     void posproc_stresses();
+    void export_inner_newton_results();
     void export_results();
     ViscoplasticReport report;
 
@@ -128,8 +129,11 @@ class ViscoplasticSolver : public Solver,
 
     unique_ptr<NumericVector<Number>> old_sol;
 
+    uint inner_newton_k;
+
     friend class restart::File;
     friend ViscoplasticReport;
+    friend VPMatEG;
 };
 
 }} // ns

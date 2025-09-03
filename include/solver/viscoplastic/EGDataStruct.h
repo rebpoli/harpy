@@ -14,6 +14,7 @@ namespace viscoplastic {
 
 using namespace libMesh;
 
+
 /**
  *
  */
@@ -22,6 +23,27 @@ struct EGFace
   EGFace( uint e, uint s ) : eid(e), side(s) {}
   uint eid, side;
   vector< VPProps > Pq;         /// VPProps for each quadrature point
+};
+
+/**
+ *   The description of a boundary, for a variable,
+ *   for a value
+ */
+struct DirichletSetting 
+{
+  string vname;         // the CG name (UX,UY,UZ)
+  uint vid_cg, vid_eg;
+  double val;
+  vector<EGFace> egface_vec;
+
+  inline string vname_eg()
+  {
+    if ( vname == "UX" ) return "UegX";
+    if ( vname == "UY" ) return "UegY";
+    if ( vname == "UZ" ) return "UegZ";
+    flog << "Unknonw variable for Dirichlet setting: " << vname << ".";
+    return vname;
+  }
 };
 
 /**

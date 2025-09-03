@@ -73,17 +73,12 @@ void EGFEM::set_dofs( System & sys, const Elem * elem )
     dof_map.dof_indices ( elem, di, vi );
     dofi_eg.insert( dofi_eg.end(), di.begin(), di.end() );
   }
-
 }
 
 /** **/
 ostream& operator<<(ostream& os, const EGFace & m)
 {
-  os << endl;
-  os << "       EGFace" << endl;
-  os << "            E:S : " << m.eid << ":" << m.side << endl; 
-  os << "            Nqp : " << m.Pq.size() << endl;
-
+  os << m.eid << "/" << m.side << "(nqp:" << m.Pq.size() << ") "; 
   return os;
 }
 

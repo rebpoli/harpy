@@ -12,6 +12,7 @@
 #include <autodiff/common/eigen.hpp>
 
 #include "libmesh/tensor_value.h"
+#include "libmesh/point.h"
 
 namespace util {
 namespace AD {
@@ -41,21 +42,41 @@ namespace AD {
   }
 
   /** **/
+  inline AD::Vec dot( const AD::Mat & t, const AD::Vec & n )
+  {
+    AD::Vec ret = AD::Vec::Zero(n.size());
+    for ( uint i=0; i<t.rows() ; i++ )
+    for ( uint j=0; j<t.cols() ; j++ )
+      ret(i) += t(i,j) * n(j);
+    return ret;
+  }
+
+  /** **/
+  inline AD::Vec dot( const AD::Mat & t, const libMesh::Point & n )
+  {
+    AD::Vec ret = AD::Vec::Zero(3);
+    for ( uint i=0; i<t.rows() ; i++ )
+    for ( uint j=0; j<t.cols() ; j++ )
+      ret(i) += t(i,j) * n(j);
+    return ret;
+  }
+
+  /** **/
   struct ContextEG
   {
 
     /** n_elem_: 2 if it considers 2 neighbors **/
-    ContextEG( uint n_uvars_ ) : n_dofs(0), n_dofsv(0), n_uvars(n_uvars_),  n_dofs_eg(0), n_elem(0)  {}
+    ContextEG( uint n_uvars_ ) : n_elem(0), n_dofs(0), n_uvars(n_uvars_), n_dofs_cg(0), n_dofs_eg(0)  {}
 
     /** **/
-    inline void init(  uint n_dofsv_, uint n_dofs_eg_, uint n_elem_=1 ) 
+    inline void init(  uint n_dofs_cg_, uint n_dofs_eg_, uint n_elem_=1 ) 
     { 
-      n_dofsv = n_dofsv_;
+      n_dofs_cg = n_dofs_cg_;
       n_dofs_eg = n_dofs_eg_;
       n_elem = n_elem_;
 
       // Number of DoFs per element
-      n_dofs = n_dofsv * 3 + n_dofs_eg*(n_uvars-3);
+      n_dofs = n_dofs_cg * 3 + n_dofs_eg*(n_uvars-3);
 
       uint tot_dofs = n_dofs * n_elem;
 
@@ -73,9 +94,9 @@ namespace AD {
       uint ret = e * n_dofs + B;
 
       if ( i > 2 ) 
-        ret += 3*n_dofsv + (i-3) * n_dofs_eg;
+        ret += 3*n_dofs_cg + (i-3) * n_dofs_eg;
       else 
-        ret += i*n_dofsv ;
+        ret += i*n_dofs_cg ;
 
       return ret; 
     }
@@ -94,7 +115,7 @@ namespace AD {
     { return ad_Jijbm( idx(e, i,B), idx(e, j,M) ); }
 
     /* dof counters */
-    uint n_dofs, n_dofsv, n_uvars, n_dofs_eg, n_elem;
+    uint n_elem, n_dofs, n_uvars, n_dofs_cg, n_dofs_eg;
 
     /* Flatened stuff */
     AD::Vec ad_Uib, ad_Fib; 

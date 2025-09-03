@@ -35,12 +35,14 @@ public:
   void reinit( EGFacePair & fp );
   void reinit( const NumericVector<Number> & soln , EGFacePair & fp );
 
+  void update_gammad();
+
 private:
   void setup_dofs( EGFacePair & fp );
   inline bool next_qp();
 
-  vector< EGFacePair > gamma_I;        /// Internal skeleton
-  vector< EGFace > gamma_H;            /// External boundaries
+  vector< EGFacePair > gamma_I;         /// Internal skeleton
+  vector< DirichletSetting > gamma_D;
 
   TransientNonlinearImplicitSystem & system;
   ViscoplasticSolver & vpsolver; 
@@ -50,7 +52,7 @@ private:
   VPProps * Pp, * Pn;                        /// Pointer to the resolved properties (see next_qp)
 
   /// This must include both elements (P and N concatenated)
-  vector<dof_id_type> dof_indices_eg, dof_indices_cg;
+  vector<dof_id_type> dof_indices;
   uint n_uvars, n_dofs_cg, n_dofs_eg;
 
   /* For the internal loops:
@@ -65,7 +67,9 @@ private:
 
   // Autodiff holds only the EG part of the solution
   util::AD::ContextEG ad;
-  vector<double> Ucg_eib; // Flat structure to the CG part.
+
+  // The size penalty
+  double elem_penalty;
 
   /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
   inline uint idx_cg( uint e, uint i, uint B ) 
@@ -75,6 +79,7 @@ private:
 };
 
 ostream& operator<<(ostream& os, const VPMatEG & m);
+ostream& operator<<(ostream& os, const DirichletSetting & m);
 
 /** **/
 inline bool VPMatEG::next_qp()

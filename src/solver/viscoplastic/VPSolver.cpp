@@ -44,7 +44,8 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
                    vpmat_eg( 0 ) ,
-                   report(*this), curr_bc( system )
+                   report(*this), curr_bc( system ),
+                   inner_newton_k(0)
 {
   SCOPELOG(1);
   dlog(1) << "ViscoplasticSolver: " << *config;
@@ -87,7 +88,6 @@ void ViscoplasticSolver::init()
   {
     vpmat_eg = new VPMatEG( system, *this );
     vpmat_eg->init();
-    dlog(1) << *vpmat_eg;
   }
 }
 
@@ -322,6 +322,9 @@ void ViscoplasticSolver::set_dirichlet_bcs()
   }
 
   system.reinit_constraints();
+
+  if ( vpmat_eg ) 
+    vpmat_eg->update_gammad();
 }
 
 /**
@@ -465,6 +468,8 @@ void ViscoplasticSolver::solve()
   system.solve();
   /** ** ** ** **/
 
+  export_inner_newton_results();
+
   bool success = update_adaptive_timestep();
   if ( ! success ) return;  // Do not postprocess if the TS failed
 
@@ -594,6 +599,16 @@ void ViscoplasticSolver::posproc_stresses()
     mat->project_stress( *elem );
   }
   stress_system.solution->close();
+}
+
+/**
+ *
+ */
+void ViscoplasticSolver::export_inner_newton_results()
+{
+  stringstream ss;
+  ss << "vpsolver-k" << inner_newton_k++;
+  export_exo(ss.str());
 }
 
 /**
