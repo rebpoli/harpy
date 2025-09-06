@@ -1,0 +1,140 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.5cm, top=1cm]{geometry}
+\usepackage{amsmath,amssymb,scalerel}
+\usepackage{bbm}
+\usepackage{stmaryrd} % for symbols like \llbracket
+\usepackage{mathabx}
+\usepackage{bm}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage[scr=rsfs,cal=boondox]{mathalfa}
+
+\usepackage{array}
+\usepackage{graphicx}
+
+\usepackage[style=apa,backend=biber]{biblatex}
+\addbibresource{../ref.bib}
+
+\def\CC{\mathbb{C}}
+
+\newcolumntype{A}{c@{\hspace{.5cm}}}
+\newcolumntype{B}{c@{\hspace{2cm}}}
+\newcolumntype{L}{>$l<$} 
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}m{#1}}
+% \newcolumntype{P}{>$l<$} 
+\newcolumntype{H}{>$c<$} 
+\setlength{\jot}{6pt}
+\renewcommand{\arraystretch}{1.5}
+
+\title{THM analysis - contraction mapping}
+\author{Renato Poli}
+\begin{document}
+\maketitle
+\hrule
+
+% some accelarators
+\def\qq{\bm{q}}
+\def\vv{\bm{v}}
+\def\ww{\bm{w}}
+\def\uu{\bm{u}}
+\def\bb{\bm{b}}
+\def\nn{\mathbf{n}}
+\def\tt{\bm{t}}
+\def\ssigma{\bm{\sigma}}
+\def\eeps{\bm{\varepsilon}}
+\def\II{\bm{I}}
+\def\Tzero{T_{\circ}}
+\newcommand{\OmegaE}{{\Omega^{\text{e}}}}
+\newcommand{\OmegaI}{{\Omega_{\text{I}}}}
+\newcommand{\GammaI}{{\Gamma_{\text{I}}}}
+\newcommand{\GammaO}{{\Gamma_{\text{O}}}}
+\newcommand{\GammaIe}{{\Gamma_{\text{I}}^\text{e}}}
+\newcommand{\GammaH}{{\Gamma_{\text{H}}}}
+\newcommand{\GammaD}{{\Gamma_{\text{D}}}}
+\newcommand{\qcq}{\ ,\ }
+\def\jmp#1{\llbracket #1 \rrbracket}
+\def\avg#1{\{ #1 \}}
+
+\section{Equations statement}
+
+Reference papers and books: \parencite{lee2025}, \parencite{coussy2004}, \parencite{cheng2016}, 
+\parencite{nield2006}, \parencite{schon2015}. For thermomechanics, I tried to homogenize the notation,
+especially inspired by \parencite{cheng2016} and \parencite{nield2006} that look cleaner and more intuitive.
+
+%
+%
+%
+\subsection{Mechanics}
+The Cauchy total stress is defined as:
+\begin{align}
+    \ssigma = \CC : \eeps - \alpha\ P\ \II - \alpha_d\ \II\ T
+\end{align}
+where $\CC$ is the elastic stiffness tensor, $\eeps=\frac{1}{2} ( \nabla \uu + \nabla^T \uu )$ is the strain tensor, 
+$\uu$ is the displacement vector, $\alpha$ is the Biot coefficient, $\alpha_d=K\beta_d$ is the 
+drained thermoelastic effective stress coefficient, $K$ is the drained bulk moduluis,
+$\beta_d=3\beta_l$ is the drained coefficient
+of volumetric thermal expansion, $\beta_l$ is the coefficient of linear thermal expansion, $P$ is
+the pore pressure and $T$ is the temperature.
+
+The mechanical equilibrium states that:
+\begin{align}
+  \nabla \cdot \uu + \bb = 0
+\end{align}
+where $\bb$ is the body force, typically associated to the gravity acceleration.
+
+%
+%
+%
+\subsection{Heat transport - thermal}
+\begin{align}
+  \alpha_d\ \Tzero\ \dot{\epsilon} - \beta_e\ \Tzero\ \dot{P} + (\rho c)_m\ \dot{T} = \nabla\cdot(\kappa_m\ \nabla T)
+\end{align}
+where $\epsilon=\varepsilon_{kk}$ is the volumetric strain, $\beta_e$ is the coefficient of volumetric thermal expansion for variation in fluid
+content at constant frame volume, $\Tzero$ is the initial temperature, assuming 
+\[|T-\Tzero|/\Tzero\ll1 \qquad ,\]
+and defining 
+\[(\rho c)_m=(1-\phi) (\rho c)_s + \phi (\rho c)_f \qquad,\] 
+\[\kappa_m = (1-\phi) \kappa_s + \phi \kappa_f \qquad,\]
+$\rho$ is the density of the fluid $f$, solid $s$
+or the mixture $m$, and $c$ is the specific heat of each phase, $\kappa$ is the thermal conductivity
+of each phase, $\phi$ is the porosity.
+
+%
+%
+%
+\subsection{Hydraulic flow}
+\begin{align}
+  \alpha\ \dot{\epsilon} + \frac{1}{M}\ \dot{P} - \beta_e\ \dot{T} = \nabla\cdot( k\ \nabla P )
+\end{align}
+where  $M$ is the Biot modulus and $k=\hat{k}/\mu$ is the 
+hydraulic conductivity, $\hat{k}$ is the intrinsic permeability and $\mu$ is the fluid viscosity 
+(assuming single phase).
+
+\newpage
+\section{Units and reference values}
+
+\begin{table}[htbp]
+\centering
+\[\begin{array}{ c L P{12cm}}
+\hline
+$Parameter$ & Ref value & Description \\
+\hline
+\CC           & $10^7-10^9$ Pa                &  Fourth order elasticity tensor   \\
+K             & $10^7-10^9$ Pa                &  Drained bulk modulus   \\
+\alpha        & $0-1$                         &  Biot coefficient  \\
+\beta_d       & $10^{-5} $ K$^{-1}$           &  Drained coefficient of volumetric thermal expansion  \\
+\alpha_d      & $10^{4}  $ Pa K$^{-1}$        &  Drained coefficient of volumetric thermal expansion  \\
+\beta_e       & $10^{-5} $ K$^{-1}$           &  Coefficient of volumetric thermal expansion for variation in fluid content at constant frame  \\
+(\rho c)_m    & $1-5\times 10^{6}$ Pa         &  Volumetric tangent heat capacity of the mixture solid+fluid  \\
+\kappa_m      & $1-5$ W m$^{-1}$ K$^{-1}$     &  Thermal conductivity of the mixture solid+fluid  \\
+\hat{k}       & $10^{-20}-10^{-12}$ m$^2$     &  Intrinsic permeability.  \\
+\mu           & $10^{-3}$ Pa s                &  Fluid viscosity  \\
+\hline
+\end{array}\]
+\end{table}
+
+\newpage
+\printbibliography
+\end{document}
