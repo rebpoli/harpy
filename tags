@@ -524,7 +524,6 @@ DirichletBoundary	/opt/libmesh/src/base/dirichlet_boundary.C	/^DirichletBoundary
 DirichletBoundary	/opt/libmesh/src/base/dirichlet_boundary.C	/^DirichletBoundary(std::set<boundary_id_type> b_in,$/;"	f	class:libMesh::DirichletBoundary
 DirichletItem	include/solver/viscoplastic/VPBC.h	/^        DirichletItem( sint bid_, uint vid_, double val_, string vname_, string bname_ ) :$/;"	f	class:solver::viscoplastic::BC::DirichletItem
 DirichletItem	include/solver/viscoplastic/VPBC.h	/^    class DirichletItem {$/;"	c	class:solver::viscoplastic::BC
-DirichletSetting	include/solver/viscoplastic/EGDataStruct.h	/^struct DirichletSetting $/;"	s	namespace:solver::viscoplastic
 DisablePerfLogInScope	/opt/libmesh/include/parallel/threads.h	/^class [[maybe_unused]] DisablePerfLogInScope$/;"	c	namespace:libMesh::Threads
 DisablePerfLogInScope	/opt/libmesh/src/parallel/threads.C	/^DisablePerfLogInScope::DisablePerfLogInScope() :$/;"	f	class:libMesh::Threads::DisablePerfLogInScope
 DiscontinuityMeasure	/opt/libmesh/include/error_estimation/discontinuity_measure.h	/^class DiscontinuityMeasure : public JumpErrorEstimator$/;"	c	namespace:libMesh
@@ -564,6 +563,7 @@ DynaIO	/opt/libmesh/src/mesh/dyna_io.C	/^DynaIO::DynaIO (MeshBase & mesh,$/;"	f	
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^  DynamicCastFailure() : std::runtime_error( "Failed dynamic cast!" ) {}$/;"	f	class:libMesh::DynamicCastFailure
 DynamicCastFailure	/opt/libmesh/include/base/libmesh_exceptions.h	/^class DynamicCastFailure:  public std::runtime_error$/;"	c	namespace:libMesh
 EDGE	/opt/libmesh/include/mesh/mesh_refinement.h	/^  enum NeighborType {POINT, EDGE};$/;"	e	enum:libMesh::MeshRefinement::NeighborType
+EGDirichlet	include/solver/viscoplastic/EGDataStruct.h	/^struct EGDirichlet $/;"	s	namespace:solver::viscoplastic
 EGFEM	include/solver/viscoplastic/EGDataStruct.h	/^struct EGFEM $/;"	s	namespace:solver::viscoplastic
 EGFEM	src/solver/viscoplastic/EGDataStruct.cpp	/^EGFEM::EGFEM( System & sys ) $/;"	f	class:solver::viscoplastic::EGFEM
 EGFace	include/solver/viscoplastic/EGDataStruct.h	/^  EGFace( uint e, uint s ) : eid(e), side(s) {}$/;"	f	struct:solver::viscoplastic::EGFace
@@ -7484,7 +7484,7 @@ edges_adjacent_to_node	/opt/libmesh/src/geom/face_polygon.C	/^Polygon::edges_adj
 edges_adjacent_to_node	/opt/libmesh/src/geom/face_quad.C	/^Quad::edges_adjacent_to_node(const unsigned int n) const$/;"	f	class:libMesh::Quad
 edges_adjacent_to_node	/opt/libmesh/src/geom/face_tri.C	/^Tri::edges_adjacent_to_node(const unsigned int n) const$/;"	f	class:libMesh::Tri
 edgeset_name	/opt/libmesh/src/mesh/boundary_info.C	/^std::string & BoundaryInfo::edgeset_name(boundary_id_type id)$/;"	f	class:libMesh::BoundaryInfo
-egface_vec	include/solver/viscoplastic/EGDataStruct.h	/^  vector<EGFace> egface_vec;$/;"	m	struct:solver::viscoplastic::DirichletSetting
+egface_vec	include/solver/viscoplastic/EGDataStruct.h	/^  vector<EGFace> egface_vec;$/;"	m	struct:solver::viscoplastic::EGDirichlet
 eid	include/solver/viscoplastic/EGDataStruct.h	/^  uint eid, side;$/;"	m	struct:solver::viscoplastic::EGFace
 eid	include/solver/viscoplastic/VPBC.h	/^        uint eid, side;$/;"	m	class:solver::viscoplastic::BC::ElemSide
 eid_n	include/solver/viscoplastic/EGDataStruct.h	/^  uint eid_n;$/;"	m	struct:solver::viscoplastic::EGFacePair
@@ -8512,7 +8512,7 @@ g	/opt/libmesh/include/systems/generic_projector.h	/^    std::unique_ptr<GFuncto
 g	/opt/libmesh/src/systems/system_projection.C	/^  std::unique_ptr<FunctionBase<Gradient>> g;$/;"	m	class:libMesh::BoundaryProjectSolution	file:
 g_component	/opt/libmesh/src/base/dof_map_constraints.C	/^  static Gradient g_component (FunctionBase<Gradient> * g,$/;"	f	class:__anon10::ConstrainDirichlet	file:
 g_fem	/opt/libmesh/include/base/dirichlet_boundaries.h	/^  std::unique_ptr<FEMFunctionBase<Gradient>> g_fem;$/;"	m	class:libMesh::DirichletBoundary
-gamma_D	include/solver/viscoplastic/VPMatEG.h	/^  vector< DirichletSetting > gamma_D;$/;"	m	class:solver::viscoplastic::VPMatEG
+gamma_D	include/solver/viscoplastic/VPMatEG.h	/^  vector< EGDirichlet > gamma_D;$/;"	m	class:solver::viscoplastic::VPMatEG
 gamma_I	include/solver/viscoplastic/VPMatEG.h	/^  vector< EGFacePair > gamma_I;         \/\/\/ Internal skeleton$/;"	m	class:solver::viscoplastic::VPMatEG
 gather	/opt/libmesh/src/mesh/mesh_communication.C	/^void MeshCommunication::gather (const processor_id_type root_id, MeshBase & mesh) const$/;"	f	class:libMesh::MeshCommunication
 gather	/opt/libmesh/src/mesh/mesh_communication.C	/^void MeshCommunication::gather (const processor_id_type, MeshBase &) const$/;"	f	class:libMesh::MeshCommunication
@@ -14359,7 +14359,7 @@ operator <<	src/solver/viscoplastic/VPBC.cpp	/^ostream& operator<<(ostream& os, 
 operator <<	src/solver/viscoplastic/VPBC.cpp	/^ostream& operator<<(ostream& os, const vector<BC::PenaltyItem *> & m)$/;"	f	namespace:solver::viscoplastic
 operator <<	src/solver/viscoplastic/VPBC.cpp	/^ostream& operator<<(ostream& os, const vector<BC::ScalarItem> & m)$/;"	f	namespace:solver::viscoplastic
 operator <<	src/solver/viscoplastic/VPIfc.cpp	/^ostream& operator<<(ostream& os, const ViscoplasticIFC & m)$/;"	f	namespace:solver::viscoplastic
-operator <<	src/solver/viscoplastic/VPMatEG.cpp	/^ostream& operator<<(ostream& os, const DirichletSetting & m)$/;"	f	namespace:solver::viscoplastic
+operator <<	src/solver/viscoplastic/VPMatEG.cpp	/^ostream& operator<<(ostream& os, const EGDirichlet & m)$/;"	f	namespace:solver::viscoplastic
 operator <<	src/solver/viscoplastic/VPMatEG.cpp	/^ostream& operator<<(ostream& os, const VPMatEG & m)$/;"	f	namespace:solver::viscoplastic
 operator <<	src/solver/viscoplastic/VPProps.cpp	/^ostream& operator<<(ostream& os, const VPProps & p)$/;"	f	namespace:solver::viscoplastic
 operator <<	src/timeloop/Timestep.cpp	/^ostream& operator<<(ostream& os, const Timestep & ts)$/;"	f	namespace:timeloop
@@ -19979,6 +19979,7 @@ update_RB_system_matrices	/opt/libmesh/src/reduced_basis/transient_rb_constructi
 update_adaptive_timestep	src/solver/viscoplastic/VPSolver.cpp	/^bool ViscoplasticSolver::update_adaptive_timestep()$/;"	f	class:solver::viscoplastic::ViscoplasticSolver
 update_base_elem	/opt/libmesh/src/fe/inf_fe.C	/^void InfFE<Dim,T_radial,T_base>::update_base_elem (const Elem * inf_elem)$/;"	f	class:libMesh::InfFE
 update_eim_matrices	/opt/libmesh/src/reduced_basis/rb_eim_construction.C	/^void RBEIMConstruction::update_eim_matrices(bool set_eim_error_indicator)$/;"	f	class:libMesh::RBEIMConstruction
+update_gammad	src/solver/viscoplastic/VPMatEG.cpp	/^void VPMatEG::update_gammad()$/;"	f	class:solver::viscoplastic::VPMatEG
 update_global_solution	/opt/libmesh/src/systems/system.C	/^void System::update_global_solution (std::vector<Number> & global_soln) const$/;"	f	class:libMesh::System
 update_global_solution	/opt/libmesh/src/systems/system.C	/^void System::update_global_solution (std::vector<Number> & global_soln,$/;"	f	class:libMesh::System
 update_greedy_param_list	/opt/libmesh/src/reduced_basis/rb_construction.C	/^void RBConstruction::update_greedy_param_list()$/;"	f	class:libMesh::RBConstruction
@@ -20066,7 +20067,7 @@ val	include/autodiff/reverse/var/var.hpp	/^    T val = {};$/;"	m	struct:autodiff
 val	include/autodiff/reverse/var/var.hpp	/^    bool val = {};$/;"	m	struct:autodiff::reverse::detail::BooleanExpr
 val	include/autodiff/reverse/var/var.hpp	/^auto val(const T& t) { return expr_value(t); }$/;"	f	namespace:autodiff::reverse::detail
 val	include/config/reader/SpatialDataReader.h	/^      double x, y, z, val;$/;"	m	struct:config::reader::SpatialDataReader::Pt
-val	include/solver/viscoplastic/EGDataStruct.h	/^  double val;$/;"	m	struct:solver::viscoplastic::DirichletSetting
+val	include/solver/viscoplastic/EGDataStruct.h	/^  double val;$/;"	m	struct:solver::viscoplastic::EGDirichlet
 val	include/solver/viscoplastic/VPBC.h	/^        RealTensor val;$/;"	m	class:solver::viscoplastic::BC::STotItem
 val	include/solver/viscoplastic/VPBC.h	/^        sint bid; uint vid; double val; string vname, bname;$/;"	m	class:solver::viscoplastic::BC::DirichletItem
 val	include/util/CsvFile.h	/^  CsvFile& operator << ( CsvFile& (* val)(CsvFile&)) { return val(*this); }$/;"	f	class:CsvFile
@@ -20310,8 +20311,8 @@ victorate	/opt/libmesh/include/base/getpot.h	4023;"	d
 vid	include/solver/viscoplastic/VPBC.h	/^        int bid; uint vid;  double pen_K, pen_val;  string pen_name;$/;"	m	class:solver::viscoplastic::BC::PenaltyItem
 vid	include/solver/viscoplastic/VPBC.h	/^        sint bid; uint vid;  uint svid; string scalar_name, vname, bname;$/;"	m	class:solver::viscoplastic::BC::ScalarItem
 vid	include/solver/viscoplastic/VPBC.h	/^        sint bid; uint vid; double val; string vname, bname;$/;"	m	class:solver::viscoplastic::BC::DirichletItem
-vid_cg	include/solver/viscoplastic/EGDataStruct.h	/^  uint vid_cg, vid_eg;$/;"	m	struct:solver::viscoplastic::DirichletSetting
-vid_eg	include/solver/viscoplastic/EGDataStruct.h	/^  uint vid_cg, vid_eg;$/;"	m	struct:solver::viscoplastic::DirichletSetting
+vid_cg	include/solver/viscoplastic/EGDataStruct.h	/^  uint vid_cg, vid_eg;$/;"	m	struct:solver::viscoplastic::EGDirichlet
+vid_eg	include/solver/viscoplastic/EGDataStruct.h	/^  uint vid_cg, vid_eg;$/;"	m	struct:solver::viscoplastic::EGDirichlet
 virtual_for_inffe	/opt/libmesh/include/fe/fe_abstract.h	39;"	d
 virtual_for_inffe	/opt/libmesh/include/fe/fe_abstract.h	41;"	d
 viscoplastic	include/postproc/report/VPReport.h	/^namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }$/;"	n	namespace:solver
@@ -20343,10 +20344,10 @@ viscoplastic	src/solver/viscoplastic/VPSolver.cpp	/^namespace viscoplastic {$/;"
 vname	include/config/BCConfig.h	/^        string bname, vname; T value;$/;"	m	struct:config::BCConfig::Item
 vname	include/config/BCConfig.h	/^        string bname, vname;$/;"	m	struct:config::BCConfig::ItemTensor
 vname	include/config/BCConfig.h	/^        string subdomain, vname; double value;$/;"	m	struct:config::BCConfig::DomainBC
-vname	include/solver/viscoplastic/EGDataStruct.h	/^  string vname;         \/\/ the CG name (UX,UY,UZ)$/;"	m	struct:solver::viscoplastic::DirichletSetting
+vname	include/solver/viscoplastic/EGDataStruct.h	/^  string vname;         \/\/ the CG name (UX,UY,UZ)$/;"	m	struct:solver::viscoplastic::EGDirichlet
 vname	include/solver/viscoplastic/VPBC.h	/^        sint bid; uint vid;  uint svid; string scalar_name, vname, bname;$/;"	m	class:solver::viscoplastic::BC::ScalarItem
 vname	include/solver/viscoplastic/VPBC.h	/^        sint bid; uint vid; double val; string vname, bname;$/;"	m	class:solver::viscoplastic::BC::DirichletItem
-vname_eg	include/solver/viscoplastic/EGDataStruct.h	/^  inline string vname_eg()$/;"	f	struct:solver::viscoplastic::DirichletSetting
+vname_eg	include/solver/viscoplastic/EGDataStruct.h	/^  inline string vname_eg()$/;"	f	struct:solver::viscoplastic::EGDirichlet
 void_fe_with_vec_switch	/opt/libmesh/src/fe/fe_interface.C	248;"	d	file:
 vol	/opt/libmesh/src/geom/cell_prism6.C	/^  Real vol = 0.;$/;"	m	struct:__anon61::VolumeIntegral	file:
 volume	/opt/libmesh/src/geom/cell_c0polyhedron.C	/^Real C0Polyhedron::volume () const$/;"	f	class:libMesh::C0Polyhedron

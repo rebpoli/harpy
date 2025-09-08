@@ -17,6 +17,17 @@ ostream& operator<<(ostream& os, const set<double> & m) {
   return os;
 }
 
+ostream& operator<<(ostream& os, const vector<optional<double>> & m)
+{
+  os << "[";
+  for ( uint i=0; i<m.size() ; i++) {
+    if ( i ) os << " ";
+    os << m[i];
+  }
+  os << "] ("<< m.size() <<")";
+  return os;
+}
+
 ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m)
 {
   os << "[";

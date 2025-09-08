@@ -25,6 +25,7 @@ namespace libMesh { class Point; }
 
 namespace util {
 
+ostream& operator<<(ostream& os, const vector<optional<double>> & m);
 ostream& operator<<(ostream& os, const vector<pair<uint,uint>> & m);
 ostream& operator<<(ostream& os, const set<double> & m);
 

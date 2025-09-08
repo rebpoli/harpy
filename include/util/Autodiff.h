@@ -89,6 +89,7 @@ namespace AD {
     }
 
     /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
+    inline uint idx( uint i, uint B ) { return idx(0,i,B); }
     inline uint idx( uint e, uint i, uint B ) 
     { 
       uint ret = e * n_dofs + B;
@@ -98,20 +99,22 @@ namespace AD {
       else 
         ret += i*n_dofs_cg ;
 
+//      dlog(1) << "idx e(" << e << ") i(" << i << ") B(" << B << "): " << ret << " /// n_dofs(" << n_dofs << ") n_dofs_cg(" << n_dofs_cg << ") n_dofs_eg(" << n_dofs_eg << ")";
       return ret; 
     }
 
     /* Single element shortcuts */
     inline AD::real & Uib( uint i, uint B ) { return Ueib( 0, i, B ); }
     inline AD::real & Fib( uint i, uint B ) { return Feib( 0, i, B ); }
-    inline AD::real Jijbm( uint i, uint j, uint B, uint M ) { return Jeijbm( 0, i, j, B, M ) ; }
+    inline AD::real Jijbm( uint i, uint j, uint B, uint M ) { return Jenijbm( 0, 0, i, j, B, M ) ; }
 
     /* Multiple elements */
     inline AD::real & Ueib( uint e, uint i, uint B )
     { return ad_Uib[ idx(e, i,B) ]; }
     inline AD::real & Feib( uint e, uint i, uint B )
     { return ad_Fib[ idx(e, i,B) ]; }
-    inline AD::real Jeijbm( uint e, uint i, uint j, uint B, uint M )
+    // 
+    inline AD::real Jenijbm( uint e, uint n, uint i, uint j, uint B, uint M )
     { return ad_Jijbm( idx(e, i,B), idx(e, j,M) ); }
 
     /* dof counters */

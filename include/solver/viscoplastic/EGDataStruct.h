@@ -7,6 +7,8 @@
 #include "libmesh/quadrature_gauss.h"
 #include "libmesh/fe.h"
 
+#include <optional>
+
 namespace libMesh { class Elem; } 
 
 namespace solver {
@@ -23,18 +25,32 @@ struct EGFace
   EGFace( uint e, uint s ) : eid(e), side(s) {}
   uint eid, side;
   vector< VPProps > Pq;         /// VPProps for each quadrature point
+
+  inline VPProps * get_P( uint qp ) {
+    ASSERT( qp < Pq.size() , "Out of bounds request in EGFacePair::get_Pp. QP=" << qp << " size:" << Pq.size() );
+    return & ( Pq.at(qp) ); 
+  }
 };
 
 /**
  *   The description of a boundary, for a variable,
  *   for a value
  */
-struct DirichletSetting 
+struct EGDirichlet 
 {
   string vname;         // the CG name (UX,UY,UZ)
   uint vid_cg, vid_eg;
   double val;
   vector<EGFace> egface_vec;
+
+  inline vector<optional<double>> u_hat()
+  {
+    vector<optional<double>> ret(3);
+    if ( vname == "UX" ) ret[0] = val;
+    if ( vname == "UY" ) ret[1] = val;
+    if ( vname == "UZ" ) ret[2] = val;
+    return ret;
+  }
 
   inline string vname_eg()
   {
