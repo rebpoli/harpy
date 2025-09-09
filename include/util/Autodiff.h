@@ -110,12 +110,12 @@ namespace AD {
 
     /* Multiple elements */
     inline AD::real & Ueib( uint e, uint i, uint B )
-    { return ad_Uib[ idx(e, i,B) ]; }
+    { return ad_Uib[ idx(e,i,B) ]; }
     inline AD::real & Feib( uint e, uint i, uint B )
-    { return ad_Fib[ idx(e, i,B) ]; }
+    { return ad_Fib[ idx(e,i,B) ]; }
     // 
     inline AD::real Jenijbm( uint e, uint n, uint i, uint j, uint B, uint M )
-    { return ad_Jijbm( idx(e, i,B), idx(e, j,M) ); }
+    { return ad_Jijbm( idx(e,i,B), idx(n,j,M) ); }
 
     /* dof counters */
     uint n_elem, n_dofs, n_uvars, n_dofs_cg, n_dofs_eg;

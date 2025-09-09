@@ -61,7 +61,6 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
 
   /** Include the neighbors in the sparsivity so we can relate them in the jacobian **/
   system.get_dof_map().set_implicit_neighbor_dofs(1);
-
 }
 
 /**
@@ -77,6 +76,7 @@ ViscoplasticSolver::~ViscoplasticSolver() {
 void ViscoplasticSolver::init()
 {
   SCOPELOG(1);
+  system.print_info();
   for ( auto & [ sid, mat ] : material_by_sid )
     mat->init_fem();
 
@@ -84,11 +84,12 @@ void ViscoplasticSolver::init()
     mat->init_fem();
 
   // Initialize EG 
-  if ( is_eg() ) 
-  {
+//    TODO: ENABLE EG
+//  if ( is_eg() ) 
+//  {
     vpmat_eg = new VPMatEG( system, *this );
     vpmat_eg->init();
-  }
+//  }
 }
 
 /**
@@ -113,16 +114,18 @@ void ViscoplasticSolver::setup_variables()
 //    dlog(1) << "     Order:" << order;
 //    dlog(1) << "     FEFamily:" << fe_family;
 
-    system.add_variable( "UX", order, LAGRANGE );
-    system.add_variable( "UY", order, LAGRANGE );
-    system.add_variable( "UZ", order, LAGRANGE );
+//    TODO: ENABLE EG
+    system.add_variable( "UX", order, L2_LAGRANGE );
+    system.add_variable( "UY", order, L2_LAGRANGE );
+    system.add_variable( "UZ", order, L2_LAGRANGE );
 
-    if ( femspec.family == "ENRICHED_GALERKIN")
-    {
-      system.add_variable( "UegX", CONSTANT, MONOMIAL );
-      system.add_variable( "UegY", CONSTANT, MONOMIAL );
-      system.add_variable( "UegZ", CONSTANT, MONOMIAL );
-    }
+//    TODO: ENABLE EG
+//    if ( femspec.family == "ENRICHED_GALERKIN")
+//    {
+//      system.add_variable( "UegX", CONSTANT, MONOMIAL );
+//      system.add_variable( "UegY", CONSTANT, MONOMIAL );
+//      system.add_variable( "UegZ", CONSTANT, MONOMIAL );
+//    }
   }
 
   // Stresses
@@ -309,19 +312,19 @@ void ViscoplasticSolver::set_dirichlet_bcs()
   DofMap & dof_map = system.get_dof_map();
   dof_map.get_dirichlet_boundaries()->clear();
 
-  // The dirichlet structure in curr_bc is already processed and can be added easily
-  for ( auto & dbc : curr_bc.dirichlet ) 
-  {
-    dlog(1) << "["<< fmt_i(ts.t_step) << "] Adding dirichlet boundary condition: " << 
-                     system.variable_name( dbc.vid ) << "("<< dbc.vid << ")" << "=" << dbc.val << 
-                     " @ " << bi.get_sideset_name( dbc.bid ) << "(" << dbc.bid << ")";
+//  // The dirichlet structure in curr_bc is already processed and can be added easily
+//  for ( auto & dbc : curr_bc.dirichlet ) 
+//  {
+//    dlog(1) << "["<< fmt_i(ts.t_step) << "] Adding dirichlet boundary condition: " << 
+//                     system.variable_name( dbc.vid ) << "("<< dbc.vid << ")" << "=" << dbc.val << 
+//                     " @ " << bi.get_sideset_name( dbc.bid ) << "(" << dbc.bid << ")";
 
-    ConstFunction<> cf(dbc.val);
-    DirichletBoundary bound({dbc.bid}, {dbc.vid}, cf, LOCAL_VARIABLE_ORDER);
-    dof_map.add_dirichlet_boundary( bound );
-  }
+//    ConstFunction<> cf(dbc.val);
+//    DirichletBoundary bound({dbc.bid}, {dbc.vid}, cf, LOCAL_VARIABLE_ORDER);
+//    dof_map.add_dirichlet_boundary( bound );
+//  }
 
-  system.reinit_constraints();
+//  system.reinit_constraints();
 
   if ( vpmat_eg ) 
     vpmat_eg->update_gammad();
@@ -578,9 +581,7 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
 
   // Add EG stuff
   if ( vpmat_eg ) 
-  {
     vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
-  }
 
   harpy_sync_check();
 }

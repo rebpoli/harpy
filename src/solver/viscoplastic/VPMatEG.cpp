@@ -30,15 +30,18 @@ n_uvars( vpsolver.is_eg() ? 6 : 3 ),
 n_dofs_cg(0), n_dofs_eg(0),
 QP(0),
 ad(n_uvars),
-elem_penalty(0)
+elem_penalty(0),
+beta(1)
 { 
-  ASSERT( vpsolver.is_eg() , "Must be an EG solver to be here." );
-  ASSERT( system.has_variable("UegX"), "Must be an EG solver to be here." );
+//    TODO: ENABLE EG
+//  ASSERT( vpsolver.is_eg() , "Must be an EG solver to be here." );
+//  ASSERT( system.has_variable("UegX"), "Must be an EG solver to be here." );
 
   // Init Qrule based on a CG var (assuming it has higher order than EG)
   uint vid = system.variable_number( "UX" );
   DofMap & dof_map = system.get_dof_map();
   FEType fe_type = dof_map.variable_type(vid);
+  dlog(1) << "QUAD_ORDER:" << fe_type.default_quadrature_order();
   qrule = QGauss( 2, fe_type.default_quadrature_order() );
 
   // Do not attach quadrature in fem_n -- it should be mapped by 
@@ -101,6 +104,8 @@ void VPMatEG::init()
   SCOPELOG(1);
   MeshBase & mesh = system.get_mesh();
 
+  gamma_I.clear();
+
   for ( const auto & elem_p : mesh.active_local_element_ptr_range() )
   for ( auto side_p : elem_p->side_index_range() ) 
   {
@@ -119,21 +124,18 @@ void VPMatEG::init()
       EGFacePair egfp( elem_p->id(), side_p, elem_n->id() );
 
       fem_p.fe_cg->reinit( elem_p, side_p );
-      fem_p.fe_eg->reinit( elem_p, side_p );
       uint nqp = qrule.n_points();
+
+//    TODO: ENABLE EG
+//      fem_p.fe_eg->reinit( elem_p, side_p );
+//      uint nqp1 = qrule.n_point();
+//      ASSERT(nqp1==nqp, "nqp1(" << nqp1 << ") should be equal to nqp(" << nqp << ")?");
 
       egfp.Pq_p.resize(nqp);
       egfp.Pq_n.resize(nqp);
 
       gamma_I.emplace_back( egfp );
     }
-//    else
-//    {   // Register outer boundary skeleton
-//      EGFace egf( elem_p->id(), side_p );
-//      uint nqp = qrule.n_points();
-//      egf.Pq.resize(nqp);
-//      gamma_D.emplace_back( egf );
-//    }
   }
 
   init_properties();
@@ -143,6 +145,8 @@ void VPMatEG::init()
 void VPMatEG::update_gammad()
 {
   SCOPELOG(1);
+
+  gamma_D.clear();
 
   MeshBase & mesh = system.get_mesh();
   const BoundaryInfo & bi = mesh.get_boundary_info();
@@ -158,9 +162,10 @@ void VPMatEG::update_gammad()
     diric.val = dbc.val;
     if ( ! system.has_variable( diric.vname ) ) flog << "System does not have variable '" << diric.vname << "'.";
     diric.vid_cg = system.variable_number( diric.vname );
-    string vname_eg = diric.vname_eg();
-    if ( ! system.has_variable( vname_eg ) ) flog << "System does not have variable '" << vname_eg << "'.";
-    diric.vid_eg = system.variable_number( vname_eg );
+//    TODO: ENABLE EG
+//    string vname_eg = diric.vname_eg();
+//    if ( ! system.has_variable( vname_eg ) ) flog << "System does not have variable '" << vname_eg << "'.";
+//    diric.vid_eg = system.variable_number( vname_eg );
 
     for ( const auto & elem : mesh.active_local_element_ptr_range() )
     for ( auto side : elem->side_index_range() ) 
@@ -168,6 +173,7 @@ void VPMatEG::update_gammad()
     if ( bi.has_boundary_id( elem, side, bid ) )
     {
       EGFace egf( elem->id(), side );
+      reinit(egf);
       uint nqp = qrule.n_points();
       egf.Pq.resize(nqp);
       diric.egface_vec.push_back( egf );
@@ -193,17 +199,20 @@ void VPMatEG::reinit( EGFacePair & fp )
   auto side_volume = side_builder(*elem_p, fp.side_p).volume();
 //  uint elem_b_order = static_cast<unsigned int> (fe_elem_face->get_order());
   const Real h_elem = elem_p->volume()/side_volume; // * 1./pow(elem_b_order, 2.);
-  elem_penalty = 1 / h_elem;
+  dlog(1) << "h_elem:" << h_elem;
+  elem_penalty = 1e12 / h_elem;
 
   /* 1. Init FEM structs */
   const std::vector<Point> & xyz_p = fem_p.fe_cg->get_xyz();
   fem_p.fe_cg->reinit( elem_p , fp.side_p );
-  fem_p.fe_eg->reinit( elem_p , fp.side_p );
+//    TODO: ENABLE EG
+//  fem_p.fe_eg->reinit( elem_p , fp.side_p );
 
   vector<Point> pts;
   FEMap::inverse_map (3, elem_n, xyz_p, pts, 1E-10);
   fem_n.fe_cg->reinit(elem_n, & pts);
-  fem_n.fe_eg->reinit(elem_n, & pts);
+//    TODO: ENABLE EG
+//  fem_n.fe_eg->reinit(elem_n, & pts);
 }
 
 /* Reinit structures for the face pair fp */
@@ -237,6 +246,7 @@ void VPMatEG::reinit( const NumericVector<Number> & soln , EGFacePair & fp )
 /* Reinit structures for the face pair fp */
 void VPMatEG::reinit( EGFace & egf )
 {
+  SCOPELOG(1);
   MeshBase & mesh = system.get_mesh();
   Elem * elem = mesh.elem_ptr(egf.eid);
 
@@ -244,11 +254,12 @@ void VPMatEG::reinit( EGFace & egf )
   auto side_volume = side_builder(*elem, egf.side).volume();
 //  uint elem_b_order = static_cast<unsigned int> (fe_elem_face->get_order());
   const Real h_elem = elem->volume()/side_volume; // * 1./pow(elem_b_order, 2.);
-  elem_penalty = 1 / h_elem;
+  dlog(1) << "h_elem:" << h_elem;
+  elem_penalty = 1e12 / h_elem;
 
   /* Init FEM structs */
   fem_p.fe_cg->reinit( elem , egf.side );
-  fem_p.fe_eg->reinit( elem , egf.side );
+//  fem_p.fe_eg->reinit( elem , egf.side );
 
 }
 /* Reinit structures for the face pair fp */
@@ -294,15 +305,17 @@ void VPMatEG::setup_dofs( EGFace & egf )
   // Flat structure with all dofs for both elements - for the dof assemblage
   dof_map.dof_indices ( elem, dof_indices );
 
-  using util::operator<<;
-  dlog(1) << "Dof indices:" << dof_indices;
-  elem->print_info();
+//  using util::operator<<;
+//  dlog(1) << "Dof indices:" << dof_indices;
+//  elem->print_info();
 
   dof_map.dof_indices ( elem, di, 0 );
   n_dofs_cg = di.size();
 
-  dof_map.dof_indices ( elem, di, 3 );
-  n_dofs_eg = di.size();
+//    TODO: ENABLE EG
+//  dof_map.dof_indices ( elem, di, 3 );
+  n_dofs_eg = 0;
+//  n_dofs_eg = di.size();
 }
 
 /**
@@ -330,8 +343,8 @@ void VPMatEG::setup_dofs( EGFacePair & fp )
   dof_map.dof_indices ( elem_p, di, 0 );
   n_dofs_cg = di.size();
 
-  dof_map.dof_indices ( elem_p, di, 3 );
-  n_dofs_eg = di.size();
+//  dof_map.dof_indices ( elem_p, di, 3 );
+//  n_dofs_eg = di.size();
 
   /* Useful validation */
   ASSERT( fp.Pq_p.size() == fp.Pq_n.size()    , "Size of the properties vector should be equal (" <<  fp.Pq_p.size() << " != " << fp.Pq_n.size() << ")" );
@@ -353,9 +366,9 @@ AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
 
   // Compute U , jumps, averages
   const vector<vector<Real>> & phi_cg_p = fem_p.fe_cg->get_phi();
+//  const vector<vector<Real>> & phi_eg_p = fem_p.fe_eg->get_phi();
   const vector<vector<Real>> & phi_cg_n = fem_n.fe_cg->get_phi();
-  const vector<vector<Real>> & phi_eg_p = fem_p.fe_eg->get_phi();
-  const vector<vector<Real>> & phi_eg_n = fem_n.fe_eg->get_phi();
+//  const vector<vector<Real>> & phi_eg_n = fem_n.fe_eg->get_phi();
   AD::Vec u_p(3), u_n(3);
   // CG
   for (uint i=0; i<3; i++)
@@ -364,20 +377,22 @@ AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
     u_p(i) += phi_cg_p[M][QP] * ad.Ueib(0,i,M);
     u_n(i) += phi_cg_n[M][QP] * ad.Ueib(1,i,M);
   }
-  // EG
-  for (uint i=0; i<3; i++)
-  for (uint M=0;  M<n_dofs_eg;  M++) 
-  {
-    u_p(i) += phi_eg_p[M][QP] * ad.Ueib(0,i+3,M);
-    u_n(i) += phi_eg_n[M][QP] * ad.Ueib(1,i+3,M);
-  }
+//  // EG
+//  for (uint i=0; i<3; i++)
+//  for (uint M=0;  M<n_dofs_eg;  M++) 
+//  {
+////    dlog(1) << "idx (E) @ jmp: " << ad.idx(0,i+3,M) << "  phi_eg:" << phi_eg_p[M][QP];
+////    dlog(1) << "idx (N) @ jmp: " << ad.idx(1,i+3,M) << "  phi_eg:" << phi_eg_n[M][QP];
+//    u_p(i) += phi_eg_p[M][QP] * ad.Ueib(0,i+3,M);
+//    u_n(i) += phi_eg_n[M][QP] * ad.Ueib(1,i+3,M);
+//  }
   AD::Vec jmp_u = u_p - u_n;
 
   // Compute grad_u
   const vector<vector<RealGradient>> & dphi_cg_p = fem_p.fe_cg->get_dphi();
+//  const vector<vector<RealGradient>> & dphi_eg_p = fem_p.fe_eg->get_dphi();
   const vector<vector<RealGradient>> & dphi_cg_n = fem_n.fe_cg->get_dphi();
-  const vector<vector<RealGradient>> & dphi_eg_p = fem_p.fe_eg->get_dphi();
-  const vector<vector<RealGradient>> & dphi_eg_n = fem_n.fe_eg->get_dphi();
+//  const vector<vector<RealGradient>> & dphi_eg_n = fem_n.fe_eg->get_dphi();
   AD::Mat grad_u_p(3,3), grad_u_n(3,3);
   // CG
   for (uint i=0; i<3; i++)
@@ -387,15 +402,15 @@ AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
     grad_u_p(i, j) += dphi_cg_p[M][QP](j) * ad.Ueib(0,i,M);
     grad_u_n(i, j) += dphi_cg_n[M][QP](j) * ad.Ueib(1,i,M);
   }
-  // EG
-  for (uint i=0; i<3; i++)
-  for (uint j=0; j<3; j++) 
-  for (uint M=0;  M<n_dofs_eg;  M++) 
-  {
-    // Derivative of a constant is zero?
-    grad_u_p(i, j) += dphi_eg_p[M][QP](j) * ad.Ueib(0,i+3,M);
-    grad_u_n(i, j) += dphi_eg_n[M][QP](j) * ad.Ueib(1,i+3,M);
-  }
+//  // EG
+//  for (uint i=0; i<3; i++)
+//  for (uint j=0; j<3; j++) 
+//  for (uint M=0;  M<n_dofs_eg;  M++) 
+//  {
+//    // Derivative of a constant is zero?
+//    grad_u_p(i, j) += dphi_eg_p[M][QP](j) * ad.Ueib(0,i+3,M);
+//    grad_u_n(i, j) += dphi_eg_n[M][QP](j) * ad.Ueib(1,i+3,M);
+//  }
 
 // Compute the stresses {sigma}n
 //  sig = C_ijkl gradu_k,l
@@ -549,27 +564,43 @@ AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
   }
 
   // Calculate the jumps
-  AD::Vec avg_sig_n = 0.5 * AD::dot( (sig_p+sig_n) , normal );
-  AD::Vec jmp_sig_n =       AD::dot( (sig_p-sig_n) , normal );
+  // The normal is outward to the "p" face, so we need the negative sign for sig_n
+  AD::Vec avg_sig_n = 0.5 * AD::dot( (sig_p - sig_n) , normal );
+//  AD::Vec jmp_sig_n =       AD::dot( (sig_p-sig_n) , normal );
 
   // Now we need to assemble Feib
-  double beta = -1;
   double gamma = elem_penalty;
 
   // - ( [[w^B]] , {\sigma} n )_\GammaI
-  for (uint B=0;  B<n_dofs_eg;  B++)
+  for (uint B=0;  B<n_dofs_cg;  B++)
   for (uint i=0; i<3; i++) 
   {
-    ad.Feib(0,i+3,B) -= JxW[QP] * phi_eg_p[B][QP] * avg_sig_n(i) ;
-    ad.Feib(1,i+3,B) += JxW[QP] * phi_eg_n[B][QP] * avg_sig_n(i) ;
+    ad.Feib(0,i,B) -= JxW[QP] * phi_cg_p[B][QP] * avg_sig_n(i) ;
+    ad.Feib(1,i,B) += JxW[QP] * phi_cg_n[B][QP] * avg_sig_n(i) ;
   }
 
-  // + ( \gamma [[w^B]] , [[\sigma]] n )_\GammaI
-  for (uint B=0;  B<n_dofs_eg;  B++)
+//  // - ( [[w^B]] , {\sigma} n )_\GammaI
+//  for (uint B=0;  B<n_dofs_eg;  B++)
+//  for (uint i=0; i<3; i++) 
+//  {
+//    ad.Feib(0,i+3,B) -= JxW[QP] * phi_eg_p[B][QP] * avg_sig_n(i) ;
+//    ad.Feib(1,i+3,B) += JxW[QP] * phi_eg_n[B][QP] * avg_sig_n(i) ;
+//  }
+
+//  // + ( \gamma [[w^B]] , [[u]] )_\GammaI
+//  for (uint B=0;  B<n_dofs_eg;  B++)
+//  for (uint i=0; i<3; i++) 
+//  {
+//    ad.Feib(0,i+3,B) += JxW[QP] * gamma * phi_eg_p[B][QP] * jmp_u(i) ;
+//    ad.Feib(1,i+3,B) -= JxW[QP] * gamma * phi_eg_n[B][QP] * jmp_u(i) ;
+//  }
+
+  // + ( \gamma [[w^B]] , [[u]] )_\GammaI
+  for (uint B=0;  B<n_dofs_cg;  B++)
   for (uint i=0; i<3; i++) 
   {
-    ad.Feib(0,i+3,B) += JxW[QP] * gamma * phi_eg_p[B][QP] * jmp_sig_n(i) ;
-    ad.Feib(1,i+3,B) -= JxW[QP] * gamma * phi_eg_n[B][QP] * jmp_sig_n(i) ;
+    ad.Feib(0,i,B) += JxW[QP] * gamma * phi_cg_p[B][QP] * jmp_u(i) ;
+    ad.Feib(1,i,B) -= JxW[QP] * gamma * phi_cg_n[B][QP] * jmp_u(i) ;
   }
 
   // + ( \beta {\sigma_w}n , [[u]] )_\GammaI
@@ -577,21 +608,21 @@ AD::Vec VPMatEG::residual_qp( const AD::Vec & /* ad_Uib */ )
   for (uint j=0; j<3; j++) 
   for (uint k=0; k<3; k++) 
   for (uint l=0; l<3; l++) 
-  for (uint B=0;  B<n_dofs_eg;  B++)
   {
-    ad.Feib(0,k+3,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_eg_p[B][QP](l) * normal(j) * jmp_u(i);
-    ad.Feib(1,k+3,B) += 0.5 * JxW[QP] * beta * Pn->C_ijkl(i,j,k,l) * dphi_eg_n[B][QP](l) * normal(j) * jmp_u(i);
-  }
-
-//  {
-//    // CG
-//    for (uint B=0;  B<n_dofs_cg;  B++)
+    // CG
+    for (uint B=0;  B<n_dofs_cg;  B++)
+    {
+      // normal(j) is the outward normal to the "p" face ; The "n" normal requires the inverse sign.
+      ad.Feib(0,k,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_cg_p[B][QP](l) * normal(j) * jmp_u(i); // jmp_u=0 for CG?
+      ad.Feib(1,k,B) -= 0.5 * JxW[QP] * beta * Pn->C_ijkl(i,j,k,l) * dphi_cg_n[B][QP](l) * normal(j) * jmp_u(i);
+    }
+//    // EG
+//    for (uint B=0;  B<n_dofs_eg;  B++)
 //    {
-//      ad.Feib(0,k,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_cg_p[B][QP](l) * normal(j) * jmp_u(i); // jmp_u=0 for CG?
-//      ad.Feib(1,k,B) += 0.5 * JxW[QP] * beta * Pn->C_ijkl(i,j,k,l) * dphi_cg_n[B][QP](l) * normal(j) * jmp_u(i);
+//      ad.Feib(0,k+3,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_eg_p[B][QP](l) * normal(j) * jmp_u(i);
+//      ad.Feib(1,k+3,B) += 0.5 * JxW[QP] * beta * Pn->C_ijkl(i,j,k,l) * dphi_eg_n[B][QP](l) * normal(j) * jmp_u(i);
 //    }
-    // EG
-//  }
+  }
 
   return ad.ad_Fib;
 }
@@ -621,18 +652,22 @@ void VPMatEG::residual_and_jacobian_qp( EGFacePair & fp )
   for (uint j=0; j<6; j++)
   for (uint B=0; B<Ndof(i);  B++)
   for (uint M=0; M<Ndof(j);  M++)
-    Ke( ad.idx(e,i,B) , ad.idx(n,j,M) ) = e; // += val( ad.Jeijbm(e,i,j,B,M) );
+    Ke( ad.idx(e,i,B) , ad.idx(n,j,M) ) += val( ad.Jenijbm(e,n,i,j,B,M) );
 
-  using util::operator<<;
-  dlog(1) << "Ke:" << endl << Ke;
-  dlog(1) << "Re:" << endl << Re;
+//  for (uint e=0; e<2; e++) 
+//  for (uint n=0; n<2; n++) 
+//  for (uint i=0; i<6; i++) 
+//  for (uint j=0; j<6; j++)
+//  for (uint B=0; B<Ndof(i);  B++)
+//  for (uint M=0; M<Ndof(j);  M++)
+//    dlog(1) << "enijBM: " << e << "," << n << "," << i << "," << j << "," << B << "," << M << " (idx:" << ad.idx(e,i,B) << "," << ad.idx(n,j,M) << ") - val(J):" << val(ad.Jenijbm(e,n,i,j,B,M));
 
   // Map from the AD variable to libmesh datastructures
   for (uint e=0; e<2; e++) 
   for (uint i=0; i<6; i++) 
   for (uint B=0;  B<Ndof(i);  B++)
   {
-    dlog(1) << "idx(" << ad.idx(e,i,B) << " : Feib(idx)=" << ad.Feib(e,i,B);
+//    dlog(1) << "idx(" << ad.idx(e,i,B) << " : Feib(idx)=" << ad.Feib(e,i,B);
     Re( ad.idx(e,i,B) ) += val( ad.Feib(e,i,B) );
   }
 }
@@ -650,11 +685,17 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
   /* 
    * Gamma_I 
    */
+//  using util::operator<<;
+//  dlog(1) << "GAMMAI:" << gamma_I;
+
   for ( EGFacePair & fp : gamma_I )
   {
     reinit( soln, fp );
     do { residual_and_jacobian_qp( fp ); } while ( next_qp() );
 
+//    using util::operator<<;
+//    dlog(1) << "Ke:" << endl << Ke;
+//    dlog(1) << "Re:" << endl << Re;
 
     // Add to the residual 
     if ( residual ) {
@@ -671,6 +712,8 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
   /*
    * Gamma_D
    */
+//  using util::operator<<;
+//  dlog(1) << "GAMMAD:" << gamma_D;
   for ( EGDirichlet & egd : gamma_D )
   {
     /* The dirichlet value we are setting */
@@ -680,6 +723,12 @@ void VPMatEG::residual_and_jacobian ( const NumericVector<Number> & soln,
       reinit( soln, egf );
 
       do { residual_and_jacobian_dirichlet_qp( egf ); } while ( next_qp() );
+
+//      using util::operator<<;
+//      dlog(1) << "DOF_INDICES: " << dof_indices;
+//      MeshBase & mesh = system.get_mesh();
+//      Elem * elem = mesh.elem_ptr(egf.eid);
+//      elem->print_info();
 
       // Add to the residual 
       if ( residual ) {
@@ -711,9 +760,9 @@ AD::Vec VPMatEG::residual_dirichlet_qp( const AD::Vec & /* ad_Uib */ )
 
   // Compute U , jumps, averages
   const vector<vector<Real>> & phi_cg = fem_p.fe_cg->get_phi();
-  const vector<vector<Real>> & phi_eg = fem_p.fe_eg->get_phi();
+//  const vector<vector<Real>> & phi_eg = fem_p.fe_eg->get_phi();
   const vector<vector<RealGradient>> & dphi_cg = fem_p.fe_cg->get_dphi();
-  const vector<vector<RealGradient>> & dphi_eg = fem_p.fe_eg->get_dphi();
+//  const vector<vector<RealGradient>> & dphi_eg = fem_p.fe_eg->get_dphi();
 
   AD::Vec u(3);
 
@@ -722,46 +771,73 @@ AD::Vec VPMatEG::residual_dirichlet_qp( const AD::Vec & /* ad_Uib */ )
   for (uint M=0;  M<n_dofs_cg;  M++) 
     u(i) += phi_cg[M][QP] * ad.Ueib(0,i,M);
 
-  // EG
+//    TODO: ENABLE EG
+//  // EG
+//  for (uint i=0; i<3; i++)
+//  for (uint M=0;  M<n_dofs_eg;  M++) 
+//    u(i) += phi_eg[M][QP] * ad.Ueib(0,i+3,M);
+
+  AD::Mat grad_u(3,3);
+  // CG
   for (uint i=0; i<3; i++)
-  for (uint M=0;  M<n_dofs_eg;  M++) 
-    u(i) += phi_eg[M][QP] * ad.Ueib(0,i+3,M);
+  for (uint j=0; j<3; j++) 
+  for (uint M=0;  M<n_dofs_cg;  M++) 
+    grad_u(i, j) += dphi_cg[M][QP](j) * ad.Ueib(0,i,M);
 
   // Now we need to assemble Feib
-  double beta = -1;
-  double gamma = 1; //elem_penalty;
+  double gamma = elem_penalty;
 
-  using util::operator<<;
-  dlog(1) << "u_hat:" << u_hat;
+//  using util::operator<<;
+//  dlog(1) << "u_hat:" << u_hat;
   
   // + ( \gamma w^B , u - u_hat n )_\GammaD
   for (uint i=0; i<3; i++) 
+  if (u_hat[i]) 
   {
-    if (! u_hat[i] ) continue; // if u_hat is not defined for this coord, move on
     double u_hat_i = *(u_hat[i]);
-
-    // EG
-    for (uint B=0;  B<n_dofs_eg;  B++)    // EG (should be enough?)
-      ad.Fib(i+3,B) += JxW[QP] * gamma * phi_eg[B][QP] * ( u(i) - u_hat_i ) ;
+//    dlog(1) << "    uhat(" << i << "):" << u_hat_i;
 
     // CG
     for (uint B=0;  B<n_dofs_cg;  B++)      // CG
       ad.Fib(i,B) += JxW[QP] * gamma * phi_cg[B][QP] * ( u(i) - u_hat_i ) ;
+
+//    // EG
+//    for (uint B=0;  B<n_dofs_eg;  B++)    // EG (should be enough?)
+//      ad.Fib(i+3,B) += JxW[QP] * gamma * phi_eg[B][QP] * ( u(i) - u_hat_i ) ;
+
   }
 
-//  // + ( \beta {\sigma_w}n , [[u]] )_\GammaI
-//  for (uint i=0; i<3; i++) 
-//  for (uint j=0; j<3; j++) 
-//  for (uint k=0; k<3; k++) 
-//  for (uint l=0; l<3; l++) 
-//  {
-//    // CG
-//    for (uint B=0;  B<n_dofs_cg;  B++)
-//      ad.Fib(k,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_cg[B][QP](l) * normal(j) * ( u(i) - u_hat(i) );
-//    // EG
-//    for (uint B=0;  B<n_dofs_eg;  B++)
-//      ad.Fib(k,B) += 0.5 * JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_eg[B][QP](l) * normal(j) * ( u(i) - u_hat(i) );
-//  }
+  // + ( \beta {\sigma_w}n , [[u]] )_\GammaD
+  for (uint i=0; i<3; i++) 
+  if (u_hat[i]) 
+  {
+    double u_hat_i = *(u_hat[i]);
+
+    for (uint j=0; j<3; j++) 
+    for (uint k=0; k<3; k++) 
+    for (uint l=0; l<3; l++) 
+    {
+      // CG
+      for (uint B=0;  B<n_dofs_cg;  B++)
+        ad.Fib(k,B) += JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_cg[B][QP](l) * normal(j) * ( u(i) - u_hat_i );
+////       EG
+//      for (uint B=0;  B<n_dofs_eg;  B++)
+//        ad.Fib(k+3,B) +=  JxW[QP] * beta * Pp->C_ijkl(i,j,k,l) * dphi_eg[B][QP](l) * normal(j) * ( u(i) - u_hat_i );
+      }
+  }
+
+  // - ( [[v]]  m {\sigma_u} n )_\GammaD
+  for (uint i=0; i<3; i++) 
+  if  ( u_hat[i] ) 
+  for (uint j=0; j<3; j++) 
+  for (uint k=0; k<3; k++) 
+  for (uint l=0; l<3; l++) 
+  {
+    // CG
+    for (uint B=0;  B<n_dofs_cg;  B++)
+      ad.Fib(i,B) -= JxW[QP] *  Pp->C_ijkl(i,j,k,l) * phi_cg[B][QP] * normal(j) * grad_u(k,l) ;
+    // TODO: EG part!
+  }
 
   return ad.ad_Fib;
 }
@@ -774,23 +850,32 @@ void VPMatEG::residual_and_jacobian_dirichlet_qp( EGFace & egf )
   // Lambda function to compatibilize stuff
   auto f = [this](const AD::Vec & x) { return this->residual_dirichlet_qp(x);  };
 
+  dlog(1) << "residual_and_jacobian_dirichlet_qp : QP:" << QP ;
   Pp = egf.get_P(QP);
 
   AD::Vec F;
   ad.ad_Jijbm = AD::jacobian( f, wrt(ad.ad_Uib), at(ad.ad_Uib), F );
 
   // Map from the AD variable to libmesh datastructures
-  for (uint i=0; i<6; i++) 
-  for (uint j=0; j<6; j++)
+//    TODO: ENABLE EG
+//  for (uint i=0; i<6; i++) 
+//  for (uint j=0; j<6; j++)
+  for (uint i=0; i<3; i++) 
+  for (uint j=0; j<3; j++)
   for (uint B=0; B<Ndof(i);  B++)
   for (uint M=0; M<Ndof(j);  M++)
     Ke( ad.idx(i,B) , ad.idx(j,M) ) += val( ad.Jijbm(i,j,B,M) );
 
   // Map from the AD variable to libmesh datastructures
-  for (uint i=0; i<6; i++) 
+//    TODO: ENABLE EG
+//  for (uint i=0; i<6; i++) 
+  for (uint i=0; i<3; i++) 
   for (uint B=0;  B<Ndof(i);  B++)
     Re( ad.idx(i,B) ) += val( ad.Fib(i,B) );
 
+//  using util::operator<<;
+//  dlog(1) << "Re: " << Re;
+//  dlog(1) << "Ke: " << Ke;
 }
 
  /**

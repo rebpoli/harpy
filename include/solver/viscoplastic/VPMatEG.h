@@ -82,7 +82,7 @@ private:
   util::AD::ContextEG ad;
 
   // The size penalty
-  double elem_penalty;
+  double elem_penalty, beta;
 
   /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
   inline uint idx_cg( uint e, uint i, uint B ) 

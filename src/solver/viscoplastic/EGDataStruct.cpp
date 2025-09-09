@@ -9,23 +9,24 @@ namespace viscoplastic {
 
 EGFEM::EGFEM( System & sys ) 
 {
-  if ( ! sys.has_variable( "UegX" ) )    // We are not EG?
-    flog << "Only EG systems should be here.";
+//    TODO: ENABLE EG
+//  if ( ! sys.has_variable( "UegX" ) )    // We are not EG?
+//    flog << "Only EG systems should be here.";
 
-  // EG
-  {
-    uint vid = sys.variable_number( "UegX" );
-    // Setup shape functions
-    DofMap & dof_map = sys.get_dof_map();
-    FEType fe_type = dof_map.variable_type(vid);
-    fe_eg = move( FEBase::build(3, fe_type) );
-    // Enable calculations calculations
-    fe_eg->get_JxW();
-    fe_eg->get_phi();
-    fe_eg->get_dphi();
-    fe_eg->get_xyz();
-    fe_eg->get_normals();
-  }
+//  // EG
+//  {
+//    uint vid = sys.variable_number( "UegX" );
+//    // Setup shape functions
+//    DofMap & dof_map = sys.get_dof_map();
+//    FEType fe_type = dof_map.variable_type(vid);
+//    fe_eg = move( FEBase::build(3, fe_type) );
+//    // Enable calculations calculations
+//    fe_eg->get_JxW();
+//    fe_eg->get_phi();
+//    fe_eg->get_dphi();
+//    fe_eg->get_xyz();
+//    fe_eg->get_normals();
+//  }
 
   // CG
   {
@@ -46,7 +47,8 @@ EGFEM::EGFEM( System & sys )
 /** **/
 void EGFEM::attach_qrule( QBase * qrule ) {
   fe_cg->attach_quadrature_rule( qrule ); 
-  fe_eg->attach_quadrature_rule( qrule ); 
+//    TODO: ENABLE EG
+//  fe_eg->attach_quadrature_rule( qrule ); 
 }
 
 /** **/
@@ -67,12 +69,13 @@ void EGFEM::set_dofs( System & sys, const Elem * elem )
     dofi_cg.insert( dofi_cg.end(), di.begin(), di.end() );
   }
 
-  // EG
-  for ( uint vi=3; vi<6; vi++ )
-  {
-    dof_map.dof_indices ( elem, di, vi );
-    dofi_eg.insert( dofi_eg.end(), di.begin(), di.end() );
-  }
+//    TODO: ENABLE EG
+//  // EG
+//  for ( uint vi=3; vi<6; vi++ )
+//  {
+//    dof_map.dof_indices ( elem, di, vi );
+//    dofi_eg.insert( dofi_eg.end(), di.begin(), di.end() );
+//  }
 }
 
 /** **/
