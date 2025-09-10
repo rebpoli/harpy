@@ -125,4 +125,61 @@ namespace AD {
     AD::Mat ad_Jijbm;
   };
 
+  /** **/
+  struct ContextDG
+  {
+
+    /** n_elem_: 2 if it considers 2 neighbors **/
+    ContextDG( uint n_uvars_ ) : n_elem(0), n_dofs(0), n_uvars(n_uvars_), n_dofs_u(0)   {}
+
+    /** **/
+    inline void init(  uint n_dofs_u_, uint n_elem_=1 ) 
+    { 
+      n_dofs_u = n_dofs_u_u;
+      n_elem = n_elem_;
+
+      // Number of DoFs per element
+      n_dofs = n_dofs_u * 3;
+
+      uint tot_dofs = n_dofs * n_elem;
+
+      ad_Uib.resize( tot_dofs ); 
+      ad_Uib.setZero();
+      ad_Fib.resize( tot_dofs );
+      ad_Fib.setZero();
+      ad_Jijbm.resize( tot_dofs, tot_dofs );
+      ad_Jijbm.setZero();
+    }
+
+    /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
+    inline uint idx( uint i, uint B ) { return idx(0,i,B); }
+    inline uint idx( uint e, uint i, uint B ) 
+    { 
+      uint ret = e * n_dofs + B;
+      ret += i*n_dofs_u ;
+      return ret; 
+    }
+
+    /* Single element shortcuts */
+    inline AD::real & Uib( uint i, uint B ) { return Ueib( 0, i, B ); }
+    inline AD::real & Fib( uint i, uint B ) { return Feib( 0, i, B ); }
+    inline AD::real Jijbm( uint i, uint j, uint B, uint M ) { return Jenijbm( 0, 0, i, j, B, M ) ; }
+
+    /* Multiple elements */
+    inline AD::real & Ueib( uint e, uint i, uint B )
+    { return ad_Uib[ idx(e,i,B) ]; }
+    inline AD::real & Feib( uint e, uint i, uint B )
+    { return ad_Fib[ idx(e,i,B) ]; }
+    // 
+    inline AD::real Jenijbm( uint e, uint n, uint i, uint j, uint B, uint M )
+    { return ad_Jijbm( idx(e,i,B), idx(n,j,M) ); }
+
+    /* dof counters */
+    uint n_elem, n_dofs, n_uvars, n_dofs_u;
+
+    /* Flatened stuff */
+    AD::Vec ad_Uib, ad_Fib; 
+    AD::Mat ad_Jijbm;
+  };
+
 } } // ns

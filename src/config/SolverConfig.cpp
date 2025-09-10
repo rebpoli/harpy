@@ -17,6 +17,24 @@ SolverConfig::SolverConfig( string model_dir_, string sys_name_, string sys_cfg_
 { 
   using namespace config::reader;
   SolverReader( *this ); 
+  validate();
+}
+
+/*
+ *  Run after reading the input files. Check for inconsistencies.
+ */
+void SolverConfig::validate()
+{
+  for ( auto & [vname, fem] : fem_by_var )
+  {
+    if ( iequals ( fem.type , "CONTINUOUS" ) )
+    if ( iequals ( fem.family , "L2_LAGRANGE" ) )
+      flog << "Incompatible family and fem type. Revise.";
+
+    if ( iequals ( fem.type , "DISCONTINUOUS" ) )
+    if ( ! iequals ( fem.family , "L2_LAGRANGE" ) )
+      flog << "Incompatible family and fem type. Revise.";
+  }
 }
 
 /**

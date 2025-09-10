@@ -74,6 +74,8 @@ public:
   MatConfigMap mat_config_by_name; /// the chosen configuration for this run
   Numerical numerical;
 
+  void validate();
+
   SolverConfig( string model_dir_, string sys_name_, string sys_cfg_ );
 
   string model_dir, sys_file, sys_name, sys_cfg, mesh_filename;

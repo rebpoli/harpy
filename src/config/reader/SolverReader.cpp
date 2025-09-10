@@ -102,9 +102,15 @@ void SolverReader::parse_sys_file()
       case State::FEM:       {   fem_state();         break;    }
       default: break;
     } 
-
-     
   } // machine loop
+}
+
+/**
+ *
+ */
+void SolverReader::validate() 
+{
+
 }
 
 /**
@@ -284,6 +290,7 @@ void SolverReader::fem_state()
 
   using util::to_upper;
 
+  const set<string> KNOWN_FE_TYPE = { "CONTINUOUS", "DISCONTINUOUS" };
   const set<string> KNOWN_FE_FAMILY = { "LAGRANGE", "L2_LAGRANGE", "ENRICHED_GALERKIN" };
 
   smatch match;
@@ -295,13 +302,21 @@ void SolverReader::fem_state()
 
     using FEMSpec = SolverConfig::FEMSpec;
     FEMSpec & fem = config.fem_by_var[var];
-    if ( iequals( key, "type" ) )          fem.type = val;
+    //
+    if ( iequals( key, "type" ) )
+    {
+      if (! KNOWN_FE_TYPE.count(val) ) flog << "Unknown FE type '" << val << "'.";
+      fem.type = val;
+    }
+    //
     else if ( iequals( key, "family") )   
     {
       if (! KNOWN_FE_FAMILY.count(val) ) flog << "Unknown FE Family '" << val << "'.";
       fem.family = val;
     }
+    //
     else if ( iequals( key, "order") )     fem.order = val;
+    //
     else if ( iequals( key, "implicit") )  {
       if ( ! regex_search( val, match, RE_NUM ) ) flog << "Invalid value for IMPLICIT. Must be a number.";
       fem.implicit = stod(val);

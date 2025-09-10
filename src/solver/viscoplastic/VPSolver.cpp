@@ -43,7 +43,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
-                   vpmat_eg( 0 ) ,
+                   vpmat_eg( 0 ) , vpmat_dg( 0 ) ,
                    report(*this), curr_bc( system ),
                    inner_newton_k(0)
 {
@@ -68,6 +68,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
  */
 ViscoplasticSolver::~ViscoplasticSolver() {
   if ( vpmat_eg ) delete(vpmat_eg);
+  if ( vpmat_dg ) delete(vpmat_dg);
   for ( auto & [ sid, mat ] : material_by_sid ) delete( mat );
   for ( auto & [ sid, mat ] : matbc_by_sid ) delete( mat );
 }
@@ -83,13 +84,19 @@ void ViscoplasticSolver::init()
   for ( auto & [ sid, mat ] : matbc_by_sid )
     mat->init_fem();
 
-  // Initialize EG 
-//    TODO: ENABLE EG
-//  if ( is_eg() ) 
-//  {
+  // Initialize DG or EG 
+
+  if ( is_dg() ) 
+  {
+    vpmat_dg = new VPMatDG( system, *this );
+    vpmat_dg->init();
+  }
+
+  if ( is_eg() ) 
+  {
     vpmat_eg = new VPMatEG( system, *this );
     vpmat_eg->init();
-//  }
+  }
 }
 
 /**
@@ -105,7 +112,7 @@ void ViscoplasticSolver::setup_variables()
   auto & femspec = config->fem_by_var.at("U");
 
   {
-    set<string> KNOWN_FAMILY = { "LAGRANGE", "ENRICHED_GALERKIN" };
+    set<string> KNOWN_FAMILY = { "LAGRANGE", "ENRICHED_GALERKIN", "L2_LAGRANGE" };
     if ( ! KNOWN_FAMILY.count( femspec.family ) ) flog << "FEM family not supported for this solver '" << femspec.family << "'.";
 
     Order order = Utility::string_to_enum<Order>( femspec.order ) ;
@@ -114,18 +121,30 @@ void ViscoplasticSolver::setup_variables()
 //    dlog(1) << "     Order:" << order;
 //    dlog(1) << "     FEFamily:" << fe_family;
 
-//    TODO: ENABLE EG
-    system.add_variable( "UX", order, L2_LAGRANGE );
-    system.add_variable( "UY", order, L2_LAGRANGE );
-    system.add_variable( "UZ", order, L2_LAGRANGE );
+    // DG
+    if ( iequals ( femspec.type, "DISCONTINUOUS" ) )
+    {
+      ilog << "Setting up variables for DG...";
+      system.add_variable( "UX", order, L2_LAGRANGE );
+      system.add_variable( "UY", order, L2_LAGRANGE );
+      system.add_variable( "UZ", order, L2_LAGRANGE );
+    } 
 
-//    TODO: ENABLE EG
-//    if ( femspec.family == "ENRICHED_GALERKIN")
-//    {
-//      system.add_variable( "UegX", CONSTANT, MONOMIAL );
-//      system.add_variable( "UegY", CONSTANT, MONOMIAL );
-//      system.add_variable( "UegZ", CONSTANT, MONOMIAL );
-//    }
+    // CG/EG
+    else 
+    {
+      ilog << "Setting up variables for CG...";
+      system.add_variable( "UX", CONSTANT, LAGRANGE );
+      system.add_variable( "UY", CONSTANT, LAGRANGE );
+      system.add_variable( "UZ", CONSTANT, LAGRANGE );
+      if ( femspec.family == "ENRICHED_GALERKIN")
+      {
+        ilog << "Setting up additional variables for EG...";
+        system.add_variable( "UegX", CONSTANT, MONOMIAL );
+        system.add_variable( "UegY", CONSTANT, MONOMIAL );
+        system.add_variable( "UegZ", CONSTANT, MONOMIAL );
+      }
+    }
   }
 
   // Stresses
@@ -326,8 +345,8 @@ void ViscoplasticSolver::set_dirichlet_bcs()
 
 //  system.reinit_constraints();
 
-  if ( vpmat_eg ) 
-    vpmat_eg->update_gammad();
+  if ( vpmat_eg ) vpmat_eg->update_gammad();
+  if ( vpmat_dg ) vpmat_dg->update_gammad();
 }
 
 /**
@@ -579,9 +598,9 @@ void ViscoplasticSolver::residual_and_jacobian (const NumericVector<Number> & so
   }
   harpy_sync_check();
 
-  // Add EG stuff
-  if ( vpmat_eg ) 
-    vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
+  // Add DG/EG stuff
+  if ( vpmat_eg ) vpmat_eg->residual_and_jacobian( soln, residual, jacobian );
+  if ( vpmat_dg ) vpmat_dg->residual_and_jacobian( soln, residual, jacobian );
 
   harpy_sync_check();
 }

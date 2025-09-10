@@ -9,6 +9,7 @@
 #include "solver/viscoplastic/VPMaterial.h"
 #include "solver/viscoplastic/VPMatBC.h"
 #include "solver/viscoplastic/VPMatEG.h"
+#include "solver/viscoplastic/VPMatDG.h"
 #include "solver/viscoplastic/VPBC.h"
 
 #include "harpy/HarpyInit.h"
@@ -104,8 +105,9 @@ class ViscoplasticSolver : public Solver,
     map< uint, ViscoPlasticMaterial *> material_by_sid;
     map< uint, ViscoPlasticMaterialBC *> matbc_by_sid;
 
-    // EG engine for the interface discontinuities
+    // EG and DG engines for the interface discontinuities
     VPMatEG * vpmat_eg;
+    VPMatDG * vpmat_dg;
 
     /// Material properties loaded once from configuration
     void load_mesh();
@@ -134,6 +136,7 @@ class ViscoplasticSolver : public Solver,
     friend class restart::File;
     friend ViscoplasticReport;
     friend VPMatEG;
+    friend VPMatDG;
 };
 
 }} // ns
