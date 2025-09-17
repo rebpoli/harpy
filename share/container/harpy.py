@@ -122,3 +122,5 @@ Stage0 += packages( ospackages=[ 'libeigen3-dev' ] )
 Stage0 += packages( ospackages=[ 'xauth' ] )   
 
 Stage0 += environment( variables={ 'SINGTAG' :'HARPY' } )
+
+Stage0 += packages( ospackages=[ 'libnetcdf-dev','netcdf-bin','libnetcdf-cxx-4-dev' ] )   
