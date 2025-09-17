@@ -161,6 +161,7 @@ endif()
 # target_link_libraries(Modules ${GMSH_LIB})
 target_link_libraries(Modules ${BOOST_FS})
 target_link_libraries(Modules ${LIBMESH_LIBS})
+target_link_libraries(Modules netcdf_c++4 )
 
 # To enable stack traces on fail using boost
 target_link_libraries(Modules "-lboost_stacktrace_backtrace -ldl -lbacktrace -lboost_serialization -lboost_mpi -lboost_filesystem" )

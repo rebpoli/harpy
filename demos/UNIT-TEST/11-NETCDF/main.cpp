@@ -1,44 +1,32 @@
-// save as write_netcdf.cpp
-#include <vector>
-#include <string>
+#include <netcdf>
 #include <iostream>
 
-#include <netcdf.h>
-
 using namespace netCDF;
-using namespace netCDF::exceptions;
 
 int main() {
     try {
-        // Create a new NetCDF4 file (overwrite if exists)
-        NcFile dataFile("data.nc", NcFile::replace, NcFile::nc4);
+        // Create a classic NetCDF file
+        NcFile file("simple_test.nc", NcFile::replace, NcFile::classic);
 
-        // Define dimensions
-        int N = 10;
-        NcDim dim = dataFile.addDim("x", N);
+        // Define a single-dimension variable (length 1)
+        NcDim dim = file.addDim("scalar_dim", 1);
+        NcVar var = file.addVar("my_value", ncFloat, dim);
 
-        // Define variables
-        NcVar var_values = dataFile.addVar("values", ncDouble, dim);
-        NcVar var_names = dataFile.addVar("names", ncChar, dim);
+        // Write a single value
+        float value = 42.0f;
+        var.putVar(&value);
 
-        // Write values
-        std::vector<double> values(N);
-        std::vector<std::string> names = {"a","b","c","d","e","f","g","h","i","j"};
-        for (int i = 0; i < N; i++) values[i] = i * 1.5;
+        // Read it back
+        float readValue;
+        file.getVar("my_value").getVar(&readValue);
 
-        var_values.putVar(values.data());
+        std::cout << "Value read from NetCDF file: " << readValue << "\n";
 
-        // Write names as fixed-length strings
-        for (int i = 0; i < N; i++) {
-            var_names.putVar({i}, {1}, names[i].c_str());
-        }
-
-        std::cout << "NetCDF4 file written successfully!\n";
-    }
-    catch (NcException& e) {
-        e.what();
+    } catch (netCDF::exceptions::NcException &e) {
+        std::cerr << "NetCDF error: " << e.what() << "\n";
         return 1;
     }
+
     return 0;
 }
 
