@@ -4,6 +4,7 @@
 .SYSTEMLOOP VISCOPLASTIC
 VISCOPLASTIC BASE
 THERMAL BASE
+PRESSURE EXTERNAL
 STRESS BASE
 
 .TIMESTEP 
@@ -29,17 +30,20 @@ BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
 BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         SIDEBURDEN          T          400
-DOMAIN         TEST_FRAME        T            400
+DOMAIN         SIDEBURDEN          T          0
+DOMAIN         TEST_FRAME        T            0
 
 # # Boundary conditions foreach time
 # # BOUNDARY/DOMAIN   BID/SID   VAR   VAL
 .TIME   0
 BOUNDARY       XN               UX            0
 BOUNDARY       YN               UY            0
+BOUNDARY       XP               UX            0  ##
+BOUNDARY       YP               UY            0  ##
 BOUNDARY       YP               SYY           0
 BOUNDARY       ZN               UZ            0
-DOMAIN         SIDEBURDEN        T            400
-DOMAIN         TEST_FRAME        T            350
+BOUNDARY       ZP               UZ            0.001  ##
+DOMAIN         SIDEBURDEN        T            0
+DOMAIN         TEST_FRAME        T            0 #350
 
 

@@ -39,7 +39,7 @@ struct DGFace
 struct DGDirichlet 
 {
   string vname;         // the CG name (UX,UY,UZ)
-  uint vid_cg, vid_dg;
+  uint vid;
   double val;
   vector<DGFace> dgface_vec;
 

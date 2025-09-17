@@ -106,14 +106,6 @@ void SolverReader::parse_sys_file()
 }
 
 /**
- *
- */
-void SolverReader::validate() 
-{
-
-}
-
-/**
  *   Updates the machine state. Returns true if it was updated.
  *
  */

@@ -22,6 +22,6 @@ LS_RTOL       1e-6
 # Variable definitions must be defined in the solver scope
 # Solvers and materials should follow.
 .FEM
-TYPE         U       CONTINUOUS
-FAMILY       U       LAGRANGE
-ORDER        U       SECOND
+TYPE         U       DISCONTINUOUS
+FAMILY       U       L2_LAGRANGE
+ORDER        U       FIRST

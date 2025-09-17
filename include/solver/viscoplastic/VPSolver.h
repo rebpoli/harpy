@@ -6,6 +6,7 @@
 
 #include "solver/common/Solver.h"
 #include "postproc/report/VPReport.h"
+#include "solver/viscoplastic/Common.h"
 #include "solver/viscoplastic/VPMaterial.h"
 #include "solver/viscoplastic/VPMatBC.h"
 #include "solver/viscoplastic/VPMatEG.h"
@@ -36,7 +37,6 @@ using solver::common::Solver;
 
 class ViscoPlasticMaterial; 
 class ViscoPlasticMaterialBC; 
-
 
 /**
  *
@@ -69,6 +69,7 @@ class ViscoplasticSolver : public Solver,
     /// Solution workflow
     virtual void solve();
     virtual void init();
+    void update_variable( VARIABLE v , map<uint, double> v_by_sid );
 
     bool update_adaptive_timestep();
     void do_ts_cut();
@@ -85,7 +86,9 @@ class ViscoplasticSolver : public Solver,
     void update_plastic_strain();
 
     // Helpers
+    bool is_cg() { return ( ! is_eg() & ! is_dg() ); }
     bool is_eg() { return system.has_variable( "UegX" ); }
+    bool is_dg() { return is_dg_; }
     
     /// A specialized system object
     TransientNonlinearImplicitSystem & system;
@@ -102,6 +105,8 @@ class ViscoplasticSolver : public Solver,
     const MaterialConfig & get_material_config( uint eid );
 
   private:
+    bool is_dg_;
+
     map< uint, ViscoPlasticMaterial *> material_by_sid;
     map< uint, ViscoPlasticMaterialBC *> matbc_by_sid;
 

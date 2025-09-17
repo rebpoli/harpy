@@ -490,6 +490,9 @@ void ViscoPlasticMaterial::residual_and_jacobian_qp ()
   // Lambda function to compatibilize stuff
   auto f = [this](const AD::Vec & x) { return this->residual_qp(x);  };
 
+//  dlog(1) << "Initial Temperature: " << P->initial_temperature;
+//  dlog(1) << "Temperature: " << P->temperature;
+
   AD::Vec F;
   ad_Jijbm = AD::jacobian( f, wrt(ad_Uib), at(ad_Uib), F );
 

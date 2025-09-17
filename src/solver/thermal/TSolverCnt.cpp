@@ -164,83 +164,87 @@ void ThermalSolverConstant::project_to_system()
  */
 void ThermalSolverConstant::update_reference_solver()
 {
-  SCOPELOG(1);
+  using solver::viscoplastic::VARIABLE::INITIAL_TEMPERATURE;
+  using solver::viscoplastic::VARIABLE::TEMPERATURE;
+  ref_solver->update_variable( INITIAL_TEMPERATURE, initial_temperature_by_sid );
+  ref_solver->update_variable( TEMPERATURE,         temperature_by_sid );
+//  SCOPELOG(1);
 
-  // The mesh is the same as the reference coupler
-  MeshBase & mesh = get_mesh();
+//  // The mesh is the same as the reference coupler
+//  MeshBase & mesh = get_mesh();
 
-  /**
-   *   Update the quadrature points
-   */
-  for (const auto & elem : mesh.active_local_element_ptr_range()) 
-  {
-    uint eid = elem->id();
-    suint sid = elem->subdomain_id();
+//  /**
+//   *   Update the quadrature points
+//   */
+//  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+//  {
+//    uint eid = elem->id();
+//    suint sid = elem->subdomain_id();
 
-    // init the fe in the explicit material (same qrule as the reference element,
-    // different shape function - the one used in project_to_system)
-    ExplicitThermalMaterial * mat = get_material( *elem );
-    mat->reinit( *elem ); 
+//    // init the fe in the explicit material (same qrule as the reference element,
+//    // different shape function - the one used in project_to_system)
+//    ExplicitThermalMaterial * mat = get_material( *elem );
+//    mat->reinit( *elem ); 
 
-    string mname = mat->name;
+//    string mname = mat->name;
 
-    // We need to feed the reference interface
-    //
-    // TODO: Fix this gambiarra. We need to split the VP interface in thermal, elastic etc and
-    //       only propagate what we need.
-    ViscoPlasticMaterial * vpmat = ref_solver->get_material( *elem );
+//    // We need to feed the reference interface
+//    //
+//    // TODO: Fix this gambiarra. We need to split the VP interface in thermal, elastic etc and
+//    //       only propagate what we need.
+//    ViscoPlasticMaterial * vpmat = ref_solver->get_material( *elem );
 
-    vpmat->reinit( *elem ); 
+//    vpmat->reinit( *elem ); 
 
-    auto & vp_ifc = vpmat->vp_ifc;
-    auto & props = vp_ifc.by_elem[eid];
+//    auto & vp_ifc = vpmat->vp_ifc;
+//    auto & props = vp_ifc.by_elem[eid];
 
-    //
-    // TODO: This should work, but it seems that in the first iteration vpmat->qrule.n_points=0?
-    //
-//     Validation - reference and thermal quadratures must be identical
-    if ( vpmat->qrule.n_points() != mat->qrule.n_points() )
-      wlog << "Reference and thermal quadrature points are different? Mat.nqp=" << mat->qrule.n_points() << " != VPMat->nqp=" << vpmat->qrule.n_points();
+//    //
+//    // TODO: This should work, but it seems that in the first iteration vpmat->qrule.n_points=0?
+//    //
+////     Validation - reference and thermal quadratures must be identical
+//    if ( vpmat->qrule.n_points() != mat->qrule.n_points() )
+//      wlog << "Reference and thermal quadrature points are different? Mat.nqp=" << mat->qrule.n_points() << " != VPMat->nqp=" << vpmat->qrule.n_points();
 
-    uint nqp = vpmat->qrule.n_points();
-    props.resize(nqp); /// Is this correct?
+//    uint nqp = vpmat->qrule.n_points();
+//    props.resize(nqp); /// Is this correct?
 
-    /**
-     * Update the initial temperature
-     */
-    {
-      double initial_temperature = 0;
-      if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
-      initial_temperature = initial_temperature_by_sid[ sid ];
+//    /**
+//     * Update the initial temperature
+//     */
+//    {
+//      double initial_temperature = 0;
+//      if ( ! initial_temperature_by_sid.count( sid ) ) flog << "No initial temperature defined for material '" << mname << "'.";
+//      initial_temperature = initial_temperature_by_sid[ sid ];
 
-      // Update the props
-      for ( uint qp=0 ; qp< nqp ; qp++ )
-        props[qp].initial_temperature = initial_temperature;
+//      // Update the props
+//      for ( uint qp=0 ; qp< nqp ; qp++ )
+//        props[qp].initial_temperature = initial_temperature;
 
-      /// Updates the probes
-      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
-        p->props.initial_temperature = initial_temperature;
-    }
+//      /// Updates the probes
+//      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
+//        p->props.initial_temperature = initial_temperature;
+//    }
 
-    /**
-     *    Update the temperature from the system solution
-     */
-    {
-      /* Quadrature points */
-      vector<double> vals_qp;
-      mat->eval( vals_qp , "T" );
-      // debug
-      bool dd=0; // for ( double v : vals_qp ) if ( abs(v-400) > 0.1) dd = 1;
-      if ( sid == 1 ) dd = 1;
-      if ( dd ) dlog(1) << "[" << mesh.subdomain_name(sid) << "] VALS_QP: " << vals_qp;
-      for ( uint qp=0 ; qp< nqp ; qp++ )
-        props[qp].temperature = vals_qp[qp];
+//    /**
+//     *    Update the temperature from the system solution
+//     */
+//    {
+//      /* Quadrature points */
+//      vector<double> vals_qp;
+//      mat->eval( vals_qp , "T" );
+//      // debug
+//      bool dd=0; // for ( double v : vals_qp ) if ( abs(v-400) > 0.1) dd = 1;
+//      if ( sid == 1 ) dd = 1;
+//      if ( dd ) dlog(1) << "[" << mesh.subdomain_name(sid) << "] VALS_QP: " << vals_qp;
+//      for ( uint qp=0 ; qp< nqp ; qp++ )
+//        props[qp].temperature = vals_qp[qp];
 
-      /* Update probes */
-      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
-        p->props.temperature = mat->eval( p->pt, "T" );
-    }
-  }
+//      /* Update probes */
+//      for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
+//        p->props.temperature = mat->eval( p->pt, "T" );
+//    }
+//  }
 }
 
 

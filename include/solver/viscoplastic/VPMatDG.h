@@ -3,6 +3,7 @@
 #include "harpy/Global.h"
 
 #include "libmesh/transient_system.h"
+#include "solver/viscoplastic/Common.h"
 #include "solver/viscoplastic/DGDataStruct.h"
 #include "util/Autodiff.h"
 
@@ -27,6 +28,8 @@ public:
 
   void init();                             /// Create datastructures from the mesh
                                             
+  void update_variable( VARIABLE v , map<uint, double> v_by_sid );
+
   void residual_and_jacobian ( const NumericVector<Number> & soln, 
                                NumericVector<Number> * residual,
                                SparseMatrix<Number> * jacobian );
@@ -68,8 +71,6 @@ private:
   vector<dof_id_type> dof_indices;
   uint n_uvars, n_dofs_u;
 
-  inline uint Ndof(uint i) { return n_dofs_u; }
-
   DenseMatrix<Number> Ke; /// Jacobian for the element
   DenseVector<Number> Re; /// RHS vector for the element
 
@@ -79,10 +80,6 @@ private:
 
   // The size penalty
   double elem_penalty, beta;
-
-  /** e: element ; i:dimension (x,y,z) ; B:element DOF**/
-  inline uint idx_cg( uint e, uint i, uint B ) 
-  { return e*3*n_dofs_cg + i*n_dofs_cg + B; }
 
   friend ostream& operator<<(ostream& os, const VPMatDG & m);
 };

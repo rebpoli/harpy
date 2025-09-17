@@ -2,11 +2,14 @@
 #include "config/SolverConfig.h"
 #include "config/reader/SolverReader.h"
 #include "util/OutputOperators.h"
+#include "util/String.h"
 
 #include <iomanip>
 
 namespace config
 {
+
+using util::iequals;
 
 /**
  *  

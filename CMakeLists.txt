@@ -175,6 +175,9 @@ target_link_libraries( msh2exo Modules )
 set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 
 # Tests
+add_executable( ut-netcdf demos/UNIT-TEST/11-NETCDF/main.cpp  )
+target_link_libraries( ut-netcdf Modules )
+
 add_executable( ut-timestep demos/UNIT-TEST/01-TIMESTEP/timestep-main.cpp  )
 target_link_libraries( ut-timestep Modules )
 

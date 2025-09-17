@@ -135,7 +135,7 @@ namespace AD {
     /** **/
     inline void init(  uint n_dofs_u_, uint n_elem_=1 ) 
     { 
-      n_dofs_u = n_dofs_u_u;
+      n_dofs_u = n_dofs_u_;
       n_elem = n_elem_;
 
       // Number of DoFs per element

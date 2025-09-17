@@ -38,7 +38,7 @@ void DGFEM::set_dofs( System & sys, const Elem * elem )
   for ( uint vi=0; vi<3; vi++ )
   {
     dof_map.dof_indices ( elem, di, vi );
-    dofi_cg.insert( dofi_cg.end(), di.begin(), di.end() );
+    dofi.insert( dofi.end(), di.begin(), di.end() );
   }
 }
 

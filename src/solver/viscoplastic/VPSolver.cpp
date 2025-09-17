@@ -43,6 +43,7 @@ ViscoplasticSolver::ViscoplasticSolver( string name_, Timestep & ts_ ) :
                    Solver( name_, ts_ ), 
                    system( es.add_system<TransientNonlinearImplicitSystem> ( name ) ),
                    stress_system(es.add_system<ExplicitSystem> ( name+"-stress" )),
+                   is_dg_(0),
                    vpmat_eg( 0 ) , vpmat_dg( 0 ) ,
                    report(*this), curr_bc( system ),
                    inner_newton_k(0)
@@ -99,6 +100,57 @@ void ViscoplasticSolver::init()
   }
 }
 
+/*
+ *
+ */
+void ViscoplasticSolver::update_variable( VARIABLE var , map<uint, double> val_by_sid )
+{
+  SCOPELOG(1);
+  using util::operator<<;
+  dlog(1) << "Updating variable " << v_to_str(var) << " from a val_by_sid map:" << val_by_sid;
+
+  MeshBase & mesh = get_mesh();
+
+  /** **/
+  for (const auto & elem : mesh.active_local_element_ptr_range()) 
+  {
+    uint eid = elem->id();
+    suint sid = elem->subdomain_id();
+
+    ViscoPlasticMaterial * vpmat = get_material( *elem );
+    vpmat->reinit( *elem ); 
+    string mname = vpmat->name;
+
+    auto & vp_ifc = vpmat->vp_ifc;
+    auto & props = vp_ifc.by_elem[eid];
+
+    uint nqp = vpmat->qrule.n_points();
+    props.resize(nqp); /// Is this correct?
+
+    if ( ! val_by_sid.count( sid ) ) flog << "No initial value defined for material '" << mname << "'.";
+    double val = val_by_sid[sid];
+
+    /** \OmegaI -  Update the quadrature points */
+    for ( uint qp=0 ; qp< nqp ; qp++ )
+    if      ( var == TEMPERATURE )          props[qp].temperature = val;
+    else if ( var == INITIAL_TEMPERATURE )  props[qp].initial_temperature = val;
+    else if ( var == PRESSURE )             props[qp].pressure = val;
+    else if ( var == INITIAL_PRESSURE )     props[qp].initial_pressure = val;
+
+    /** Update the probes */
+    for ( auto & p : vp_ifc.probes_by_pname_by_elem.probes_by_elem( eid ) )
+    if      ( var == TEMPERATURE )          p->props.temperature = val;
+    else if ( var == INITIAL_TEMPERATURE )  p->props.initial_temperature = val;
+    else if ( var == PRESSURE )             p->props.pressure = val;
+    else if ( var == INITIAL_PRESSURE )     p->props.initial_pressure = val;
+  }
+
+  /** **/
+//  if ( vpmat_eg ) vpmat_eg->update_variable( var, val_by_sid );
+  if ( vpmat_dg ) vpmat_dg->update_variable( var, val_by_sid );
+  
+}
+
 /**
  *    Adds all variables needed for the solver and its children (stresses, for example)
  *    
@@ -128,15 +180,17 @@ void ViscoplasticSolver::setup_variables()
       system.add_variable( "UX", order, L2_LAGRANGE );
       system.add_variable( "UY", order, L2_LAGRANGE );
       system.add_variable( "UZ", order, L2_LAGRANGE );
+      is_dg_ = 1;
     } 
 
     // CG/EG
     else 
     {
+      is_dg_ = 0;
       ilog << "Setting up variables for CG...";
-      system.add_variable( "UX", CONSTANT, LAGRANGE );
-      system.add_variable( "UY", CONSTANT, LAGRANGE );
-      system.add_variable( "UZ", CONSTANT, LAGRANGE );
+      system.add_variable( "UX", order, LAGRANGE );
+      system.add_variable( "UY", order, LAGRANGE );
+      system.add_variable( "UZ", order, LAGRANGE );
       if ( femspec.family == "ENRICHED_GALERKIN")
       {
         ilog << "Setting up additional variables for EG...";
@@ -331,19 +385,21 @@ void ViscoplasticSolver::set_dirichlet_bcs()
   DofMap & dof_map = system.get_dof_map();
   dof_map.get_dirichlet_boundaries()->clear();
 
-//  // The dirichlet structure in curr_bc is already processed and can be added easily
-//  for ( auto & dbc : curr_bc.dirichlet ) 
-//  {
-//    dlog(1) << "["<< fmt_i(ts.t_step) << "] Adding dirichlet boundary condition: " << 
-//                     system.variable_name( dbc.vid ) << "("<< dbc.vid << ")" << "=" << dbc.val << 
-//                     " @ " << bi.get_sideset_name( dbc.bid ) << "(" << dbc.bid << ")";
+  if ( is_cg() )
+  {
+    // The dirichlet structure in curr_bc is already processed and can be added easily
+    for ( auto & dbc : curr_bc.dirichlet ) 
+    {
+      dlog(1) << "["<< fmt_i(ts.t_step) << "] Adding dirichlet boundary condition: " << 
+                       system.variable_name( dbc.vid ) << "("<< dbc.vid << ")" << "=" << dbc.val << 
+                       " @ " << bi.get_sideset_name( dbc.bid ) << "(" << dbc.bid << ")";
 
-//    ConstFunction<> cf(dbc.val);
-//    DirichletBoundary bound({dbc.bid}, {dbc.vid}, cf, LOCAL_VARIABLE_ORDER);
-//    dof_map.add_dirichlet_boundary( bound );
-//  }
-
-//  system.reinit_constraints();
+      ConstFunction<> cf(dbc.val);
+      DirichletBoundary bound({dbc.bid}, {dbc.vid}, cf, LOCAL_VARIABLE_ORDER);
+      dof_map.add_dirichlet_boundary( bound );
+    }
+    system.reinit_constraints();
+  }
 
   if ( vpmat_eg ) vpmat_eg->update_gammad();
   if ( vpmat_dg ) vpmat_dg->update_gammad();
