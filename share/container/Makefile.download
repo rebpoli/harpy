@@ -1,19 +1,24 @@
 
 all: paraview petsc vtk spai 
 
+netcdf:
+	wget -O netcdf-c-4.9.3.tar.gz https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.9.3.tar.gz
+	wget -O netcdf-cxx-4.3.1.tar.gz https://github.com/Unidata/netcdf-cxx4/archive/refs/tags/v4.3.1.tar.gz
+
 # Individual targets to promote parallelism
 paraview: .force
 	wget https://www.paraview.org/files/v5.13/ParaView-5.13.1-MPI-Linux-Python3.10-x86_64.tar.gz 
 
 petsc: .force
 	wget https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-3.23.2.tar.gz
-	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/hdf5-1.14.3-p1.tar.bz2
 	wget https://github.com/hypre-space/hypre/archive/v2.32.0.tar.gz
 	wget https://gitlab.com/slepc/slepc/-/archive/v3.23.1/slepc-v3.23.1.tar.gz
 	wget https://github.com/xiaoyeli/superlu_dist/archive/eac44cf48878f8699cc19fb566832b6736596727.tar.gz
 	wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/MUMPS_5.7.3.tar.gz
 	wget https://github.com/Reference-ScaLAPACK/scalapack/archive/0e8767285b7a201c7b1ff34d2c2bb009534145df.tar.gz
 	wget https://bitbucket.org/petsc/pkg-parms/get/v3.2p5.tar.gz
+
+#     wget https://web.cels.anl.gov/projects/petsc/download/externalpackages/hdf5-1.14.3-p1.tar.bz2
 
 vtk: .force
 	wget https://www.vtk.org/files/release/9.3/VTK-9.3.0.rc1.tar.gz  

@@ -92,13 +92,18 @@ Stage0 += packages(
         'texlive-full'
     ])
 
+# NET CDF 4 and C++ API
+# Stage0 += packages( ospackages=[ 'libhdf5-dev', 'hdf5-tools', 'libnetcdf-dev','netcdf-bin','libnetcdf-mpi-dev', 'libhdf5-mpi-dev', 'libhdf5-openmpi-dev', 'libnetcdf-c++4-dev' ] )   
+Stage0 += packages( ospackages=[ 'libcurl4-openssl-dev' ] )   
+
 ## ajusta linguagem para acertar acentos no bash
 Stage0 += shell(commands=[f"locale-gen en_US en_US.UTF-8 pt_BR.UTF-8"], _args=False, chdir=False)
 Stage0 += environment( variables={ 'LC_ALL':'en_US.UTF-8' }, _export=False)  # 'LANG':'en_US.UTF-8'
 
 # Instala pacotes que requerem compilacao, download etc
-Stage0 += copy(src=f"download/* Makefile.*", dest=f"/opt")
-for i in ["petsc", "vtk", "gmsh", "paraview", "libmesh"] :
+Stage0 += copy(src=f"download/*", dest=f"/opt")
+for i in ["hdf5", "netcdf", "petsc", "vtk", "gmsh", "paraview", "libmesh"] :
+    Stage0 += copy(src=f"Makefile.{i}", dest=f"/opt")
     Stage0 += shell(commands=[f"make -f /opt/Makefile.{i} N={NPROC}"], _args=False, chdir=False)
 
 # Install Fonte Cambria math (generate graphs with the same MS for used in MSWord equations)
@@ -123,4 +128,3 @@ Stage0 += packages( ospackages=[ 'xauth' ] )
 
 Stage0 += environment( variables={ 'SINGTAG' :'HARPY' } )
 
-Stage0 += packages( ospackages=[ 'libnetcdf-dev','netcdf-bin','libnetcdf-cxx-4-dev' ] )   
