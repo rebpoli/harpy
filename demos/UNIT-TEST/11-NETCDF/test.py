@@ -46,21 +46,26 @@ def principal_stresses( sigma ) :
 #
 #
 
-ds = xr.open_dataset("data.nc")
-sigma_ds = ds['sigma']  # shape: (time, x, y, z, 9)
+ds = xr.open_dataset("points_libmesh.nc")
 
-nt, nx, ny, nz, ncomp = sigma_ds.shape
-assert ncomp == 9, "Expected 9 components for 3x3 tensor"
-# Iterate over all times and points
-for t in range(nt):
-    for x in range(nx):
-        for y in range(ny):
-            for z in range(nz):
-                # Get the flattened 3x3 tensor
-                tensor_flat = sigma_ds[t, x, y, z, :].values
-                # Reshape into 3x3 matrix
-                sigma = tensor_flat.reshape(3, 3)
+ds.info()
+print("====")
+print(ds)
 
-                print(f"time={t}, x={x}, y={y}, z={z}")
-                principal_stresses( sigma )
+# sigma_ds = ds['sigma']  # shape: (time, x, y, z, 9)
+
+# nt, nx, ny, nz, ncomp = sigma_ds.shape
+# assert ncomp == 9, "Expected 9 components for 3x3 tensor"
+# # Iterate over all times and points
+# for t in range(nt):
+#     for x in range(nx):
+#         for y in range(ny):
+#             for z in range(nz):
+#                 # Get the flattened 3x3 tensor
+#                 tensor_flat = sigma_ds[t, x, y, z, :].values
+#                 # Reshape into 3x3 matrix
+#                 sigma = tensor_flat.reshape(3, 3)
+
+#                 print(f"time={t}, x={x}, y={y}, z={z}")
+#                 principal_stresses( sigma )
 

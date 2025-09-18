@@ -8,9 +8,25 @@ petsc:
 #     cd /opt && git clone https://gitlab.com/petsc/petsc.git
 	cd /opt && tar zxf /opt/petsc-*.tar.gz 
 	mv /opt/petsc-$(VER) /opt/petsc
-	cd $(BDIR) && ./configure --with-hdf5 --with-packages-download-dir=/opt --with-debugging=no --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif90 --with-pthread=1 --with-pthread-lib=/usr/lib/x86_64-linux-gnu/libpthread.a --with-pthread-include=/usr/include --with-openmp=1 --download-superlu_dist --download-mumps --download-hypre --download-scalapack --download-spai --download-parms --download-slepc --force COPTFLAGS='-O3 -march=native -mtune=native' CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native'
+	cd $(BDIR) && ./configure 
+		--download-hdf5 
+		--with-zlib-dir=/usr \
+		--with-packages-download-dir=/opt \
+		--with-debugging=no \
+		--with-cc=mpicc \
+		--with-cxx=mpicxx \
+		--with-fc=mpif90 \
+		--with-pthread=1 \
+		--with-pthread-lib=/usr/lib/x86_64-linux-gnu/libpthread.a \
+		--with-pthread-include=/usr/include \
+		--with-openmp=1 \
+		--download-superlu_dist \
+		--download-mumps \
+		--download-hypre \
+		--download-scalapack \
+		--download-spai \
+		--download-parms \
+		--download-slepc \
+		--force COPTFLAGS='-O3 -march=native -mtune=native' \
+		  CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native'
 	cd $(BDIR) && make PETSC_DIR=$(BDIR) PETSC_ARCH=arch-linux-c-opt -j$(N) all
-
-
-
-#     cd $(BDIR) && ./configure --download-hdf5 --with-packages-download-dir=/opt --with-debugging=no --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif90 --with-pthread=1 --with-pthread-lib=/usr/lib/x86_64-linux-gnu/libpthread.a --with-pthread-include=/usr/include --with-openmp=1 --download-superlu_dist --download-mumps --download-hypre --download-scalapack --download-spai --download-parms --download-slepc --force COPTFLAGS='-O3 -march=native -mtune=native' CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native'
