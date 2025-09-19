@@ -131,6 +131,7 @@ ADD_LIBRARY(Modules
   src/util/Json.cpp
   src/util/MeshUtils.cpp
   src/util/Messages.cpp
+  src/util/NetCDFWriter.cpp
   src/util/OutputOperators.cpp
   src/util/Stopwatch.cpp
   src/util/TeeBuff.cpp

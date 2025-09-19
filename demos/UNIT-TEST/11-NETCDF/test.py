@@ -47,6 +47,9 @@ def principal_stresses( sigma ) :
 #
 
 ds = xr.open_dataset("example_data.nc")
+lab = ds.Stress.attrs['components'].split() 
+ds = ds.assign_coords(ten9_comp=lab)
+print(ds.Stress.sel(ten9_comp='xy'))
 
 # ds.info()
 # print("====")
