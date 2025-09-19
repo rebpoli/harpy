@@ -30,7 +30,7 @@ void ViscoplasticIFC::reinit( uint eid, uint nqp )
 /**
  *
  */
-void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt )
+void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt, uint pt_idx )
 {
   VPProps props;
   props.init_from_config (config, pt );
@@ -38,6 +38,7 @@ void ViscoplasticIFC::add_probe_point( const MaterialConfig & config, string & n
   ProbeIFC * probe_ifc = new ProbeIFC() ;
   probe_ifc->elem_id = eid;
   probe_ifc->pt = pt;
+  probe_ifc->pt_idx = pt_idx;
   probe_ifc->props = props;
 
   auto & m1 = probes_by_pname_by_elem[name];

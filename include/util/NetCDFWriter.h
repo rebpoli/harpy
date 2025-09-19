@@ -22,7 +22,12 @@ namespace mpi = boost::mpi;
 
 // Variable types enum
 enum class NC_TYPE   { SCALAR, VEC3, TEN9 };
-enum class NC_PARAM  { TEMPERATURE, PRESSURE, VELOCITY, STRESS, DENSITY, VISCOSITY };
+enum class NC_PARAM  { 
+  TEMPERATURE, DELTA_T,
+  PRESSURE, DELTA_P,
+  VELOCITY, STRESS, 
+  DENSITY, VISCOSITY, 
+  S3_MAG };
 
 struct DataInfo { 
   NC_TYPE type;
@@ -57,6 +62,7 @@ class NetCDFWriter
     uint n_points;
 
     // File state
+    string filename;
     bool file_created;
     bool define_mode;
 
@@ -65,19 +71,21 @@ class NetCDFWriter
     void set_curr_time(uint i) { curr_time = i; }
     void add_timestep(uint i, double time);
 
-    NetCDFWriter();
+    void flush() { nc_sync(ncid); }
+
+    NetCDFWriter( string filename_ );
     ~NetCDFWriter();
 
     // File management
-    void create_file(const string& filename, uint n_points_);
+    void init( uint n_points_ );
     void close_file();
 
     // Variable definition methods
-    void define_variable( NC_PARAM var );
+    void add( NC_PARAM var );
     void finish_definitions();
 
     // Coordinate and time setting methods
-    void set_coordinates_collective(const vector<Point>& points);
+    void set_coords(const vector<Point>& points);
     void set_time_collective(const vector<double>& times);
 
     // Data setting methods

@@ -26,19 +26,20 @@ void debug_check_time_dimension(int ncid, int time_dim_id, int rank) {
 }
 
 map<NC_PARAM, DataInfo> PARAMS = {
-    { NC_PARAM::TEMPERATURE, {  NC_TYPE::SCALAR, "Temperature", "K",   "", -1} },
-    { NC_PARAM::PRESSURE,    {  NC_TYPE::SCALAR, "Pressure",    "Pa",  "", -1} },
-    { NC_PARAM::VELOCITY,    {  NC_TYPE::VEC3,   "Velocity",    "m/s", "", -1} },
-    { NC_PARAM::STRESS,      {  NC_TYPE::TEN9,    "Stress",      "Pa",  "", -1} }
+    { NC_PARAM::TEMPERATURE, {  NC_TYPE::SCALAR, "Temperature"     , "K",   "", -1} },
+    { NC_PARAM::PRESSURE,    {  NC_TYPE::SCALAR, "Pressure"        , "Pa",  "", -1} },
+    { NC_PARAM::DELTA_T    , {  NC_TYPE::SCALAR, "Delta_T"         , "K",   "", -1} },
+    { NC_PARAM::DELTA_P,     {  NC_TYPE::SCALAR, "Delta_P"         , "Pa",  "", -1} },
+    { NC_PARAM::S3_MAG,      {  NC_TYPE::SCALAR, "S3 Magnitude"    , "Pa",  "", -1} },
+    { NC_PARAM::VELOCITY,    {  NC_TYPE::VEC3,   "Velocity"        , "m/s", "", -1} },
+    { NC_PARAM::STRESS,      {  NC_TYPE::TEN9,   "Stress"          , "Pa",  "", -1} }
 };
 
 /** **/
-NetCDFWriter::NetCDFWriter()
-  : world(), n_points(0),
+NetCDFWriter::NetCDFWriter( string filename_ )
+  : world(), n_points(0), filename(filename_), 
   file_created(false), define_mode(false),
-  vec3_dimid(0), ten9_dimid(0), curr_time(0), curr_pt(0) {
-nc_set_log_level(5);
-  }
+  vec3_dimid(0), ten9_dimid(0), curr_time(0), curr_pt(0) { }
 
   /** **/
   NetCDFWriter::~NetCDFWriter() {
@@ -46,20 +47,22 @@ nc_set_log_level(5);
   }
 
 /** **/
-void NetCDFWriter::create_file(const string& filename, uint n_points_) {
+void NetCDFWriter::init( uint n_points_ ) 
+{
   if (file_created) flog << "File already created";
 
   n_points = n_points_;
   MPI_Info info = MPI_INFO_NULL;
 
   // Create parallel NetCDF file
-  CHECK_NC(nc_create_par(filename.c_str(), NC_NETCDF4 | NC_MPIIO,
-        world, info, &ncid));
+  CHECK_NC( 
+      nc_create_par(filename.c_str(), NC_NETCDF4 | NC_MPIIO, world, info, &ncid)
+  );
 
   // Define dimensions
-  CHECK_NC(nc_def_dim(ncid, "time", NC_UNLIMITED, &time_dimid));
-  CHECK_NC(nc_def_dim(ncid, "point_idx", n_points, &point_dimid));
-  CHECK_NC(nc_def_dim(ncid, "vec3_comp", 3, &vec3_dimid));
+  CHECK_NC( nc_def_dim(ncid, "time", NC_UNLIMITED, &time_dimid)   );
+  CHECK_NC( nc_def_dim(ncid, "point_idx", n_points, &point_dimid) );
+  CHECK_NC( nc_def_dim(ncid, "vec3_comp", 3, &vec3_dimid)         );
 
   setup_coordinate_variables();
   add_global_attributes();
@@ -108,7 +111,7 @@ void NetCDFWriter::add_global_attributes()
 /**
  *
  */
-void NetCDFWriter::define_variable( NC_PARAM var )
+void NetCDFWriter::add( NC_PARAM var )
 {
   if (!define_mode) flog << "Not in define mode";
   auto & di = get_di(var);
@@ -157,7 +160,7 @@ void NetCDFWriter::finish_definitions()
 }
 
 /** **/
-void NetCDFWriter::set_coordinates_collective(const vector<Point>& points) 
+void NetCDFWriter::set_coords(const vector<Point>& points) 
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
 
@@ -297,8 +300,11 @@ ostream& operator<<(ostream& os, const NC_TYPE& type) {
 /** **/
 ostream& operator<<(ostream& os, const NC_PARAM& param) {
     static const unordered_map<NC_PARAM, string> param_map = {
+        {NC_PARAM::DELTA_T,     "DELTA_T"},
+        {NC_PARAM::DELTA_P,     "DELTA_P"},
         {NC_PARAM::TEMPERATURE, "TEMPERATURE"},
         {NC_PARAM::PRESSURE,    "PRESSURE"},
+        {NC_PARAM::S3_MAG,      "S3_MAG"},
         {NC_PARAM::VELOCITY,    "VELOCITY"},
         {NC_PARAM::STRESS,      "STRESS"},
         {NC_PARAM::DENSITY,     "DENSITY"},

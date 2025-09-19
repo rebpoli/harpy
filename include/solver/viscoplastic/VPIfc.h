@@ -42,7 +42,7 @@ struct ViscoplasticIFC
   /// Probes organized by elemetns
   ProbeByPnameByElemMap probes_by_pname_by_elem;  // This map is MPI aware
 
-  void add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt );
+  void add_probe_point( const MaterialConfig & config, string & name, uint eid, const Point & pt, uint pt_idx );
 
 private:
 

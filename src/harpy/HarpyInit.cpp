@@ -64,6 +64,7 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
     fs::create_directory("run/exo");
     fs::create_directory("run/csv");
     fs::create_directory("run/msh");
+    fs::create_directory("run/cdf");
 
 //  // Inicializacoes finais
     using namespace util;

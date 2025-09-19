@@ -7,6 +7,8 @@
 #include "config/InoutConfig.h"
 #include "solver/common/Solver.h"
 
+#include "util/NetCDFWriter.h"
+
 using namespace libMesh;
 
 namespace config { class ProbeConfig ; }
@@ -20,6 +22,7 @@ namespace probes {
  *  Stores the collection of probes for this model
  *
  */
+  using util::NetCDFWriter;
 
 class Probe
 {
@@ -34,6 +37,7 @@ public:
 
   string name, filename, filename_pq;
   string header;
+  NetCDFWriter netcdf;
 
   vector<Point> points;
 

@@ -17,7 +17,7 @@ using libMesh::Point;
 struct ProbeIFC { 
   ProbeIFC() = default;
   ProbeIFC( const ProbeIFC & ) = delete;
-  uint elem_id; Point pt; VPProps props; 
+  uint elem_id; Point pt; VPProps props; uint pt_idx;
 };
 
 // Add serialization capabilities and MPI support
@@ -129,7 +129,7 @@ namespace serialization {
   template<class Archive>
   void serialize(Archive & ar, ProbeIFC & p, const unsigned int /*ver*/)
   { 
-    ar & p.elem_id & p.pt & p.props;  
+    ar & p.elem_id & p.pt & p.props & p.pt_idx;  
   } 
   /** **/
 }}  // Namespaces

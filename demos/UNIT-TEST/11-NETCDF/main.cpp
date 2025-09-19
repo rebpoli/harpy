@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     for (uint i=0; i<N_POINTS; i++) points.emplace_back( i, i+1, i+2 );
 
     // Create NetCDF writer
-    NetCDFWriter writer;
+    NetCDFWriter writer( "example_data.nc" );
 
     if (world.rank() == 0) {
       ilog << "Starting NetCDF parallel write example";
@@ -74,16 +74,17 @@ int main(int argc, char** argv)
     }
 
     // Create file and define variables
-    writer.create_file("example_data.nc", N_POINTS);
+    writer.init(points.size());
 
-    writer.define_variable(NC_PARAM::TEMPERATURE);
-    writer.define_variable(NC_PARAM::PRESSURE);
-    writer.define_variable(NC_PARAM::VELOCITY);
-    writer.define_variable(NC_PARAM::STRESS);
+    writer.add(NC_PARAM::TEMPERATURE);
+    writer.add(NC_PARAM::PRESSURE);
+    writer.add(NC_PARAM::VELOCITY);
+    writer.add(NC_PARAM::STRESS);
 
     writer.finish_definitions();
 
-    writer.set_coordinates_collective( points );
+    writer.set_coords( points );
+
 
     // Generate and set time data
     auto times = generate_times(N_TIMES);

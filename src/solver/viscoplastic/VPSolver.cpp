@@ -206,7 +206,7 @@ void ViscoplasticSolver::setup_variables()
     Order order = Utility::string_to_enum<Order>( femspec.order ) - 1;
     FEFamily fef = L2_LAGRANGE;
     if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
-
+    ilog << "Adding stress: order " << order;
 
     /* Vectors */
 
