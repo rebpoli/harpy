@@ -8,8 +8,8 @@ petsc:
 #     cd /opt && git clone https://gitlab.com/petsc/petsc.git
 	cd /opt && tar zxf /opt/petsc-*.tar.gz 
 	mv /opt/petsc-$(VER) /opt/petsc
-	cd $(BDIR) && ./configure 
-		--download-hdf5 
+	cd $(BDIR) && ./configure  \
+		--with-hdf5 \
 		--with-zlib-dir=/usr \
 		--with-packages-download-dir=/opt \
 		--with-debugging=no \

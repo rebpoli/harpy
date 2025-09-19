@@ -46,11 +46,11 @@ def principal_stresses( sigma ) :
 #
 #
 
-ds = xr.open_dataset("points_libmesh.nc")
+ds = xr.open_dataset("example_data.nc")
 
-ds.info()
-print("====")
-print(ds)
+# ds.info()
+# print("====")
+# print(ds)
 
 # sigma_ds = ds['sigma']  # shape: (time, x, y, z, 9)
 

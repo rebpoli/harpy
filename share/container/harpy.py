@@ -102,7 +102,7 @@ Stage0 += environment( variables={ 'LC_ALL':'en_US.UTF-8' }, _export=False)  # '
 
 # Instala pacotes que requerem compilacao, download etc
 Stage0 += copy(src=f"download/*", dest=f"/opt")
-for i in ["petsc", "vtk", "gmsh", "paraview", "libmesh"] :
+for i in ["hdf5" , "petsc", "vtk", "gmsh", "paraview", "libmesh"] :
     Stage0 += copy(src=f"Makefile.{i}", dest=f"/opt")
     Stage0 += shell(commands=[f"make -f /opt/Makefile.{i} N={NPROC}"], _args=False, chdir=False)
 

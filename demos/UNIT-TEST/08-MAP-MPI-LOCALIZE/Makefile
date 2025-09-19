@@ -7,7 +7,8 @@ include $(topdir)/share/makefile/Makefile.demos
 export CHDEBUG=0
 
 run-%: set-% .force
-	mpirun -n 4 $(topdir)/build/$*/map-mpi-localize
+	$(topdir)/build/$*/map-mpi-localize
+#     mpirun -n 4 $(topdir)/build/$*/map-mpi-localize
 
 gdb-dbg: set-dbg .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/dbg/map-mpi-localize $(PETSC_OPT)

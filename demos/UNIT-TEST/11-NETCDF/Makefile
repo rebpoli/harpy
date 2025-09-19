@@ -4,10 +4,11 @@ TOPDIR=$(shell realpath $(topdir))
 
 include $(topdir)/share/makefile/Makefile.demos
 
-export CHDEBUG=0
+export CHDEBUG=1
 
 run-%: set-% .force
-	$(topdir)/build/$*/ut-netcdf
+	 mpirun -n 20 $(topdir)/build/$*/ut-netcdf
+#     $(topdir)/build/$*/ut-netcdf
 
 gdb-devel: set-devel .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/ut-netcdf

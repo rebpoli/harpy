@@ -50,6 +50,7 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
     // fazer direito -- como elas sao definidas no json, eh importante manter a ordem
 //    PENumericalConfig pec; 
 //    pec.apply();
+//
     // Inicializacao da estrutura. O paralelismo etc
     lm_init = new libMesh::LibMeshInit( argc, argv );
 
@@ -64,13 +65,16 @@ HarpyInit::HarpyInit( int argc, char ** argv ) :
     fs::create_directory("run/csv");
     fs::create_directory("run/msh");
 
-  // Inicializacoes finais
+//  // Inicializacoes finais
     using namespace util;
     Stopwatch::init();
     Log::init(RANK);
 }
 
-HarpyInit::~HarpyInit() { delete(lm_init); }
+HarpyInit::~HarpyInit() { 
+  Log::finalize();
+  delete(lm_init); 
+}
 
 /**
  *

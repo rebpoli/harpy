@@ -36,6 +36,7 @@ using namespace std;
 extern double PI;
 typedef unsigned int uint;
 typedef short unsigned int suint;
+typedef long unsigned int luint;
 typedef short int sint;
 
 extern uint debug_level ;

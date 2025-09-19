@@ -35,6 +35,7 @@ Log::Log(FILE * out, bool fail,const char * file, int line, uint maxtimes, strin
  *
  */
 std::ofstream * Log::_dfile = 0;
+//util::teebuf * tb = 0;
 void Log::init( uint rank ) {
   string filename("run/log/proc_out");
   filename = filename + string("-");
@@ -42,11 +43,23 @@ void Log::init( uint rank ) {
   filename = filename + string(".log");
   _dfile = new ofstream(filename);
 
-  // Duplica os buffer do libMesh para cout e cerr
-  using util::teebuf;
-  teebuf * tb = new teebuf( _dfile->rdbuf(), cerr.rdbuf() );
-  libMesh::out.rdbuf( tb );
-  libMesh::err.rdbuf( tb );
+  if (!_dfile->is_open()) {
+    cerr << "Something went wrong opening file " << filename << "." << endl;
+    throw std::runtime_error("Failed to open log file " + filename);
+  }
+
+  libMesh::out.rdbuf(_dfile->rdbuf());
+  libMesh::err.rdbuf(_dfile->rdbuf());
+
+//   Duplica os buffer do libMesh para cout e cerr
+//  tb = new util::teebuf( _dfile->rdbuf(), cerr.rdbuf() );
+//  libMesh::out.rdbuf( tb );
+//  libMesh::err.rdbuf( tb );
+}
+void Log::finalize() {
+  libMesh::out.rdbuf(std::cout.rdbuf());  // restore original
+  libMesh::err.rdbuf(std::cerr.rdbuf());  // restore original
+  _dfile->close();
 }
 
 /**

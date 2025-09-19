@@ -5,7 +5,8 @@
 BDIR := /opt/libmesh/build
 libmesh: libmesh-dwn libmesh-dbg libmesh-opt libmesh-devel
 LIBMESH_CONFIGURE := cd $(BDIR) && ../configure --prefix=/usr/local --enable-mpi-required --enable-vtk-required --enable-petsc-required \
-					               --enable-slepc-required --with-vtk-include=/usr/local/include/vtk-9.3 --with-vtk-lib=/usr/local/lib 
+					               --enable-slepc-required --with-vtk-include=/usr/local/include/vtk-9.3 --with-vtk-lib=/usr/local/lib \
+								   --enable-netcdf=v492 --enable-hdf5-required
 LIBMESH_MAKE := cd $(BDIR) && make -j$(N) all && make install && ldconfig
 
 libmesh-dwn:

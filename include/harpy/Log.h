@@ -80,6 +80,7 @@ public:
   virtual ~Log();
 
   static void init( uint rank );
+  static void finalize();
   static int msg_lines_col;
   static bool show_msg_lines;
   static std::string LogColor;
