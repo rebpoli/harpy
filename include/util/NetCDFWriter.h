@@ -20,19 +20,19 @@ using libMesh::RealTensorValue;
 
 namespace mpi = boost::mpi;
 
-
 // Variable types enum
-enum VAR_TYPE { SCALAR, VEC3, TEN9 };
-enum NC_VAR   { TEMPERATURE, PRESSURE, VELOCITY, STRESS, DENSITY, VISCOSITY };
+enum class NC_TYPE   { SCALAR, VEC3, TEN9 };
+enum class NC_PARAM  { TEMPERATURE, PRESSURE, VELOCITY, STRESS, DENSITY, VISCOSITY };
+
 struct DataInfo { 
-  VAR_TYPE type;
+  NC_TYPE type;
   string name;
   string unit;
   string description;
   int vid;
 };
 
-extern map<NC_VAR, DataInfo> PARAMS;
+extern map<NC_PARAM, DataInfo> PARAMS;
 
 #define CHECK_NC(call) do { \
   int retval = call; \
@@ -54,7 +54,6 @@ class NetCDFWriter
 
   public:    
 
-    uint n_times;
     uint n_points;
 
     // File state
@@ -62,18 +61,19 @@ class NetCDFWriter
     bool define_mode;
 
     uint curr_pt, curr_time;
-    void set_curr_pt(uint i) { curr_pt = i; }
+    void set_curr_pt(uint i)   { curr_pt = i; }
     void set_curr_time(uint i) { curr_time = i; }
+    void add_timestep(uint i, double time);
 
-    explicit NetCDFWriter(uint n_times, uint n_points);
+    NetCDFWriter();
     ~NetCDFWriter();
 
     // File management
-    void create_file(const string& filename);
+    void create_file(const string& filename, uint n_points_);
     void close_file();
 
     // Variable definition methods
-    void define_variable( NC_VAR var );
+    void define_variable( NC_PARAM var );
     void finish_definitions();
 
     // Coordinate and time setting methods
@@ -81,21 +81,24 @@ class NetCDFWriter
     void set_time_collective(const vector<double>& times);
 
     // Data setting methods
-    void set_value(NC_VAR var, double value);
-    void set_value(NC_VAR var, const Point& vector);
-    void set_value(NC_VAR var, const RealTensorValue& tensor);
+    void set_value(NC_PARAM var, double value);
+    void set_value(NC_PARAM var, const Point& vector);
+    void set_value(NC_PARAM var, const RealTensorValue& tensor);
 
   private:
-    inline DataInfo & get_di( NC_VAR var );
+    inline DataInfo & get_di( NC_PARAM var );
     void setup_coordinate_variables();
     void add_global_attributes();
     void set_collective_access(int varid);
     void set_independent_access(int varid);
 };
 
+std::ostream& operator<<(std::ostream& os, const NC_TYPE& type);
+std::ostream& operator<<(std::ostream& os, const NC_PARAM& param);
+
 
 /** **/
-inline DataInfo & NetCDFWriter::get_di( NC_VAR var )
+inline DataInfo & NetCDFWriter::get_di( NC_PARAM var )
 {
   if ( ! PARAMS.count( var ) ) flog << "Unknown variable " << var << ".";
   return PARAMS.at(var);

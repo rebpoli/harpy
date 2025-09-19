@@ -7,7 +7,8 @@ include $(topdir)/share/makefile/Makefile.demos
 export CHDEBUG=1
 
 run-%: set-% .force
-	 mpirun -n 20 $(topdir)/build/$*/ut-netcdf
+	 mpirun -n 5 $(topdir)/build/$*/ut-netcdf
+#      $(topdir)/build/$*/ut-netcdf
 #     $(topdir)/build/$*/ut-netcdf
 
 gdb-devel: set-devel .force

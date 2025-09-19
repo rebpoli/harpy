@@ -4,6 +4,7 @@
 #include "harpy/Global.h"
 #include "postproc/probes/Probe.h"
 #include "util/CsvFile.h"
+#include "util/NetCDFWriter.h"
 
 namespace solver { namespace viscoplastic { class ViscoplasticSolver; } }
 

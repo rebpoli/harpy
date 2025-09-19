@@ -22,6 +22,7 @@ Stopwatch::Stopwatch(string name, bool lap, double * out_time) :
   _start(0), _name(name), _parent(0), _dt(0), _lap(lap), _out_time(out_time), _st_elapsed(0)
 {
   dlog(_debug_level) << "[" << Log::now() << "] Stopwatch \"" << _name << "\": start... " << (lap ? "(lap)" : "") ;
+//  ilog << "[" << Log::now() << "] Stopwatch \"" << _name << "\": start... " << (lap ? "(lap)" : "") ;
   _start = clock(); 
   _st_elapsed = _start;
   perf.push(_name);
@@ -76,10 +77,12 @@ Stopwatch::~Stopwatch() {
   if ( _parent ) {
     _parent->_dt += ms;
     dlog(_debug_level) << "SW/" << _parent->_name << " (lap): " << ms;
+//    ilog << "SW/" << _parent->_name << " (lap): " << ms;
   } else {
     if ( _lap ) ms = _dt;
     double s = ms / 1000;
     dlog(_debug_level) << "["<<now<<"] Stopwatch \"" << _name <<"\": " << std::setprecision(6) << s << " s";
+//    ilog << "["<<now<<"] Stopwatch \"" << _name <<"\": " << std::setprecision(6) << s << " s";
   }
 
   CsvFile ofile(csv_fn());

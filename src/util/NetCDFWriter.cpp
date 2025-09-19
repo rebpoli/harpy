@@ -3,18 +3,42 @@
 
 namespace util {
 
-map<NC_VAR, DataInfo> PARAMS = {
-    { TEMPERATURE, {SCALAR, "Temperature", "K",   "", -1} },
-    { PRESSURE,    {SCALAR, "Pressure",    "Pa",  "", -1} },
-    { VELOCITY,    {VEC3,   "Velocity",    "m/s", "", -1} },
-    { STRESS,      {TEN9,    "Stress",      "Pa",  "", -1} }
+  /**
+   *   Debug stuff
+   */
+void debug_check_time_dimension(int ncid, int time_dim_id, int rank) {
+    size_t time_len;
+    int retval;
+    
+    // Sync first to ensure we see latest changes
+    nc_sync(ncid);
+    
+    // Query the dimension length
+    if ((retval = nc_inq_dimlen(ncid, time_dim_id, &time_len))) {
+        printf("[Rank %d] Error getting time dimension: %s\n", 
+               rank, nc_strerror(retval));
+    } else {
+        printf("[Rank %d] Time dimension length: %zu\n", rank, time_len);
+    }
+    
+    // Flush output immediately
+    fflush(stdout);
+}
+
+map<NC_PARAM, DataInfo> PARAMS = {
+    { NC_PARAM::TEMPERATURE, {  NC_TYPE::SCALAR, "Temperature", "K",   "", -1} },
+    { NC_PARAM::PRESSURE,    {  NC_TYPE::SCALAR, "Pressure",    "Pa",  "", -1} },
+    { NC_PARAM::VELOCITY,    {  NC_TYPE::VEC3,   "Velocity",    "m/s", "", -1} },
+    { NC_PARAM::STRESS,      {  NC_TYPE::TEN9,    "Stress",      "Pa",  "", -1} }
 };
 
 /** **/
-NetCDFWriter::NetCDFWriter(uint n_times, uint n_points)
-  : world(), n_times(n_times), n_points(n_points),
+NetCDFWriter::NetCDFWriter()
+  : world(), n_points(0),
   file_created(false), define_mode(false),
-  vec3_dimid(0), ten9_dimid(0) { }
+  vec3_dimid(0), ten9_dimid(0), curr_time(0), curr_pt(0) {
+nc_set_log_level(5);
+  }
 
   /** **/
   NetCDFWriter::~NetCDFWriter() {
@@ -22,9 +46,10 @@ NetCDFWriter::NetCDFWriter(uint n_times, uint n_points)
   }
 
 /** **/
-void NetCDFWriter::create_file(const string& filename) {
+void NetCDFWriter::create_file(const string& filename, uint n_points_) {
   if (file_created) flog << "File already created";
 
+  n_points = n_points_;
   MPI_Info info = MPI_INFO_NULL;
 
   // Create parallel NetCDF file
@@ -32,7 +57,7 @@ void NetCDFWriter::create_file(const string& filename) {
         world, info, &ncid));
 
   // Define dimensions
-  CHECK_NC(nc_def_dim(ncid, "time", n_times, &time_dimid));
+  CHECK_NC(nc_def_dim(ncid, "time", NC_UNLIMITED, &time_dimid));
   CHECK_NC(nc_def_dim(ncid, "point_idx", n_points, &point_dimid));
   CHECK_NC(nc_def_dim(ncid, "vec3_comp", 3, &vec3_dimid));
 
@@ -44,7 +69,7 @@ void NetCDFWriter::create_file(const string& filename) {
 
   if (world.rank() == 0) {
     ilog << "Created NetCDF file: " << filename;
-    ilog << "Dimensions: time(" << n_times << "), point_idx(" << n_points << ")";
+    ilog << "Dimensions: time(UNLIMITED), point_idx(" << n_points << ")";
   }
 }
 
@@ -52,14 +77,20 @@ void NetCDFWriter::create_file(const string& filename) {
 void NetCDFWriter::setup_coordinate_variables() 
 {
   // Define coordinate variables
-  CHECK_NC(nc_def_var(ncid, "time_in_seconds", NC_DOUBLE, 1, &time_dimid, &time_varid));
+  CHECK_NC(nc_def_var(ncid, "time", NC_DOUBLE, 1, &time_dimid, &time_varid));
 
   int dimids[2] = {point_dimid, vec3_dimid};
   CHECK_NC(nc_def_var(ncid, "Coord", NC_DOUBLE, 2, dimids, &coord_varid));
+  string comp = "x y z";
+  CHECK_NC(nc_put_att_text(ncid, coord_varid, "components", comp.size(), comp.c_str()));    
 
   // Add coordinate attributes
   CHECK_NC(nc_put_att_text(ncid, time_varid, "units", 1, "s"));
   CHECK_NC(nc_put_att_text(ncid, coord_varid, "units", 1, "m"));
+
+  // Collective access to coord and time (all process write in sync)
+  set_collective_access( coord_varid );
+  set_collective_access( time_varid );
 }
 
 /** **/
@@ -77,37 +108,40 @@ void NetCDFWriter::add_global_attributes()
 /**
  *
  */
-void NetCDFWriter::define_variable( NC_VAR var )
+void NetCDFWriter::define_variable( NC_PARAM var )
 {
   if (!define_mode) flog << "Not in define mode";
   auto & di = get_di(var);
 
   vector<int> dimids;
-  if ( di.type == SCALAR ) dimids = {time_dimid, point_dimid};
-  if ( di.type == VEC3 )   dimids = {time_dimid, point_dimid, vec3_dimid};
-
-  if ( di.type == TEN9 )   
+  if ( di.type == NC_TYPE::SCALAR ) dimids = {time_dimid, point_dimid};
+  if ( di.type == NC_TYPE::VEC3 ) dimids = {time_dimid, point_dimid, vec3_dimid};
+  if ( di.type == NC_TYPE::TEN9 )   
   {
-    if ( ! ten9_dimid )   // Create the dimension, if not existing
-      CHECK_NC(nc_def_dim(ncid, "ten9_comp", 9, &ten9_dimid));
+    // Create the dimension, if not existing
+    if ( ! ten9_dimid )  CHECK_NC(nc_def_dim(ncid, "ten9_comp", 9, &ten9_dimid));
 
     dimids = {time_dimid, point_dimid, ten9_dimid};
   }
 
-  ilog << "NAME:" << di.name;
   CHECK_NC(nc_def_var(ncid, di.name.c_str(), NC_DOUBLE, dimids.size(), dimids.data(), &di.vid));
   CHECK_NC(nc_put_att_text(ncid, di.vid, "units", di.unit.length(), di.unit.c_str()));
 
-
   // Useful annotations
-  if ( di.type == TEN9 ) {
+  if ( di.type == NC_TYPE::TEN9 ) 
+  {
     string comp = "xx xy xz yx yy yz zx zy zz";
     CHECK_NC(nc_put_att_text(ncid, di.vid, "components", comp.size(), comp.c_str()));    
   }
-  if ( di.type == VEC3 ) {
+
+  if ( di.type == NC_TYPE::VEC3 ) 
+  {
     string comp = "x y z";
     CHECK_NC(nc_put_att_text(ncid, di.vid, "components", comp.size(), comp.c_str()));    
   }
+
+  // Independent access: all processors write independently (not sync'ed)
+  set_independent_access( di.vid );
 
   if (world.rank() == 0) ilog << "Defined variable: " << di.name;
 }
@@ -118,6 +152,7 @@ void NetCDFWriter::finish_definitions()
   if (!define_mode) flog << "Not in define mode";
   CHECK_NC(nc_enddef(ncid));
   define_mode = false;
+
   if (world.rank() == 0) ilog << "Finished variable definitions";
 }
 
@@ -125,9 +160,6 @@ void NetCDFWriter::finish_definitions()
 void NetCDFWriter::set_coordinates_collective(const vector<Point>& points) 
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
-
-  // Set collective access for coordinate variables
-  set_collective_access(coord_varid);
 
   uint npoints = points.size();
 
@@ -147,41 +179,70 @@ void NetCDFWriter::set_coordinates_collective(const vector<Point>& points)
   if (world.rank() == 0) ilog << "Set coordinates collectively";
 }
 
-/** **/
-void NetCDFWriter::set_time_collective(const vector<double>& times) 
+/**
+ *      This is a collective task
+ */
+void NetCDFWriter::add_timestep(uint i, double time)
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
 
-  if (times.size() != n_times) flog << "Times vector size doesn't match n_times";
-
-  // Set collective access for time variable
-  set_collective_access(time_varid);
-
   // Write time data collectively (all processes write same data)
-  luint start[1] = {0};
-  luint count[1] = {n_times};
+  curr_time = i;
+  luint start[1] = {curr_time};
+  luint count[1] = {1};
 
-  CHECK_NC(nc_put_vara_double(ncid, time_varid, start, count, times.data()));
+  // Extend the dimesion of the time variable
+  set_collective_access( time_varid );
+  CHECK_NC(nc_put_vara_double(ncid, time_varid, start, count, &time));
 
-  if (world.rank() == 0) ilog << "Set time collectively";
+  // Extend the dimension of all variables (needs to be collective!)
+  for ( auto & [ p, di ] : PARAMS )
+  if ( di.vid >= 0 )
+  {
+    set_collective_access( di.vid );
+    if ( di.type == NC_TYPE::SCALAR ) set_value( p, 0 );
+    if ( di.type == NC_TYPE::VEC3 )   set_value( p, Point() );
+    if ( di.type == NC_TYPE::TEN9 )   set_value( p, RealTensorValue() );
+    set_independent_access( di.vid );
+  }
+
+  // Ensures all processes are synchronized  
+  world.barrier(); 
 }
 
+///** **/
+//void NetCDFWriter::set_time_collective(const vector<double>& times) 
+//{
+//  if (define_mode) flog << "Still in define mode - call finish_definitions() first";
+
+//  if (times.size() != n_times) flog << "Times vector size doesn't match n_times";
+
+//  // Set collective access for time variable
+//  set_collective_access(time_varid);
+
+//  // Write time data collectively (all processes write same data)
+//  luint start[1] = {0};
+//  luint count[1] = {n_times};
+
+//  CHECK_NC(nc_put_vara_double(ncid, time_varid, start, count, times.data()));
+
+//  if (world.rank() == 0) ilog << "Set time collectively";
+//}
+
 /** **/
-void NetCDFWriter::set_value(NC_VAR var, double value) 
+void NetCDFWriter::set_value(NC_PARAM var, double value) 
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
   auto & di = get_di(var);
 
-  set_independent_access(di.vid);
-
   luint start[2] = { curr_time, curr_pt };
-  luint count[2] = {1, 1};
+  luint count[2] = { 1, 1 };
 
   CHECK_NC(nc_put_vara_double(ncid, di.vid, start, count, &value));
 }
 
 /** **/
-void NetCDFWriter::set_value(NC_VAR var, const Point& p) 
+void NetCDFWriter::set_value(NC_PARAM var, const Point& p) 
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
   auto & di = get_di(var);
@@ -194,7 +255,7 @@ void NetCDFWriter::set_value(NC_VAR var, const Point& p)
 }
 
 /** **/
-void NetCDFWriter::set_value(NC_VAR var, const RealTensorValue& tensor) 
+void NetCDFWriter::set_value(NC_PARAM var, const RealTensorValue& tensor) 
 {
   if (define_mode) flog << "Still in define mode - call finish_definitions() first";
   auto & di = get_di(var);
@@ -219,6 +280,34 @@ void NetCDFWriter::close_file()
   CHECK_NC(nc_close(ncid));
   file_created = false;
   if (world.rank() == 0) ilog << "Closed NetCDF file";
+}
+
+/** **/
+ostream& operator<<(ostream& os, const NC_TYPE& type) {
+    static const unordered_map<NC_TYPE, string> type_map = {
+        {NC_TYPE::SCALAR, "SCALAR"},
+        {NC_TYPE::VEC3,   "VEC3"},
+        {NC_TYPE::TEN9,   "TEN9"}
+    };
+    
+    auto it = type_map.find(type);
+    if (it != type_map.end()) return os << it->second;
+    return os << "Unknown NC_TYPE(" << static_cast<int>(type) << ")";
+}
+/** **/
+ostream& operator<<(ostream& os, const NC_PARAM& param) {
+    static const unordered_map<NC_PARAM, string> param_map = {
+        {NC_PARAM::TEMPERATURE, "TEMPERATURE"},
+        {NC_PARAM::PRESSURE,    "PRESSURE"},
+        {NC_PARAM::VELOCITY,    "VELOCITY"},
+        {NC_PARAM::STRESS,      "STRESS"},
+        {NC_PARAM::DENSITY,     "DENSITY"},
+        {NC_PARAM::VISCOSITY,   "VISCOSITY"}
+    };
+    
+    auto it = param_map.find(param);
+    if (it != param_map.end()) return os << it->second;
+    return os << "Unknown NC_PARAM(" << static_cast<int>(param) << ")";
 }
 
 } // ns

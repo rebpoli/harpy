@@ -1,5 +1,7 @@
 
 #include "util/NetCDFWriter.h"
+#include "util/Stopwatch.h"
+#include "harpy/HarpyInit.h"
 
 using namespace util;
 
@@ -50,8 +52,10 @@ RealTensorValue generate_stress(int point_idx, int time_step) {
   return stress;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
     mpi::environment env(argc, argv);
+//    harpy::HarpyInit( argc, argv );
     mpi::communicator world;
 
     // Parameters
@@ -62,7 +66,7 @@ int main(int argc, char** argv) {
     for (uint i=0; i<N_POINTS; i++) points.emplace_back( i, i+1, i+2 );
 
     // Create NetCDF writer
-    NetCDFWriter writer(N_TIMES, N_POINTS);
+    NetCDFWriter writer;
 
     if (world.rank() == 0) {
       ilog << "Starting NetCDF parallel write example";
@@ -70,21 +74,20 @@ int main(int argc, char** argv) {
     }
 
     // Create file and define variables
-    writer.create_file("example_data.nc");
+    writer.create_file("example_data.nc", N_POINTS);
 
-    writer.define_variable(TEMPERATURE);
-    writer.define_variable(PRESSURE);
-    writer.define_variable(VELOCITY);
-    writer.define_variable(STRESS);
+    writer.define_variable(NC_PARAM::TEMPERATURE);
+    writer.define_variable(NC_PARAM::PRESSURE);
+    writer.define_variable(NC_PARAM::VELOCITY);
+    writer.define_variable(NC_PARAM::STRESS);
 
     writer.finish_definitions();
-
 
     writer.set_coordinates_collective( points );
 
     // Generate and set time data
     auto times = generate_times(N_TIMES);
-    writer.set_time_collective(times);
+//    writer.set_time_collective(times);
 
     // Main write loops (as requested in main function)
     if (world.rank() == 0) ilog << "Writing data...";
@@ -102,26 +105,29 @@ int main(int argc, char** argv) {
     // Write scalar data (temperature, pressure) independently
     for (uint time = 0; time < N_TIMES; ++time) 
     {
+      Stopwatch __ss("full_timestep");
       if (world.rank() == 0 && (time % 10 == 0 || time < 5)) { ilog << "  Processing time step " << time + 1 << " of " << N_TIMES; }
-      writer.set_curr_time(time);
+      //      ilog << "  Processing time step " << time + 1 << " of " << N_TIMES; 
+      writer.add_timestep(time, time*2.0);
 
       // Each processor writes data for its own local points
       for (uint i = start_idx; i < end_idx; ++i) 
       {
         writer.set_curr_pt(i);
         double temp = generate_temperature(i, time);
-        writer.set_value(TEMPERATURE, temp);
+
+        writer.set_value(NC_PARAM::TEMPERATURE, temp);
 
         double pressure = 101325.0 + temp * 100; // Pressure depends on temperature
-        writer.set_value(PRESSURE, pressure);
+        writer.set_value(NC_PARAM::PRESSURE, pressure);
 
         // Set vector values
         Point velocity = generate_velocity(i, time);
-        writer.set_value(VELOCITY, velocity);
+        writer.set_value(NC_PARAM::VELOCITY, velocity);
 
         // Set tensor values
         RealTensorValue stress = generate_stress(i, time);
-        writer.set_value(STRESS, stress);
+        writer.set_value(NC_PARAM::STRESS, stress);
       }
     }
 
