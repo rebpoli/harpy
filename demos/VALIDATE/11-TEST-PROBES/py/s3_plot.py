@@ -4,56 +4,66 @@ import matplotlib.cm as cm
 import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
+from matplotlib.animation import FuncAnimation
+from scipy.interpolate import griddata
+
+
+# Return indices of points that are at least min_dist apart.
+def spatial_subsample(Y, Z, min_dist):
+    keep_idx = []
+    for i, (y, z) in enumerate(zip(Y, Z)):
+        if all((y - Y[j])**2 + (z - Z[j])**2 >= min_dist**2 for j in keep_idx):
+            keep_idx.append(i)
+    return np.array(keep_idx)
+
 
 ds = xr.open_dataset("run/cdf/plane_0.cd")
 
-for v in [ 'Coord', 'S1', 'S2', 'S3' ] :
-    lab = ds[v].attrs['components'].split() 
+# Assign labels
+for v in ['Coord', 'S1', 'S2', 'S3']:
+    lab = ds[v].attrs['components'].split()
     ds = ds.assign_coords(vec3_comp=lab)
-
-
-import xarray as xr
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-from scipy.interpolate import griddata
 
 # Coordinates (static)
 Y = ds["Coord"][:, 1].values
 Z = ds["Coord"][:, 2].values
 
-subsample = 4
 
-# Subsample the 1D coordinates directly
-Y_vec = Y[::subsample]
-Z_vec = Z[::subsample]
+min_dist = 0.04 * max(Y.max()-Y.min(), Z.max()-Z.min())  # ~5% of domain size
+idx = spatial_subsample(Y, Z, min_dist)
 
-# If you need a 2D meshgrid for quiver:
+Y_vec = Y[idx]
+Z_vec = Z[idx]
+
+# If needed for quiver grid:
 Y_grid, Z_grid = np.meshgrid(Y_vec, Z_vec, indexing='ij')
 
-# --- Extract all timesteps ---
-S1 = ds["S1"].values          # shape (time, point_idx, vec3_comp)
-S3 = ds["S3"].values          # shape (time, point_idx, vec3_comp)
-mag = ds["Delta_T"].values
+nsteps = min(80, len(ds.time))
+time = ds.time.values[:nsteps]
+S1 = ds["S1"].values[:nsteps]
+S3 = ds["S3"].values[:nsteps]
+mag = ds["Delta_T"].values[:nsteps]
+# mag = ds["S3 Magnitude"].values[:nsteps]
 
-# Subsample vectors
-# Make sure point_idx corresponds to flattened grid order (row-major)
-S1_vec = S1[:, ::subsample, :]
-S3_vec = S3[:, ::subsample, :]
+# Apply same selection to fields
+S1_vec = S1[:, idx, :]
+S3_vec = S3[:, idx, :]
+mag_vec = mag[:, idx]
 
-# --- Build grid for interpolation ---
-ny, nz = 200, 200  # resolution of interpolated grid
+
+# Background grid
+ny, nz = 400, 400
 y_lin = np.linspace(Y.min(), Y.max(), ny)
 z_lin = np.linspace(Z.min(), Z.max(), nz)
 Yg, Zg = np.meshgrid(y_lin, z_lin)
 
-# --- Interpolate magnitude for first frame ---
-Mag0 = griddata((Y, Z), mag[0], (Yg, Zg), method="linear")
+# First frame background
+Mag0 = griddata((Y, Z), mag[0], (Yg, Zg), method="cubic")
 
 # --- Setup figure ---
 fig, ax = plt.subplots(figsize=(8, 6))
 
-# Background interpolated colormap
+# Background
 im = ax.imshow(
     Mag0, extent=[Y.min(), Y.max(), Z.max(), Z.min()],
     origin="upper", cmap="coolwarm",
@@ -61,48 +71,53 @@ im = ax.imshow(
     aspect="auto"
 )
 
-# Vectors (first frame)
-Vy = S3_vec[0, :, 1]
-Vz = S3_vec[0, :, 2]
-quiv = ax.quiver(
-    Y_vec, Z_vec, Vy, Vz,
-    angles="xy", scale_units="xy", scale=0.5,
-    color="black", width=0.0015,
-    pivot='middle', alpha=0.5,
+# --- Quiver setup (S3: white, S1: black semi-transparent) ---
+Vy3, Vz3 = S3_vec[0, :, 1], S3_vec[0, :, 2]
+quiv3 = ax.quiver(
+    Y_vec, Z_vec, Vy3, Vz3,
+    angles="xy", scale_units="xy", scale=0.6,  # auto-scaling
+    color="white", width=0.002,
+    pivot="middle", alpha=0.7,
+    headwidth=0, headlength=0, headaxislength=0  # tiny arrows
+)
+
+Vy1, Vz1 = S1_vec[0, :, 1], S1_vec[0, :, 2]
+quiv1 = ax.quiver(
+    Y_vec, Z_vec, Vy1, Vz1,
+    angles="xy", scale_units="xy", scale=0.3,
+    color="black", width=0.004,
+    pivot="middle", alpha=0.7,
     headwidth=0, headlength=0, headaxislength=0
 )
 
-Vy = S1_vec[0, :, 1]
-Vz = S1_vec[0, :, 2]
-quiv2 = ax.quiver(
-    Y_vec, Z_vec, Vy, Vz,
-    angles="xy", scale_units="xy", scale=0.5,
-    color="white", width=0.0015,
-    pivot='middle', alpha=0.5,
-    headwidth=0, headlength=0, headaxislength=0
-)
+from matplotlib.lines import Line2D
+legend_elements = [
+    Line2D([0], [0], color="black", lw=2, label="S1"),
+    Line2D([0], [0], color="white", lw=2, label="S3")
+]
+
+ax.legend(handles=legend_elements, loc="upper right")
 
 ax.set_xlabel("Y")
 ax.set_ylabel("Z")
-title = ax.set_title(f"S1&S3 projected on YZ plane (time={ds.time.values[0]})")
-cbar = plt.colorbar(im, ax=ax, label="Temperatre")
+title = ax.set_title(f"S1 & S3 projected on YZ plane (time={ds.time.values[0]:,.0f})")
+cbar = plt.colorbar(im, ax=ax, label="Temperature")
 
 # --- Update function ---
 def update(frame):
     Mag = griddata((Y, Z), mag[frame], (Yg, Zg), method="linear")
     im.set_data(Mag)
-    Vy = S3_vec[frame, :, 1]
-    Vz = S3_vec[frame, :, 2]
-    quiv.set_UVC(Vy, Vz)
 
-    Vy = S1_vec[frame, :, 1]
-    Vz = S1_vec[frame, :, 2]
-    quiv2.set_UVC(Vy, Vz)
-    title.set_text(f"S1&S3 projected on YZ plane (time={ds.time.values[frame]:,.0f})")
-    return im, quiv, title
+    quiv3.set_UVC(S3_vec[frame, :, 1], S3_vec[frame, :, 2])
+    quiv1.set_UVC(S1_vec[frame, :, 1], S1_vec[frame, :, 2])
 
-# --- Animate ---
-anim = FuncAnimation(fig, update, frames=len(ds.time), interval=500, blit=False)
+    title.set_text(f"S1 & S3 projected on YZ plane (time={ds.time.values[frame]:,.0f})")
+    return im, quiv3, quiv1, title
+
+# Animate
+anim = FuncAnimation(fig, update, frames=nsteps, interval=300, blit=False)
+
+anim.save( "s1_s3_animation.mp4", writer="ffmpeg", fps=2, dpi=150, bitrate=-1)
 
 plt.show()
 
