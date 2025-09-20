@@ -1,0 +1,21 @@
+
+# The probes to extract information
+.PROBE gauss
+TYPE GAUSS
+ORDER FIRST
+BOUNDARY XP
+BOUNDARY XN
+
+# .PROBE rad_0
+# TYPE RADIAL
+# RADIUS 0.2
+# DTHETA 30
+# CENTER 0 0 0
+# NORMAL 1 0 0
+
+.PROBE plane_0
+TYPE planar
+P0       0     0     -50
+P1       0   100     -50
+P2       0   100     50
+NPTS     10000
