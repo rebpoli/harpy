@@ -45,11 +45,20 @@ void ViscoplasticReport::init()
     
     auto & netcdf = probe->netcdf;
     netcdf.init( probe->points.size() );
+
     netcdf.add( NC_PARAM::PRESSURE );
     netcdf.add( NC_PARAM::TEMPERATURE );
-    netcdf.add( NC_PARAM::DELTA_T );
     netcdf.add( NC_PARAM::DELTA_P );
+    netcdf.add( NC_PARAM::DELTA_T );
+
+    netcdf.add( NC_PARAM::S1 );
+    netcdf.add( NC_PARAM::S2 );
+    netcdf.add( NC_PARAM::S3 );
+
+    netcdf.add( NC_PARAM::S1_MAG );
+    netcdf.add( NC_PARAM::S2_MAG );
     netcdf.add( NC_PARAM::S3_MAG );
+
     netcdf.finish_definitions();
     netcdf.set_coords(probe->points);
   }
@@ -210,9 +219,14 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       ofile << t_step << time << CSVSci(time_d) << "S2" << pt(0) << pt(1) << pt(2) << ti.S2_eval() << endrow;
       ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
       ofile << t_step << time << CSVSci(time_d) << "invarP" << pt(0) << pt(1) << pt(2) << ti.get_P() << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
 
+      netcdf.set_value( NC_PARAM::S1_MAG , ti.S1_eval() );
+      netcdf.set_value( NC_PARAM::S1     , ti.get_Si(1) );
+      netcdf.set_value( NC_PARAM::S2_MAG , ti.S2_eval() );
+      netcdf.set_value( NC_PARAM::S2     , ti.get_Si(2) );
       netcdf.set_value( NC_PARAM::S3_MAG , ti.S3_eval() );
+      netcdf.set_value( NC_PARAM::S3     , ti.get_Si(3) );
+//      ilog << "S3 >>>>" << ti.get_Si(3);
 
       double p_eff = ti.get_P() + p.pressure ;
       double q_div_p_eff = ti.get_Q() / p_eff;

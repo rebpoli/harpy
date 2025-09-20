@@ -203,7 +203,9 @@ void ViscoplasticSolver::setup_variables()
 
   // Stresses
   {
-    Order order = Utility::string_to_enum<Order>( femspec.order ) - 1;
+    // Assuming the order equals to the displacement, because temperature and pressure
+    // can have higher orders to. So we do not want to restrict the stress
+    Order order = Utility::string_to_enum<Order>( femspec.order ); // - 1;
     FEFamily fef = L2_LAGRANGE;
     if ( ! order ) fef = MONOMIAL;  // a constant is a monomial
     ilog << "Adding stress: order " << order;

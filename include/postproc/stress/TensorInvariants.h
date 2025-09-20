@@ -3,6 +3,7 @@
 #include "libmesh/dense_matrix.h"
 #include "libmesh/dense_vector.h"
 #include "libmesh/tensor_value.h"
+#include "libmesh/point.h"
 #include "harpy/Global.h"
 #include <vector>
 
@@ -40,6 +41,13 @@ class TensorInvariants
     // i:0-2 => S1-S3    j:0-2 => X-Z
     double get_Sij( uint i, uint j ) { return eigenPairs[i].evec(j); }
     void get_Si( uint i, DenseVector<Real> & evec, Real & eval ) { evec = eigenPairs[i].evec; eval = eigenPairs[i].eval; }
+    Point get_Si( uint i ) { 
+      ASSERT((i>0) && (i<=3), "i must be 1,2,3, found '" << i << "'");
+      Point ret; 
+      auto evec = eigenPairs[i-1].evec; 
+      for ( uint j=0 ; j<3 ; ++j ) ret(j) = evec(j);
+      return ret;
+    }
     void get_S1( DenseVector<Real> & evec, Real & eval ) { get_Si( 0, evec, eval ); }
     void get_S2( DenseVector<Real> & evec, Real & eval ) { get_Si( 1, evec, eval ); }
     void get_S3( DenseVector<Real> & evec, Real & eval ) { get_Si( 2, evec, eval ); }

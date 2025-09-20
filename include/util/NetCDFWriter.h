@@ -27,7 +27,10 @@ enum class NC_PARAM  {
   PRESSURE, DELTA_P,
   VELOCITY, STRESS, 
   DENSITY, VISCOSITY, 
-  S3_MAG };
+  S1, S1_MAG ,
+  S2, S2_MAG ,
+  S3, S3_MAG 
+};
 
 struct DataInfo { 
   NC_TYPE type;
