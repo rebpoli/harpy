@@ -2,26 +2,15 @@
 
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter, FFMpegWriter
 from timestr import format_time_duration
 
 from netcdf import read_netcdf
 
+#
+#
 def extract_vertical_profiles(y_coords, z_coords, s3_magnitude, num_lines=10):
-    """
-    Extract S3 magnitude profiles along vertical lines at different Y positions
-
-    Parameters:
-    y_coords, z_coords: coordinate arrays
-    s3_magnitude: S3 magnitude values (directly from dataset)
-    num_lines: number of vertical profiles to extract
-
-    Returns:
-    List of profiles, each containing Z coordinates and S3 magnitudes
-    """
-
     # Find Y coordinate bounds
     y_min, y_max = y_coords.min(), y_coords.max()
 
@@ -54,19 +43,10 @@ def extract_vertical_profiles(y_coords, z_coords, s3_magnitude, num_lines=10):
 
     return profiles
 
+#
+#
 def create_s3_vertical_line_animation(filename='plane_yz.cd', max_timesteps=None,
                                      num_lines=8, save_animation=True, show_animation=True):
-    """
-    Create line plot animation of S3 magnitude vs Z coordinate
-
-    Parameters:
-    filename: NetCDF file to read
-    max_timesteps: Maximum timesteps to animate
-    num_lines: Number of vertical profiles (different Y positions)
-    save_animation: Save as GIF
-    show_animation: Display on screen
-    """
-
     print(f"Creating S3 magnitude vs Z animation from {filename}")
     print(f"Number of vertical profiles: {num_lines}")
 
