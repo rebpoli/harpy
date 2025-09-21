@@ -29,7 +29,11 @@ enum class NC_PARAM  {
   DENSITY, VISCOSITY, 
   S1, S1_MAG ,
   S2, S2_MAG ,
-  S3, S3_MAG 
+  S3, S3_MAG ,
+  SIGTOT,
+  VP_STRAIN ,
+  VP_STRAIN_RATE ,
+  INVAR_P_EFF, INVAR_Q,
 };
 
 struct DataInfo { 

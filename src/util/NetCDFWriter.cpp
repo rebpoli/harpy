@@ -26,18 +26,22 @@ void debug_check_time_dimension(int ncid, int time_dim_id, int rank) {
 }
 
 map<NC_PARAM, DataInfo> PARAMS = {
-    { NC_PARAM::TEMPERATURE, {  NC_TYPE::SCALAR, "Temperature"     , "K",   "", -1} },
-    { NC_PARAM::PRESSURE,    {  NC_TYPE::SCALAR, "Pressure"        , "Pa",  "", -1} },
-    { NC_PARAM::DELTA_T    , {  NC_TYPE::SCALAR, "Delta_T"         , "K",   "", -1} },
-    { NC_PARAM::DELTA_P,     {  NC_TYPE::SCALAR, "Delta_P"         , "Pa",  "", -1} },
-    { NC_PARAM::S1,          {  NC_TYPE::VEC3,   "S1"              , "Pa",  "", -1} },
-    { NC_PARAM::S1_MAG,      {  NC_TYPE::SCALAR, "S1 Magnitude"    , "Pa",  "", -1} },
-    { NC_PARAM::S2,          {  NC_TYPE::VEC3,   "S2"              , "Pa",  "", -1} },
-    { NC_PARAM::S2_MAG,      {  NC_TYPE::SCALAR, "S2 Magnitude"    , "Pa",  "", -1} },
-    { NC_PARAM::S3,          {  NC_TYPE::VEC3,   "S3"              , "Pa",  "", -1} },
-    { NC_PARAM::S3_MAG,      {  NC_TYPE::SCALAR, "S3 Magnitude"    , "Pa",  "", -1} },
-    { NC_PARAM::VELOCITY,    {  NC_TYPE::VEC3,   "Velocity"        , "m/s", "", -1} },
-    { NC_PARAM::STRESS,      {  NC_TYPE::TEN9,   "Stress"          , "Pa",  "", -1} }
+    { NC_PARAM::TEMPERATURE,      {  NC_TYPE::SCALAR, "Temperature"       , "K",    "", -1} },
+    { NC_PARAM::PRESSURE,         {  NC_TYPE::SCALAR, "Pressure"          , "Pa",   "", -1} },
+    { NC_PARAM::DELTA_T    ,      {  NC_TYPE::SCALAR, "Delta_T"           , "K",    "", -1} },
+    { NC_PARAM::DELTA_P,          {  NC_TYPE::SCALAR, "Delta_P"           , "Pa",   "", -1} },
+    { NC_PARAM::S1,               {  NC_TYPE::VEC3,   "S1"                , "Pa",   "", -1} },
+    { NC_PARAM::S1_MAG,           {  NC_TYPE::SCALAR, "S1 Magnitude"      , "Pa",   "", -1} },
+    { NC_PARAM::S2,               {  NC_TYPE::VEC3,   "S2"                , "Pa",   "", -1} },
+    { NC_PARAM::S2_MAG,           {  NC_TYPE::SCALAR, "S2 Magnitude"      , "Pa",   "", -1} },
+    { NC_PARAM::S3,               {  NC_TYPE::VEC3,   "S3"                , "Pa",   "", -1} },
+    { NC_PARAM::S3_MAG,           {  NC_TYPE::SCALAR, "S3 Magnitude"      , "Pa",   "", -1} },
+    { NC_PARAM::INVAR_P_EFF,      {  NC_TYPE::SCALAR, "Invariant P(eff)"  , "Pa",   "", -1} },
+    { NC_PARAM::INVAR_Q,          {  NC_TYPE::SCALAR, "Invariant Q"       , "Pa",   "", -1} },
+    { NC_PARAM::VELOCITY,         {  NC_TYPE::VEC3,   "Velocity"          , "m/s",  "", -1} },
+    { NC_PARAM::SIGTOT,           {  NC_TYPE::TEN9,   "Total Stress"      , "Pa",   "", -1} },
+    { NC_PARAM::VP_STRAIN,        {  NC_TYPE::TEN9,   "VP Strain"         , "",     "", -1} },
+    { NC_PARAM::VP_STRAIN_RATE,   {  NC_TYPE::TEN9,   "VP Strain Rate"    , "1/s",  "", -1} }
 };
 
 /** **/
@@ -85,10 +89,10 @@ void NetCDFWriter::init( uint n_points_ )
 void NetCDFWriter::setup_coordinate_variables() 
 {
   // Define coordinate variables
-  CHECK_NC(nc_def_var(ncid, "time", NC_DOUBLE, 1, &time_dimid, &time_varid));
+  CHECK_NC(nc_def_var(ncid, "time", NC_FLOAT, 1, &time_dimid, &time_varid));
 
   int dimids[2] = {point_dimid, vec3_dimid};
-  CHECK_NC(nc_def_var(ncid, "Coord", NC_DOUBLE, 2, dimids, &coord_varid));
+  CHECK_NC(nc_def_var(ncid, "Coord", NC_FLOAT, 2, dimids, &coord_varid));
   string comp = "x y z";
   CHECK_NC(nc_put_att_text(ncid, coord_varid, "components", comp.size(), comp.c_str()));    
 
@@ -132,7 +136,8 @@ void NetCDFWriter::add( NC_PARAM var )
     dimids = {time_dimid, point_dimid, ten9_dimid};
   }
 
-  CHECK_NC(nc_def_var(ncid, di.name.c_str(), NC_DOUBLE, dimids.size(), dimids.data(), &di.vid));
+  CHECK_NC(nc_def_var(ncid, di.name.c_str(), NC_FLOAT, dimids.size(), dimids.data(), &di.vid));
+
   CHECK_NC(nc_put_att_text(ncid, di.vid, "units", di.unit.length(), di.unit.c_str()));
 
   // Useful annotations
@@ -305,20 +310,24 @@ ostream& operator<<(ostream& os, const NC_TYPE& type) {
 /** **/
 ostream& operator<<(ostream& os, const NC_PARAM& param) {
     static const unordered_map<NC_PARAM, string> param_map = {
-        {NC_PARAM::DELTA_T,     "DELTA_T"},
-        {NC_PARAM::DELTA_P,     "DELTA_P"},
-        {NC_PARAM::TEMPERATURE, "TEMPERATURE"},
-        {NC_PARAM::PRESSURE,    "PRESSURE"},
-        {NC_PARAM::S1_MAG,      "S1_MAG"},
-        {NC_PARAM::S1,          "S1"},
-        {NC_PARAM::S2_MAG,      "S2_MAG"},
-        {NC_PARAM::S2,          "S2"},
-        {NC_PARAM::S3_MAG,      "S3_MAG"},
-        {NC_PARAM::S3,          "S3"},
-        {NC_PARAM::VELOCITY,    "VELOCITY"},
-        {NC_PARAM::STRESS,      "STRESS"},
-        {NC_PARAM::DENSITY,     "DENSITY"},
-        {NC_PARAM::VISCOSITY,   "VISCOSITY"}
+        {NC_PARAM::DELTA_T,           "DELTA_T"},
+        {NC_PARAM::DELTA_P,           "DELTA_P"},
+        {NC_PARAM::INVAR_P_EFF,       "INVAR_P_EFF"},
+        {NC_PARAM::INVAR_Q,           "INVAR_Q"},
+        {NC_PARAM::TEMPERATURE,       "TEMPERATURE"},
+        {NC_PARAM::PRESSURE,          "PRESSURE"},
+        {NC_PARAM::S1_MAG,            "S1_MAG"},
+        {NC_PARAM::S1,                "S1"},
+        {NC_PARAM::S2_MAG,            "S2_MAG"},
+        {NC_PARAM::S2,                "S2"},
+        {NC_PARAM::S3_MAG,            "S3_MAG"},
+        {NC_PARAM::S3,                "S3"},
+        {NC_PARAM::VELOCITY,          "VELOCITY"},
+        {NC_PARAM::DENSITY,           "DENSITY"},
+        {NC_PARAM::VISCOSITY,         "VISCOSITY"},
+        {NC_PARAM::SIGTOT,            "SIGTOT"},
+        {NC_PARAM::VP_STRAIN,         "VP_STRAIN"},
+        {NC_PARAM::VP_STRAIN_RATE,    "VP_STRAIN_RATE"}
     };
     
     auto it = param_map.find(param);

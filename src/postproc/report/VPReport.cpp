@@ -58,6 +58,12 @@ void ViscoplasticReport::init()
     netcdf.add( NC_PARAM::S1_MAG );
     netcdf.add( NC_PARAM::S2_MAG );
     netcdf.add( NC_PARAM::S3_MAG );
+    netcdf.add( NC_PARAM::SIGTOT );
+    netcdf.add( NC_PARAM::VP_STRAIN );
+    netcdf.add( NC_PARAM::VP_STRAIN_RATE );
+
+    netcdf.add( NC_PARAM::INVAR_P_EFF );
+    netcdf.add( NC_PARAM::INVAR_Q );
 
     netcdf.finish_definitions();
     netcdf.set_coords(probe->points);
@@ -174,11 +180,8 @@ void ViscoplasticReport::export_by_point( Probe & probe )
     using solver::viscoplastic::ProbeByElemMap;
     ProbeByElemMap & local_map = mat->vp_ifc.probes_by_pname_by_elem[probe.name];
 
-    // It only returns something in processor rank=0 (root)
-    ProbeByElemMap global_map;
-    local_map.localize_to_one( global_map );
-
-    for ( auto & [ eid, vec ] : global_map ) 
+    /// NETCDF
+    for ( auto & [ eid, vec ] : local_map ) 
     for ( auto & probe_ifc : vec ) 
     {
       auto & pt = probe_ifc->pt;
@@ -190,54 +193,75 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       netcdf.set_value( NC_PARAM::DELTA_T       , p.temperature - p.initial_temperature );
       netcdf.set_value( NC_PARAM::DELTA_P       , p.pressure - p.initial_pressure );
 
-      auto & U = p.U;
-      ofile << t_step << time << CSVSci(time_d) << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
+      netcdf.set_value( NC_PARAM::SIGTOT , p.sigtot );
+      netcdf.set_value( NC_PARAM::VP_STRAIN , p.plastic_strain );
+      netcdf.set_value( NC_PARAM::VP_STRAIN_RATE , p.plastic_strain_rate );
 
-      /**
-       *    ATTENTION - ALL THIS PROPERTIES MUST BE SERIALIZED ! SEE serialize(...VPProps...)
-       */
-
-      auto & stot = p.sigtot;
-      ofile << t_step << time << CSVSci(time_d) << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
-
-      ofile << t_step << time << CSVSci(time_d) << "T" << pt(0) << pt(1) << pt(2) << p.temperature << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
-
-      ofile << t_step << time << CSVSci(time_d) << "P" << pt(0) << pt(1) << pt(2) << p.pressure << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "INITIAL_P" << pt(0) << pt(1) << pt(2) << p.initial_pressure << endrow;
-
-      // Invariants
-      TensorInvariants ti( stot );
-      ofile << t_step << time << CSVSci(time_d) << "S1" << pt(0) << pt(1) << pt(2) << ti.S1_eval() << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "S2" << pt(0) << pt(1) << pt(2) << ti.S2_eval() << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "invarP" << pt(0) << pt(1) << pt(2) << ti.get_P() << endrow;
-
+      TensorInvariants ti( p.sigtot );
       netcdf.set_value( NC_PARAM::S1_MAG , ti.S1_eval() );
       netcdf.set_value( NC_PARAM::S1     , ti.get_Si(1) );
       netcdf.set_value( NC_PARAM::S2_MAG , ti.S2_eval() );
       netcdf.set_value( NC_PARAM::S2     , ti.get_Si(2) );
       netcdf.set_value( NC_PARAM::S3_MAG , ti.S3_eval() );
       netcdf.set_value( NC_PARAM::S3     , ti.get_Si(3) );
-//      ilog << "S3 >>>>" << ti.get_Si(3);
 
       double p_eff = ti.get_P() + p.pressure ;
       double q_div_p_eff = ti.get_Q() / p_eff;
-
-      ofile << t_step << time << CSVSci(time_d) << "invarPeff" << pt(0) << pt(1) << pt(2) << p_eff << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "invarQ" << pt(0) << pt(1) << pt(2) << ti.get_Q() << endrow;
-      ofile << t_step << time << CSVSci(time_d) << "invarQ_div_Peff" << pt(0) << pt(1) << pt(2) << q_div_p_eff << endrow;
-
-      /**  PQ FILE **/
-      ofile_pq << t_step << CSVSci(time_d) << pt(0) << pt(1) << pt(2) << p.pressure << ti.get_P() << ti.get_Q() << endrow;
+      netcdf.set_value( NC_PARAM::INVAR_P_EFF  , p_eff );
+      netcdf.set_value( NC_PARAM::INVAR_Q      , ti.get_Q() );
     }
+
+
+    /// CSV
+    // It only returns something in processor rank=0 (root)
+//    ProbeByElemMap global_map;
+//    local_map.localize_to_one( global_map );
+//    for ( auto & [ eid, vec ] : global_map ) 
+//    for ( auto & probe_ifc : vec ) 
+//    {
+//      auto & pt = probe_ifc->pt;
+//      auto & p = probe_ifc->props;
+
+//      auto & U = p.U;
+//      ofile << t_step << time << CSVSci(time_d) << "UX" << pt(0) << pt(1) << pt(2) << U(0) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "UY" << pt(0) << pt(1) << pt(2) << U(1) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "UZ" << pt(0) << pt(1) << pt(2) << U(2) << endrow;
+
+//      /**
+//       *    ATTENTION - ALL THIS PROPERTIES MUST BE SERIALIZED ! SEE serialize(...VPProps...)
+//       */
+
+//      auto & stot = p.sigtot;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTXX" << pt(0) << pt(1) << pt(2) << stot(0,0) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTYY" << pt(0) << pt(1) << pt(2) << stot(1,1) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTZZ" << pt(0) << pt(1) << pt(2) << stot(2,2) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTYZ" << pt(0) << pt(1) << pt(2) << stot(1,2) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTXZ" << pt(0) << pt(1) << pt(2) << stot(0,2) << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "STOTXY" << pt(0) << pt(1) << pt(2) << stot(0,1) << endrow;
+
+//      ofile << t_step << time << CSVSci(time_d) << "T" << pt(0) << pt(1) << pt(2) << p.temperature << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "INITIAL_T" << pt(0) << pt(1) << pt(2) << p.initial_temperature << endrow;
+
+//      ofile << t_step << time << CSVSci(time_d) << "P" << pt(0) << pt(1) << pt(2) << p.pressure << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "INITIAL_P" << pt(0) << pt(1) << pt(2) << p.initial_pressure << endrow;
+
+      // Invariants
+//      TensorInvariants ti( stot );
+//      ofile << t_step << time << CSVSci(time_d) << "S1" << pt(0) << pt(1) << pt(2) << ti.S1_eval() << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "S2" << pt(0) << pt(1) << pt(2) << ti.S2_eval() << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "S3" << pt(0) << pt(1) << pt(2) << ti.S3_eval() << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "invarP" << pt(0) << pt(1) << pt(2) << ti.get_P() << endrow;
+
+//      double p_eff = ti.get_P() + p.pressure ;
+//      double q_div_p_eff = ti.get_Q() / p_eff;
+
+//      ofile << t_step << time << CSVSci(time_d) << "invarPeff" << pt(0) << pt(1) << pt(2) << p_eff << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "invarQ" << pt(0) << pt(1) << pt(2) << ti.get_Q() << endrow;
+//      ofile << t_step << time << CSVSci(time_d) << "invarQ_div_Peff" << pt(0) << pt(1) << pt(2) << q_div_p_eff << endrow;
+
+//      /**  PQ FILE **/
+//      ofile_pq << t_step << CSVSci(time_d) << pt(0) << pt(1) << pt(2) << p.pressure << ti.get_P() << ti.get_Q() << endrow;
+//    }
   }
   netcdf.flush();
 }

@@ -2,12 +2,8 @@
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
-import xarray as xr
-ds = xr.open_dataset("run/cdf/plane_0.cd")
-
-lab = ds.Coord.attrs['components'].split() 
-ds = ds.assign_coords(vec3_comp=lab)
-
+from netcdf import read_netcdf
+ds = read_netcdf( "run/cdf/plane_xy.cd" )
 
 # lab = ds.Stress.attrs['components'].split() 
 # ds = ds.assign_coords(ten9_comp=lab)
@@ -22,13 +18,16 @@ import numpy as np
 
 # Extract Y and Z coordinates (fixed in time)
 y = ds.Coord[:, ds.vec3_comp.values.tolist().index("y")].values
-z = ds.Coord[:, ds.vec3_comp.values.tolist().index("z")].values
+z = ds.Coord[:, ds.vec3_comp.values.tolist().index("x")].values
 
 # Extract pressure (time, point_idx)
 D = { 'vname':"Delta_T" , 'min':-10, 'max':0 }
-D = { 'vname':"Delta_P" , 'min':None, 'max':1e7 }
+# D = { 'vname':"Delta_P" , 'min':None, 'max':1e7 }
+# D = { 'vname':"VP Strain Rate" , 'min':None, 'max':None }
+
 VARNAME = D['vname']
-vals = ds[VARNAME].values 
+vals = ds[VARNAME].values
+# vals = ds[VARNAME].sel(ten9_comp='xx').values
 times = ds.time.values
 
 fig, ax = plt.subplots(figsize=(6, 5))
