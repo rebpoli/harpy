@@ -83,6 +83,7 @@ void SLViscoplastic::solve()
 void SLViscoplastic::load_sig0_file( string filename )
 {
   SCOPELOG(1);
+  ilog1 << "Reading '" << filename << "' ...";
   restart::File restart( filename ) ;
   restart.read( *this );
 }

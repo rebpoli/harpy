@@ -236,7 +236,7 @@ void File::read( ViscoplasticSolver * svr )
         if (is_local) 
         {
           if ( ! by_elem.count(eid) ) dlog(1) << " eid:" <<eid << "  N:" << h5.N;
-          ASSERT( by_elem.count(eid) , "Element not found in by_elem." );
+          ASSERT( by_elem.count(eid) , "Element " << eid << " not found in by_elem. The Probes in restart file are not the same as in the current run?" );
         }
 
         // For each point in the vector ...
@@ -248,7 +248,7 @@ void File::read( ViscoplasticSolver * svr )
           if ( ! is_local ) continue;
 
           if ( ! by_elem.count(eid) ) dlog(1) << "pt:" << pt << " eid:" <<eid;
-          ASSERT( by_elem.count(eid) , "Element not found in by_elem." );
+          ASSERT( by_elem.count(eid) , "Element " << eid << " not found in by_elem. The Probes in restart file are not the same as in the current run?" );
 
           auto & vec = by_elem.at( eid );
           ProbeIFC * ifc = vec[pt_i] ;

@@ -8,11 +8,11 @@ from scipy.interpolate import griddata
 
 from subsample import spatial_subsample
 from netcdf import read_netcdf
-ds = read_netcdf( "run/cdf/plane_xy.cd" )
+ds = read_netcdf( "run/cdf/plane_yz.cd" )
 
 # Coordinates (static)
 Y = ds["Coord"][:, 1].values
-Z = ds["Coord"][:, 0].values
+Z = ds["Coord"][:, 2].values
 
 
 min_dist = 0.04 * max(Y.max()-Y.min(), Z.max()-Z.min())  # ~5% of domain size
@@ -59,7 +59,7 @@ im = ax.imshow(
 )
 
 # --- Quiver setup (S3: white, S1: black semi-transparent) ---
-Vy3, Vz3 = S3_vec[0, :, 1], S3_vec[0, :, 0]
+Vy3, Vz3 = S3_vec[0, :, 1], S3_vec[0, :, 2]
 quiv3 = ax.quiver(
     Y_vec, Z_vec, Vy3, Vz3,
     angles="xy", scale_units="xy", scale=0.6,  # auto-scaling
@@ -68,7 +68,7 @@ quiv3 = ax.quiver(
     headwidth=0, headlength=0, headaxislength=0  # tiny arrows
 )
 
-Vy1, Vz1 = S1_vec[0, :, 1], S1_vec[0, :, 0]
+Vy1, Vz1 = S1_vec[0, :, 1], S1_vec[0, :, 2]
 quiv1 = ax.quiver(
     Y_vec, Z_vec, Vy1, Vz1,
     angles="xy", scale_units="xy", scale=0.3,
@@ -95,8 +95,8 @@ def update(frame):
     Mag = griddata((Y, Z), mag[frame], (Yg, Zg), method="linear")
     im.set_data(Mag)
 
-    quiv3.set_UVC(S3_vec[frame, :, 1], S3_vec[frame, :, 0])
-    quiv1.set_UVC(S1_vec[frame, :, 1], S1_vec[frame, :, 0])
+    quiv3.set_UVC(S3_vec[frame, :, 1], S3_vec[frame, :, 2])
+    quiv1.set_UVC(S1_vec[frame, :, 1], S1_vec[frame, :, 2])
 
     title.set_text(f"S1 & S3 projected on YZ plane (time={ds.time.values[frame]:,.0f})")
     return im, quiv3, quiv1, title
