@@ -195,8 +195,7 @@ def plot_segments(ax, segments, color, linewidth, alpha):
 #
 #   Create animated S1 & S3 vector field plots with S3 Magnitude background
 #
-def create_animated_vector_plots(max_timesteps=None, save_animation=False,
-                                show_animation=True, interval=300,
+def create_animated_vector_plots(max_timesteps=None, interval=300,
                                 vector_density=15):
 
     # Plot configurations
@@ -307,27 +306,22 @@ def create_animated_vector_plots(max_timesteps=None, save_animation=False,
                         interval=interval, blit=False, repeat=True)
 
     # Save animation as MP4 with high quality
-    if save_animation:
-        filename = f'S1_S3_maps.mp4'
-        print(f"Saving {filename}...")
+    filename = f'S1_S3_maps.mp4'
+    print(f"Saving {filename}...")
 
-        # Use FFmpeg writer with high quality settings
-        writer = FFMpegWriter(
-            fps=1000//interval,           # Frame rate based on interval
-            metadata=dict(artist='S1/S3 Vector Animation'),
-            bitrate=8000,                 # High bitrate for quality
-            extra_args=['-vcodec', 'libx264',   # H.264 codec
-                       '-pix_fmt', 'yuv420p',   # Pixel format for compatibility
-                       '-crf', '18',            # High quality (lower = better)
-                       '-preset', 'slow']       # Better compression
-        )
+    # Use FFmpeg writer with high quality settings
+    writer = FFMpegWriter(
+        fps=1000//interval,           # Frame rate based on interval
+        metadata=dict(artist='S1/S3 Vector Animation'),
+        bitrate=8000,                 # High bitrate for quality
+        extra_args=['-vcodec', 'libx264',   # H.264 codec
+                   '-pix_fmt', 'yuv420p',   # Pixel format for compatibility
+                   '-crf', '18',            # High quality (lower = better)
+                   '-preset', 'slow']       # Better compression
+    )
 
-        anim.save(filename, writer=writer, dpi=150)  # High DPI for resolution
-        print("Animation saved!")
-
-    # Show animation
-    if show_animation:
-        plt.show()
+    anim.save(filename, writer=writer, dpi=150)  # High DPI for resolution
+    print("Animation saved!")
 
     return fig, anim
 
@@ -338,14 +332,10 @@ if __name__ == "__main__":
 
     MAX_TIMESTEPS = 1500      # Number of timesteps to animate
     VECTOR_DENSITY = 15     # 15x15 grid of vectors
-    SHOW_ANIMATION = True   # Display on screen
-    SAVE_ANIMATION = False  # Save as MP4 (default: False)
 
     fig, anim = create_animated_vector_plots(
         max_timesteps=MAX_TIMESTEPS,
         vector_density=VECTOR_DENSITY,
-        show_animation=SHOW_ANIMATION,
-        save_animation=SAVE_ANIMATION,
         interval=200  # 400ms between frames
     )
 
