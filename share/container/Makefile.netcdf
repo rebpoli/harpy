@@ -1,0 +1,32 @@
+
+#
+#
+#
+VER = 3.23.2
+BDIR = /opt/netcdf
+netcdf: 
+	cd /opt && tar zxf /opt/netcdf-c-4.9.3.tar.gz 
+	cd /opt && tar zxf /opt/netcdf-cxx-4.3.1.tar.gz 
+	cd /opt/netcdf-c-*/ && mkdir build && cd build && \
+	cmake .. \
+		-DCMAKE_INSTALL_PREFIX=/usr/local \
+		-DCMAKE_PREFIX_PATH=/usr/local \
+		-DHDF5_ROOT=/usr/local \
+		-DBUILD_SHARED_LIBS=ON \
+		-DNETCDF_ENABLE_NETCDF_4=ON \
+		-DNETCDF_ENABLE_PARALLEL4=ON \
+		-DNETCDF_ENABLE_DAP=OFF \
+		-DNETCDF_CXX_PLUGIN_SUPPORT=OFF \
+	&&\
+     make -j10 && make install
+
+#     cd /opt/netcdf-cxx4-*/ && mkdir build && cd build && \
+#     cmake .. -Wno-dev \
+#         -DCMAKE_INSTALL_PREFIX=/usr/local \
+#         -DNetCDF_DIR=/usr/local \
+#         -DNETCDF_ENABLE_TESTS=OFF \
+#         -DNETCDF_CXX_PLUGIN_SUPPORT=OFF && \
+#     make && make install
+
+
+#     cd $(BDIR) && ./configure --download-hdf5 --with-packages-download-dir=/opt --with-debugging=no --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif90 --with-pthread=1 --with-pthread-lib=/usr/lib/x86_64-linux-gnu/libpthread.a --with-pthread-include=/usr/include --with-openmp=1 --download-superlu_dist --download-mumps --download-hypre --download-scalapack --download-spai --download-parms --download-slepc --force COPTFLAGS='-O3 -march=native -mtune=native' CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native'
