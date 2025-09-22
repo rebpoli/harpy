@@ -85,4 +85,15 @@ install:
 	mv $(SIFFILE) $(INSTALLDIR)
 	scp $(SIFFILE) atenadev01:/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/sif/harpy.sif
 
+# push:
+#     podman login ghcr.io -u rebpoli
+#     podman tag localhost/harpy:latest ghcr.io/rebpoli/harpy:latest
+#     podman push ghcr.io/rebpoli/harpy:latest
+
+# pull:
+#     podman pull ghcr.io/rebpoli/harpy:latest
+
+push:
+	singularity push $(SIFFILE) docker://ghcr.io/rebpoli/harpy:latest
+
 .force:
