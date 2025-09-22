@@ -243,6 +243,7 @@ def create_animated_vector_plots(max_timesteps=None, interval=300,
     axes = [fig.add_subplot(gs[0, i]) for i in range(3)]
     cbar_ax = fig.add_subplot(gs[0, 3])
 
+
     print("All plots set to square box aspect with minimal spacing")
 
     dummy_data = np.linspace(vmin, vmax, 100).reshape(10, 10)
@@ -265,6 +266,7 @@ def create_animated_vector_plots(max_timesteps=None, interval=300,
 
         for i, (ax, plot_data) in enumerate(zip(axes, frame_data['plots'])):
             ax.clear()
+
 
             # S3 Magnitude background contour
             bg_Xi, bg_Yi, bg_Zi = plot_data['background']
@@ -289,6 +291,8 @@ def create_animated_vector_plots(max_timesteps=None, interval=300,
             ax.set_title(config['title'])
             ax.set_xlim(setup_data['x_min'], setup_data['x_max'])
             ax.set_ylim(setup_data['y_min'], setup_data['y_max'])
+
+            if i > 0 : ax.invert_yaxis();
 
             # Legend
             from matplotlib.lines import Line2D
