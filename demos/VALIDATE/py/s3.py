@@ -64,8 +64,8 @@ def plot_vertical_profiles(ax, dataset, time_idx, xy_positions, time_series_data
             sxx_prof = profile['sxx_magnitude']
             sigmazz_prof = profile['sigmazz_magnitude']
 
-            ax.plot(sxx_prof, z_coords_prof, color='gray', alpha=0.5, linewidth=1, ls='-')
-            ax.plot(sigmazz_prof, z_coords_prof, color='gray', alpha=0.5, linewidth=1, ls='--')
+            ax.plot(sxx_prof, z_coords_prof, color='orange', alpha=0.5, linewidth=1, ls='-')
+            ax.plot(sigmazz_prof, z_coords_prof, color='orange', alpha=0.5, linewidth=1, ls='--')
 
     # Plot current profiles (colored)
     current_profiles = []
@@ -113,7 +113,7 @@ def plot_vertical_profiles(ax, dataset, time_idx, xy_positions, time_series_data
 
     # Add legend
     legend_elements = create_profile_legend_elements(TRACKED_DEPTHS)
-    ax.legend(handles=legend_elements, fontsize=9, loc='upper right', ncol=1)
+    ax.legend(handles=legend_elements, fontsize=12, loc='upper left', ncol=1)
 
     return current_profiles
 
@@ -169,7 +169,7 @@ def plot_time_series(ax, time_series_data, time_years, current_time_years, time_
     ax.axhline(y=current_time_years, color='gray', linestyle='-', alpha=0.8, linewidth=1)
 
     # Add legend
-    ax.legend(loc='upper right', fontsize=10)
+    ax.legend(loc='lower left', fontsize=12)
 
     # Add stress difference text
     stress_diffs = calculate_stress_differences(time_series_data, TRACKED_DEPTHS, time_idx)
@@ -182,10 +182,10 @@ def plot_time_series(ax, time_series_data, time_years, current_time_years, time_
 
         text_x = (sxx_min + sxx_max) / 2
         dtmax = time_years[-1] - time_years[0]
-        text_y = time_years[0] + dtmax * 0.4
+        text_y = time_years[-1] - dtmax*0.05 #time_years[0] + dtmax * 0.4
 
         ax.text(text_x, text_y, diff_text,
-               fontsize=11, ha='center', va='center',
+               fontsize=12, ha='center', va='bottom',
                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.9))
 
 #
