@@ -73,22 +73,35 @@ especially inspired by \parencite{cheng2016} and \parencite{nield2006} that look
 %
 %
 \subsection{Mechanics}
-The Cauchy total stress is defined as:
+The mechanical equilibrium states that:
+\begin{align}
+  \nabla \cdot \ssigma + \bb = 0
+\end{align}
+where $\bb$ is the body force, typically associated to the gravity acceleration.
+The Cauchy total stress $\ssigma$ is defined as:
 \begin{align}
     \ssigma = \CC : \eeps - \alpha\ P\ \II - \alpha_d\ \II\ T
+\label{eqn:sigtot_def}
 \end{align}
-where $\CC$ is the elastic stiffness tensor, $\eeps=\frac{1}{2} ( \nabla \uu + \nabla^T \uu )$ is the strain tensor, 
+where $\CC$ is the elastic stiffness tensor,
+\[C_{ijkl} = \lambda \delta_{ij} \delta_{kl} + \mu ( \delta_{ik} \delta_{jl} 
+            + \delta_{il} \delta_{kj} ) \qquad,\] 
+the Lame parameters are 
+\[\lambda=\frac{3K\nu}{1+\nu} \qquad ,\]
+and
+\[\mu=\frac{3K(1-2\nu)}{2(1+\nu)}  \qquad ,\]
+$\nu$ is the Poisson coefficient,
+$\eeps=\frac{1}{2} ( \nabla \uu + \nabla^T \uu )$ is the strain tensor, 
 $\uu$ is the displacement vector, $\alpha$ is the Biot coefficient, $\alpha_d=K\beta_d$ is the 
 drained thermoelastic effective stress coefficient, $K$ is the drained bulk moduluis,
 $\beta_d=3\beta_l$ is the drained coefficient
 of volumetric thermal expansion, $\beta_l$ is the coefficient of linear thermal expansion, $P$ is
 the pore pressure and $T$ is the temperature.
 
-The mechanical equilibrium states that:
-\begin{align}
-  \nabla \cdot \ssigma + \bb = 0
-\end{align}
-where $\bb$ is the body force, typically associated to the gravity acceleration.
+With the above in mind, equation \eqref{eqn:sigtot_def} can be written as \parencite{coussy2004}
+\[\ssigma = (K - \frac{2}{3}\ \mu)\ \text{tr}(\eeps)\  \II + 2\ \mu\ \eeps \qquad,\]
+or in index notation
+\[\sigma_{ij}=(K - \frac{2}{3}\ \mu)\ \varepsilon_{kk}\ \delta_{ij} + 2\ \mu\ \varepsilon_{ij} \qquad.\]
 
 %
 %
@@ -119,7 +132,15 @@ of each phase, $\phi$ is the porosity, $\qq_T$ is the heat flux given by Fourier
   0 &= \alpha\ \dot{\epsilon} + \frac{1}{M}\ \dot{P} - \beta_e\ \dot{T} + \nabla\cdot \qq_P \\
   \qq_P &= - k\ \nabla P 
 \end{align}
-where  $M$ is the Biot modulus and $k=\hat{k}/\mu$ is the 
+where $M$ is the Biot modulus defined by
+\[ \frac{1}{M} = {\frac{\phi}{K_f} + \frac{\alpha - \phi}{K_s} \qquad,\]
+or equivalentely,
+\[ \frac{1}{M} = \frac{\phi}{K_f} + \frac{1-\phi}{K_s} - \frac{K}{K_s^2}\]
+as
+\[\alpha=1- \frac{K}{K_s} \qquad.\]
+For Darcy's law,
+\[k=\hat{k}/\mu\] 
+is the 
 hydraulic conductivity, $\hat{k}$ is the intrinsic permeability and $\mu$ is the fluid 
 viscosity (assuming single phase), $\qq_P$ is the fluid flux given by Darcy's law.
 
@@ -132,9 +153,14 @@ viscosity (assuming single phase), $\qq_P$ is the fluid flux given by Darcy's la
 \hline
 $Parameter$ & Ref value & Unit & Description \\
 \hline
-\CC           & $10^7-10^9$          & Pa                     &  Fourth order elasticity tensor   \\
-K             & $10^7-10^9$          & Pa                     &  Drained bulk modulus   \\
+\CC           & $10^8-10^{10}$         & Pa                     &  Fourth order elasticity tensor   \\
+K             & $10^8-10^{10}$         & Pa                     &  Drained bulk modulus   \\
+\nu           & $0-0.5$              & $-$                    &  Poisson coefficient   \\
 \alpha        & $0-1$                & $-$                    &  Biot coefficient  \\
+M             & $10^{8}-10^{10}$     & Pa                     &  Biot modulus (lower values for compressible fluids, like gas)  \\
+K_f           & $10^{7}-10^9$        & Pa                     &  Fluid bulk modulus (lower values for compressible fluids, like gas) \\
+K_s           & $10^{10}-10^{11}$    & Pa                     &  Bulk modulus of the solid grains \\
+\phi          & $0-0.5$              & $-$                    &  Porosity \\
 \beta_d       & $10^{-5}$            & K$^{-1}$               &  Drained coefficient of volumetric thermal expansion  \\
 \alpha_d      & $10^{4}$             & Pa K$^{-1}$            &  Drained coefficient of volumetric thermal expansion  \\
 \beta_e       & $10^{-5}$            & K$^{-1}$               &  Coefficient of volumetric thermal expansion for variation in fluid content at constant frame  \\
