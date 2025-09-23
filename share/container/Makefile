@@ -39,6 +39,7 @@ export SINGULARITY_TMPDIR
 TMPDIR := /tmp
 export TMPDIR
 
+TODAY := $(shell date +%Y-%m-%d)
 MASK := harpy
 BUILDDIR := $(BASEDIR)/tmp/build/$(MASK)
 INSTALLDIR := $(BASEDIR)/sif/$(MASK)
@@ -47,7 +48,7 @@ TAG := $(MASK)_$(USER)
 PYFILE := $(MASK).py
 DOCKERFILE := $(BUILDDIR)/Dockerfile_$(MASK)
 TARFILE := $(BUILDDIR)/$(MASK).tar
-SIFFILE := $(INSTALLDIR)/$(MASK).sif
+SIFFILE := $(INSTALLDIR)/$(MASK)-$(TODAY).sif
 
 all: build
 download: .force
@@ -84,16 +85,5 @@ clean:
 install:
 	mv $(SIFFILE) $(INSTALLDIR)
 	scp $(SIFFILE) atenadev01:/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/sif/harpy.sif
-
-# push:
-#     podman login ghcr.io -u rebpoli
-#     podman tag localhost/harpy:latest ghcr.io/rebpoli/harpy:latest
-#     podman push ghcr.io/rebpoli/harpy:latest
-
-# pull:
-#     podman pull ghcr.io/rebpoli/harpy:latest
-
-push:
-	singularity push $(SIFFILE) docker://ghcr.io/rebpoli/harpy:latest
 
 .force:

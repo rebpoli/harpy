@@ -267,53 +267,42 @@ def calculate_stress_differences(time_series_data, tracked_depths, time_idx):
 def create_video_with_ffmpeg(output_dir, output_filename, fps, cleanup_frames=True):
     print(f"Creating video with FFmpeg at {fps} fps...")
 
-    # FFmpeg commands with GPU acceleration (try NVIDIA first, fallback to CPU)
-    ffmpeg_commands = [
-        # NVIDIA GPU encoding
-        [
-            'ffmpeg', '-y', '-framerate', str(fps),
-            '-i', os.path.join(output_dir, 'frame_%04d.png'),
-            '-c:v', 'h264_nvenc',
-            '-preset', 'slow',
-            '-crf', '10',
-            '-pix_fmt', 'yuv420p',
-            '-metadata', 'artist=Stress Combined Animation',
-            output_filename
-        ],
-        # CPU fallback
-        [
-            'ffmpeg', '-y', '-framerate', str(fps),
+    # GPU
+#     cmd = [ 'ffmpeg', '-y', '-framerate', str(fps),
+#             '-i', os.path.join(output_dir, 'frame_%04d.png'),
+#             '-c:v', 'h264_nvenc',
+#             '-preset', 'slow',
+#             '-crf', '10',
+#             '-pix_fmt', 'yuv420p',
+#             '-metadata', 'artist=Stress Combined Animation',
+#             output_filename ]
+
+     # CPU fallback
+    cmd = [ 'ffmpeg', '-y', '-framerate', str(fps),
             '-i', os.path.join(output_dir, 'frame_%04d.png'),
             '-c:v', 'libx264',
             '-preset', 'fast',
             '-crf', '18',
             '-pix_fmt', 'yuv420p',
             '-metadata', 'artist=Stress Combined Animation',
-            output_filename
-        ]
-    ]
+            output_filename ]
 
-    # Try GPU encoding first, fallback to CPU
-    success = False
-    for i, cmd in enumerate(ffmpeg_commands):
-        try:
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            encoder_type = "GPU (NVENC)" if i == 0 else "CPU"
-            print(f"Video created successfully using {encoder_type} encoding!")
-            success = True
-            break
-        except (subprocess.CalledProcessError, FileNotFoundError) as e:
-            if i == 0:
-                print("GPU encoding failed, trying CPU encoding...")
-            else:
-                print(f"FFmpeg failed: {e}")
-                if hasattr(e, 'stderr') and e.stderr:
-                    print(f"FFmpeg stderr: {e.stderr}")
 
-    if not success:
-        print("Both GPU and CPU encoding failed. Please check FFmpeg installation.")
+    print("Running command:")
+    print(' '.join(cmd))
+    
+    # Run without check=True first to capture the error
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    print(f"Return code: {result.returncode}")
+
+    if result.stdout: print(result.stdout)
+    if result.stderr: print(result.stderr)
+    
+    if result.returncode != 0:
+        print(f"FFmpeg failed with return code: {result.returncode}")
         return False
-
+    print(f"Video created successfully: {output_filename}")
+    
     # Clean up temporary frames
 #     if cleanup_frames:
 #         try:

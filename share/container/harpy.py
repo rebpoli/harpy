@@ -128,3 +128,4 @@ Stage0 += packages( ospackages=[ 'xauth' ] )
 
 Stage0 += environment( variables={ 'SINGTAG' :'HARPY' } )
 
+Stage0 += packages( ospackages=[ 'ffmpeg' ] )   

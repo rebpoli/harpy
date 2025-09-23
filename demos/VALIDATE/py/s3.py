@@ -203,7 +203,7 @@ def process_timestep_and_save_frame(args):
     time_years = time_years_anim
 
     # Create figure
-    width_px, height_px = 1600, 2000
+    width_px, height_px = 1600, 2050
     dpi = 150
     figsize = (width_px/dpi, height_px/dpi)  # (19.2, 10.8) inches
     fig, (ax_profiles, ax_timeseries) = plt.subplots(2, 1, figsize=figsize, dpi=dpi)
