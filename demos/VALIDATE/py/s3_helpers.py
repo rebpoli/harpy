@@ -52,7 +52,7 @@ def find_closest_xy_positions(dataset, well_position=(0.0, 0.0), num_positions=5
 #
 #
 #
-def extract_stress_data_at_time(dataset, time_idx):
+def extract_data_at_time(dataset, time_idx):
     coords = dataset['Coord'].values
     sxx_magnitude = dataset['Total Stress'][time_idx, :, 0].values / 1e6
     total_stress = dataset['Total Stress'][time_idx, :, :].values
@@ -62,14 +62,15 @@ def extract_stress_data_at_time(dataset, time_idx):
         'sigmaxx': total_stress[:, 0] / 1e6,
         'sigmayy': total_stress[:, 4] / 1e6,
         'sigmazz': total_stress[:, 8] / 1e6,
+        'Delta_T': dataset['Delta_T'][time_idx,:].values,
         'coords': coords
     }
 
 #
 #
 #
-def extract_vertical_profile(stress_data, xy_position, xy_tolerance=1e-6):
-    coords = stress_data['coords']
+def extract_vertical_profile(data_at_time, xy_position, xy_tolerance=1e-6):
+    coords = data_at_time['coords']
     x_coords = coords[:, 0]
     y_coords = coords[:, 1]
     z_coords = coords[:, 2]
@@ -83,8 +84,8 @@ def extract_vertical_profile(stress_data, xy_position, xy_tolerance=1e-6):
     
     # Extract and sort by z-coordinate
     z_slice = z_coords[mask]
-    sxx_slice = stress_data['sxx_magnitude'][mask]
-    sigmazz_slice = stress_data['sigmazz'][mask]
+    sxx_slice = data_at_time['sxx_magnitude'][mask]
+    sigmazz_slice = data_at_time['sigmazz'][mask]
     
     sort_idx = np.argsort(z_slice)
     
@@ -92,6 +93,7 @@ def extract_vertical_profile(stress_data, xy_position, xy_tolerance=1e-6):
         'z_coords': z_slice[sort_idx],
         'sxx_magnitude': sxx_slice[sort_idx],
         'sigmazz_magnitude': sigmazz_slice[sort_idx],
+        'Delta_T': data_at_time['Delta_T'][mask][sort_idx],
         'xy_position': xy_position
     }
 
@@ -220,6 +222,8 @@ def create_profile_legend_elements(tracked_depths):
             label = f'Caprock Z={depth:+.1f}m'
             color = 'blue'
         legend_elements.append(Line2D([0], [0], color=color, linewidth=2, label=label))
+
+    legend_elements.append(Line2D([0], [0], color='yellow', linewidth=2, label=r'$\Delta$ Temperature'))
     
     # Marker elements
     legend_elements.append(Line2D([0], [0], marker='o', color='black', linewidth=0, 
@@ -228,6 +232,7 @@ def create_profile_legend_elements(tracked_depths):
     legend_elements.append(Line2D([0], [0], marker='s', color='black', linewidth=0, 
                                 markersize=8, markerfacecolor='white', 
                                 markeredgewidth=2, label=r'$\sigma_{zz}$ markers'))
+
     
     return legend_elements
 

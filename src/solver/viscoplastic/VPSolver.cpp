@@ -548,7 +548,7 @@ void ViscoplasticSolver::solve()
   system.solve();
   /** ** ** ** **/
 
-  export_inner_newton_results();
+//  export_inner_newton_results();
 
   bool success = update_adaptive_timestep();
   if ( ! success ) return;  // Do not postprocess if the TS failed

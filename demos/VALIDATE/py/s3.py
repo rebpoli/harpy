@@ -11,7 +11,7 @@ import time
 from timestr import format_time_duration
 from netcdf import read_netcdf
 from s3_helpers import (
-    find_closest_xy_positions, extract_stress_data_at_time, extract_vertical_profile,
+    find_closest_xy_positions, extract_data_at_time, extract_vertical_profile,
     extract_time_series_at_position, find_closest_profile_for_depth, calculate_stress_ranges,
     create_profile_legend_elements, calculate_stress_differences, create_video_with_ffmpeg
 )
@@ -52,13 +52,15 @@ def plot_vertical_profiles(ax, dataset, time_idx, xy_positions, time_series_data
     sxx_min, sxx_max = stress_ranges
 
     # Extract current and reference stress data
-    current_stress = extract_stress_data_at_time(dataset, time_idx)
-    reference_stress = extract_stress_data_at_time(dataset, 0)  # First timestep
+    current_data = extract_data_at_time(dataset, time_idx)
+    reference_data = extract_data_at_time(dataset, 0)  # First timestep
+
+    ax2 = ax.twiny()
 
     # Plot reference profiles (gray)
     reference_profiles = []
     for xy_pos in xy_positions:
-        profile = extract_vertical_profile(reference_stress, xy_pos)
+        profile = extract_vertical_profile(reference_data, xy_pos)
         if profile is not None:
             reference_profiles.append(profile)
             z_coords_prof = profile['z_coords']
@@ -71,7 +73,7 @@ def plot_vertical_profiles(ax, dataset, time_idx, xy_positions, time_series_data
     # Plot current profiles (colored)
     current_profiles = []
     for xy_pos in xy_positions:
-        profile = extract_vertical_profile(current_stress, xy_pos)
+        profile = extract_vertical_profile(current_data, xy_pos)
         if profile is not None:
             current_profiles.append(profile)
             z_coords_prof = profile['z_coords']
@@ -87,6 +89,13 @@ def plot_vertical_profiles(ax, dataset, time_idx, xy_positions, time_series_data
             # Plot sigmaxx (solid) and sigmazz (dashed)
             ax.plot(sxx_prof, z_coords_prof, color=color, linewidth=linewidth, alpha=alpha)
             ax.plot(sigmazz_prof, z_coords_prof, color=color, linewidth=linewidth, alpha=alpha, linestyle='--')
+
+    for xy_pos in [xy_positions[0]]:
+        profile = extract_vertical_profile(current_data, xy_pos)
+        ax2.plot(profile['Delta_T'], z_coords_prof, color='yellow', linewidth=2, ls='--')
+
+    ax2.set_xlim(-40,0)
+    ax2.set_xlabel("Temperature drop (ºC)")
 
     # Add tracking markers
     for j, (target_z, depth_color) in enumerate(zip(TRACKED_DEPTHS, DEPTH_COLORS)):
@@ -221,7 +230,7 @@ def process_timestep_and_save_frame(args):
                     current_time_years, time_idx, stress_ranges)
 
     # Adjust layout and save
-    plt.subplots_adjust(left=0.12, right=0.95, bottom=0.08, top=0.95, hspace=0.05)
+    plt.subplots_adjust(left=0.12, right=0.95, bottom=0.08, top=0.93, hspace=0.05)
 
     frame_filename = os.path.join(output_dir, f'frame_{frame_idx:04d}.png')
     fig.savefig(frame_filename, dpi=dpi, bbox_inches='tight', facecolor='white')

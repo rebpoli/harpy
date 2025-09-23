@@ -83,7 +83,10 @@ clean:
 	rm -rf $(DOCKERFILE) $(TARFILE)
 
 install:
-	mv $(SIFFILE) $(INSTALLDIR)
-	scp $(SIFFILE) atenadev01:/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/sif/harpy.sif
+	sudo mv $(SIFFILE) /opt/container/
+	@echo "***"
+	@echo "Update /opt/container/bin/to-harpy with the new sif!"
+	@echo "***"
+#     scp $(SIFFILE) atenadev01:/dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/sif/harpy.sif
 
 .force:

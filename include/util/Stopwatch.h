@@ -34,6 +34,8 @@ class Stopwatch {
     bool _lap;
     double * _out_time;
   public:
+    bool info_log; // if 1, the object also logs as info.
+
     Stopwatch( Stopwatch * parent ) : Stopwatch("", false) { _parent = parent; };
     Stopwatch(string name, bool lap=false, double * out_time=0);
     ~Stopwatch();

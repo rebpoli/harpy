@@ -7,10 +7,11 @@
 #include <ctime>
 #include <iostream>     // std::cout, std::fixed
 #include <iomanip>
+#include <sstream>
 
 namespace util {
 
-uint Stopwatch::_debug_level = 5;
+uint Stopwatch::_debug_level = 1;
 libMesh::PerfLog perf ("GLOBAL_PROFILE");
 
 /*
@@ -19,7 +20,8 @@ libMesh::PerfLog perf ("GLOBAL_PROFILE");
  @param name nome para identificar a instancia
 */
 Stopwatch::Stopwatch(string name, bool lap, double * out_time) : 
-  _start(0), _name(name), _parent(0), _dt(0), _lap(lap), _out_time(out_time), _st_elapsed(0)
+  _start(0), _name(name), _parent(0), _dt(0), _lap(lap), _out_time(out_time), _st_elapsed(0),
+  info_log(0)
 {
   dlog(_debug_level) << "[" << Log::now() << "] Stopwatch \"" << _name << "\": start... " << (lap ? "(lap)" : "") ;
 //  ilog << "[" << Log::now() << "] Stopwatch \"" << _name << "\": start... " << (lap ? "(lap)" : "") ;
@@ -74,15 +76,25 @@ double Stopwatch::elapsed_s() {
 Stopwatch::~Stopwatch() {
   string now = Log::now();
   double ms = (double) (clock()-_start) / CLOCKS_PER_SEC * 1000;
+  
   if ( _parent ) {
     _parent->_dt += ms;
-    dlog(_debug_level) << "SW/" << _parent->_name << " (lap): " << ms;
-//    ilog << "SW/" << _parent->_name << " (lap): " << ms;
-  } else {
+    ostringstream ss;
+    ss << "SW/" << _parent->_name << " (lap): " << ms;
+    dlog(_debug_level) << ss.str();
+    if (info_log) dlog(_debug_level) << ss.str();
+
+  } 
+  else 
+  {
+
     if ( _lap ) ms = _dt;
     double s = ms / 1000;
-    dlog(_debug_level) << "["<<now<<"] Stopwatch \"" << _name <<"\": " << std::setprecision(6) << s << " s";
-//    ilog << "["<<now<<"] Stopwatch \"" << _name <<"\": " << std::setprecision(6) << s << " s";
+    ostringstream ss;
+    ss << "["<<now<<"] Stopwatch \"" << _name <<"\": " << std::setprecision(6) << s << " s";
+    dlog(_debug_level)  << ss.str();
+    if ( info_log ) ilog << ss.str();
+
   }
 
   CsvFile ofile(csv_fn());

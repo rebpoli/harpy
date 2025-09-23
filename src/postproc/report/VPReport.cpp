@@ -5,6 +5,7 @@
 #include "timeloop/Timestep.h"
 #include "util/OutputOperators.h"
 #include "util/String.h"
+#include "util/Stopwatch.h"
 #include "postproc/stress/TensorInvariants.h"
 
 #include "libmesh/mesh.h"
@@ -159,6 +160,8 @@ void ViscoplasticReport::export_scalars()
 void ViscoplasticReport::export_by_point( Probe & probe )
 {
   SCOPELOG(1);
+  util::Stopwatch sw("ViscoplasticReport::export_by_point");
+  sw.info_log = 1; // we went to se the stopwatch as info messages
 
   dlog(1) << "Processing probe '" << probe.name << "' ...";
   CsvFile1 ofile(probe.filename);
