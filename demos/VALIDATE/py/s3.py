@@ -32,6 +32,7 @@ plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['legend.fontsize'] = 14
 plt.rcParams['figure.titlesize'] = 20
 
+
 # ==================== GLOBAL CONTROL VARIABLES ====================
 NUM_LINES = 5  # Number of profile lines to display
 TRACKED_DEPTHS = [5.0, -5.0]  # Depths to track (reservoir, caprock)
@@ -202,7 +203,10 @@ def process_timestep_and_save_frame(args):
     time_years = time_years_anim
 
     # Create figure
-    fig, (ax_profiles, ax_timeseries) = plt.subplots(2, 1, figsize=(10, 12))
+    width_px, height_px = 1600, 2000
+    dpi = 150
+    figsize = (width_px/dpi, height_px/dpi)  # (19.2, 10.8) inches
+    fig, (ax_profiles, ax_timeseries) = plt.subplots(2, 1, figsize=figsize, dpi=dpi)
 
     # Add figure title
     fig.suptitle(f'Time: {format_time_duration(current_time)}',
