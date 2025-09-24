@@ -1,29 +1,11 @@
 
 #include "util/NetCDFWriter.h"
+#include "util/OutputOperators.h"
+
+namespace mpi = boost::mpi;
 
 namespace util {
 
-  /**
-   *   Debug stuff
-   */
-void debug_check_time_dimension(int ncid, int time_dim_id, int rank) {
-    size_t time_len;
-    int retval;
-    
-    // Sync first to ensure we see latest changes
-    nc_sync(ncid);
-    
-    // Query the dimension length
-    if ((retval = nc_inq_dimlen(ncid, time_dim_id, &time_len))) {
-        printf("[Rank %d] Error getting time dimension: %s\n", 
-               rank, nc_strerror(retval));
-    } else {
-        printf("[Rank %d] Time dimension length: %zu\n", rank, time_len);
-    }
-    
-    // Flush output immediately
-    fflush(stdout);
-}
 
 map<NC_PARAM, DataInfo> PARAMS = {
     { NC_PARAM::TEMPERATURE,      {  NC_TYPE::SCALAR, "Temperature"       , "K",    "", -1} },
@@ -65,7 +47,8 @@ void NetCDFWriter::init( uint n_points_ )
 
   // Create parallel NetCDF file
   CHECK_NC( 
-      nc_create_par(filename.c_str(), NC_NETCDF4 | NC_MPIIO, world, info, &ncid)
+//      nc_create_par(filename.c_str(), NC_NETCDF4 | NC_MPIIO, world, info, &ncid)
+      nc_create_par(filename.c_str(), NC_NETCDF4 , world, info, &ncid)
   );
 
   // Define dimensions
@@ -78,11 +61,6 @@ void NetCDFWriter::init( uint n_points_ )
 
   file_created = true;
   define_mode = true;
-
-  if (world.rank() == 0) {
-    ilog << "Created NetCDF file: " << filename;
-    ilog << "Dimensions: time(UNLIMITED), point_idx(" << n_points << ")";
-  }
 }
 
 /** **/
@@ -125,16 +103,33 @@ void NetCDFWriter::add( NC_PARAM var )
   if (!define_mode) flog << "Not in define mode";
   auto & di = get_di(var);
 
+  uint n_floats=1;
   vector<int> dimids;
-  if ( di.type == NC_TYPE::SCALAR ) dimids = {time_dimid, point_dimid};
-  if ( di.type == NC_TYPE::VEC3 ) dimids = {time_dimid, point_dimid, vec3_dimid};
+  if ( di.type == NC_TYPE::SCALAR ) 
+  {
+    dimids = {time_dimid, point_dimid};
+    n_floats = 1;
+  }
+
+  if ( di.type == NC_TYPE::VEC3 ) 
+  {
+    n_floats = 3;
+    dimids = {time_dimid, point_dimid, vec3_dimid};
+  }
+
   if ( di.type == NC_TYPE::TEN9 )   
   {
+    n_floats = 9;
+
     // Create the dimension, if not existing
     if ( ! ten9_dimid )  CHECK_NC(nc_def_dim(ncid, "ten9_comp", 9, &ten9_dimid));
 
     dimids = {time_dimid, point_dimid, ten9_dimid};
   }
+
+  // Allocate buffer
+  buffer[var] = std::vector<float>();
+  buffer[var].resize( n_points * n_floats );
 
   CHECK_NC(nc_def_var(ncid, di.name.c_str(), NC_FLOAT, dimids.size(), dimids.data(), &di.vid));
 
@@ -153,10 +148,8 @@ void NetCDFWriter::add( NC_PARAM var )
     CHECK_NC(nc_put_att_text(ncid, di.vid, "components", comp.size(), comp.c_str()));    
   }
 
-  // Independent access: all processors write independently (not sync'ed)
+  // Variables are independent (only assigned by rank=0)
   set_independent_access( di.vid );
-
-  if (world.rank() == 0) ilog << "Defined variable: " << di.name;
 }
 
 /** **/
@@ -165,8 +158,6 @@ void NetCDFWriter::finish_definitions()
   if (!define_mode) flog << "Not in define mode";
   CHECK_NC(nc_enddef(ncid));
   define_mode = false;
-
-  if (world.rank() == 0) ilog << "Finished variable definitions";
 }
 
 /** **/
@@ -188,8 +179,6 @@ void NetCDFWriter::set_coords(const vector<Point>& points)
   luint count[2] = { npoints, 3 };
 
   CHECK_NC(nc_put_vara_double(ncid, coord_varid, start, count, flat.data()));
-
-  if (world.rank() == 0) ilog << "Set coordinates collectively";
 }
 
 /**
@@ -208,16 +197,39 @@ void NetCDFWriter::add_timestep(uint i, double time)
   set_collective_access( time_varid );
   CHECK_NC(nc_put_vara_double(ncid, time_varid, start, count, &time));
 
-  // Extend the dimension of all variables (needs to be collective!)
-  for ( auto & [ p, di ] : PARAMS )
-  if ( di.vid >= 0 )
+  reset_buffer();
+
+  // Assign an empty time entry in collective mode to ensure the dimension is properly extended
+  for (auto& [var, data] : buffer) 
   {
-    set_collective_access( di.vid );
-    if ( di.type == NC_TYPE::SCALAR ) set_value( p, 0 );
-    if ( di.type == NC_TYPE::VEC3 )   set_value( p, Point() );
-    if ( di.type == NC_TYPE::TEN9 )   set_value( p, RealTensorValue() );
+    DataInfo & di = get_di( var );
+    vector<luint> start, count;
+    if ( di.type == NC_TYPE::SCALAR ) 
+    {
+      start = { curr_time  , 0          };
+      count = { 1          , n_points    };
+      ASSERT( data.size() == n_points , "[scalar] Data size not matching. " << data.size() << " != " << n_points << "." );
+    } 
+    else if ( di.type == NC_TYPE::VEC3 )   
+    {
+      start = { curr_time  , 0        , 0 };
+      count = { 1          , n_points  , 3 };
+      ASSERT( data.size() == n_points*3 , "[vec3] Data size not matching. " << data.size() << " != " << n_points << "." );
+    } 
+    else if ( di.type == NC_TYPE::TEN9 )
+    {
+      start = { curr_time , 0       , 0 };
+      count = { 1         , n_points , 9 };
+      ASSERT( data.size() == n_points*9 , "[ten9] Data size not matching. " << data.size() << " != " << n_points << "." );
+    } else flog << "Should not be here...";
+
+
+    set_collective_access( di.vid ); // All vars are always collective
+    checkVariableDimensions( ncid, di.vid, start, count );
+                    
+    CHECK_NC( nc_put_vara_float(ncid, di.vid, start.data(), count.data(), data.data() ));
     set_independent_access( di.vid );
-  }
+  } 
 
   // Ensures all processes are synchronized  
   world.barrier(); 
@@ -251,7 +263,9 @@ void NetCDFWriter::set_value(NC_PARAM var, double value)
   luint start[2] = { curr_time, curr_pt };
   luint count[2] = { 1, 1 };
 
-  CHECK_NC(nc_put_vara_double(ncid, di.vid, start, count, &value));
+  ASSERT( curr_pt < buffer[var].size(), "Trying to write outside the buffer. (" << curr_pt << " >= " << buffer[var].size() << " ) for var " << var << "" );
+  buffer[var][curr_pt] = value;
+//  CHECK_NC(nc_put_vara_double(ncid, di.vid, start, count, &value));
 }
 
 /** **/
@@ -264,7 +278,10 @@ void NetCDFWriter::set_value(NC_PARAM var, const Point& p)
   luint count[3] = {1, 1, 3};
 
   std::vector<double> vec = {p(0), p(1), p(2)};
-  CHECK_NC( nc_put_vara_double( ncid, di.vid, start, count, vec.data() ) );
+
+  ASSERT( 3*curr_pt+2 < buffer[var].size(), "Trying to write outside the buffer. (" << 3*curr_pt+2 << " >= " << buffer[var].size() << " ) for var " << var << "" );
+  for ( uint i = 0; i < 3 ; i++ ) buffer[var][3*curr_pt+i] = p(i);
+//  CHECK_NC( nc_put_vara_double( ncid, di.vid, start, count, vec.data() ) );
 }
 
 /** **/
@@ -281,7 +298,63 @@ void NetCDFWriter::set_value(NC_PARAM var, const RealTensorValue& tensor)
   for (uint j = 0; j < 3; ++j) 
     flat[i*3 + j] = tensor(i,j);
 
-  CHECK_NC( nc_put_vara_double( ncid, di.vid, start, count, flat.data() ) );
+  ASSERT( 9*curr_pt+2 < buffer[var].size(), "Trying to write outside the buffer. (" << 9*curr_pt+2 << " >= " << buffer[var].size() << " ) for var " << var << "" );
+  for ( uint i = 0; i < 9 ; i++ ) buffer[var][9*curr_pt+i] = flat[i];
+//  CHECK_NC( nc_put_vara_double( ncid, di.vid, start, count, flat.data() ) );
+}
+
+/** Flushes the buffer into the netcdf **/
+void NetCDFWriter::flush( bool sync )
+{
+  for (auto& [var, data] : buffer) 
+  {
+    ASSERT( !data.empty() , "Data is empty for var " << var );
+
+    // Perform element-wise sum reduction
+    std::vector<float> result;
+    if (world.rank() == 0) result.resize(data.size());
+    MPI_Reduce(data.data(),           // send buffer
+        world.rank() == 0 ? result.data() : nullptr,  // receive buffer (only on rank 0)
+        data.size(),           // number of elements
+        MPI_FLOAT,            // data type
+        MPI_SUM,              // reduction operation
+        0,                    // root process (rank 0)
+        MPI_COMM_WORLD);      // communicator
+
+    DataInfo & di = get_di( var );
+
+//    checkIfUnlimited( ncid, time_dimid , "Time" );
+//    checkVariableDimensions( ncid, di.vid, start, count );
+
+    // Write only at rank=0 (variables must be INDEPENDENT)
+    if ( world.rank() == 0 )
+    {
+      vector<luint> start, count;
+      if ( di.type == NC_TYPE::SCALAR ) 
+      {
+        start = { curr_time  , 0          };
+        count = { 1          , n_points    };
+        ASSERT( result.size() == n_points , "[scalar] Data size not matching. " << result.size() << " != " << n_points << "." );
+      } 
+      else if ( di.type == NC_TYPE::VEC3 )   
+      {
+        start = { curr_time  , 0        , 0 };
+        count = { 1          , n_points  , 3 };
+        ASSERT( result.size() == n_points*3 , "[vec3] Data size not matching. " << result.size() << " != " << n_points << "." );
+      } 
+      else if ( di.type == NC_TYPE::TEN9 )
+      {
+        start = { curr_time , 0       , 0 };
+        count = { 1         , n_points , 9 };
+        ASSERT( result.size() == n_points*9 , "[ten9] Data size not matching. " << result.size() << " != " << n_points << "." );
+      } else flog << "Should not be here...";
+
+      CHECK_NC( nc_put_vara_float(ncid, di.vid, start.data(), count.data(), result.data() ));
+    }
+  } 
+
+  reset_buffer();
+  if ( sync ) nc_sync(ncid); 
 }
 
 /** **/
@@ -292,7 +365,6 @@ void NetCDFWriter::close_file()
   if (! file_created) return;
   CHECK_NC(nc_close(ncid));
   file_created = false;
-  if (world.rank() == 0) ilog << "Closed NetCDF file";
 }
 
 /** **/
@@ -336,3 +408,84 @@ ostream& operator<<(ostream& os, const NC_PARAM& param) {
 }
 
 } // ns
+
+//  /**
+//   *   Debug stuff
+//   */
+//void debug_check_time_dimension(int ncid, int time_dim_id, int rank) {
+//    size_t time_len;
+//    int retval;
+//    
+//    // Sync first to ensure we see latest changes
+//    nc_sync(ncid);
+//    
+//    // Query the dimension length
+//    if ((retval = nc_inq_dimlen(ncid, time_dim_id, &time_len))) {
+//        printf("[Rank %d] Error getting time dimension: %s\n", 
+//               rank, nc_strerror(retval));
+//    } else {
+//        printf("[Rank %d] Time dimension length: %zu\n", rank, time_len);
+//    }
+//    
+//    // Flush output immediately
+//    fflush(stdout);
+//}
+//void checkIfUnlimited(int ncid, int dimid, const char* dimname) {
+//    int unlimdimid;
+//    nc_inq_unlimdim(ncid, &unlimdimid);
+
+//    size_t dimsize;
+//    nc_inq_dimlen(ncid, dimid, &dimsize);
+
+//    std::cout << "Dimension '" << dimname << "' (id=" << dimid << "):" << std::endl;
+//    std::cout << "  Current size: " << dimsize << std::endl;
+//    std::cout << "  Unlimited dim ID: " << unlimdimid << std::endl;
+//    std::cout << "  Is unlimited: " << (dimid == unlimdimid ? "YES" : "NO") << std::endl;
+//}
+
+//bool checkVariableDimensions(int ncid, int varid, const std::vector<luint>& start, const std::vector<luint>& count) {
+//    int ndims;
+//    int dimids[NC_MAX_VAR_DIMS];
+
+//    // Get unlimited dimension ID
+//    int unlimdimid;
+//    nc_inq_unlimdim(ncid, &unlimdimid);
+
+//    char varname[NC_MAX_NAME+1];
+//    nc_inq_var(ncid, varid, varname, nullptr, &ndims, dimids, nullptr);
+
+//    ilog1 << "Variable " << varname << " has " << ndims << " dimensions:" << std::endl;
+
+//    bool needs_collective = false;
+//    for (int i = 0; i < ndims; i++) {
+//        char dimname[NC_MAX_NAME+1];
+//        size_t current_size;
+
+//        nc_inq_dim(ncid, dimids[i], dimname, &current_size);
+
+//        // CORRECT WAY: Compare dimension IDs, not sizes
+//        bool is_unlimited = (dimids[i] == unlimdimid);
+
+//        size_t needed_size = start[i] + count[i];
+//        cout << "i:" << i << " start[i]:" << start[i] << " count[i]:" << count[i] << endl;
+
+//        ilog1 << "  Dim[" << i << "] '" << dimname << "': current=" << current_size
+//                  << " needed=" << needed_size << " unlimited=" << is_unlimited << std::endl;
+
+//        if (is_unlimited) {
+//            ilog1 << "    INFO: Unlimited dimension - requires COLLECTIVE mode" << std::endl;
+//            needs_collective = true;
+//        } else if (needed_size > current_size) {
+//            ilog1 << "    ERROR: Would exceed fixed dimension!" << std::endl;
+//        }
+//    }
+
+//    if (needs_collective) {
+//        ilog1 << "Variable requires COLLECTIVE mode (has unlimited dimension)" << std::endl;
+//    } else {
+//        ilog1 << "Variable can use INDEPENDENT mode (no unlimited dimensions)" << std::endl;
+//    }
+
+//    return needs_collective;
+//}
+

@@ -25,7 +25,7 @@ enum class NC_TYPE   { SCALAR, VEC3, TEN9 };
 enum class NC_PARAM  { 
   TEMPERATURE, DELTA_T,
   PRESSURE, DELTA_P,
-  VELOCITY, STRESS, 
+  VELOCITY, 
   DENSITY, VISCOSITY, 
   S1, S1_MAG ,
   S2, S2_MAG ,
@@ -64,6 +64,8 @@ class NetCDFWriter
     int time_dimid, point_dimid, vec3_dimid, ten9_dimid;
     int coord_varid, time_varid, ten9_varid;
 
+    map<NC_PARAM, vector<float>> buffer;
+
   public:    
 
     uint n_points;
@@ -78,7 +80,7 @@ class NetCDFWriter
     void set_curr_time(uint i) { curr_time = i; }
     void add_timestep(uint i, double time);
 
-    void flush() { nc_sync(ncid); }
+    void flush( bool sync=true );
 
     NetCDFWriter( string filename_ );
     ~NetCDFWriter();
@@ -99,6 +101,9 @@ class NetCDFWriter
     void set_value(NC_PARAM var, double value);
     void set_value(NC_PARAM var, const Point& vector);
     void set_value(NC_PARAM var, const RealTensorValue& tensor);
+
+    // Zero out the buffers
+    void reset_buffer() { for ( auto & [ p, vec ] : buffer ) vec.assign(vec.size(), 0.0f); }
 
   private:
     inline DataInfo & get_di( NC_PARAM var );

@@ -49,6 +49,12 @@ RealTensorValue generate_stress(int point_idx, int time_step) {
   stress(0,2) = stress(2,0) = 30 * cos(base * 1.8); // XZ
   stress(1,2) = stress(2,1) = 20 * sin(base * 2.2); // YZ
 
+  stress(0,0) = 00;
+  stress(1,1) = 11;
+  stress(2,2) = 22;
+  stress(0,1) = stress(1,0) = 01;
+  stress(0,2) = stress(2,0) = 02;
+  stress(1,2) = stress(2,1) = 12;
   return stress;
 }
 
@@ -79,7 +85,7 @@ int main(int argc, char** argv)
     writer.add(NC_PARAM::TEMPERATURE);
     writer.add(NC_PARAM::PRESSURE);
     writer.add(NC_PARAM::VELOCITY);
-    writer.add(NC_PARAM::STRESS);
+    writer.add(NC_PARAM::SIGTOT);
 
     writer.finish_definitions();
 
@@ -128,9 +134,13 @@ int main(int argc, char** argv)
 
         // Set tensor values
         RealTensorValue stress = generate_stress(i, time);
-        writer.set_value(NC_PARAM::STRESS, stress);
+        writer.set_value(NC_PARAM::SIGTOT, stress);
       }
+
+      writer.flush();
+      cout << "Done flushing";
     }
+
 
     if (world.rank() == 0) {
       ilog << "\nData writing completed successfully!";
