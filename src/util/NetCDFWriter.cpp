@@ -232,12 +232,11 @@ void NetCDFWriter::add_timestep(uint i, double time)
       ASSERT( data.size() == n_points*9 , "[ten9] Data size not matching. " << data.size() << " != " << n_points << "." );
     } else flog << "Should not be here...";
 
-
+    //
     set_collective_access( di.vid ); // All vars are always collective
-    checkVariableDimensions( ncid, di.vid, start, count );
-                    
     CHECK_NC( nc_put_vara_float(ncid, di.vid, start.data(), count.data(), data.data() ));
     set_independent_access( di.vid );
+    //
   } 
 
   // Ensures all processes are synchronized  

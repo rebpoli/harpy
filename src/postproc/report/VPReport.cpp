@@ -190,8 +190,8 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       auto & pt = probe_ifc->pt;
       auto & p = probe_ifc->props;
 
-      util::Stopwatch __sw("Single write");
-      __sw.info_log=1;
+//      util::Stopwatch __sw("Single write");
+//      __sw.info_log=1;
 
       netcdf.set_curr_pt( probe_ifc->pt_idx );
       netcdf.set_value( NC_PARAM::PRESSURE       , p.pressure );
