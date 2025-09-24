@@ -12,6 +12,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from multiprocessing import cpu_count
 import time
 
+
+matplotlib.use('Agg')
+
 from subsample import spatial_subsample
 from netcdf import read_netcdf
 from timestr import format_time_duration
@@ -232,7 +235,7 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
         for time_idx in range(n_times)
     ]
     
-    max_workers = min(cpu_count() - 1, 12)
+    max_workers = min(cpu_count() - 1, 40)
     completed = 0
     frame_files = [None] * n_times
     start_time = time.time()
