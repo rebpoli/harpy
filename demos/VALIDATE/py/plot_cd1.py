@@ -122,7 +122,7 @@ def process_timestep_and_save_frame(args):
     axes[0].clear()
     
     cbar = plt.colorbar(im, cax=cbar_ax)
-    cbar.set_label('VP Strain Rate (1/s)', rotation=270, labelpad=15)
+    cbar.set_label('Strain Rate ZZ (1/s)', rotation=270, labelpad=15)
     cbar.ax.tick_params(labelsize=9)
     
     # Plot subplots
@@ -160,7 +160,7 @@ def process_timestep_and_save_frame(args):
     
     # Save frame
     frame_filename = os.path.join(output_dir, f'frame_{time_idx:04d}.png')
-    fig.savefig(frame_filename, dpi=dpi, bbox_inches='tight', facecolor='white')
+    fig.savefig(frame_filename, dpi=dpi, facecolor='white')
     plt.close(fig)
     
     return frame_filename
@@ -270,9 +270,9 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
     
     ffmpeg_commands = [
         # NVIDIA GPU encoding
-        ['ffmpeg', '-y', '-framerate', str(fps), '-i', os.path.join(output_dir, 'frame_%04d.png'),
-         '-c:v', 'h264_nvenc', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p',
-         '-metadata', 'artist=S1/S3 Vector Animation', output_filename],
+#         ['ffmpeg', '-y', '-framerate', str(fps), '-i', os.path.join(output_dir, 'frame_%04d.png'),
+#          '-c:v', 'h264_nvenc', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p',
+#          '-metadata', 'artist=S1/S3 Vector Animation', output_filename],
         # CPU fallback
         ['ffmpeg', '-y', '-framerate', str(fps), '-i', os.path.join(output_dir, 'frame_%04d.png'),
          '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-pix_fmt', 'yuv420p',
