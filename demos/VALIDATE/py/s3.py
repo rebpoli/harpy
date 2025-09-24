@@ -212,10 +212,7 @@ def process_timestep_and_save_frame(args):
     time_years = time_years_anim
 
     # Create figure
-    width_px, height_px = 1600, 2050
-    dpi = 150
-    figsize = (width_px/dpi, height_px/dpi)  # (19.2, 10.8) inches
-    fig, (ax_profiles, ax_timeseries) = plt.subplots(2, 1, figsize=figsize, dpi=dpi)
+    fig, (ax_profiles, ax_timeseries) = plt.subplots(2, 1, figsize=(10,13), dpi=150)
 
     # Add figure title
     fig.suptitle(f'Time: {format_time_duration(current_time)}',
@@ -230,10 +227,10 @@ def process_timestep_and_save_frame(args):
                     current_time_years, time_idx, stress_ranges)
 
     # Adjust layout and save
-    plt.subplots_adjust(left=0.12, right=0.95, bottom=0.08, top=0.93, hspace=0.05)
+    plt.subplots_adjust(left=0.08, right=0.98, bottom=0.05, top=0.93, hspace=0.08)
 
     frame_filename = os.path.join(output_dir, f'frame_{frame_idx:04d}.png')
-    fig.savefig(frame_filename, dpi=dpi, bbox_inches='tight', facecolor='white')
+    fig.savefig(frame_filename, dpi=dpi, facecolor='white')
     plt.close(fig)
 
     return frame_filename
