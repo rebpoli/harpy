@@ -190,6 +190,9 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       auto & pt = probe_ifc->pt;
       auto & p = probe_ifc->props;
 
+      util::Stopwatch __sw("Single write");
+      __sw.info_log=1;
+
       netcdf.set_curr_pt( probe_ifc->pt_idx );
       netcdf.set_value( NC_PARAM::PRESSURE       , p.pressure );
       netcdf.set_value( NC_PARAM::TEMPERATURE    , p.temperature );
@@ -266,7 +269,12 @@ void ViscoplasticReport::export_by_point( Probe & probe )
 //      ofile_pq << t_step << CSVSci(time_d) << pt(0) << pt(1) << pt(2) << p.pressure << ti.get_P() << ti.get_Q() << endrow;
 //    }
   }
-  netcdf.flush();
+
+  {
+    util::Stopwatch wq("Netcdf flush.");
+    wq.info_log = 1;
+    netcdf.flush();
+  }
 }
 
 /**

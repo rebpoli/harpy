@@ -51,6 +51,15 @@ void NetCDFWriter::init( uint n_points_ )
       nc_create_par(filename.c_str(), NC_NETCDF4 , world, info, &ncid)
   );
 
+  // Increase chunk size to get more performance in NFS systems
+  nc_set_chunk_cache(512*1024*1024, 4133, 0.75);
+  {
+  size_t size, nelems;
+  float preemption;
+  nc_get_chunk_cache(&size, &nelems, &preemption);
+  ilog << "Cache: " << size << " bytes, " << nelems << " slots, " << preemption << " preemption";
+  }
+
   // Define dimensions
   CHECK_NC( nc_def_dim(ncid, "time", NC_UNLIMITED, &time_dimid)   );
   CHECK_NC( nc_def_dim(ncid, "point_idx", n_points, &point_dimid) );
