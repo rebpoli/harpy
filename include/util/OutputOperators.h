@@ -69,6 +69,16 @@ ostream& operator<<(ostream& os, const vector<T> & m)
   return os;
 }
 
+/**
+ *
+ */
+template <typename T, typename U>
+ostream& operator<<(ostream& os, const pair<T,U> & m)
+{
+  os << "("<<m.first<<","<<m.second<<")";
+  return os;
+}
+
 
 /*
  * A wrapper to override some operators provided by libraries to get a cleaner output

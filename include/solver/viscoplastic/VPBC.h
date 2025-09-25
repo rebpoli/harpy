@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include "solver/common/TemporalBC.h"
 #include "libmesh/system.h"
 
 /**
@@ -26,6 +27,7 @@ namespace viscoplastic {
 using namespace libMesh;
 using config::BCConfig;
 using timeloop::Timestep;
+using solver::common::TemporalBC;
 
 class BC 
 {
@@ -80,8 +82,9 @@ class BC
     BCConfig & config;
     double time;        // Time of the current BC
     double reftime;    // Reference time of the current BC
+    TemporalBC temporal_bcs;
 
-    // (eid,sid) => vector< (vid, double) >
+    void _load_temporal_bcs();
 
     void _cleanup();
     void _validate();

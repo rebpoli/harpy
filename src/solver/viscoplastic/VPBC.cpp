@@ -21,8 +21,10 @@ using config::MODEL;
 BC::BC( const System & sys_ ) : 
               system(sys_), 
               config( MODEL->boundary_config ),
-              time(-999), reftime(-999)
+              time(-999), reftime(-999),
+              temporal_bcs( config )
 { }
+
 
 /**
  * Cleanup the generated dynamic datastructures

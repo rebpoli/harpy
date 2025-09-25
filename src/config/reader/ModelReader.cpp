@@ -240,15 +240,26 @@ void ModelReader::external_state()
   filename = match[2];
 
   // This is the only supported variable for now.
-  if ( ! iequals( vname, "sig0" ) ) flog << "Unsupported variable at MODEL (" << ln << ").";
+  if ( iequals( vname, "sig0" ) ) 
+  {
+    // Check if file exists
+    string full_fn = config.model_dir + "/" + filename;
+    if ( ! file_exists( full_fn ) ) flog << "File '" << full_fn << "' does not exist. Review MODEL (" << ln << ") file.";
+    config.sig0_file = full_fn;
+    return;
+  }
 
-  // Check if file exists
-  string full_fn = config.model_dir + "/" + filename;
+  if ( iequals( vname, "bcs" ) ) 
+  {
+    // Check if file exists
+    string full_fn = config.model_dir + "/" + filename;
+    if ( ! file_exists( full_fn ) ) flog << "File '" << full_fn << "' does not exist. Review MODEL (" << ln << ") file.";
+    BCConfig & bcconfig = config.boundary_config;
+    bcconfig.temporal_file = full_fn;
+    return;
+  }
 
-  if ( ! file_exists( full_fn ) ) flog << "File '" << full_fn << "' does not exist. Review MODEL (" << ln << ") file.";
-
-  config.sig0_file = full_fn;
-
+  flog << "Unsupported variable '" << vname << "' at MODEL (" << ln << ").";
   return; 
 }
 

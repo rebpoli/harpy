@@ -94,6 +94,8 @@ class BCConfig
     map< string, double > initial_by_vname;
     map< double, TimeEntry > entry_by_time;
 
+    string temporal_file;
+
     // Convenience
     void all_bnames( set<string> & ret ) const ;
     bool has_scalar( string name ) const;

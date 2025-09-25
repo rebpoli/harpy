@@ -108,6 +108,7 @@ ADD_LIBRARY(Modules
   src/solver/common/ExplicitMaterial.cpp
   src/solver/common/Solver.cpp
   src/solver/common/SolverFactory.cpp
+  src/solver/common/TemporalBC.cpp
   src/solver/pressure/PSolverFile.cpp
   src/solver/thermal/TIfc.cpp
   src/solver/thermal/TSolverCnt.cpp
@@ -177,6 +178,9 @@ target_link_libraries( msh2exo Modules )
 set(RT "${PROJECT_SOURCE_DIR}") ## proj root
 
 # Tests
+add_executable( ut-temporal-bc demos/UNIT-TEST/12-TEMPORAL-BC/main.cpp  )
+target_link_libraries( ut-temporal-bc Modules )
+
 add_executable( ut-netcdf demos/UNIT-TEST/11-NETCDF/main.cpp  )
 target_link_libraries( ut-netcdf Modules )
 

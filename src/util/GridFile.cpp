@@ -1,6 +1,7 @@
 
 #include "util/GridFile.h"
 #include "util/GzStream.h"
+#include "util/CSVLine.h"
 
 #include <iostream>
 #include <fstream>
@@ -12,27 +13,6 @@
 #include <type_traits>
 
 namespace util {
-
-/**
- * Parse a CVS line and tokenize
- */
-struct CSVLine 
-{
-  stringstream ss;
-  CSVLine(const string& line) { ss.str(line); }
-
-  template<typename T>
-    T next() {
-      string token;
-      getline(ss, token, ',');
-      if constexpr (is_same_v<T, int>) return stoi(token);
-      else if constexpr (is_same_v<T, double>) return stod(token);
-      else if constexpr (is_same_v<T, float>) return stof(token);
-      else if constexpr (is_same_v<T, long>) return stol(token);
-      else if constexpr (is_same_v<T, string>) return token;
-      else flog << "Unsupported type.";
-    }
-};
 
 /**
  *  Data entry for the interpolator

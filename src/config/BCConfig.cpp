@@ -10,7 +10,7 @@ namespace config {
  * Builds the datastructure from the  model.
  *
  */
-BCConfig::BCConfig()  {}
+BCConfig::BCConfig() : temporal_file("")  {}
 
 /**
  *   A domain BC defines forces a variable to be constant in
