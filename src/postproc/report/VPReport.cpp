@@ -66,6 +66,8 @@ void ViscoplasticReport::init()
     netcdf.add( NC_PARAM::INVAR_P_EFF );
     netcdf.add( NC_PARAM::INVAR_Q );
 
+    netcdf.add( NC_PARAM::U );
+
     netcdf.finish_definitions();
     netcdf.set_coords(probe->points);
   }
@@ -215,6 +217,9 @@ void ViscoplasticReport::export_by_point( Probe & probe )
       double q_div_p_eff = ti.get_Q() / p_eff;
       netcdf.set_value( NC_PARAM::INVAR_P_EFF  , p_eff );
       netcdf.set_value( NC_PARAM::INVAR_Q      , ti.get_Q() );
+
+      Point U = p.U;
+      netcdf.set_value( NC_PARAM::U  , U );
     }
 
 

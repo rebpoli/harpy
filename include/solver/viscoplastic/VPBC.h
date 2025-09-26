@@ -92,6 +92,7 @@ class BC
     void _update_dirichlet();
     void _update_scalar();
     void _update_penalty();
+    void _update_temporal();
 
   public:
     vector< DirichletItem > dirichlet;

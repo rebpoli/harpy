@@ -23,7 +23,8 @@ map<NC_PARAM, DataInfo> PARAMS = {
     { NC_PARAM::VELOCITY,         {  NC_TYPE::VEC3,   "Velocity"          , "m/s",  "", -1} },
     { NC_PARAM::SIGTOT,           {  NC_TYPE::TEN9,   "Total Stress"      , "Pa",   "", -1} },
     { NC_PARAM::VP_STRAIN,        {  NC_TYPE::TEN9,   "VP Strain"         , "",     "", -1} },
-    { NC_PARAM::VP_STRAIN_RATE,   {  NC_TYPE::TEN9,   "VP Strain Rate"    , "1/s",  "", -1} }
+    { NC_PARAM::VP_STRAIN_RATE,   {  NC_TYPE::TEN9,   "VP Strain Rate"    , "1/s",  "", -1} },
+    { NC_PARAM::U,                {  NC_TYPE::VEC3,   "U"                 , "m",    "", -1} },
 };
 
 /** **/
@@ -407,7 +408,8 @@ ostream& operator<<(ostream& os, const NC_PARAM& param) {
         {NC_PARAM::VISCOSITY,         "VISCOSITY"},
         {NC_PARAM::SIGTOT,            "SIGTOT"},
         {NC_PARAM::VP_STRAIN,         "VP_STRAIN"},
-        {NC_PARAM::VP_STRAIN_RATE,    "VP_STRAIN_RATE"}
+        {NC_PARAM::VP_STRAIN_RATE,    "VP_STRAIN_RATE"},
+        {NC_PARAM::U,                 "U"},
     };
     
     auto it = param_map.find(param);

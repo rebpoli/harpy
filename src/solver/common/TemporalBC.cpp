@@ -14,41 +14,9 @@ namespace common {
 
 using util::CSVLine;
 
-/**
- *  Data entry for the interpolator
- */
-struct TBCEntry 
-{
-  double time, value;
-  string bc, var;
-
-  TBCEntry(const string& csv_line) 
-  {
-    CSVLine tokens(csv_line);
-    time    =   tokens.next<double>();
-    bc      =   tokens.next<string>();
-    var     =   tokens.next<string>();
-    value   =   tokens.next<double>();
-  }
-
-};
-ostream& operator<<(ostream& os, const TBCEntry & m)
-{
-  os  << endl
-      << "TBCEntry: { "
-      << "time: " << setw(10) << left << m.time 
-      << "bc: " << setw(10) << left << m.bc 
-      << "var: " << setw(10) << left << m.var  
-      << "value: " << setw(10) << left << m.value 
-      << " }";
-  
-  return os;
-}
-
 using util::operator<<;
 
 /**
- *
  *
  */
 TemporalBC::TemporalBC( BCConfig & config ) 
@@ -61,16 +29,39 @@ TemporalBC::TemporalBC( BCConfig & config )
   string line;
   file.getline(line); // skip header
 
-  map< pair<string,string>, vector<TBCEntry> > entries;
+  // Read as map for fast lookup
+  map< pair<string,string>, TBCEntry > en_map;
   while ( file.getline(line) ) 
   {
-    TBCEntry entry(line);
-    pair<string,string> key = make_pair(entry.bc, entry.var);
-    entries[key].push_back(entry);
+    CSVLine tokens(line);
+    auto time  = tokens.next<double>();
+    auto bname    = tokens.next<string>();
+    auto vname   = tokens.next<string>();
+    auto value = tokens.next<double>();
+
+    pair<string,string> key = make_pair(bname, vname);
+    en_map[key].bname = bname;
+    en_map[key].vname = vname;
+    en_map[key].tt.add( time, value );
   }
 
-  dlog(1) << entries;
+  // Store as vector for sequential access
+  for ( const auto& [key, value] : en_map ) 
+    entries.push_back( value );
+}
 
+/**
+ *
+ */
+ostream& operator<<(ostream& os, const TBCEntry & m)
+{
+  os  << "TBCEntry{ "
+      << "bname: " << setw(10) << left << m.bname 
+      << "vname: " << setw(10) << left << m.vname  
+      << "tt : " << setw(10) << left << m.tt  
+      << " }" << endl;
+  
+  return os;
 }
 
 

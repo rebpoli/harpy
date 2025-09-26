@@ -136,6 +136,7 @@ ADD_LIBRARY(Modules
   src/util/OutputOperators.cpp
   src/util/Stopwatch.cpp
   src/util/TeeBuff.cpp
+  src/util/TimeTable.cpp
 )
 
 # Common: export symbols so backtrace resolves function names

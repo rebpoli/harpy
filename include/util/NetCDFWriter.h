@@ -34,6 +34,7 @@ enum class NC_PARAM  {
   VP_STRAIN ,
   VP_STRAIN_RATE ,
   INVAR_P_EFF, INVAR_Q,
+  U,
 };
 
 struct DataInfo { 

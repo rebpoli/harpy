@@ -42,7 +42,7 @@ ostream& operator<<(ostream& os, const map<pair<uint,uint>, bool> & m);
 template <typename T>
 ostream& operator<<(ostream& os, const set<T> & m)
 {
-  os << "[";
+  os << "set [" << endl;
   uint i=0;
   for ( auto v : m ) {
     if ( i++ ) os << " ";
@@ -59,7 +59,7 @@ ostream& operator<<(ostream& os, const set<T> & m)
 template <typename T>
 ostream& operator<<(ostream& os, const vector<T> & m)
 {
-  os << "[";
+  os << "vec [" << endl;
   uint i=0;
   for ( auto v : m ) {
     if ( i++ ) os << " ";
@@ -140,7 +140,7 @@ inline ostream& operator<<(ostream& os, const Print<libMesh::RealTensor>& printe
 template<> 
 inline ostream& operator<<(ostream& os, const Print<vector<libMesh::RealVectorValue>> & printer)
 {
-  os << "[";
+  os << "vec [" << endl;
   uint i=0;
   for ( auto v : printer.ref ) {
     if ( i++ ) os << " ";
@@ -153,7 +153,7 @@ inline ostream& operator<<(ostream& os, const Print<vector<libMesh::RealVectorVa
 template<> 
 inline ostream& operator<<(ostream& os, const Print<vector<libMesh::Point>> & printer)
 {
-  os << "[";
+  os << "vec [" << endl;
   uint i=0;
   for ( auto v : printer.ref ) {
     if ( i++ ) os << " ";
@@ -190,7 +190,7 @@ ostream& operator<<(ostream& os, const optional<T> & m)
 template <typename T, typename U>
 ostream& operator<<(ostream& os, const map<T,U> & m)
 {
-  os << "[";
+  os << "map [" << endl;
   uint i=0;
   for ( auto v : m ) {
     if ( i++ ) os << ", ";

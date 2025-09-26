@@ -53,6 +53,9 @@ bool BC::update( double t )
 
   /** Test if the reference time has changed for the new time **/
   double rt = config.get_reftime( time );
+
+  // If we have temporal BCs, we always have to update the dirichlets
+  if ( ! temporal_bcs.entries.size() ) 
   if ( rt == reftime ) {
     dlog(1) << "Reftime did not change. Continuing...";
     return false; // nothing has changed
@@ -65,6 +68,8 @@ bool BC::update( double t )
   // Perform each part of the update
   _validate();
   _update_dirichlet();
+  _update_temporal();
+
   _update_scalar();
   _update_stot();
   _update_penalty();
@@ -285,6 +290,40 @@ void BC::_update_penalty()
         break;
       }
     }
+  }
+}
+
+/**
+ * Update the Dirichlet BCs (bring from BCConfig)
+ */
+void BC::_update_temporal()
+{
+  SCOPELOG(1);
+
+  using solver::common::TBCEntry;
+  using util::TimeTable;
+  vector<TBCEntry> & entries = temporal_bcs.entries;
+
+  // Refresh data structures - can be only the local (would save some minor time)
+  const MeshBase & mesh = system.get_mesh();
+  const BoundaryInfo & bi = mesh.get_boundary_info();
+
+  for ( TBCEntry & tbc : entries )
+  {
+    string bname = tbc.bname;
+    string vname = tbc.vname;
+    double val = tbc.tt.interpolate(time);
+
+    if ( ! system.has_variable( vname ) ) 
+      flog << "System '" << system.name() << "' HAS NO variable named '" << vname << "'. Skipping constrain.";
+
+    // This may fail
+    uint vid = system.variable_number( vname );
+    int bid = bi.get_id_by_name( bname );
+
+    dlog(1) << "Pushing Temporal Dirichlet: " << vname << "=" << val << " @ " << bname << ".";
+    DirichletItem di( bid, vid, val, vname, bname );
+    dirichlet.push_back( di );
   }
 }
 
