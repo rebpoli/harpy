@@ -17,6 +17,10 @@ run-%: set-% .force
 	rm -rf run/
 	mpirun -n $(N) $(topdir)/build/$*/harpy $(PETSC_OPT) 
 
+launch-athena: HARPY_CMD:=mpirun -n $(N) $(topdir)/build/$*/harpy $(PETSC_OPT) 
+launch-athena: .force
+	sbatch ../py/run_atena.sh
+
 gdb-mpi: set-devel
 	mpiexec -np $(N) xterm -e gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/devel/harpy $(PETSC_OPT)
 
