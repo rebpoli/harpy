@@ -9,8 +9,8 @@ STRESS BASE
 
 .TIMESTEP 
 DT0           0.01 
-DTK           1.3
-DTMAX         5000 # 30 days
+DTK           2
+DTMAX         10000
 TMAX          1e9 # 30 years
 MAX_STEPS     100000
 
