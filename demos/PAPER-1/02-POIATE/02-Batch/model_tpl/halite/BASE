@@ -11,6 +11,7 @@
 
 # Defines the porothermoelastic parameters
 .POROTHERMOELASTIC
+DENSITY       0 # 2450        # Aprox density of a carbonate (\rho_s=2710), porosity 15%, saturate with brine (\rho_w=1025)
 POROSITY      FILE    POR-BASE
 PERMEABILITY  1e-12     
 BIOT          0.3
