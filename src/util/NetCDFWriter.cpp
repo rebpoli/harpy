@@ -58,7 +58,7 @@ void NetCDFWriter::init( uint n_points_ )
   size_t size, nelems;
   float preemption;
   nc_get_chunk_cache(&size, &nelems, &preemption);
-  ilog << "Cache: " << size << " bytes, " << nelems << " slots, " << preemption << " preemption";
+//  ilog << "Cache: " << size << " bytes, " << nelems << " slots, " << preemption << " preemption";
   }
 
   // Define dimensions

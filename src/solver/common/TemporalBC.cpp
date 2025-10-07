@@ -22,6 +22,8 @@ using util::operator<<;
 TemporalBC::TemporalBC( BCConfig & config ) 
 {
   SCOPELOG(1);
+  if ( config.temporal_file.empty() ) return;
+
   dlog(1) << "Reading temporal file: " << config.temporal_file;
 
   GzStream file(config.temporal_file);

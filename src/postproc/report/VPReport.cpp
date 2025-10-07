@@ -162,8 +162,8 @@ void ViscoplasticReport::export_scalars()
 void ViscoplasticReport::export_by_point( Probe & probe )
 {
   SCOPELOG(1);
-  util::Stopwatch sw("ViscoplasticReport::export_by_point");
-  sw.info_log = 1; // we went to se the stopwatch as info messages
+//  util::Stopwatch sw("ViscoplasticReport::export_by_point");
+//  sw.info_log = 1; // we went to se the stopwatch as info messages
 
   dlog(1) << "Processing probe '" << probe.name << "' ...";
   CsvFile1 ofile(probe.filename);
@@ -276,8 +276,8 @@ void ViscoplasticReport::export_by_point( Probe & probe )
   }
 
   {
-    util::Stopwatch wq("Netcdf flush.");
-    wq.info_log = 1;
+//    util::Stopwatch wq("Netcdf flush.");
+//    wq.info_log = 1;
     netcdf.flush();
   }
 }
