@@ -25,6 +25,11 @@ gdb-mpi: set-devel
 gdb-%: set-% .force
 	gdb --ex 'set breakpoint pending on' --ex 'b MPI_Abort' --ex 'b breakpoint' --ex 'run' --args $(topdir)/build/$*/harpy $(PETSC_OPT)
 
+## Athena
+launch-athena: HARPY_CMD:=mpirun -n $(N) $(topdir)/build/$*/harpy $(PETSC_OPT) 
+launch-athena: .force
+	sbatch ../py/run_atena.sh
+
 ## MESH
 mesh: model/cube.e
 
