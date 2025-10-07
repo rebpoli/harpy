@@ -1,18 +1,4 @@
 
-# The probes to extract information
-# .PROBE gauss
-# TYPE GAUSS
-# ORDER FIRST
-# BOUNDARY XP
-# BOUNDARY XN
-
-# .PROBE rad_0
-# TYPE RADIAL
-# RADIUS 0.2
-# DTHETA 30
-# CENTER 0 0 0
-# NORMAL 1 0 0
-
 .PROBE plane_yz
 TYPE planar
 P0       0     0     -50
@@ -22,14 +8,21 @@ NPTS     10000
 
 .PROBE plane_yz_well
 TYPE planar
-P0       0     0     -25
-P1       0    10     -25
-P2       0    10      25
-NPTS     2500
+P0       0     0     -200
+P1       0    10     -200
+P2       0    10      50
+NPTS     10000
 
-.PROBE plane_xy
+.PROBE plane_xy_res
 TYPE planar
 P0       0        0   5
 P1       100      0   5
 P2       100    100   5
+NPTS     10000
+
+.PROBE plane_xy_cap
+TYPE planar
+P0       0        0   -5
+P1       100      0   -5
+P2       100    100   -5
 NPTS     10000

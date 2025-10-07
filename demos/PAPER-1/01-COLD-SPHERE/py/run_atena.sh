@@ -33,14 +33,4 @@ sy() {
 
 
 
-sy ls -la ../../../demos/UNIT-TEST
-sy make -j20 set-opt
-
-#echo $(HARPY_CMD)
-
-# Run color solver
-#mpirun -np 1 \
-#singularity run \
-#-B /dfs_geral_ep/res/santos/unbs/gger/er/er01/USR/bfq9/work/harpy:/work \
-#--pwd $TC_DIR $SIF \
-#$(HARPY_CMD)
+sy make -j20 run

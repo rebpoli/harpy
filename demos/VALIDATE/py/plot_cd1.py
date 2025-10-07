@@ -88,7 +88,10 @@ def process_timestep_and_save_frame(args):
         s3_2d = s3_vectors[:, [x_comp_idx, y_comp_idx]]
         
         # Background field
-        background_data = ds['VP Strain Rate'].sel(ten9_comp='zz')[time_idx, :].values
+#         background_data = ds['VP Strain Rate'].sel(ten9_comp='zz')[time_idx, :].values
+#         background_data = ds['S3 Magnitude'][time_idx, :].values
+        background_data = ds['Delta S3'][time_idx, :].values
+#         background_data = ds['VP Strain'].sel(ten9_comp='zz')[time_idx, :].values
         
         # Interpolate background
         bg_xi = np.linspace(setup_data['x_min'], setup_data['x_max'], 100)
@@ -126,6 +129,8 @@ def process_timestep_and_save_frame(args):
     
     cbar = plt.colorbar(im, cax=cbar_ax)
     cbar.set_label('Strain Rate ZZ (1/s)', rotation=270, labelpad=15)
+#     cbar.set_label('Minimum principal stres (S3)', rotation=270, labelpad=15)
+#     cbar.set_label('Plastic Strain (zz)', rotation=270, labelpad=15)
     cbar.ax.tick_params(labelsize=9)
     
     # Plot subplots
@@ -197,9 +202,10 @@ def setup_plot_coordinates(datasets, plot_configs, vector_density):
 def create_animated_vector_plots(max_timesteps=None, interval=300, vector_density=15, dpi=150):
     # Plot configurations
     plot_configs = [
-        {'title': 'XY , 5m into the reservoir', 'filename': 'plane_xy.cd', 'x_axis': 'x', 'y_axis': 'y'},
+        {'title': 'XY , 5m into the caprock', 'filename': 'plane_xy_cap.cd', 'x_axis': 'x', 'y_axis': 'y'},
+        {'title': 'XY , 5m into the reservoir', 'filename': 'plane_xy_res.cd', 'x_axis': 'x', 'y_axis': 'y'},
+        {'title': 'YZ , Well @ (0,0)', 'filename': 'plane_yz_well.cd', 'x_axis': 'y', 'y_axis': 'z'},
         {'title': 'YZ , Well @ (0,0)', 'filename': 'plane_yz.cd', 'x_axis': 'y', 'y_axis': 'z'},
-        {'title': 'YZ , Well @ (0,0)', 'filename': 'plane_yz_well.cd', 'x_axis': 'y', 'y_axis': 'z'}
     ]
     
     # Load datasets
@@ -208,12 +214,20 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
     for config in plot_configs:
         filepath = f"run/cdf/{config['filename']}"
         ds = read_netcdf(filepath)
+        ds['Delta S3'] = ds['S3 Magnitude'] - ds['S3 Magnitude'].isel(time=0)
+        
+        print(f"File '{filepath}'")
+        print(list(ds.variables))
+        print(ds)
         datasets[config['filename']] = ds
         time_values = ds.time.values
         print(f"Found {len(time_values)} time steps")
     
     # Set color scale
-    _data = ds['VP Strain Rate'].sel(ten9_comp='zz')
+#     _data = ds['VP Strain Rate'].sel(ten9_comp='zz')
+#     _data = ds['S3 Magnitude']
+    _data = ds['Delta S3']
+#     _data = ds['VP Strain'].sel(ten9_comp='zz')
     vmin, vmax = float(_data.quantile(0.05).values), float(_data.quantile(0.95).values)
     
     n_times = min(max_timesteps, len(time_values))
@@ -235,11 +249,15 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
         for time_idx in range(n_times)
     ]
     
+    
+    #
+    #  Do the processing as in process_args
+    #
+
     max_workers = min(cpu_count() - 1, 40)
     completed = 0
     frame_files = [None] * n_times
     start_time = time.time()
-    
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         # Submit all tasks
         future_to_idx = {
@@ -265,6 +283,13 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
                 print(f"\nFrame {time_idx} generated an exception: {exc}")
     
     print(f"\nGenerated {completed} frames in {time.time() - start_time:.1f}s")
+
+
+
+
+    #
+    # VIDEO
+    #
     
     # Create video
     fps = 1000 // interval
@@ -298,12 +323,12 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
         print("Both GPU and CPU encoding failed. Please check FFmpeg installation.")
         return None
     
-    # Cleanup
-    try:
-        shutil.rmtree(output_dir)
-        print("Temporary frames cleaned up")
-    except Exception as e:
-        print(f"Warning: Could not clean up temporary frames: {e}")
+#     # Cleanup
+#     try:
+#         shutil.rmtree(output_dir)
+#         print("Temporary frames cleaned up")
+#     except Exception as e:
+#         print(f"Warning: Could not clean up temporary frames: {e}")
     
     print(f"Animation saved as {output_filename}")
     return output_filename

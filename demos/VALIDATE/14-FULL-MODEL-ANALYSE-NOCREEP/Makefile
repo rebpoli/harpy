@@ -54,4 +54,9 @@ video:
 video-pq:
 	ffmpeg -framerate 10 -pattern_type glob -i '_frames/*.png' -c:v libx264 -pix_fmt yuv420p -crf 18 pq_square-scale.mp4
 
+launch-athena: export HARPY_CMD=$(topdir)/build/opt/harpy $(PETSC_OPT) 
+launch-athena: .force
+	sbatch ../py/run_atena.sh
+
+
 .force:
