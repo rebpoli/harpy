@@ -61,6 +61,7 @@ def create_batch( sig, temp ) :
 mkdir("batch")
 shutil.copy2( "Makefile.batch" , "batch/Makefile" )
 shutil.copy2( "../py/launch.py" , "batch/launch.py" )
+shutil.copy2( "../py/my_ssh.py" , "batch/my_ssh.py" )
 
 for sig in all_sig :
     for temp in all_temp :
