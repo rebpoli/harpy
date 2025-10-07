@@ -33,8 +33,7 @@ sy() {
 
 
 
-sy ls -la ../../../demos/UNIT-TEST
-sy make -j20 set-opt
+sy make run-opt
 
 #echo $(HARPY_CMD)
 
