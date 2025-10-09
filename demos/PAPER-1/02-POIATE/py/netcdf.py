@@ -1,6 +1,7 @@
 
 import xarray as xr
 import numpy as np
+import pandas as pd
 import os
 
 ## Assign component labels for vec3_comp and ten9_comp based on attrs['components']
@@ -102,3 +103,66 @@ def cached( builder_func, cache_file, source_file, force=0 ):
         print(f"Loading from cache: {cache_file}...")
         return xr.open_dataset(cache_file)
 
+#
+#
+#
+def extract_dataframe(ds, vnames):
+    if isinstance(vnames, str): vnames = [vnames]
+    import re
+
+    # Name maps
+    simple_var_mapping = {
+        'P': 'Pressure',
+        'T': 'Temperature',
+        'DELTAP': 'Delta_P',
+        'DELTAT': 'Delta_T',
+    }
+
+    vec3_vars = ['U', 'S1', 'S2', 'S3']
+
+    ten9_var_mapping = {
+        'SIGTOT': 'Total Stress',
+        'SIGEFF': 'Effective Stress',
+        'SIGE': 'Elastic Stress',
+        'SIGV': 'Viscous Stress',
+        'STRAINVP': 'VP Strain',
+        'STRAINRATEVP': 'VP Strain Rate',
+    }
+
+    # Regular expressions for pattern matching
+    vec3_pattern = re.compile(r'^(.+)([XYZ])$', re.IGNORECASE)
+    ten9_pattern = re.compile(r'^(.+)(XX|XY|XZ|YX|YY|YZ|ZX|ZY|ZZ)$', re.IGNORECASE)
+
+    data_dict = { 'time_in_days': ds['time_in_days'].values }
+
+    for vname in vnames:
+        # Check simple variable mapping
+        if vname in simple_var_mapping:
+            ds_var = simple_var_mapping[vname]
+            data_dict[vname] = ds[ds_var].values
+
+        elif (match := ten9_pattern.match(vname)):
+            base_name = match.group(1)
+            comp = match.group(2).lower()
+
+            if base_name in ten9_var_mapping:
+                ds_var = ten9_var_mapping[base_name]
+                data_dict[vname] = ds[ds_var].sel(ten9_comp=comp).values
+
+        elif (match := vec3_pattern.match(vname)):
+            base_name = match.group(1)
+            comp = match.group(2).lower()
+
+            if base_name in vec3_vars:
+                data_dict[vname] = ds[base_name].sel(vec3_comp=comp).values
+
+        elif vname in ds:
+            data_dict[vname] = ds[vname].values
+
+        else:
+            print(f"Warning: Variable '{vname}' not found or not recognized")
+
+    # Create DataFrame with time as index
+    df = pd.DataFrame( data_dict )
+
+    return df
