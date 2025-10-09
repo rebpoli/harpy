@@ -1,5 +1,7 @@
 
 import xarray as xr
+import numpy as np
+import os
 
 ## Assign component labels for vec3_comp and ten9_comp based on attrs['components']
 def assign_component_names(ds):
@@ -15,8 +17,88 @@ def assign_component_names(ds):
                 updated = updated.assign_coords(ten9_comp=comps)
     return updated
 
-
+#
+#
+#
 def read_netcdf( fn ) :
     ds = xr.open_dataset(fn)
     ds = assign_component_names(ds)
+    ds['time_in_days'] = ds['time'] / 86400
     return ds
+
+#
+#
+#
+def filter_time( ds, target_interval, max_time ) :
+    time_values = ds.time.values
+    selected_indices = [0]  
+    current_time = time_values[0]
+
+    for i in range(1, len(time_values)):
+        # Calculate time difference
+        time_diff = time_values[i] - current_time
+
+        # Check if at least 1 hour has passed since last selected point
+        if time_diff >= target_interval:
+            selected_indices.append(i)
+            current_time = time_values[i]
+
+            if (current_time - time_values[0]) >= max_time : break
+
+    return ds.isel(time=selected_indices)
+
+#
+#
+#
+def select_nearest_point(ds, pt, quiet=0):
+    if not quiet : print(f"Selecting nearest point to {pt} ...")
+    distances = []
+    for i in range(len(ds.point_idx)):
+        dist_sq = 0
+        for j in range(3) :
+            c = ds['Coord'].isel(point_idx=i, vec3_comp=j).values
+            dist_sq += (c - pt[j]) ** 2
+
+        dist = np.sqrt(dist_sq)
+        distances.append( dist );
+
+    nearest_idx = np.argmin(distances)
+    spt = ds['Coord'].isel(point_idx=nearest_idx).values.tolist()
+
+    print(f"Selected point: {spt}")
+    return ds.isel(point_idx=nearest_idx)
+
+
+#
+#
+#
+def cache_outdated(source_file, cache_file):
+    if not os.path.exists(cache_file): return True
+    if not os.path.exists(source_file): return False
+
+    source_time = os.path.getmtime(source_file)
+    cache_time = os.path.getmtime(cache_file)
+
+    return source_time > cache_time
+
+#
+#
+#
+def cached( builder_func, cache_file, source_file, force=0 ):
+    basedir = "run/cache/"
+    cache_file = basedir + cache_file
+
+    needs_rebuild = cache_outdated( source_file, cache_file )
+    needs_rebuild |= force
+
+    if needs_rebuild:
+        print(f"Building dataset and saving to {cache_file}...")
+        ds = builder_func()
+
+        os.makedirs(basedir, exist_ok=True)
+        ds.to_netcdf(cache_file)
+        return ds
+    else:
+        print(f"Loading from cache: {cache_file}...")
+        return xr.open_dataset(cache_file)
+
