@@ -1,4 +1,7 @@
 #!/usr/bin/env -S python -i
+import sys, os
+sys.path.append('../py')
+sys.stdout.reconfigure(line_buffering=True)
 
 import pandas as pd
 import numpy as np

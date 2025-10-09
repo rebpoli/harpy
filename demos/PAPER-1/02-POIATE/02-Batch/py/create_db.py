@@ -1,4 +1,7 @@
 #!/usr/bin/env -S python -i
+import sys, os
+sys.path.append('../py')
+sys.stdout.reconfigure(line_buffering=True)
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -40,6 +43,8 @@ def run_main() :
     df = pd.concat( ALL_SCALARS )
     df_ = df.drop_duplicates(["sig", "T", "eps_yy_rate" ])
     print(df_)
+
+    df_.to_pickle("cache/batch_db.pkl")
 
     fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(15,6))
     
@@ -244,4 +249,4 @@ def analytical_model( T_C, sig_MPa ) :
     return eps_ss_rate
         
 run_main()
-plt.show()
+# plt.show()
