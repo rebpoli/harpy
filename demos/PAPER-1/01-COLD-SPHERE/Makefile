@@ -50,4 +50,10 @@ gdb: gdb-dbg
 plot: .force
 	py/plot_lin0.py
 
+
+launch-athena:
+	rm */slurm-*out
+	make -C 01-first-order  launch-athena
+	make -C 02-second-order launch-athena
+
 .force:

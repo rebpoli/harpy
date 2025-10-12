@@ -5,7 +5,7 @@ TOPDIR=$(shell realpath $(topdir))
 include $(topdir)/share/makefile/Makefile.demos
 
 export CHDEBUG=0
-export N=10
+export N=40
 
 # PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-10 -snes_max_it 10 -snes_atol 1e-7 -snes_linesearch_type basic -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 
 PETSC_OPT=-snes_monitor -snes_force_iteration -log_view -pc_type hypre -ksp_type bcgsl -snes_converged_reason -ksp_converged_reason -snes_rtol 1e-4 -snes_max_it 20 -ksp_rtol 1e-15 -snes_linesearch_type basic -snes_atol 1e-7 -snes_divergence_tolerance 1e10 -ksp_rtol 1e-20 -ksp_atol 1e-15 -pc_hypre_type boomeramg -pc_hypre_boomeramg_strong_threshold 0.7 -pc_hypre_boomeramg_agg_nl 4 -pc_hypre_boomeramg_agg_num_paths 5 -pc_hypre_boomeramg_max_levels 25 -pc_hypre_boomeramg_coarsen_type HMIS -pc_hypre_boomeramg_interp_type ext+i -pc_hypre_boomeramg_P_max 2 -pc_hypre_boomeramg_truncfactor 0.3 -ksp_monitor
