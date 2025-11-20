@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python -i
+#!/usr/bin/env -S python 
 
 import sys, os
 sys.path.append('../py')
@@ -95,7 +95,7 @@ savefig(fig, "png/analitycal_vs_numerical.png")
 # PLOT 2 - NUMERICAL vs EXPERIMENTAL DATA
 #
 
-fig, ax = plt.subplots(1, 1, figsize=(7,5))
+fig, ax = plt.subplots(1, 1, figsize=(3.8,2.5))
 color_cycle = itertools.cycle(colors)
 all_axes.append(ax)
 groups = list(df.groupby("T", sort=True))
@@ -103,7 +103,7 @@ for k, g in reversed(groups):
     if not k in SEL_TEMP : continue
     print(k) 
     if len(SEL_TEMP) and not k in SEL_TEMP : continue
-    ax.plot( -g.sig/1e6, -g.eps_yy_rate, ls='--', lw=1, label=f"Numerical: T={k-273:.1f} °C", c=next(color_cycle))
+    ax.plot( -g.sig/1e6, -g.eps_yy_rate, ls='--', lw=0.5, label=f"Numerical, $T={k-273:.0f}$ °C", c=next(color_cycle))
 
 ax.set_xscale('log')
 ax.set_yscale('log')
@@ -116,13 +116,16 @@ import itertools
 colors = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'pink', 'brown', 'gray', 'cyan', 'magenta', 'lime', 'indigo', 'violet', 'turquoise']
 color_cycle = itertools.cycle(colors)
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T130.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Experimental: $T=130$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=1.2, label=r'Experimental, $T=130$ °C') 
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T86.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Experimental: $T=86$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12,  lw=1.2,label=r'Experimental, $T=86$ °C') 
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T43.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), s=15, label=r'Experimental: $T=43$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=1.2, label=r'Experimental, $T=46$ °C') 
 
 ax.legend()
+ax.set_xticks([1,4,10,40])
+from matplotlib.ticker import ScalarFormatter
+ax.xaxis.set_major_formatter(ScalarFormatter())
 
 savefig(fig, "png/numerical_vs_experimental.png")
 
@@ -155,13 +158,13 @@ grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
 from scipy.interpolate import griddata
 grid_z = griddata((x, y), z, (grid_x, grid_y), method='linear')
 
-fig, ax2 = plt.subplots(1, 1, figsize=(7,5))
+fig, ax2 = plt.subplots(1, 1, figsize=(4,3), constrained_layout=True)
 all_axes.append(ax)
 from matplotlib.colors import LogNorm
 print( f"min: {grid_z.min()} max: {grid_z.max()} " )
 contour = ax2.pcolormesh(grid_x, grid_y, grid_z, 
                        norm=LogNorm(vmin=1e-12, vmax=1e-6),
-                       cmap='spring', 
+                       cmap='coolwarm', 
                        shading='auto')    
 
 log_min = 1e-12
@@ -170,10 +173,14 @@ levels = 10**np.linspace(-12, -3, 10)
 
 contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels,
                           colors='k', linewidths=0.5)
-ax2.clabel(contour_lines, inline=True, fontsize=8, fmt='%.1e')
+ax2.clabel(contour_lines, inline=True, fontsize=7, fmt='%.1e')
 
 cbar = plt.colorbar(contour)
+cbar.set_label(r"Strain rate (1/s)")
 ax2.set_xscale('log')
+ax2.set_xticks([1,4,10,40])
+from matplotlib.ticker import ScalarFormatter
+ax2.xaxis.set_major_formatter(ScalarFormatter())
 
 ax2.set_xlabel(r"Deviatoric stress (MPa)")
 ax2.set_ylabel("Temperature (°C)")
@@ -186,4 +193,4 @@ for ax in all_axes :
 
 savefig(fig, "png/colormap.png")
 
-plt.show()
+# plt.show()

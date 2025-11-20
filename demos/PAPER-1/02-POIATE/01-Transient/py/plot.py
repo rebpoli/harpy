@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python -i
+#!/usr/bin/env -S python 
 import sys, os
 sys.path.append('../py')
 sys.stdout.reconfigure(line_buffering=True)
@@ -30,7 +30,7 @@ ref_df["time_in_days"] = ref_df.time_h/24
 ref_df["strain"] -= 0.014
 
 ## Plot simulation
-fig, ax = plt.subplots( figsize=(5,3))
+fig, ax = plt.subplots( figsize=(4,2.5))
 _df = df[::50]
 ax.plot(_df.time_in_days, _df.strain, c='k', lw=2, label = "Model")
 

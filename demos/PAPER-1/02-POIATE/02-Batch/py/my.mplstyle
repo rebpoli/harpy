@@ -1,10 +1,10 @@
-figure.titlesize : 10
-axes.titlesize : 10
-axes.labelsize : 10
+figure.titlesize : 9
+axes.titlesize : 9
+axes.labelsize : 9
 lines.linewidth : .5
 lines.markersize : 6
-xtick.labelsize : 10
-ytick.labelsize : 10
+xtick.labelsize : 9
+ytick.labelsize : 9
 scatter.marker: o
 scatter.edgecolors: face
 axes.prop_cycle    : cycler('color', 'bgrcmyk')
@@ -279,7 +279,7 @@ axes.grid.axis      : both    ## which axis the grid should apply to
 #font.variant: normal
 #font.weight:  normal
 #font.stretch: normal
-#font.size:    10.0
+font.size:    9
 
 #font.serif:      DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
 #font.sans-serif: DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
@@ -543,15 +543,14 @@ legend.loc:           best
 legend.frameon:       True     # if True, draw the legend on a background patch
 legend.framealpha:    0.6      # legend patch transparency
 #legend.facecolor:     inherit  # inherit from axes.facecolor; or color spec
-legend.edgecolor:     0      # background patch boundary color
-#legend.linewidth:     0 
-legend.fancybox:      True     # if True, use a rounded box for the
+legend.edgecolor:     none      # background patch boundary color
+legend.fancybox:      False     # if True, use a rounded box for the
                                 # legend background, else a rectangle
 #legend.shadow:        False    # if True, give background a shadow effect
 #legend.numpoints:     1        # the number of marker points in the legend line
 #legend.scatterpoints: 1        # number of scatter points
 #legend.markerscale:   1.0      # the relative size of legend markers vs. original
-legend.fontsize:      10
+legend.fontsize:      8
 #legend.title_fontsize: None    # None sets to the same as the default axes.
 
 ## Dimensions as fraction of font size:
