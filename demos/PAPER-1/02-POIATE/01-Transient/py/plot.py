@@ -39,7 +39,7 @@ from scipy.interpolate import interp1d
 f_ = interp1d( ref_df.time_in_days , ref_df.strain, fill_value='extrapolate')
 t_ = np.linspace(-10,90,30)
 s_ = f_(t_)
-ax.scatter(t_, s_, c='r', marker='x', lw=1.5, label= "Experimental")
+ax.scatter(t_, s_, c='r', marker='x', s=20, lw=1.2, label= "Experimental")
 
 ax.set_xlim( 0, 90 )
 ax.set_ylim( 0, 0.2 )
@@ -51,7 +51,7 @@ ax.set_ylabel('Strain')
 import plot_util
 plot_util.savefig( fig, "png/transient.png" )
 
-
+plt.show()
 # plt.savefig('uy.png', dpi=300, bbox_inches='tight')
 # plt.close()
 

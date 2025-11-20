@@ -279,7 +279,7 @@ axes.grid.axis      : both    ## which axis the grid should apply to
 #font.variant: normal
 #font.weight:  normal
 #font.stretch: normal
-#font.size:    10.0
+font.size:    9
 
 #font.serif:      DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
 #font.sans-serif: DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, Avant Garde, sans-serif
@@ -543,24 +543,23 @@ legend.loc:           best
 legend.frameon:       True     # if True, draw the legend on a background patch
 legend.framealpha:    0.6      # legend patch transparency
 #legend.facecolor:     inherit  # inherit from axes.facecolor; or color spec
-legend.edgecolor:     0      # background patch boundary color
-#legend.linewidth:     0 
-legend.fancybox:      True     # if True, use a rounded box for the
+legend.edgecolor:     none      # background patch boundary color
+legend.fancybox:      False     # if True, use a rounded box for the
                                 # legend background, else a rectangle
 #legend.shadow:        False    # if True, give background a shadow effect
 #legend.numpoints:     1        # the number of marker points in the legend line
 #legend.scatterpoints: 1        # number of scatter points
 #legend.markerscale:   1.0      # the relative size of legend markers vs. original
-legend.fontsize:      10
+legend.fontsize:      8
 #legend.title_fontsize: None    # None sets to the same as the default axes.
 
 ## Dimensions as fraction of font size:
 legend.borderpad:     0.3  # border whitespace
-legend.labelspacing:  0.3  # the vertical space between the legend entries
+legend.labelspacing:  0.6  # the vertical space between the legend entries
 legend.handlelength:  1.3  # the length of the legend lines
-legend.handleheight:  0.3  # the height of the legend handle
-legend.handletextpad: 0.5  # the space between the legend line and legend text
-legend.borderaxespad: 0.0  # the border between the axes and legend edge
+# legend.handleheight:  0.3  # the height of the legend handle
+# legend.handletextpad: 0.5  # the space between the legend line and legend text
+# legend.borderaxespad: 0.0  # the border between the axes and legend edge
 #legend.columnspacing: 2.0  # column separation
 
 
@@ -694,11 +693,11 @@ figure.constrained_layout.use: True  # When True, automatically make plot
 #savefig.facecolor: auto        # figure face color when saving
 #savefig.edgecolor: auto        # figure edge color when saving
 #savefig.format:    png         # {png, ps, pdf, svg}
-#savefig.bbox:      standard    # {tight, standard}
+savefig.bbox:      tight    # {tight, standard}
                                 # 'tight' is incompatible with pipe-based animation
                                 # backends (e.g. 'ffmpeg') but will work with those
                                 # based on temporary files (e.g. 'ffmpeg_file')
-#savefig.pad_inches:   0.1      # Padding to be used when bbox is set to 'tight'
+savefig.pad_inches:   0.02      # Padding to be used when bbox is set to 'tight'
 #savefig.directory:    ~        # default directory in savefig dialog box,
                                 # leave empty to always use current working directory
 #savefig.transparent: False     # setting that controls whether figures are saved with a

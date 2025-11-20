@@ -80,8 +80,8 @@ ax.xaxis.set_major_formatter(ScalarFormatter())
 
 # Legend - only for asymptotes
 ax.legend(loc='upper left', bbox_to_anchor=(0.02, 0.98))
-# ax.set_xticks([])
-# ax.set_yticks([])
+ax.set_xticks([])
+ax.set_yticks([])
 # ax.set_xticks([1,4,10,40])
 
 # Set axis limits
