@@ -55,6 +55,23 @@ ax.loglog(stress, epsilon_dot_ps, 'r--', linewidth=0.7, alpha=0.7,
 ax.loglog(stress, epsilon_dot_dc, 'b--', linewidth=0.7, alpha=0.7,
           label='Dislocation creep asymptote')
 
+# Add slope triangles
+x0 = 1.5             ; x1 = x0*1.78
+y0 = arr * (x0/50)/2 ; y1 = arr * (x1/50)/2
+ax.plot([x0, x1], [y0, y0], 'k-', linewidth=0.5)
+ax.plot([x1, x1], [y0, y1], 'k-', linewidth=0.5)
+ax.plot([x0, x1], [y0, y1], 'k-', linewidth=0.5)
+ax.text(x1*1.05, (y0+y1)/2*0.75, '$n_1$', fontsize=9, va='center')
+
+# Add slope triangles
+x0 = 21             ; x1 = x0*1.3
+y0 = arr * (x0/10)**n/3 ; y1 = arr * (x1/10)**n/3
+ax.plot([x0, x1], [y0, y0], 'k-', linewidth=0.5)
+ax.plot([x1, x1], [y0, y1], 'k-', linewidth=0.5)
+ax.plot([x0, x1], [y0, y1], 'k-', linewidth=0.5)
+ax.text(x1*1.05, (y0+y1)/2*0.5, '$n_2$', fontsize=9, va='center')
+
+
 # Labels
 ax.set_xlabel('Deviatoric Stress (MPa)')
 ax.set_ylabel('Strain rate (1/s)')
@@ -63,13 +80,14 @@ ax.xaxis.set_major_formatter(ScalarFormatter())
 
 # Legend - only for asymptotes
 ax.legend(loc='upper left', bbox_to_anchor=(0.02, 0.98))
-ax.set_xticks([1,4,10,40])
+# ax.set_xticks([])
+# ax.set_yticks([])
+# ax.set_xticks([1,4,10,40])
 
 # Set axis limits
 ax.set_xlim([1,60])
 ax.set_ylim([1e-14, 1e-5])
 
-plt.tight_layout()
 savefig(fig,'png/salt_creep_mechanisms.png')
 print("Plot saved successfully")
 
