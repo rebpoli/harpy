@@ -61,7 +61,7 @@ y0 = arr * (x0/50)/2 ; y1 = arr * (x1/50)/2
 ax.plot([x0, x1], [y0, y0], 'r-', linewidth=0.5)
 ax.plot([x1, x1], [y0, y1], 'r-', linewidth=0.5)
 ax.plot([x0, x1], [y0, y1], 'r-', linewidth=0.5)
-ax.text(x1*1.05, (y0+y1)/2*0.75, '$n_1$', color='r', fontsize=9, va='center')
+ax.text(x1*1.05, (y0+y1)/2*0.75, r'$n_\text{ps}$', color='r', fontsize=9, va='center')
 
 # Add slope triangles
 x0 = 21             ; x1 = x0*1.3
@@ -69,7 +69,7 @@ y0 = arr * (x0/10)**n/3 ; y1 = arr * (x1/10)**n/3
 ax.plot([x0, x1], [y0, y0], 'b-', linewidth=0.5)
 ax.plot([x1, x1], [y0, y1], 'b-', linewidth=0.5)
 ax.plot([x0, x1], [y0, y1], 'b-', linewidth=0.5)
-ax.text(x1*1.05, (y0+y1)/2*0.5, '$n_2$', color='b',fontsize=9, va='center')
+ax.text(x1*1.05, (y0+y1)/2*0.5, r'$n_\text{dc}$', color='b',fontsize=9, va='center')
 
 
 # Labels
