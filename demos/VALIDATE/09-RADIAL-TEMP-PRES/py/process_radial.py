@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import gzip
 
-PROP = "Pressure"
-# PROP = "Temperature"
+# PROP = "Pressure"
+PROP = "Temperature"
 
 # Parse the dat to capture the radial grid
 dat_fn = "stars/test3-refine-dates-expon.dat"
@@ -19,7 +19,7 @@ patterns = {
     "DI":      re.compile(r"^\s*\*?DI\s+(\S+)\s+(.+)?$"),
     "DJ":      re.compile(r"^\s*\*?DJ\s+(\S+)\s+(.+)?$"),
     "DK":      re.compile(r"^\s*\*?DK\s+(\S+)\s+(.+)?$"),
-    "DEPTH":   re.compile(r"^\s*\*?DEPTH\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9.]+)\s*$"),
+    "DEPTH":   re.compile(r"^\s*\*?DEPTH\s+(\d+)\s+(\d+)\s+(\d+)\s+([0-9.]+)\s*$"), ## Depth of the center of the top block
 }
 
 data = { "DI" : [] , "DJ" : [], "DK" : [] }
@@ -164,9 +164,14 @@ for j in range(nj):
 
 for k in range(nk):
     if k == 0:
-        z[:, :, k] = 0.5 * dk[:, :, k] + depth
+        z[:, :, k] = depth
     else:
         z[:, :, k] = z[:, :, k-1] + 0.5 * (dk[:, :, k-1] + dk[:, :, k])
+
+
+import matplotlib.pyplot as plt
+plt.scatter(x,z,c="k")
+plt.show()
 
 #
 #
