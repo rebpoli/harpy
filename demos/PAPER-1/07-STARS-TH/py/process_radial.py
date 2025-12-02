@@ -11,8 +11,8 @@ cwd = os.path.dirname(__file__)
 fn = f"{cwd}/my.mplstyle"
 plt.style.use(fn)
 
-PROP = "Pressure"
-# PROP = "Temperature"
+# PROP = "Pressure"
+PROP = "Temperature"
 
 # Parse the dat to capture the radial grid
 dat_fn = "stars/test3-refine-dates-expon.dat"
