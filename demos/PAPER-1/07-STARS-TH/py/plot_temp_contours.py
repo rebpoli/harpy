@@ -143,7 +143,7 @@ if ax.get_legend_handles_labels()[0]:
 ax.grid(True, alpha=0.3)
 
 
-fig.savefig('temperature_contours.png', dpi=300, bbox_inches='tight')
+fig.savefig('png/temperature_contours.png', dpi=300, bbox_inches='tight')
 
 
 # # Add colormap for 10th timestep as background
@@ -172,16 +172,3 @@ print("\n" + "="*70)
 print("Plot saved as 'temperature_contours.png'")
 print("="*70)
 plt.show()
-
-# Optional: Print statistics
-print("\n=== Statistics ===")
-print(f"X range: {df['x'].min():.2f} to {df['x'].max():.2f}")
-print(f"Z range: {df['z'].min():.2f} to {df['z'].max():.2f}")
-print(f"Time range: {df['t'].min():.2e} to {df['t'].max():.2e}")
-print(f"DELTA_TEMP range: {df['DELTA_TEMP'].min():.2f} to {df['DELTA_TEMP'].max():.2f}")
-print("\nTIP: If no contours appeared, run diagnose_delta_temp.py to find")
-print("     appropriate contour levels for your data.")
-
-
-
-

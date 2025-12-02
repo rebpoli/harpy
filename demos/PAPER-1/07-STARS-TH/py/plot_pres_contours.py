@@ -1,4 +1,4 @@
-#!/usr/bin/env -S python3 -i
+#!/usr/bin/env -S python3 
 
 import pandas as pd
 import numpy as np
@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 
 from util import format_label
-from noflow_ghosts import add_noflow_ghosts, get_noflow_ghosts
+# from noflow_ghosts import add_noflow_ghosts, get_noflow_ghosts
 
 import os
 cwd = os.path.dirname(__file__)
@@ -18,7 +18,7 @@ plt.style.use(fn)
 
 # Option 4: Auto-select evenly spaced timesteps (default)
 AUTO_SELECT = 15  
-contour_levels = [3e6]
+contour_levels = [5e6]
 
 # ============================================================================
 
@@ -85,12 +85,12 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
 for idx, t in enumerate(selected_timesteps):
     df_t = df[df['t'] == t]
 
-    x, z, delta_pres = add_noflow_ghosts( df_t, [5495, 5595] )
+#     x, z, delta_pres = add_noflow_ghosts( df_t, [5495, 5595] )
     
     # Get data
-#     x = df_t['x'].values
-#     z = df_t['z'].values
-#     delta_pres = df_t['DELTA_PRES'].values
+    x = df_t['x'].values
+    z = df_t['z'].values
+    delta_pres = df_t['DELTA_PRES'].values
     
     print(f"\nTimestep {t:.2e}: DELTA_PRES range = [{delta_pres.min():.2f}, {delta_pres.max():.2f}]")
     
@@ -112,7 +112,7 @@ for idx, t in enumerate(selected_timesteps):
                     if delta_pres.min() <= level <= delta_pres.max()]
     
     contour = ax.contour(X, Z, DELTA_PRES_grid, levels=valid_levels, 
-                         colors='k', ls='--', linewidths=0.6)
+                         colors='k', linestyles='--', linewidths=0.6)
         
     # Add inline labels to the contour
 #     label_text = format_label(t)
@@ -134,7 +134,7 @@ ax.invert_yaxis()
 # else:
 #     title = f'DELTA_PRES Contours at levels: {contour_levels}'
 
-ax.set_title(r"Isobaric contours for $\Delta P(t)=3$MPa")
+ax.set_title(r"Isobaric contours for $\Delta P(t)=5$MPa")
 
 # Only show legend if we have contours
 if ax.get_legend_handles_labels()[0]:
@@ -142,7 +142,7 @@ if ax.get_legend_handles_labels()[0]:
 ax.grid(True, alpha=0.3)
 
 
-fig.savefig('pres_contours.png', dpi=300, bbox_inches='tight')
+fig.savefig('png/pres_contours.png', dpi=300, bbox_inches='tight')
 
 
 # Add colormap for 10th timestep as background
@@ -152,10 +152,10 @@ if len(selected_timesteps) >= 10:
     print(f"T_BG: {t_bg}")
     df_bg = df[df['t'] == t_bg]
     
-    x_bg, z_bg, dt_bg = add_noflow_ghosts( df_bg, [5495,5595])
-#     x_bg  = df_bg['x'].values
-#     z_bg  = df_bg['z'].values
-#     dt_bg = df_bg['DELTA_PRES'].values
+#     x_bg, z_bg, dt_bg = add_noflow_ghosts( df_bg, [5495,5595])
+    x_bg  = df_bg['x'].values
+    z_bg  = df_bg['z'].values
+    dt_bg = df_bg['DELTA_PRES'].values
 
     # Create fine grid
 #     xi = np.linspace(x_bg.min(), x_bg.max(), 1000)
@@ -167,7 +167,7 @@ if len(selected_timesteps) >= 10:
 
     DT_bg = griddata((x_bg, z_bg), dt_bg, (X_bg, Z_bg), method='linear')
     contourf = ax.contourf(X_bg, Z_bg, DT_bg, levels=30, cmap='RdBu_r', alpha=0.7)
-    plt.colorbar(contourf, ax=ax, label='$\Delta P$')
+    plt.colorbar(contourf, ax=ax, label=r'$\Delta P$')
 
 #     contour = ax.contour(X_bg, Z_bg, DT_bg, levels=[2e6], colors='k', ls='--', linewidths=0.6)
 
@@ -184,16 +184,6 @@ print("\n" + "="*70)
 print("Plot saved as 'pres_contours.png'")
 print("="*70)
 plt.show()
-
-# Optional: Print statistics
-print("\n=== Statistics ===")
-print(f"X range: {df['x'].min():.2f} to {df['x'].max():.2f}")
-print(f"Z range: {df['z'].min():.2f} to {df['z'].max():.2f}")
-print(f"Time range: {df['t'].min():.2e} to {df['t'].max():.2e}")
-print(f"DELTA_PRES range: {df['DELTA_PRES'].min():.2f} to {df['DELTA_PRES'].max():.2f}")
-print("\nTIP: If no contours appeared, run diagnose_delta_temp.py to find")
-print("     appropriate contour levels for your data.")
-
 
 
 

@@ -173,6 +173,7 @@ for k in range(nk):
     else:
         z[:, :, k] = z[:, :, k-1] + 0.5 * (dk[:, :, k-1] + dk[:, :, k])
 
+print(z)
 
 #
 #
@@ -315,7 +316,7 @@ df = df.reset_index()[["t","x","z",field]]
 if PROP == "Pressure" :
     ## Add ghost nodes to capture pressure discontinuities
     from ghost_nodes import add_noflow_ghosts
-    df = add_noflow_ghosts( df, [ 5495, 5595 ] )
+    df = add_noflow_ghosts( df, [ 5500, 5600 ] )
 
 fn = f"{PROP.lower()}.csv.gz"
 print(f"Exporting {fn} ...")
@@ -328,20 +329,20 @@ print(f"ok")
 # Debugging - some plotting
 #
 
-# if PROP == "Pressure" :
-#     print(f"Plotting ...")
-#     unique_times = sorted(df['t'].unique())
-#     middle_index = len(unique_times) // 2
-#     middle_time = unique_times[middle_index]
-#     df = df[df['t'] == middle_time]
-#     print(f"Middle time: {middle_time}")
+if PROP == "Pressure" :
+    print(f"Plotting ...")
+    unique_times = sorted(df['t'].unique())
+    middle_index = len(unique_times) // 2
+    middle_time = unique_times[middle_index]
+    df = df[df['t'] == middle_time]
+    print(f"Middle time: {middle_time}")
 
-#     ghost_nodes = df[df['is_ghost'] == True]
-#     regular_nodes = df[df['is_ghost'] == False]
-#     plt.figure(figsize=(10, 6))
-#     plt.scatter(regular_nodes['x'], regular_nodes['z'], c='blue', label='Regular Nodes', alpha=0.6, s=20)
-#     plt.scatter(ghost_nodes['x'], ghost_nodes['z'], c='red', label='Ghost Nodes', marker='o', s=50)
-#     plt.legend()
-#     plt.grid(True, alpha=0.3)
-#     plt.show()
+    ghost_nodes = df[df['is_ghost'] == True]
+    regular_nodes = df[df['is_ghost'] == False]
+    plt.figure(figsize=(10, 6))
+    plt.scatter(ghost_nodes['x'], ghost_nodes['z'], c='red', label='Ghost Nodes', marker='o', s=50)
+    plt.scatter(regular_nodes['x'], regular_nodes['z'], c='blue', label='Regular Nodes', alpha=0.6, s=20)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
 
