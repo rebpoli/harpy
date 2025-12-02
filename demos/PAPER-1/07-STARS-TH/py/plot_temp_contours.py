@@ -120,7 +120,7 @@ for idx, t in enumerate(selected_timesteps):
 #     ax.clabel(contour, inline=False, fontsize=9, 
 #              fmt={level: label_text for level in valid_levels})        
 
-ax.axhspan(5495, 5595, facecolor='blue', alpha=0.3, zorder=0)
+ax.axhspan(5500, 5600, facecolor='blue', alpha=0.3, zorder=0)
 
 # Labels and formatting
 ax.set_xlabel('Distance from well (m)')
@@ -194,7 +194,7 @@ for t_bg in selected_timesteps :
 
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Temperature ($^\circ$C)")
-ax.set_title(r"Temperature profiles (reservoir top)")
+ax.set_title(r"(a) Reservoir top")
 ax.set_xlim(0,500)
 # ax.set_yscale('log')
 # ax.set_ylim(64,74)
@@ -215,7 +215,7 @@ for t_bg in selected_timesteps :
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Temperature ($^\circ$C)")
 ax.set_xlim(0,500)
-ax.set_title(r"Temperature profiles (caprock base)")
+ax.set_title(r"(b) Caprock base")
 # ax.set_yscale('log')
 # ax.set_ylim(64,74)
 fig.savefig('png/temp_profile_caprock.png', dpi=300)

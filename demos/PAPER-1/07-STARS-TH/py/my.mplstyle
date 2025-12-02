@@ -1,5 +1,5 @@
-figure.titlesize : 11
-axes.titlesize : 11
+figure.titlesize : 9
+axes.titlesize : 9
 axes.labelsize : 9
 lines.linewidth : .5
 lines.markersize : 6
