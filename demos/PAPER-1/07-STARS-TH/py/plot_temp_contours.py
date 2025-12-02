@@ -168,7 +168,58 @@ fig.savefig('png/temperature_contours.png', dpi=300, bbox_inches='tight')
 #     plt.colorbar(contourf, ax=ax, label='DELTA_TEMP [°C]')
 
 
-print("\n" + "="*70)
-print("Plot saved as 'temperature_contours.png'")
-print("="*70)
+
+# Select timetseps
+t_min = 10*24*60*60
+t_max = 10*365*24*60*60
+log_times = np.logspace(np.log10(t_min), np.log10(t_max), 8)
+selected_timesteps = []
+for log_t in log_times:
+    idx = np.argmin(np.abs(np.array(timesteps) - log_t))
+    selected_timesteps.append(timesteps[idx])
+selected_timesteps = sorted(set(selected_timesteps))
+sel_strs = [ format_label(t) for t in selected_timesteps ] 
+print(f"Plotting timesteps: {sel_strs}")
+
+# Do the plotting
+fig, ax = plt.subplots(figsize=(3.5, 3))
+for t_bg in selected_timesteps :
+    df_bg = df[df['t'] == t_bg]
+    df_bg = df_bg[df['z'] == 5505]  # single depth
+    
+    X  = df_bg['x'].values
+    T = df_bg['TEMP'].values
+
+    ax.plot(X, T-273, ls='--', lw=0.6, color='k')
+
+ax.set_xlabel("Distance from the well (m)")
+ax.set_ylabel(r"Temperature ($^\circ$C)")
+ax.set_title(r"Temperature profiles (reservoir top)")
+ax.set_xlim(0,500)
+# ax.set_yscale('log')
+# ax.set_ylim(64,74)
+
+fig.savefig('png/temp_profile_res.png', dpi=300)
+
+# Do the plotting
+fig, ax = plt.subplots(figsize=(3.5, 3))
+for t_bg in selected_timesteps :
+    df_bg = df[df['t'] == t_bg]
+    df_bg = df_bg[df['z'] == 5495]  # single depth
+    
+    X  = df_bg['x'].values
+    T = df_bg['TEMP'].values
+
+    ax.plot(X, T-273, ls='--', lw=0.6, color='k')
+
+ax.set_xlabel("Distance from the well (m)")
+ax.set_ylabel(r"Temperature ($^\circ$C)")
+ax.set_xlim(0,500)
+ax.set_title(r"Temperature profiles (caprock base)")
+# ax.set_yscale('log')
+# ax.set_ylim(64,74)
+fig.savefig('png/temp_profile_caprock.png', dpi=300)
+
+
+
 plt.show()
