@@ -11,8 +11,8 @@ cwd = os.path.dirname(__file__)
 fn = f"{cwd}/my.mplstyle"
 plt.style.use(fn)
 
-# PROP = "Pressure"
-PROP = "Temperature"
+PROP = "Pressure"
+# PROP = "Temperature"
 
 # Parse the dat to capture the radial grid
 dat_fn = "stars/test3-refine-dates-expon.dat"
@@ -319,7 +319,7 @@ if PROP == "Pressure" :
 
 fn = f"{PROP.lower()}.csv.gz"
 print(f"Exporting {fn} ...")
-df.to_csv(fn, index=False, float_format="%.6e", compression="gzip")
+df[["t","x","z",field]].to_csv(fn, index=False, float_format="%.6e", compression="gzip")
 print(f"ok")
 
 
