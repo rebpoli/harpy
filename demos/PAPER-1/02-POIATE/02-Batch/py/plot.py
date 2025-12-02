@@ -165,7 +165,7 @@ print( f"min: {grid_z.min()} max: {grid_z.max()} " )
 contour = ax2.pcolormesh(grid_x, grid_y, grid_z, 
                        norm=LogNorm(vmin=1e-12, vmax=1e-6),
                        cmap='coolwarm', 
-                       shading='auto')    
+                       shading='auto', alpha=0.5)    
 
 log_min = 1e-12
 log_max = 1e-6
@@ -193,4 +193,4 @@ for ax in all_axes :
 
 savefig(fig, "png/colormap.png")
 
-# plt.show()
+plt.show()
