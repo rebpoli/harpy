@@ -35,8 +35,8 @@ ax.plot(df['sigma_xx']/1e6, df['Z']+5500, label=r'$\sigma_{xx}$, $\sigma_{yy}$',
 # ax.plot(df['sigma_yy']/1e6, df['Z']+5500, label=r'$\sigma_{yy}$', linewidth=1, ls='--')
 ax.plot(df['sigma_zz']/1e6, df['Z']+5500, label=r'$\sigma_{zz}$', linewidth=1, c='k')
 
-ax.text(mid_sigma/1e6, z_target+5504, r'$\Delta \sigma$'+f' = {difference/1e6:.2f} MPa', 
-        fontsize=10, ha='center', va='center',
+ax.text(mid_sigma/1e6, z_target+5498, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
+        fontsize=10, ha='center', va='bottom',
         bbox=dict(facecolor='white', edgecolor='None', alpha=0.8))
 
 
@@ -69,6 +69,7 @@ def smart_format(x, pos):
 for ax in [ax2]:
     ax.xaxis.set_major_formatter(FuncFormatter(smart_format))
 
+fig.savefig("png/init_stress_p_t.png", dpi=300)
 #
 # Manually set equal positions for all axes
 # left_margin = 0.08
