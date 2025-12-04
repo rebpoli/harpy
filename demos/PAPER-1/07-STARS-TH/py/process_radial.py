@@ -11,8 +11,8 @@ cwd = os.path.dirname(__file__)
 fn = f"{cwd}/my.mplstyle"
 plt.style.use(fn)
 
-# PROP = "Pressure"
-PROP = "Temperature"
+PROP = "Pressure"
+# PROP = "Temperature"
 
 # Parse the dat to capture the radial grid
 dat_fn = "stars/test3-refine-dates-expon.dat"
@@ -312,11 +312,11 @@ if PROP == "Temperature" : field = "TEMP"
 if PROP == "Pressure" : field = "PRES"
 
 df = df.reset_index()[["t","x","z",field]]
-
 if PROP == "Pressure" :
     ## Add ghost nodes to capture pressure discontinuities
     from ghost_nodes import add_noflow_ghosts
     df = add_noflow_ghosts( df, [ 5500, 5600 ] )
+    df = df.sort_values(['t','x','z'])
 
 fn = f"{PROP.lower()}.csv.gz"
 print(f"Exporting {fn} ...")
@@ -332,7 +332,7 @@ print(f"ok")
 if PROP == "Pressure" :
     print(f"Plotting ...")
     unique_times = sorted(df['t'].unique())
-    middle_index = len(unique_times) // 2
+    middle_index = 0 #len(unique_times) // 2
     middle_time = unique_times[middle_index]
     df = df[df['t'] == middle_time]
     print(f"Middle time: {middle_time}")
