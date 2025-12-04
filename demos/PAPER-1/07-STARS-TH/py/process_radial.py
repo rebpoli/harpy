@@ -298,6 +298,7 @@ df_temp_reset = df_temp.reset_index()
 df_merged = pd.merge(df_temp_reset, df_coords, on=['i', 'j', 'k'])
 
 df = df_merged.set_index(['t', 'i', 'j', 'k'])
+print("ok")
 
 
 # import matplotlib.pyplot as plt

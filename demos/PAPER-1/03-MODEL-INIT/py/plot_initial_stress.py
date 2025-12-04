@@ -25,25 +25,6 @@ print(f"Z below: {z_below} m, sigma_xx: {sigma_xx_below:.2e} Pa")
 print(f"Z above: {z_above} m, sigma_xx: {sigma_xx_above:.2e} Pa")
 print(f"Difference: {difference/1e6:.2e} MPa")
 
-# Add a new value for pressure to avoid interpolation errors
-p0 = df.loc[idx_above, 'Pressure']
-
-new_row = {
-    'Z': 0.0,
-    'X': None,
-    'Y': None,
-    'sigma_xx': None,
-    'sigma_yy': None,
-    'sigma_zz': None,
-    'Pressure': p0,  # Use pressure from Z > 0
-    'Temperature': None,
-    'Delta_P': None,
-    'Delta_T': None,
-}
-df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-df = df.sort_values('Z').reset_index(drop=True)
-
-
 
 # Create the plot
 fig, [ax,ax2] = plt.subplots(1,2,figsize=(4, 4),sharey=True)
