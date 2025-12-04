@@ -35,26 +35,32 @@ ax.plot(df['sigma_xx']/1e6, df['Z']+5500, label=r'$\sigma_{xx}$, $\sigma_{yy}$',
 # ax.plot(df['sigma_yy']/1e6, df['Z']+5500, label=r'$\sigma_{yy}$', linewidth=1, ls='--')
 ax.plot(df['sigma_zz']/1e6, df['Z']+5500, label=r'$\sigma_{zz}$', linewidth=1, c='k')
 
-ax.text(mid_sigma/1e6, z_target+5498, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
-        fontsize=10, ha='center', va='bottom',
-        bbox=dict(facecolor='white', edgecolor='None', alpha=0.8))
-
 
 # Set labels and limits
 ax.set_xlabel(r'$\sigma$ (MPa)')
 ax.set_ylabel('Depth (m)')
 ax.set_ylim(+5450, +5550)
 ax.grid(True)
-ax.legend(fontsize=12, loc='upper left', bbox_to_anchor=(0.03,0.99))
+ax.legend(fontsize=10, loc='upper left', bbox_to_anchor=(0.03,0.99))
 ax.invert_xaxis()
 ax.invert_yaxis()
+
+ax.text(mid_sigma/1e6, z_target+5502, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
+        fontsize=10, ha='center', va='top',
+        bbox=dict(facecolor='k', edgecolor='None', alpha=0.05))
+
 
 ax2.plot(df['Pressure']/1e6, df['Z']+5500, label=r'Pressure', linewidth=1, ls='--', c='k')
 ax2.set_xlabel("Pressure (MPa)")
 ax2.set_xticks([60.0, 60.1, 60.2, 60.3])
+xlim=ax2.get_xlim()
+xrng=xlim[1]-xlim[0]
+x = xlim[1]-0.05*xrng
+ax2.text(x, 5499,"CAPROCK",   va='bottom', ha='right', fontsize=9)
+ax2.text(x, 5501,"RESERVOIR", va='top',    ha='right', fontsize=9)
 
 ax3.plot(df['Temperature']-273, df['Z']+5500, label=r'Temperature', linewidth=1, ls='--', c='k')
-ax3.set_xlabel(r"Temperature ($^\circ$C)")
+ax3.set_xlabel(r"Temperature ($^\circ\!$C)")
 
 # Plot the reservoir shades
 for _ax in [ax, ax2, ax3] :
