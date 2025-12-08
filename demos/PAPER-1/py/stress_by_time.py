@@ -33,25 +33,25 @@ XY_TOLERANCE = 1e-6  # Tolerance for (x,y) position matching
 Z_TOLERANCE = 2.0  # Tolerance for depth matching (meters)
 
 # Load dataset
-# filename = 'plane_yz.cd'
-# filepath = f"run/cdf/{filename}"
-# print(f"Loading {filepath}...")
-# dataset = read_netcdf(filepath)
+filename = 'plane_yz.cd'
+filepath = f"run/cdf/{filename}"
+print(f"Loading {filepath}...")
+dataset = read_netcdf(filepath)
 
 
-# z = dataset['Coord'].sel(vec3_comp= 'z').values
+z = dataset['Coord'].sel(vec3_comp= 'z').values
 
-# # Caprock
-# data_cap = dataset.isel(point_idx = z==-5)
-# df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+# Caprock
+data_cap = dataset.isel(point_idx = z==-5)
+df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
-# # Resrevoir
-# data_res = dataset.isel(point_idx = z==5)
-# df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+# Resrevoir
+data_res = dataset.isel(point_idx = z==5)
+df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
-# # Save csv.
-# df_res.to_csv("csv/df_res.csv")
-# df_cap.to_csv("csv/df_cap.csv")
+# Save csv.
+df_res.to_csv("csv/df_res.csv")
+df_cap.to_csv("csv/df_cap.csv")
 
 import pandas as pd
 df_res = pd.read_csv("csv/df_res.csv")
