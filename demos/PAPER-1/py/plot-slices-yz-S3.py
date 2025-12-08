@@ -92,6 +92,7 @@ def process_timestep_and_save_frame(args):
 #         background_data = ds['VP Strain Rate'].sel(ten9_comp='zz')[time_idx, :].values
 #         background_data = ds['S3 Magnitude'][time_idx, :].values
         background_data = ds['Delta S3'][time_idx, :].values / 1e6
+#         background_data = ds['Delta_P'][time_idx, :].values 
 #         background_data = ds['VP Strain'].sel(ten9_comp='zz')[time_idx, :].values
         
         # Interpolate background
@@ -227,11 +228,14 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
 #     _data = ds['VP Strain Rate'].sel(ten9_comp='zz')
 #     _data = ds['S3 Magnitude']
     _data = ds['Delta S3'] / 1e6
+#     _data = ds['Delta_P']
 #     _data = ds['VP Strain'].sel(ten9_comp='zz')
     vmin, vmax = float(_data.quantile(0.05).values), float(_data.quantile(0.95).values)
+    vmin = 0
+    vmax = 5
     
     n_times = min(max_timesteps, len(time_values))
-    n_times = 350
+#     n_times = 80
     print(f"Animating {n_times} timesteps")
     print(f"Colorbar range: [{vmin:.3e}, {vmax:.3e}]")
     
@@ -335,7 +339,7 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
     return output_filename
 
 if __name__ == "__main__":
-    MAX_TIMESTEPS = 1500
+    MAX_TIMESTEPS = 100000
     VECTOR_DENSITY = 15
     
     video_file = create_animated_vector_plots(

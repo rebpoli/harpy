@@ -230,9 +230,11 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
 #     _data = ds['Delta S3'] / 1e6
 #     _data = ds['VP Strain'].sel(ten9_comp='zz')
     vmin, vmax = float(_data.quantile(0.05).values), float(_data.quantile(0.95).values)
+    vmin=-8e-13
+    vmax=3e-13
     
     n_times = min(max_timesteps, len(time_values))
-    n_times = 350
+#     n_times = 350
     print(f"Animating {n_times} timesteps")
     print(f"Colorbar range: [{vmin:.3e}, {vmax:.3e}]")
     
