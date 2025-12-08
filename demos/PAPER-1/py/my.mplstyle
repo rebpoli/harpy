@@ -1,5 +1,5 @@
-figure.titlesize : 8
-axes.titlesize : 7
+figure.titlesize : 9
+axes.titlesize : 9
 axes.labelsize : 7
 lines.linewidth : .5
 lines.markersize : 6
@@ -543,8 +543,7 @@ legend.loc:           best
 legend.frameon:       True     # if True, draw the legend on a background patch
 legend.framealpha:    0.6      # legend patch transparency
 #legend.facecolor:     inherit  # inherit from axes.facecolor; or color spec
-legend.edgecolor:     0      # background patch boundary color
-#legend.linewidth:     0 
+legend.edgecolor:   none      # background patch boundary color
 legend.fancybox:      True     # if True, use a rounded box for the
                                 # legend background, else a rectangle
 #legend.shadow:        False    # if True, give background a shadow effect
