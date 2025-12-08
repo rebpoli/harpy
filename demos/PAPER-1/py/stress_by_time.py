@@ -52,7 +52,7 @@ df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
 # Resrevoir
 data_res = dataset.isel(point_idx = z==5)
-df_res = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
 # Save csv.
 df_res.to_csv("csv/df_res.csv")
