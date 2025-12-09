@@ -1,10 +1,10 @@
 figure.titlesize : 9
-axes.titlesize : 9
-axes.labelsize : 9
+axes.titlesize : 7
+axes.labelsize : 7
 lines.linewidth : .5
 lines.markersize : 6
-xtick.labelsize : 9
-ytick.labelsize : 9
+xtick.labelsize : 7
+ytick.labelsize : 7
 scatter.marker: o
 scatter.edgecolors: face
 axes.prop_cycle    : cycler('color', 'bgrcmyk')

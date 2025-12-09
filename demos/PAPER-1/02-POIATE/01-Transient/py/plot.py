@@ -30,7 +30,7 @@ ref_df["time_in_days"] = ref_df.time_h/24
 ref_df["strain"] -= 0.014
 
 ## Plot simulation
-fig, ax = plt.subplots( figsize=(4,2.5))
+fig, ax = plt.subplots( figsize=(8/2.54,6/2.54))
 _df = df[::50]
 ax.plot(_df.time_in_days, _df.strain, c='k', lw=2, label = "Model")
 
