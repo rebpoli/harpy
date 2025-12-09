@@ -65,7 +65,6 @@ Z_TOLERANCE = 2.0  # Tolerance for depth matching (meters)
 # fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(17.5/2.54,6/2.64), sharey=True)
 
 
-<<<<<<< Updated upstream
 ## RES
 dfxx = df_res[(df_res.ten9_comp=="xx") | (df_res.ten9_comp=="yy")]
 s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
@@ -78,20 +77,6 @@ ax1.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3(t=0)$')
 ax1.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
 ax1.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue',lw=1.2, ls='--', label=r"$\sigma_h$")
 ax1.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.', label=r"$\sigma_{zz}$")
-=======
-# ## RES
-# dfxx = df_res[df_res.ten9_comp=="xx"]
-# s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
-# sxx = dfxx.groupby('time_d')['Total Stress'].max().reset_index()
-# dfzz = df_res[df_res.ten9_comp=="zz"]
-# szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
-# s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
-
-# ax1.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3(t=0)$')
-# ax1.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
-# ax1.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue',lw=1.2, ls='--', label=r"$\sigma_t$")
-# ax1.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.', label=r"$\sigma_{zz}$")
->>>>>>> Stashed changes
 
 # ## Caprock
 # dfxx = df_cap[df_cap.ten9_comp=="xx"]
@@ -101,17 +86,10 @@ ax1.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.', label=
 # szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
 # s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
 
-<<<<<<< Updated upstream
 ax2.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3^0$')
 ax2.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
 ax2.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue', lw=1.2, ls='--', label=r"$\sigma_h$")
 ax2.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.',label=r"$\sigma_{zz}$")
-=======
-# ax2.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3^0$')
-# ax2.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
-# ax2.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue', lw=1.2, ls='--', label=r"$\sigma_t$")
-# ax2.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.',label=r"$\sigma_{zz}$")
->>>>>>> Stashed changes
 
 # # Decorations
 # ax1.set_title("Stress 5m into the reservoir")
