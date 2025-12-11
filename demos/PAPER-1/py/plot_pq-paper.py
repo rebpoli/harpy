@@ -19,8 +19,8 @@ from timestr import format_time_duration
 def mohr_coulomb_envelope(phi, cohesion, pmax, npoints=200):
     p = np.linspace(0, pmax, npoints)
     q = p * np.tan(phi) + cohesion / np.cos(phi)
-    C1 = 6 * cohesion * np.cos(phi) / ( 3 - np.sin(phi)
-    C2 = 6 * np.sin(phi) / ( 3 - np.sin(phi)
+    C1 = 6 * cohesion * np.cos(phi) / ( 3 - np.sin(phi) )
+    C2 = 6 * np.sin(phi) / ( 3 - np.sin(phi) )
     q = C1 + C2 * p
     return -p, q
 
@@ -33,8 +33,8 @@ plt.style.use(fn)
 # ---------------------------------------------------------------------
 #          CONFIGURABLE PARAMETERS - PLASTICITY ENVELOPE
 # ---------------------------------------------------------------------
-phi_salt_deg = 40.0       # Friction angle for salt [degrees]
-phi_carb_deg = 50.0       # Friction angle for carbonate [degrees]
+phi_salt_deg = 25.0       # Friction angle for salt [degrees]
+phi_carb_deg = 40.0       # Friction angle for carbonate [degrees]
 cohesion_salt = 2.0       # Cohesion for salt [MPa]
 cohesion_carb = 10.0      # Cohesion for carbonate [MPa]
 p_envelope_max = 80.0     # Maximum p' to draw the envelope up to [MPa]
