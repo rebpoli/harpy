@@ -61,8 +61,8 @@ time = ds['time'].values
 z_coord = ds['Coord'].values[:, 2]  # Z is the 3rd component (index 2)
 
 # Flatten the arrays
-inv_p_flat = inv_p.flatten()
-inv_q_flat = inv_q.flatten()
+inv_p_flat = inv_p.flatten() / 1e6
+inv_q_flat = inv_q.flatten() / 1e6
 n_points = inv_p.shape[1]
 time_flat = np.repeat(time, n_points)
 z_flat = np.tile(z_coord, len(time))  # Repeat Z coords for each time step
@@ -71,12 +71,12 @@ z_flat = np.tile(z_coord, len(time))  # Repeat Z coords for each time step
 time_flat_days = time_flat / 86400.0
 
 # Subsample the data
-sample_fraction = 0.1
+sample_fraction = 1
 n_samples = int(len(inv_p_flat) * sample_fraction)
 indices = np.random.choice(len(inv_p_flat), size=n_samples, replace=False)
 
-inv_p_sub = inv_p_flat[indices]/1e6
-inv_q_sub = inv_q_flat[indices]/1e6
+inv_p_sub = inv_p_flat[indices]
+inv_q_sub = inv_q_flat[indices]
 time_sub = time_flat_days[indices]
 z_sub = z_flat[indices]
 
