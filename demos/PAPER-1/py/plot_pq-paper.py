@@ -22,6 +22,7 @@ def mohr_coulomb_envelope(phi, cohesion, pmax, npoints=200):
     C1 = 6 * cohesion * np.cos(phi) / ( 3 - np.sin(phi) )
     C2 = 6 * np.sin(phi) / ( 3 - np.sin(phi) )
     q = C1 + C2 * p
+    print(f"PHI:{phi} COHESION:{cohesion} => C1:{C1} ; C2:{C2} , where Q=C1+C2*P")
     return -p, q
 
 ## Get the mplstyle
@@ -135,8 +136,8 @@ ax1.set_title('Caprock')
 ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
-    ax.set_xlabel("$p'$ (MPa)")
-    ax.set_ylabel("$q$ (MPa)")
+    ax.set_xlabel("$P'$ (MPa)")
+    ax.set_ylabel("$Q'$ (MPa)")
     ax.set_xlim(-40,0)
     ax.set_ylim(0,30)
     ax.invert_xaxis()
