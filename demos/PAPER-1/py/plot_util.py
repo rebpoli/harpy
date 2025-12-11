@@ -9,5 +9,5 @@ def savefig( fig, fn, quiet=0 ) :
     import shutil
     bn = os.path.basename(fn)
     temp_file = f'/tmp/{bn}'
-    fig.savefig(temp_file, dpi=300)
+    fig.savefig(temp_file, dpi=500)
     shutil.move(temp_file, fn)  # Atomic operation    
