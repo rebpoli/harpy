@@ -19,8 +19,9 @@ from timestr import format_time_duration
 def mohr_coulomb_envelope(phi, cohesion, pmax, npoints=200):
     p = np.linspace(0, pmax, npoints)
     q = p * np.tan(phi) + cohesion / np.cos(phi)
-    print("P:",p)
-    print("Q:",q)
+    C1 = 6 * cohesion * np.cos(phi) / ( 3 - np.sin(phi)
+    C2 = 6 * np.sin(phi) / ( 3 - np.sin(phi)
+    q = C1 + C2 * p
     return -p, q
 
 ## Get the mplstyle
