@@ -54,13 +54,13 @@ Z_TOLERANCE = 2.0  # Tolerance for depth matching (meters)
 # df_cap.to_csv("csv/df_cap.csv")
 
 # Do some plotting
-fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(14.5/2.54,6/2.64), sharey=True)
+fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(16/2.54,6/2.64), sharey=True)
 
 all_cases = [
 
         { 'dname' : "04-FULL-MODEL",         'legend' : 'Full model',   'c' : 'k', 'ls':'-' },
         { 'dname' : "05-NOCREEP",            'legend' : 'No creep',     'c' : 'r', 'ls':':'  },
-        { 'dname' : "06-NOPRESSURESOLUTION", 'legend': 'No pressure solution creep' , 'c' : 'b', 'ls':'-.' }
+        { 'dname' : "06-NOPRESSURESOLUTION", 'legend': 'No PS creep' , 'c' : 'b', 'ls':'-.' }
 ]
 
 for reg in all_cases :
@@ -101,9 +101,9 @@ for ax in [ax1,ax2] :
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
 
-ax1.legend(loc='upper left', bbox_to_anchor=(.02,.98), frameon=True)
+ax2.legend(loc='upper left', bbox_to_anchor=(1.02,1), frameon=True)
 ax1.set_ylabel(r"Minimum principal stress, $\sigma_3$ (MPa)")
 ax1.invert_yaxis()
 
-fig.savefig("png/stress_by_time.png", dpi=500)
+fig.savefig("png/stress_by_time_with_and_without_creep.png", dpi=500)
 plt.show()

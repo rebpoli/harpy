@@ -62,7 +62,7 @@ df_res["time_d"] = df_res.time/60/60/24
 df_cap["time_d"] = df_cap.time/60/60/24
 
 # Do some plotting
-fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(17.5/2.54,6/2.64), sharey=True)
+fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(15.5/2.54,6/2.64), sharey=True)
 
 
 ## RES
