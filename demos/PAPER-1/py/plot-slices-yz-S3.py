@@ -125,8 +125,10 @@ def process_timestep_and_save_frame(args):
     fig.suptitle(f'Time:{format_time_duration(time_value)}', fontsize=14, y=0.99)
     
     # Colorbar
+    vmin = -2
+    vmax=8
     dummy_data = np.linspace(vmin, vmax, 100).reshape(10, 10)
-    im = axes[0].imshow(dummy_data, cmap='RdYlBu_r', vmin=vmin, vmax=vmax)
+    im = axes[0].imshow(dummy_data, cmap='RdBu_r', vmin=vmin, vmax=vmax)
     axes[0].clear()
     
     cbar = plt.colorbar(im, cax=cbar_ax)
@@ -134,6 +136,10 @@ def process_timestep_and_save_frame(args):
     cbar.set_label('$\\Delta$ Minimum stress ($\\Delta S_3$, MPa)', rotation=270, labelpad=15)
 #     cbar.set_label('Plastic Strain (zz)', rotation=270, labelpad=15)
 #     cbar.ax.tick_params(labelsize=9)
+
+    import matplotlib.colors as mcolors
+    norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
+    
     
     # Plot subplots
     for i, (ax, plot_data) in enumerate(zip(axes, plot_data_list)):
@@ -141,10 +147,10 @@ def process_timestep_and_save_frame(args):
         
         # Background
         bg_Xi, bg_Yi, bg_Zi = plot_data['background']
-        bg_Zi_clipped = np.clip(bg_Zi, vmin, vmax)
-        ax.imshow(bg_Zi_clipped, extent=[bg_Xi.min(), bg_Xi.max(), bg_Yi.min(), bg_Yi.max()],
+#         bg_Zi_clipped = np.clip(bg_Zi, vmin, vmax)
+        ax.imshow(bg_Zi, extent=[bg_Xi.min(), bg_Xi.max(), bg_Yi.min(), bg_Yi.max()],
                  origin='lower', aspect='auto', interpolation='bilinear',
-                 cmap='RdYlBu_r', vmin=vmin, vmax=vmax, alpha=0.6)
+                 cmap='RdBu_r', norm=norm, alpha=0.6)
         
         # Vectors
         plot_segments(ax, plot_data['s3_segments'], 'lightgreen', 0.7, 1.5, 1)
@@ -231,8 +237,8 @@ def create_animated_vector_plots(max_timesteps=None, interval=300, vector_densit
 #     _data = ds['Delta_P']
 #     _data = ds['VP Strain'].sel(ten9_comp='zz')
     vmin, vmax = float(_data.quantile(0.05).values), float(_data.quantile(0.95).values)
-    vmin = 0
-    vmax = 5
+    vmin = -5
+    vmax = 10
     
     n_times = min(max_timesteps, len(time_values))
 #     n_times = 80
