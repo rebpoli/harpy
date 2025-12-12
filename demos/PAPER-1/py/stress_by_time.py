@@ -17,6 +17,9 @@ from s3_helpers import (
 )
 from plot_util import savefig
 
+import matplotlib
+matplotlib.use('Agg')
+
 ## Get the mplstyle
 import os
 cwd = os.path.dirname(__file__)
@@ -32,30 +35,33 @@ STRESS_COLORS = ['purple', 'orange']  # Colors for sigmaxx, sigmazz
 XY_TOLERANCE = 1e-6  # Tolerance for (x,y) position matching
 Z_TOLERANCE = 2.0  # Tolerance for depth matching (meters)
 
-# # Load dataset
-# filename = 'plane_yz.cd'
-# filepath = f"run/cdf/{filename}"
-# print(f"Loading {filepath}...")
-# dataset = read_netcdf(filepath)
+# Load dataset
+filename = 'plane_yz.cd'
+filepath = f"run/cdf/{filename}"
+print(f"Loading {filepath}...")
+dataset = read_netcdf(filepath)
 
 
-# z = dataset['Coord'].sel(vec3_comp= 'z').values
+z = dataset['Coord'].sel(vec3_comp= 'z').values
+DIST_FROM_IFC = 5
 
-# # Caprock
-# data_cap = dataset.isel(point_idx = z==-5)
-# df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+# Caprock
+data_cap = dataset.isel(point_idx = (z == -DIST_FROM_IFC) )
+df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
-# # Resrevoir
-# data_res = dataset.isel(point_idx = z==5)
-# df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+# Resrevoir
+data_res = dataset.isel(point_idx = (z == DIST_FROM_IFC) )
+df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
 
-# # Save csv.
-# df_res.to_csv("csv/df_res.csv")
-# df_cap.to_csv("csv/df_cap.csv")
+# Save csv.
+print("Save csv ...")
+df_res.to_csv("csv/df_res.csv")
+df_cap.to_csv("csv/df_cap.csv")
+print("Done")
 
-import pandas as pd
-df_res = pd.read_csv("csv/df_res.csv")
-df_cap = pd.read_csv("csv/df_cap.csv")
+# import pandas as pd
+# df_res = pd.read_csv("csv/df_res.csv")
+# df_cap = pd.read_csv("csv/df_cap.csv")
 
 ## Time in days
 df_res["time_d"] = df_res.time/60/60/24
@@ -92,8 +98,8 @@ ax2.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue', lw=1.2, ls='--', label=r
 ax2.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.',label=r"$\sigma_{zz}$")
 
 # Decorations
-ax1.set_title("Stress 5m into the reservoir")
-ax2.set_title("Stress 5m into the caprock")
+ax1.set_title(f"Stress {DIST_FROM_IFC} m into the reservoir")
+ax2.set_title(f"Stress {DIST_FROM_IFC} m into the caprock")
 for ax in [ax1,ax2] : 
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
@@ -103,4 +109,4 @@ ax1.set_ylabel("Stress (MPa)")
 ax1.invert_yaxis()
 
 fig.savefig("png/stress_by_time.png", dpi=500)
-plt.show()
+# plt.show()
