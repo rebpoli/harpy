@@ -209,9 +209,13 @@ for t_bg in selected_timesteps :
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Pressure (MPa)")
 ax.set_title(r"Pressure profiles (reservoir top)")
-ax.set_xlim(0,500)
-# ax.set_yscale('log')
-ax.set_ylim(61,73)
+ax.set_xlim(0.1,100)
+ax.set_xscale('log')
+ax.set_ylim(63,75)
+
+from matplotlib.ticker import FuncFormatter
+ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: f'{x:.10g}'))
+
 
 fig.savefig('png/pres_profile.png', dpi=300)
 

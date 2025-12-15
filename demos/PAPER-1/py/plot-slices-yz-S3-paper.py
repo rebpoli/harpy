@@ -263,12 +263,12 @@ ax_cbar = fig.add_subplot(gs[0, 2])
 vmin = -2
 vmax = 8
 dummy_data = np.linspace(vmin, vmax, 100).reshape(10, 10)
-im = ax1.imshow(dummy_data, cmap='RdBu_r', vmin=vmin, vmax=vmax)
-ax1.clear()
-cbar = plt.colorbar(im, cax=ax_cbar)
-cbar.set_label(r'$\Delta \sigma_3$, Minimum principal stress (MPa)', rotation=270, labelpad=7)
 import matplotlib.colors as mcolors
 norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
+im = ax1.imshow(dummy_data, cmap='RdBu_r', norm=norm)
+cbar = plt.colorbar(im, cax=ax_cbar)
+cbar.set_label(r'$\Delta \sigma_3$, Minimum principal stress (MPa)', rotation=270, labelpad=7)
+ax1.clear()
 
 # PLOT
 for time_idx, ax in zip( [32, 113 ] , [ax1, ax2 ] ) :
