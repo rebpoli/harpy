@@ -27,42 +27,57 @@ print(f"Difference: {difference/1e6:.2e} MPa")
 
 
 # Create the plot
-fig, [ax,ax2,ax3] = plt.subplots(1,3,figsize=(12/2.54, 8/2.54),sharey=True)
+fig, [ax,ax3] = plt.subplots(1,2,figsize=(8/2.54, 8/2.54),sharey=True)
 
 
 # Plot each stress component
-ax.plot(-df['sigma_xx']/1e6, df['Z']+5500, label=r'-$\sigma_{h}$', linewidth=1, ls='--', c='k')
-# ax.plot(df['sigma_yy']/1e6, df['Z']+5500, label=r'$\sigma_{yy}$', linewidth=1, ls='--')
-ax.plot(-df['sigma_zz']/1e6, df['Z']+5500, label=r'-$\sigma_{\text{v}}$', linewidth=1, c='k')
+ax.plot(-df['sigma_xx']/1e6, df['Z']+5500, label=r'$\sigma_{h}$', linewidth=0.7, ls='--', c='r')
+# ax.plot(df['sigma_yy']/1e6, df['Z']+5500, label=r'$\sigma_{yy}$', linewidth=0.7, ls='--')
+ax.plot(-df['sigma_zz']/1e6, df['Z']+5500, label=r'$\sigma_{\text{v}}$', linewidth=0.7, c='k')
+
+
+ax.text(-mid_sigma/1e6-3, z_target+5499, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
+        fontsize=7, ha='center', va='bottom', c='r');
+#         bbox=dict(facecolor='k', edgecolor='None', alpha=0.05))
+
+# ax.annotate('',
+#             xy=(-mid_sigma/1e6-5, z_target+5498),  # Arrow points TO this location
+#             xytext=(-mid_sigma/1e6, z_target),           # Arrow starts FROM this location (text position)
+#             arrowprops=dict(
+#                 arrowstyle='->',
+#                 connectionstyle='arc3,rad=0.3',  # rad controls curvature
+#                 lw=2,
+#                 color='black'
+#             ))
+
+ax.plot(df['Pressure']/1e6, df['Z']+5500, label=r'$p$', linewidth=0.7, ls='-.', c='b')
 
 
 # Set labels and limits
-ax.set_xlabel(r'Total stress (MPa)')
+ax.set_xlabel(r'$-$Stress,  Pressure (MPa)')
 ax.set_ylabel('Depth (m)')
 ax.set_ylim(+5450, +5550)
+
 ax.grid(True)
-ax.legend(fontsize=9, loc='upper left', bbox_to_anchor=(0.03,0.99))
+ax.legend(fontsize=7, loc='upper center', bbox_to_anchor=(0.5,0.99))
 # ax.invert_xaxis()
 ax.invert_yaxis()
 
-ax.text(mid_sigma/1e6, z_target+5498, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
-        fontsize=8, ha='center', va='bottom');
-#         bbox=dict(facecolor='k', edgecolor='None', alpha=0.05))
 
+# ax.set_xticks([60.0, 60.1, 60.2, 60.3])
+ax3.plot(df['Temperature']-273, df['Z']+5500, label=r'Temperature', linewidth=0.7, ls='--', c='green')
 
-ax2.plot(df['Pressure']/1e6, df['Z']+5500, label=r'Pressure', linewidth=1, ls='--', c='k')
-ax2.set_xlabel("Pressure (MPa)")
-ax2.set_xticks([60.0, 60.1, 60.2, 60.3])
-xlim=ax2.get_xlim()
+xlim=ax3.get_xlim()
 xrng=xlim[1]-xlim[0]
-x = xlim[1]-0.05*xrng
-ax2.text(x, 5499,"Caprock",   va='bottom', ha='right', fontsize=8)
-ax2.text(x, 5501,"Reservoir", va='top',    ha='right', fontsize=8)
-ax3.plot(df['Temperature']-273, df['Z']+5500, label=r'Temperature', linewidth=1, ls='--', c='k')
+x = xlim[1]-0.03*xrng
+ax3.text(x, 5499,"Caprock",   va='bottom', ha='right', fontsize=7)
+ax3.text(x, 5501,"Reservoir", va='top',    ha='right', fontsize=7)
+
+
 ax3.set_xlabel(r"Temperature ($^\circ\!$C)")
 
 # Plot the reservoir shades
-for _ax in [ax, ax2, ax3] :
+for _ax in [ax, ax3] :
     _ax.axhspan(+5500, +5600, facecolor='k', alpha=0.2, zorder=0)
 
 
@@ -71,8 +86,8 @@ def smart_format(x, pos):
     # Format with 2 decimals, then remove trailing zeros
     s = f'{x:.2f}'
     return s.rstrip('0').rstrip('.')
-for ax in [ax2]:
-    ax.xaxis.set_major_formatter(FuncFormatter(smart_format))
+# for ax in [ax2]:
+#     ax.xaxis.set_major_formatter(FuncFormatter(smart_format))
 
 fig.savefig("png/init_stress_p_t.png", dpi=300)
 #
