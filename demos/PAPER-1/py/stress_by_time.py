@@ -40,18 +40,33 @@ filename = 'plane_yz.cd'
 filepath = f"run/cdf/{filename}"
 print(f"Loading {filepath}...")
 dataset = read_netcdf(filepath)
+print(dataset)
 
-
-z = dataset['Coord'].sel(vec3_comp= 'z').values
 DIST_FROM_IFC = 5
 
+def dataset_at( x,y,z ):
+    x_coords = dataset.Coord.sel(vec3_comp='x')
+    y_coords = dataset.Coord.sel(vec3_comp='y')
+    z_coords = dataset.Coord.sel(vec3_comp='z')
+
+    # Calculate Euclidean distance
+    distances = np.sqrt((x_coords - x)**2 + (y_coords - y)**2 + (z_coords - z)**2)
+    nearest_idx = distances.argmin().values
+    nearest_point_idx = dataset.point_idx[nearest_idx].values
+
+    print(f"Nearest point_idx: {nearest_point_idx}")
+    print(f"Distance: {distances.min().values}")
+    print(f"Coordinates: {dataset.Coord.isel(point_idx=nearest_idx).values}")
+
+    return dataset.isel(point_idx=nearest_idx)
+
 # Caprock
-data_cap = dataset.isel(point_idx = (z == -DIST_FROM_IFC) )
-df_cap = data_cap[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+data_cap = dataset_at(0,0,-DIST_FROM_IFC)
+df_cap = data_cap[["Total Stress","S3 Magnitude","Temperature"]].to_dataframe().reset_index()
 
 # Resrevoir
-data_res = dataset.isel(point_idx = (z == DIST_FROM_IFC) )
-df_res = data_res[["Total Stress","S3 Magnitude"]].to_dataframe().reset_index()
+data_res = dataset_at(0,0,DIST_FROM_IFC)
+df_res = data_res[["Total Stress","S3 Magnitude","Pressure","Temperature"]].to_dataframe().reset_index()
 
 # Save csv.
 print("Save csv ...")
@@ -68,7 +83,7 @@ df_res["time_d"] = df_res.time/60/60/24
 df_cap["time_d"] = df_cap.time/60/60/24
 
 # Do some plotting
-fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(15.5/2.54,6/2.64), sharey=True)
+fig, [ax2, ax1] = plt.subplots(1, 2, figsize=(12/2.54,6/2.64), sharey=True)
 
 
 ## RES
@@ -79,10 +94,11 @@ dfzz = df_res[df_res.ten9_comp=="zz"]
 szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
 s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
 
-ax1.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3(t=0)$')
-ax1.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
-ax1.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue',lw=1.2, ls='--', label=r"$\sigma_h$")
-ax1.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.', label=r"$\sigma_{zz}$")
+ax1.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3(t=0)$')
+ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
+ax1.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue',lw=0.7, ls='--', label=r"$\sigma_h$")
+ax1.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.', label=r"$\sigma_{zz}$")
+ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$p$")
 
 ## Caprock
 dfxx = df_cap[df_cap.ten9_comp=="xx"]
@@ -92,21 +108,72 @@ dfzz = df_cap[df_cap.ten9_comp=="zz"]
 szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
 s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
 
-ax2.axhline(s3_0/1e6, ls=':', lw=2, alpha=0.3, c='r', label=r'$\sigma_3^0$')
-ax2.plot(s3.time_d, s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=4, label=r"$\sigma_3$")
-ax2.plot(sxx.time_d, sxx['Total Stress']/1e6, c='blue', lw=1.2, ls='--', label=r"$\sigma_h$")
-ax2.plot(szz.time_d, szz['Total Stress']/1e6, c='green', lw=1.2, ls='-.',label=r"$\sigma_{zz}$")
+
+ax2.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3^0$')
+ax2.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
+ax2.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue', lw=0.7, ls='--', label=r"$\sigma_h$")
+ax2.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.',label=r"$\sigma_{zz}$")
 
 # Decorations
-ax1.set_title(f"Stress {DIST_FROM_IFC} m into the reservoir")
-ax2.set_title(f"Stress {DIST_FROM_IFC} m into the caprock")
+ax1.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the reservoir")
+ax2.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the caprock")
 for ax in [ax1,ax2] : 
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
 
-ax2.legend(loc='upper left', bbox_to_anchor=(1.02,1), fontsize=10, frameon=False)
-ax1.set_ylabel("Stress (MPa)")
-ax1.invert_yaxis()
+lines1, labels1   = ax1.get_legend_handles_labels()
+leg=fig.legend(lines1, labels1, loc='lower center', bbox_to_anchor=(0.5,0.15), ncol=5,
+           fontsize=7, frameon=True, edgecolor='black', fancybox=False, framealpha=1)
+leg.get_frame().set_linewidth(0.5)
+
+ax2.set_ylabel("$-$Stress,  Pressure (MPa)")
+# ax1.invert_yaxis()
+
 
 fig.savefig("png/stress_by_time.png", dpi=500)
 # plt.show()
+
+
+#
+#
+# SHORT TERM PLOT
+#
+#
+
+fig,[ ax1, ax2 ] = plt.subplots(2, 1, figsize=(8/2.54,6/2.64), sharex=True)
+## RES
+dfxx = df_res[(df_res.ten9_comp=="xx") | (df_res.ten9_comp=="yy")]
+s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
+sxx = dfxx.groupby('time_d')['Total Stress'].max().reset_index()
+dfzz = df_res[df_res.ten9_comp=="zz"]
+szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
+s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+
+ax1.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3(t=0)$')
+ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
+ax1.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue',lw=0.7, ls='--', label=r"$\sigma_h$")
+ax1.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.', label=r"$\sigma_{zz}$")
+ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$p$")
+
+ax2.plot(df_res.time_d, df_res.Temperature-273, c='pink', lw=0.6, ls='--', label=r'$T$')
+ax2.set_ylim(30,90)
+ax2.set_ylabel(r"Temperature ($^\circ$C)")
+
+# Decorations
+# ax1.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the reservoir")
+ax2.set_xlabel("Time (days)")
+ax1.set_xlim(0,2)
+
+ax1.set_ylabel("$-\sigma$, p (MPa)")
+# ax1.invert_yaxis()
+
+lines1, labels1   = ax1.get_legend_handles_labels()
+lines1t, labels1t = ax2.get_legend_handles_labels()
+leg = fig.legend(lines1 + lines1t, labels1 + labels1t, 
+                 loc='center right', bbox_to_anchor=(0.93,.46), ncol=3,
+                 fontsize=7, frameon=True, edgecolor='black', fancybox=False,
+                 framealpha=1, columnspacing=1)
+leg.get_frame().set_linewidth(0.5)
+
+
+fig.savefig("png/stress_by_time_short_term.png", dpi=500)
