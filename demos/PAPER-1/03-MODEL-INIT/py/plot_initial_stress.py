@@ -31,9 +31,9 @@ fig, [ax,ax2,ax3] = plt.subplots(1,3,figsize=(12/2.54, 8/2.54),sharey=True)
 
 
 # Plot each stress component
-ax.plot(df['sigma_xx']/1e6, df['Z']+5500, label=r'$\sigma_{h}$', linewidth=1, ls='--', c='k')
+ax.plot(-df['sigma_xx']/1e6, df['Z']+5500, label=r'-$\sigma_{h}$', linewidth=1, ls='--', c='k')
 # ax.plot(df['sigma_yy']/1e6, df['Z']+5500, label=r'$\sigma_{yy}$', linewidth=1, ls='--')
-ax.plot(df['sigma_zz']/1e6, df['Z']+5500, label=r'$\sigma_{\text{v}}$', linewidth=1, c='k')
+ax.plot(-df['sigma_zz']/1e6, df['Z']+5500, label=r'-$\sigma_{\text{v}}$', linewidth=1, c='k')
 
 
 # Set labels and limits
@@ -42,7 +42,7 @@ ax.set_ylabel('Depth (m)')
 ax.set_ylim(+5450, +5550)
 ax.grid(True)
 ax.legend(fontsize=9, loc='upper left', bbox_to_anchor=(0.03,0.99))
-ax.invert_xaxis()
+# ax.invert_xaxis()
 ax.invert_yaxis()
 
 ax.text(mid_sigma/1e6, z_target+5498, r'$\Delta \sigma$'+f' = {difference/1e6:.1f} MPa', 
