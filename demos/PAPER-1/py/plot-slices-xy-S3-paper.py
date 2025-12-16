@@ -10,6 +10,7 @@ from plot_util import savefig
 
 import matplotlib
 matplotlib.use('Agg')
+from custom_cmap import create_custom_cmap, create_custom_cmap_nozero, create_custom_cmap_nomin
 
 from netcdf import read_netcdf
 from timestr import format_time_duration
@@ -139,12 +140,15 @@ for tag, filepath in CASES.items() :
     vmin = -4
     vmax = 4
     dummy_data = np.linspace(vmin, vmax, 100).reshape(10, 10)
-    im = ax1.imshow(dummy_data, cmap='RdBu_r', vmin=vmin, vmax=vmax)
+    cmap = create_custom_cmap(vmin,0,vmax)
+    im = ax1.imshow(dummy_data, cmap=cmap, vmin=vmin, vmax=vmax)
     ax1.clear()
     cbar = plt.colorbar(im, cax=ax_cbar)
-    cbar.set_label(r'$\Delta \sigma_3$, Minimum principal stress (MPa)', rotation=270, labelpad=7)
-    import matplotlib.colors as mcolors
-    norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
+    cbar.set_label(r'Minimum principal stress ($-\Delta \sigma_3$, MPa)', rotation=270, labelpad=7)
+
+    ax_cbar.annotate('', xy=(0.5, 0.85), xytext=(0.5, 0.67), xycoords='axes fraction', arrowprops=dict(arrowstyle='->', lw=0.5, color='black'))
+    ax_cbar.annotate('', xy=(0.5, 0.32), xytext=(0.5, 0.15),  xycoords='axes fraction', arrowprops=dict(arrowstyle='-', lw=0.5, color='black'))
+    ax_cbar.text(0.5, 0.5, 'More compressive', transform=ax_cbar.transAxes, rotation=90, va='center', ha='center', fontsize=6)
 
     # PLOT
     for time_idx, ax in zip( [32, 113 ] , [ax1, ax2 ] ) :
@@ -158,7 +162,7 @@ for tag, filepath in CASES.items() :
         s1_segments = create_vector_segments(subsampled_coords_2d, s1_2d)
         s3_segments = create_vector_segments(subsampled_coords_2d, s3_2d)
 
-        background_data = ds['Delta S3'][time_idx, :].values / 1e6
+        background_data = -ds['Delta S3'][time_idx, :].values / 1e6
         bg_xi = np.linspace(x_min, x_max, 100)
         bg_yi = np.linspace(y_min, y_max, 100)
         all_coords_2d = coords[:, [x_comp_idx, y_comp_idx]]
@@ -168,7 +172,7 @@ for tag, filepath in CASES.items() :
         # Do the plotting
         ax.imshow(bg_Zi, extent=[bg_Xi.min(), bg_Xi.max(), bg_Yi.min(), bg_Yi.max()],
                  origin='lower', aspect='auto', interpolation='bilinear',
-                 cmap='RdBu_r', norm=norm, alpha=0.6)
+                 cmap=cmap, vmin=vmin, vmax=vmax, alpha=0.6)
         plot_segments(ax, s3_segments, 'lightgreen', 0.4, 1, 1)
         plot_segments(ax, s1_segments, 'black',      0.8, 1, 0.8)
 
