@@ -89,7 +89,7 @@ def smart_format(x, pos):
 # for ax in [ax2]:
 #     ax.xaxis.set_major_formatter(FuncFormatter(smart_format))
 
-fig.savefig("png/init_stress_p_t.png", dpi=300)
+fig.savefig("png/init_stress_p_t.png", dpi=500)
 #
 # Manually set equal positions for all axes
 # left_margin = 0.08
