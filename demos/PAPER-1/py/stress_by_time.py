@@ -140,7 +140,7 @@ fig.savefig("png/stress_by_time.png", dpi=500)
 #
 #
 
-fig,[ ax1, ax2 ] = plt.subplots(2, 1, figsize=(8/2.54,6/2.64), sharex=True)
+fig,[ ax1, ax2 ] = plt.subplots(2, 1, figsize=(8/2.54,9/2.64), sharex=True)
 ## RES
 dfxx = df_res[(df_res.ten9_comp=="xx") | (df_res.ten9_comp=="yy")]
 s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
@@ -155,7 +155,7 @@ ax1.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue',lw=0.7, ls='--', label=r
 ax1.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.', label=r"$\sigma_{zz}$")
 ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$p$")
 
-ax2.plot(df_res.time_d, df_res.Temperature-273, c='pink', lw=0.6, ls='--', label=r'$T$')
+ax2.plot(df_res.time_d, df_res.Temperature-273, c='#E0115F', lw=0.6, ls='--', label=r'$T$')
 ax2.set_ylim(30,90)
 ax2.set_ylabel(r"Temperature ($^\circ$C)")
 
@@ -164,13 +164,13 @@ ax2.set_ylabel(r"Temperature ($^\circ$C)")
 ax2.set_xlabel("Time (days)")
 ax1.set_xlim(0,2)
 
-ax1.set_ylabel("$-\sigma$, p (MPa)")
+ax1.set_ylabel(r"$-\sigma$, p (MPa)")
 # ax1.invert_yaxis()
 
 lines1, labels1   = ax1.get_legend_handles_labels()
 lines1t, labels1t = ax2.get_legend_handles_labels()
 leg = fig.legend(lines1 + lines1t, labels1 + labels1t, 
-                 loc='center right', bbox_to_anchor=(0.93,.46), ncol=3,
+                 loc='center', bbox_to_anchor=(0.55,.46), ncol=6,
                  fontsize=7, frameon=True, edgecolor='black', fancybox=False,
                  framealpha=1, columnspacing=1)
 leg.get_frame().set_linewidth(0.5)
