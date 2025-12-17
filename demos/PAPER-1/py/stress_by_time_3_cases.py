@@ -60,7 +60,8 @@ all_cases = [
 
         { 'dname' : "04-FULL-MODEL",         'legend' : 'Full model',   'c' : 'k', 'ls':'-' },
         { 'dname' : "05-NOCREEP",            'legend' : 'No creep',     'c' : 'r', 'ls':':'  },
-        { 'dname' : "06-NOPRESSURESOLUTION", 'legend': 'No PS creep' , 'c' : 'b', 'ls':'-.' }
+        { 'dname' : "06-NOPRESSURESOLUTION", 'legend': 'No PS creep' , 'c' : 'b', 'ls':'-.' },
+        { 'dname' : "08-ISOTHERMAL",         'legend': 'Isothermal' , 'c' : 'orange', 'ls':'--' }
 ]
 
 for reg in all_cases :
@@ -101,7 +102,11 @@ for ax in [ax1,ax2] :
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
 
-ax2.legend(loc='upper left', bbox_to_anchor=(1.02,1), frameon=True)
+# leg=ax1.legend(loc='upper center', bbox_to_anchor=(0.5,0.98),
+#            ncol=4, columnspacing=1, fontsize=7, frameon=True, edgecolor='k', fancybox=False, framealpha=1)
+leg=ax2.legend(loc='upper left', bbox_to_anchor=(1.05,1),
+           columnspacing=1, fontsize=7, frameon=True, edgecolor='k', fancybox=False, framealpha=1)
+leg.get_frame().set_linewidth(0.5)
 ax1.set_ylabel(r"Minimum principal stress, $\sigma_3$ (MPa)")
 ax1.invert_yaxis()
 
