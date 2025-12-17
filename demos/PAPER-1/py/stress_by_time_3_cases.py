@@ -96,8 +96,8 @@ for reg in all_cases :
     ax2.plot(s3.time_d, s3['S3 Magnitude']/1e6, c=reg['c'], ls=reg['ls'], lw=1, label=reg['legend'])
 
 # Decorations
-ax1.set_title(r"Minimum principal stress 5m into the reservoir")
-ax2.set_title(r"Minimum principal stress 5m into the caprock")
+ax1.set_title(r"5m into the reservoir")
+ax2.set_title(r"5m into the caprock")
 for ax in [ax1,ax2] : 
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
@@ -107,7 +107,7 @@ for ax in [ax1,ax2] :
 leg=ax2.legend(loc='upper left', bbox_to_anchor=(1.05,1),
            columnspacing=1, fontsize=7, frameon=True, edgecolor='k', fancybox=False, framealpha=1)
 leg.get_frame().set_linewidth(0.5)
-ax1.set_ylabel(r"Minimum principal stress, $\sigma_3$ (MPa)")
+ax1.set_ylabel(r"Minimum principal stress ($\sigma_3$, MPa)")
 ax1.invert_yaxis()
 
 fig.savefig("png/stress_by_time_with_and_without_creep.png", dpi=500)

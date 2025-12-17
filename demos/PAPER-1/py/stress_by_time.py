@@ -83,7 +83,7 @@ df_res["time_d"] = df_res.time/60/60/24
 df_cap["time_d"] = df_cap.time/60/60/24
 
 # Do some plotting
-fig, [ax2, ax1] = plt.subplots(1, 2, figsize=(12/2.54,6/2.64), sharey=True)
+fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(16/2.54,6/2.64), sharey=True)
 
 
 ## RES
@@ -115,18 +115,20 @@ ax2.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue', lw=0.7, ls='--', label=
 ax2.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.',label=r"$\sigma_{zz}$")
 
 # Decorations
-ax1.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the reservoir")
-ax2.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the caprock")
+ax1.set_title(f"Near the well, {DIST_FROM_IFC}m into the reservoir")
+ax2.set_title(f"Near the well, {DIST_FROM_IFC}m into the caprock")
 for ax in [ax1,ax2] : 
     ax.set_xlabel("Time (days)")
     ax.set_xlim(0,365*2)
 
 lines1, labels1   = ax1.get_legend_handles_labels()
-leg=fig.legend(lines1, labels1, loc='lower center', bbox_to_anchor=(0.5,0.15), ncol=5,
+# leg=fig.legend(lines1, labels1, loc='lower center', bbox_to_anchor=(0.5,0.15), ncol=5,
+#            fontsize=7, frameon=True, edgecolor='black', fancybox=False, framealpha=1)
+leg=ax2.legend(lines1, labels1, loc='upper left', bbox_to_anchor=(1.05,1), ncol=1,
            fontsize=7, frameon=True, edgecolor='black', fancybox=False, framealpha=1)
 leg.get_frame().set_linewidth(0.5)
 
-ax2.set_ylabel("$-$Stress,  Pressure (MPa)")
+ax1.set_ylabel("$-$Stress,  Pressure (MPa)")
 # ax1.invert_yaxis()
 
 
