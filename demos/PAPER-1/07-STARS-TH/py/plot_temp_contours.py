@@ -79,7 +79,7 @@ print(f"Plotting timesteps: {sel_strs}")
 print(f"Contour levels: {contour_levels}")
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+fig, ax1 = plt.subplots(1,1,figsize=(8.5/2.54, 6/2.54))
 
 # Define colormap for different timesteps
 colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
@@ -112,22 +112,22 @@ for idx, t in enumerate(selected_timesteps):
     valid_levels = [level for level in contour_levels 
                     if delta_temp.min() <= level <= delta_temp.max()]
     
-    contour = ax.contour(X, Z, DELTA_TEMP_grid, levels=valid_levels, 
+    contour = ax1.contour(X, Z, DELTA_TEMP_grid, levels=valid_levels, 
                          colors='k', ls='--', linewidths=0.6)
         
     # Add inline labels to the contour
 #     label_text = format_label(t)
-#     ax.clabel(contour, inline=False, fontsize=9, 
+#     ax1.clabel(contour, inline=False, fontsize=9, 
 #              fmt={level: label_text for level in valid_levels})        
 
-ax.axhspan(5500, 5600, facecolor='blue', alpha=0.3, zorder=0)
+ax1.axhspan(5500, 5600, facecolor='blue', alpha=0.3, zorder=0)
 
 # Labels and formatting
-ax.set_xlabel('Distance from well (m)')
-ax.set_ylabel('Depth (m)')
-ax.set_xlim(0,350)
-ax.set_ylim(5400,5650)
-ax.invert_yaxis()
+ax1.set_xlabel('Distance from well (m)')
+ax1.set_ylabel('Depth (m)')
+ax1.set_xlim(0,350)
+ax1.set_ylim(5400,5650)
+ax1.invert_yaxis()
 
 # Create title based on contour levels
 # if len(contour_levels) == 1:
@@ -135,12 +135,12 @@ ax.invert_yaxis()
 # else:
 #     title = f'DELTA_TEMP Contours at levels: {contour_levels}'
 
-ax.set_title(r"Isothermal contours for $\Delta T(t)=-5^\circ\text{C}$")
+ax1.set_title(r"Isothermal contours for $\Delta T(t)=-5°C")
 
 # Only show legend if we have contours
-if ax.get_legend_handles_labels()[0]:
-    ax.legend(loc='best')
-ax.grid(True, alpha=0.3)
+if ax1.get_legend_handles_labels()[0]:
+    ax1.legend(loc='best')
+ax1.grid(True)
 
 
 fig.savefig('png/temperature_contours.png', dpi=300, bbox_inches='tight')
@@ -182,7 +182,8 @@ sel_strs = [ format_label(t) for t in selected_timesteps ]
 print(f"Plotting timesteps: {sel_strs}")
 
 # Do the plotting
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+fig, [ax1,ax2] = plt.subplots(1,2,figsize=(13/2.54, 6/2.54), sharey=True)
+# fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
 for t_bg in selected_timesteps :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5505]  # single depth
@@ -190,19 +191,19 @@ for t_bg in selected_timesteps :
     X  = df_bg['x'].values
     T = df_bg['TEMP'].values
 
-    ax.plot(X, T-273, ls='--', lw=0.6, color='k')
+    ax1.plot(X, T-273, ls='--', lw=0.6, color='k')
 
-ax.set_xlabel("Distance from the well (m)")
-ax.set_ylabel(r"Temperature ($^\circ$C)")
-ax.set_title(r"(a) Reservoir top")
-ax.set_xlim(0,500)
-# ax.set_yscale('log')
-# ax.set_ylim(64,74)
+ax1.set_xlabel("Distance from the well (m)")
+ax1.set_ylabel(r"Temperature (°C)")
+ax1.set_title(r"5m into the reservoir")
+ax1.set_xlim(0,500)
+# ax1.set_yscale('log')
+# ax1.set_ylim(64,74)
 
-fig.savefig('png/temp_profile_res.png', dpi=300)
+# fig.savefig('png/temp_profile_res.png', dpi=300)
 
 # Do the plotting
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+# fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
 for t_bg in selected_timesteps :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5495]  # single depth
@@ -210,15 +211,16 @@ for t_bg in selected_timesteps :
     X  = df_bg['x'].values
     T = df_bg['TEMP'].values
 
-    ax.plot(X, T-273, ls='--', lw=0.6, color='k')
+    ax2.plot(X, T-273, ls='--', lw=0.6, color='k')
 
-ax.set_xlabel("Distance from the well (m)")
-ax.set_ylabel(r"Temperature ($^\circ$C)")
-ax.set_xlim(0,500)
-ax.set_title(r"(b) Caprock base")
-# ax.set_yscale('log')
-# ax.set_ylim(64,74)
-fig.savefig('png/temp_profile_caprock.png', dpi=300)
+ax2.set_xlabel("Distance from the well (m)")
+# ax2.set_ylabel(r"Temperature (°C)")
+ax2.set_xlim(0,500)
+ax2.set_title(r"5m into the caprock")
+# ax2.set_yscale('log')
+# ax2.set_ylim(64,74)
+
+fig.savefig('png/temp_profile_res_and_caprock.png', dpi=300)
 
 
 
