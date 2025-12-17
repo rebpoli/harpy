@@ -83,7 +83,7 @@ for reg in all_cases :
     szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
     s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
 
-    ax1.plot(s3.time_d, s3['S3 Magnitude']/1e6, c=reg['c'], ls=reg['ls'], lw=1, label=reg['legend'])
+    ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c=reg['c'], ls=reg['ls'], lw=1, label=reg['legend'])
 
     ## Caprock
     dfxx = df_cap[df_cap.ten9_comp=="xx"]
@@ -93,7 +93,7 @@ for reg in all_cases :
     szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
     s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
 
-    ax2.plot(s3.time_d, s3['S3 Magnitude']/1e6, c=reg['c'], ls=reg['ls'], lw=1, label=reg['legend'])
+    ax2.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c=reg['c'], ls=reg['ls'], lw=1, label=reg['legend'])
 
 # Decorations
 ax1.set_title(r"5m into the reservoir")
@@ -107,8 +107,7 @@ for ax in [ax1,ax2] :
 leg=ax2.legend(loc='upper left', bbox_to_anchor=(1.05,1),
            columnspacing=1, fontsize=7, frameon=True, edgecolor='k', fancybox=False, framealpha=1)
 leg.get_frame().set_linewidth(0.5)
-ax1.set_ylabel(r"Minimum principal stress ($\sigma_3$, MPa)")
-ax1.invert_yaxis()
+ax1.set_ylabel(r"Minimum principal stress ($-\sigma_3$, MPa)")
 
 fig.savefig("png/stress_by_time_with_and_without_creep.png", dpi=500)
 plt.show()
