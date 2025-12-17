@@ -11,6 +11,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 # matplotlib.use('Agg')  ## Noninteractive
 
+from custom_cmap import create_custom_cmap
+
 from plot_util import savefig
 
 cwd = os.path.dirname(__file__)
@@ -164,18 +166,23 @@ fig, ax2 = plt.subplots(1, 1, figsize=(8.5/2.54,6/2.54))
 all_axes.append(ax)
 from matplotlib.colors import LogNorm
 print( f"min: {grid_z.min()} max: {grid_z.max()} " )
+vmin, vmax = 1e-12, 1e-6
+vzero = np.sqrt(vmin*vmax)
+cmap = create_custom_cmap(vmin, vzero, vmax )
 contour = ax2.pcolormesh(grid_x, grid_y, grid_z, 
-                       norm=LogNorm(vmin=1e-12, vmax=1e-6),
-                       cmap='coolwarm', 
+                       norm=LogNorm(vmin=vmin, vmax=vmax),
+                       cmap=cmap,#'coolwarm', 
                        shading='auto', alpha=0.5)    
 
-log_min = 1e-12
-log_max = 1e-6
-levels = 10**np.linspace(-12, -3, 10)
-
-contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels,
-                          colors='k', linewidths=0.5)
+log_min = vmin
+log_max = vmax
+# levels = 10**np.linspace(-12, -3, 10)
+levels = [ 1e-12, 1e-11, 1e-10, 1e-9, 1e-7, 1e-5]
+contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels, colors='k', linewidths=0.5)
 ax2.clabel(contour_lines, inline=True, fontsize=7, fmt='%.1e')
+
+levels = [ 1e-8, 1e-6, 1e-4, 1e-3]
+contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels, colors='k', linewidths=0.5)
 
 cbar = plt.colorbar(contour)
 cbar.set_label(r"Strain rate (1/s)")
