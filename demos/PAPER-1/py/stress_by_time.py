@@ -162,7 +162,7 @@ ax2.set_ylim(30,90)
 ax2.set_ylabel(r"Temperature ($^\circ$C)")
 
 # Decorations
-# ax1.set_title(f"Stress at the well, {DIST_FROM_IFC} m into the reservoir")
+ax1.set_title(f"Near the well, {DIST_FROM_IFC}m into the reservoir")
 ax2.set_xlabel("Time (days)")
 ax1.set_xlim(0,2)
 
