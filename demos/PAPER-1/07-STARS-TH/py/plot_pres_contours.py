@@ -196,7 +196,7 @@ sel_strs = [ format_label(t) for t in selected_timesteps ]
 print(f"Plotting timesteps: {sel_strs}")
 
 # Do the plotting
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(7/2.54, 6/2.54))
 for t_bg in selected_timesteps :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5505]  # single depth
@@ -208,7 +208,7 @@ for t_bg in selected_timesteps :
 
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Pressure (MPa)")
-ax.set_title(r"Pressure profiles (reservoir top)")
+ax.set_title(r"5m into the reservoir")
 ax.set_xlim(0.1,100)
 ax.set_xscale('log')
 ax.set_ylim(63,75)
