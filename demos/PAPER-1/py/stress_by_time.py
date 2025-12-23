@@ -142,7 +142,7 @@ fig.savefig("png/stress_by_time.png", dpi=500)
 #
 #
 
-fig,[ ax1, ax2 ] = plt.subplots(2, 1, figsize=(8/2.54,9/2.64), sharex=True)
+fig,[ ax1, ax2 ] = plt.subplots(2, 1, figsize=(9/2.54,7/2.64), sharex=True, gridspec_kw={'height_ratios': [2, 1]})
 ## RES
 dfxx = df_res[(df_res.ten9_comp=="xx") | (df_res.ten9_comp=="yy")]
 s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
@@ -159,7 +159,7 @@ ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$
 
 ax2.plot(df_res.time_d, df_res.Temperature-273, c='#E0115F', lw=0.6, ls='--', label=r'$T$')
 ax2.set_ylim(30,90)
-ax2.set_ylabel(r"Temperature ($^\circ$C)")
+ax2.set_ylabel(r"Temperature (°C)")
 
 # Decorations
 ax1.set_title(f"Near the well, {DIST_FROM_IFC}m into the reservoir")
@@ -170,12 +170,20 @@ ax1.set_ylabel(r"$-\sigma$, p (MPa)")
 # ax1.invert_yaxis()
 
 lines1, labels1   = ax1.get_legend_handles_labels()
-lines1t, labels1t = ax2.get_legend_handles_labels()
-leg = fig.legend(lines1 + lines1t, labels1 + labels1t, 
-                 loc='center', bbox_to_anchor=(0.55,.46), ncol=6,
+leg = ax1.legend(lines1 , labels1 , 
+                 loc='lower center', bbox_to_anchor=(0.55,0.02), ncol=6,
                  fontsize=7, frameon=True, edgecolor='black', fancybox=False,
                  framealpha=1, columnspacing=1)
 leg.get_frame().set_linewidth(0.5)
 
 
+lines1t, labels1t = ax2.get_legend_handles_labels()
+leg = ax2.legend( lines1t,  labels1t, 
+                 loc='upper center', bbox_to_anchor=(0.55,.98), ncol=6,
+                 fontsize=7, frameon=True, edgecolor='black', fancybox=False,
+                 framealpha=1, columnspacing=1)
+leg.get_frame().set_linewidth(0.5)
+
+
+print("Saving short term...")
 fig.savefig("png/stress_by_time_short_term.png", dpi=500)
