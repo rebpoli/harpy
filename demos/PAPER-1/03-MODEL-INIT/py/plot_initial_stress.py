@@ -27,7 +27,7 @@ print(f"Difference: {difference/1e6:.2e} MPa")
 
 
 # Create the plot
-fig, [ax,ax3] = plt.subplots(1,2,figsize=(8/2.54, 8/2.54),sharey=True)
+fig, [ax,ax3] = plt.subplots(1,2,figsize=(9/2.54, 8/2.54),sharey=True)
 
 
 # Plot each stress component
