@@ -76,10 +76,29 @@ print(f"Plotting timesteps: {sel_strs}")
 print(f"Contour levels: {contour_levels}")
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
 
 # Define colormap for different timesteps
 colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
+
+lab_list = [
+    [ '10 days', (30, 5530), -88, 7 ],   #10 d
+    [ ], # 15 d
+    [ ], # 23 d
+    [ ], # 1 m
+    [ ], # 2 m
+    [ ], # 2.6 m
+    [ '4 months', (100, 5540), -80 , -5], # 4 m
+    [ ], # 6.5 m
+    [ ], # 9.5 m
+    [ '15 months', (100, 5540), -72 , -5], # 15 m
+    [ '23 months', (100, 5540), -70, -5 ], # 23 m
+    [ '3 years', (300, 5530), -67 , -5], # 3 y
+    [ ], # 4 y
+    [ ], # 6.6 y
+    [ ], # 10 y
+]
+
 
 # Plot contours for each selected timestep
 for idx, t in enumerate(selected_timesteps):
@@ -113,13 +132,23 @@ for idx, t in enumerate(selected_timesteps):
     
     contour = ax.contour(X, Z, DELTA_PRES_grid, levels=valid_levels, 
                          colors='k', linestyles='--', linewidths=0.6)
-        
-    # Add inline labels to the contour
-#     label_text = format_label(t)
-#     ax.clabel(contour, inline=False, fontsize=9, 
-#              fmt={level: label_text for level in valid_levels})        
 
-ax.axhspan(5500, 5600, facecolor='blue', alpha=0.3, zorder=0)
+    # Add inline labels to the contour
+    l = lab_list[idx]
+    if len(l) :
+        labs = ax.clabel(contour, inline=False, fontsize=6, 
+                          manual=[l[1]], fmt=l[0], inline_spacing=0,
+                          )#, 
+        labs[0].set_rotation(l[2])
+        x,y = labs[0].get_position()
+        theta = np.deg2rad(l[2])
+        nx=np.sin(theta)
+        ny=np.cos(theta)
+        offset=l[3]
+
+        labs[0].set_position((x+offset*nx,y+offset*ny))
+
+ax.axhspan(5500, 5600, facecolor='gray', alpha=0.3, zorder=0)
 
 # Labels and formatting
 ax.set_xlabel('Distance from well (m)')
@@ -134,7 +163,7 @@ ax.invert_yaxis()
 # else:
 #     title = f'DELTA_PRES Contours at levels: {contour_levels}'
 
-ax.set_title(r"Isobaric contours for $\Delta P(t)=5$MPa")
+ax.set_title(r"Isobaric contours $\Delta P(t)=5$MPa, at selected times")
 
 # Only show legend if we have contours
 if ax.get_legend_handles_labels()[0]:
@@ -196,7 +225,7 @@ sel_strs = [ format_label(t) for t in selected_timesteps ]
 print(f"Plotting timesteps: {sel_strs}")
 
 # Do the plotting
-fig, ax = plt.subplots(figsize=(7/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
 for t_bg in selected_timesteps :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5505]  # single depth
