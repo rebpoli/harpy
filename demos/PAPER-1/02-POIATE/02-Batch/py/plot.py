@@ -172,7 +172,7 @@ cmap = create_custom_cmap(vmin, vzero, vmax )
 contour = ax2.pcolormesh(grid_x, grid_y, grid_z, 
                        norm=LogNorm(vmin=vmin, vmax=vmax),
                        cmap=cmap,#'coolwarm', 
-                       shading='auto', alpha=0.5)    
+                       shading='auto', alpha=0.7)    
 
 log_min = vmin
 log_max = vmax
@@ -183,6 +183,11 @@ ax2.clabel(contour_lines, inline=True, fontsize=7, fmt='%.1e')
 
 levels = [ 1e-8, 1e-6, 1e-4, 1e-3]
 contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels, colors='k', linewidths=0.5)
+
+print(f"Data min: {np.nanmin(grid_z):.2e}")
+print(f"Data max: {np.nanmax(grid_z):.2e}")
+print(f"Norm min: {vmin:.2e}")
+print(f"Norm max: {vmax:.2e}")
 
 cbar = plt.colorbar(contour)
 cbar.set_label(r"Strain rate (1/s)")
