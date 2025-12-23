@@ -64,14 +64,14 @@ all_axes = []
 # PLOT 1 - ANALYTICAL VS NUMERICAL
 #
 
-fig, ax = plt.subplots(1, 1, figsize=(8.5/2.54,6/2.54))
+fig, ax = plt.subplots(1, 1, figsize=(9/2.54,6/2.54))
 all_axes.append(ax)
 groups = list(df.groupby("T", sort=True))
 for k, g in reversed(groups):
     if not k in SEL_TEMP : continue
     print(k) 
     if len(SEL_TEMP) and not k in SEL_TEMP : continue
-    ax.scatter( -g.sig/1e6, -g.eps_yy_rate, marker='x', lw=1.2, s=12, label=f"Numerical: T={k-273:.1f} °C", c=next(color_cycle))
+    ax.scatter( -g.sig/1e6, -g.eps_yy_rate, marker='x', lw=0.7, s=12, label=f"Numerical: T={k-273:.1f} °C", c=next(color_cycle))
 
 an_data = { 'T' : [], 'sig' : [], 'eps_rate' : [] }
 color_cycle = itertools.cycle(colors)
@@ -97,7 +97,7 @@ savefig(fig, "png/analitycal_vs_numerical.png")
 # PLOT 2 - NUMERICAL vs EXPERIMENTAL DATA
 #
 
-fig, ax = plt.subplots(1, 1, figsize=(8.5/2.54,6/2.54))
+fig, ax = plt.subplots(1, 1, figsize=(9/2.54,6/2.54))
 # fig, ax = plt.subplots(1, 1, figsize=(3.8,2.5))
 color_cycle = itertools.cycle(colors)
 all_axes.append(ax)
@@ -119,11 +119,11 @@ import itertools
 colors = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'pink', 'brown', 'gray', 'cyan', 'magenta', 'lime', 'indigo', 'violet', 'turquoise']
 color_cycle = itertools.cycle(colors)
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T130.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=1.2, label=r'Experimental, $T=130$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=0.7, label=r'Experimental, $T=130$ °C') 
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T86.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12,  lw=1.2,label=r'Experimental, $T=86$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12,  lw=0.7,label=r'Experimental, $T=86$ °C') 
 df_ = pd.read_csv(f"{cwd}/../raw_data/fig_5_17_T43.csv", sep="\t")
-l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=1.2, label=r'Experimental, $T=46$ °C') 
+l1 = ax.scatter(df_.sig_MPa, df_.eps_ss_rate_h/60/60 , c=next(color_cycle), marker='x',s=12, lw=0.7, label=r'Experimental, $T=46$ °C') 
 
 ax.legend(loc='upper left', bbox_to_anchor=(0.02,0.98))
 ax.set_xticks([1,4,10,40])
@@ -161,7 +161,7 @@ grid_x, grid_y = np.mgrid[min(x):max(x):100j, min(y):max(y):100j]
 from scipy.interpolate import griddata
 grid_z = griddata((x, y), z, (grid_x, grid_y), method='linear')
 
-fig, ax2 = plt.subplots(1, 1, figsize=(8.5/2.54,6/2.54))
+fig, ax2 = plt.subplots(1, 1, figsize=(9/2.54,6/2.54))
 # fig, ax2 = plt.subplots(1, 1, figsize=(4,3), constrained_layout=True)
 all_axes.append(ax)
 from matplotlib.colors import LogNorm

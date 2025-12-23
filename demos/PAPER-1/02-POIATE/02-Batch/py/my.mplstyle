@@ -1,10 +1,10 @@
 figure.titlesize : 7
-axes.titlesize : 7
+axes.titlesize : 6
 axes.labelsize : 7
 lines.linewidth : .5
 lines.markersize : 6
-xtick.labelsize : 7
-ytick.labelsize : 7
+xtick.labelsize : 6
+ytick.labelsize : 6
 scatter.marker: o
 scatter.edgecolors: face
 axes.prop_cycle    : cycler('color', 'bgrcmyk')
@@ -384,7 +384,7 @@ font.size:    9
 axes.linewidth:     0.5     # edge line width
 #axes.grid:          False   # display grid or not
 #axes.grid.axis:     both    # which axis the grid should apply to
-axes.grid.which:    both   # grid lines at {major, minor, both} ticks
+#axes.grid.which:    both   # grid lines at {major, minor, both} ticks
 #axes.titlelocation: center  # alignment of the title: {left, right, center}
 #axes.titlesize:     large   # font size of the axes title
 #axes.titleweight:   normal  # font weight of title

@@ -30,16 +30,16 @@ ref_df["time_in_days"] = ref_df.time_h/24
 ref_df["strain"] -= 0.014
 
 ## Plot simulation
-fig, ax = plt.subplots( figsize=(8/2.54,6/2.54))
+fig, ax = plt.subplots( figsize=(9/2.54,6/2.54))
 _df = df[::50]
-ax.plot(_df.time_in_days, _df.strain, c='k', lw=2, label = "Model")
+ax.plot(_df.time_in_days, _df.strain, c='k', ls='--', lw=1, label = "Model")
 
 # Plot raw data - interpolate for a better plot
 from scipy.interpolate import interp1d
 f_ = interp1d( ref_df.time_in_days , ref_df.strain, fill_value='extrapolate')
 t_ = np.linspace(-10,90,30)
 s_ = f_(t_)
-ax.scatter(t_, s_, c='r', marker='x', s=20, lw=1.2, label= "Experimental")
+ax.scatter(t_, s_, c='r', marker='x', s=20, lw=0.7, label= "Experimental")
 
 ax.set_xlim( 0, 90 )
 ax.set_ylim( 0, 0.2 )
