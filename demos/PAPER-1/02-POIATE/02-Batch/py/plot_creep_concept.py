@@ -71,22 +71,28 @@ ax.plot([x1, x1], [y0, y1], 'b-', linewidth=0.5)
 ax.plot([x0, x1], [y0, y1], 'b-', linewidth=0.5)
 ax.text(x1*1.05, (y0+y1)/2*0.5, r'$n_\text{dc}$', color='b',fontsize=9, va='center')
 
-
 # Labels
-ax.set_xlabel('Deviatoric Stress (MPa)')
-ax.set_ylabel('Strain rate (1/s)')
+ax.set_xlabel('Deviatoric Stress')
+ax.set_ylabel('Strain rate')
 from matplotlib.ticker import ScalarFormatter
 ax.xaxis.set_major_formatter(ScalarFormatter())
+
 
 # Legend - only for asymptotes
 ax.legend(loc='upper left', bbox_to_anchor=(0.02, 0.98))
 ax.set_xticks([])
-ax.set_yticks([])
-# ax.set_xticks([1,4,10,40])
+# ax.set_yticks([])
+ax.set_xticks([1,4,10,40])
+ax.set_xticklabels([])
+ax.set_yticklabels([])
 
 # Set axis limits
 ax.set_xlim([1,60])
 ax.set_ylim([1e-14, 1e-5])
+
+ax.xaxis.grid(True, which='both', alpha=0.1, zorder=0)  # Only vertical major gridlines
+ax.yaxis.grid(True, which='both', alpha=0.1, zorder=0)  # Only vertical major gridlines
+
 
 savefig(fig,'png/salt_creep_mechanisms.png')
 print("Plot saved successfully")
