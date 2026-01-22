@@ -46,7 +46,7 @@ ax.set_ylim( 0, 0.2 )
 ax.legend( bbox_to_anchor=(0.02, 0.98), loc="upper left")
 
 ax.set_xlabel('Time (days)')
-ax.set_ylabel('Strain')
+ax.set_ylabel('Strain (-)')
 
 import plot_util
 plot_util.savefig( fig, "png/transient.png" )
