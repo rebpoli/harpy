@@ -43,7 +43,7 @@ epsilon_dot_dc = arr*(stress/10)**n
 # Combined creep (sum of mechanisms)
 epsilon_dot_total = epsilon_dot_ps + epsilon_dot_dc
 
-fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(8.5/2.54, 5/2.54))
 
 ax.loglog(stress, epsilon_dot_total, 'k-', linewidth=1.0, zorder=10)
 
@@ -72,8 +72,8 @@ ax.plot([x0, x1], [y0, y1], 'b-', linewidth=0.5)
 ax.text(x1*1.05, (y0+y1)/2*0.5, r'$n_\text{dc}$', color='b',fontsize=9, va='center')
 
 # Labels
-ax.set_xlabel('Deviatoric Stress')
-ax.set_ylabel('Strain rate')
+ax.set_xlabel(r'Deviatoric Stress ($\sigma_e$)')
+ax.set_ylabel(r'Strain rate ($\dot{\bar{\varepsilon}}^{\text{vp}}$)')
 from matplotlib.ticker import ScalarFormatter
 ax.xaxis.set_major_formatter(ScalarFormatter())
 
