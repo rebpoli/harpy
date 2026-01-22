@@ -43,7 +43,7 @@ epsilon_dot_dc = arr*(stress/10)**n
 # Combined creep (sum of mechanisms)
 epsilon_dot_total = epsilon_dot_ps + epsilon_dot_dc
 
-fig, ax = plt.subplots(figsize=(8/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(8.5/2.54, 6/2.54))
 
 ax.loglog(stress, epsilon_dot_total, 'k-', linewidth=1.0, zorder=10)
 
