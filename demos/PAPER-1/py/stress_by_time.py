@@ -16,6 +16,17 @@ from s3_helpers import (
     create_profile_legend_elements, calculate_stress_differences, create_video_with_ffmpeg
 )
 from plot_util import savefig
+from matplotlib.ticker import ScalarFormatter
+from matplotlib.ticker import FuncFormatter
+def format_time(value, tick_number):
+    if value < 1:
+        if value < 0.1:
+            return f''
+        return f'{value:.1f}'  # 1 decimal place for values < 1
+    else:
+        return f'{int(value)}'  # No decimals for values >= 1
+
+
 
 import matplotlib
 matplotlib.use('Agg')
@@ -79,6 +90,8 @@ print("Done")
 # df_cap = pd.read_csv("csv/df_cap.csv")
 
 ## Time in days
+df_res["time_d"] = np.sqrt(df_res.time/60/60/24)
+df_cap["time_d"] = np.sqrt(df_cap.time/60/60/24)
 df_res["time_d"] = df_res.time/60/60/24
 df_cap["time_d"] = df_cap.time/60/60/24
 
@@ -88,14 +101,15 @@ fig, [ax1, ax2] = plt.subplots(1, 2, figsize=(16/2.54,6/2.64), sharey=True)
 
 ## RES
 dfxx = df_res[(df_res.ten9_comp=="xx") | (df_res.ten9_comp=="yy")]
-s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
+s3 = df_res.groupby('time_d')[['time','S3 Magnitude']].max().reset_index()
 sxx = dfxx.groupby('time_d')['Total Stress'].max().reset_index()
 dfzz = df_res[df_res.ten9_comp=="zz"]
 szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
-s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+# s3_0 = s3[s3.time<0]['S3 Magnitude'].values[0]
+s3_0 = df_res[df_res.time<0]['S3 Magnitude'].max()
 
-ax1.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3(t=0)$')
-ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
+ax1.axhline(-s3_0/1e6, ls='-', lw=1, alpha=1, c='orange', label=r'$\sigma_3(t=0)$')
+ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.3, lw=2, label=r"$\sigma_3$")
 ax1.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue',lw=0.7, ls='--', label=r"$\sigma_h$")
 ax1.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.', label=r"$\sigma_{zz}$")
 ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$p$")
@@ -106,20 +120,27 @@ s3 = df_cap.groupby('time_d')['S3 Magnitude'].max().reset_index()
 sxx = dfxx.groupby('time_d')['Total Stress'].max().reset_index()
 dfzz = df_cap[df_cap.ten9_comp=="zz"]
 szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
-s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+# s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+s3_0 = df_cap[df_cap.time<0]['S3 Magnitude'].max()
 
 
-ax2.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3^0$')
-ax2.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
+ax2.axhline(-s3_0/1e6, ls='-', lw=1, alpha=1, c='orange', label=r'$\sigma_3^0$')
+ax2.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.3, lw=2, label=r"$\sigma_3$")
 ax2.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue', lw=0.7, ls='--', label=r"$\sigma_h$")
 ax2.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.',label=r"$\sigma_{zz}$")
 
 # Decorations
-ax1.set_title(f"Near the well, {DIST_FROM_IFC}m into the reservoir")
-ax2.set_title(f"Near the well, {DIST_FROM_IFC}m into the caprock")
+ax1.set_title(f"Near-well, {DIST_FROM_IFC}m into the reservoir")
+ax2.set_title(f"Near-well, {DIST_FROM_IFC}m into the caprock")
 for ax in [ax1,ax2] : 
+#     ax2.set_xlabel(r"$\sqrt{\text{time}}$ (days)")
     ax.set_xlabel("Time (days)")
-    ax.set_xlim(0,365*2)
+#     ax.set_xlim(0,np.sqrt(365*2))
+#     ax.set_xlim(0,365*2)
+    ax.set_xlim(0.01,365*3)
+    ax.set_xscale('log')
+    ax.xaxis.set_major_formatter(FuncFormatter(format_time))
+
 
 lines1, labels1   = ax1.get_legend_handles_labels()
 # leg=fig.legend(lines1, labels1, loc='lower center', bbox_to_anchor=(0.5,0.15), ncol=5,
@@ -149,22 +170,24 @@ s3 = df_res.groupby('time_d')['S3 Magnitude'].max().reset_index()
 sxx = dfxx.groupby('time_d')['Total Stress'].max().reset_index()
 dfzz = df_res[df_res.ten9_comp=="zz"]
 szz = dfzz.groupby('time_d')['Total Stress'].max().reset_index()
-s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+# s3_0 = s3[s3.time_d<0]['S3 Magnitude'].values[0]
+s3_0 = df_res[df_res.time<0]['S3 Magnitude'].max()
 
-ax1.axhline(-s3_0/1e6, ls='-', lw=0.7, alpha=0.5, c='orange', label=r'$\sigma_3(t=0)$')
 ax1.plot(s3.time_d, -s3['S3 Magnitude']/1e6, c='k', alpha=0.5, lw=2, label=r"$\sigma_3$")
 ax1.plot(sxx.time_d, -sxx['Total Stress']/1e6, c='blue',lw=0.7, ls='--', label=r"$\sigma_h$")
 ax1.plot(szz.time_d, -szz['Total Stress']/1e6, c='green', lw=0.7, ls='-.', label=r"$\sigma_{zz}$")
 ax1.plot(df_res.time_d, df_res.Pressure/1e6, c='red', lw=0.7, ls='-.', label=r"$p$")
+ax1.axhline(-s3_0/1e6, ls='-', lw=0.9, alpha=0.8, c='orange', label=r'$\sigma_3(t=0)$')
 
 ax2.plot(df_res.time_d, df_res.Temperature-273, c='#E0115F', lw=0.6, ls='--', label=r'$T$')
 ax2.set_ylim(30,90)
 ax2.set_ylabel(r"Temperature (°C)")
 
 # Decorations
-ax1.set_title(f"Near the well, {DIST_FROM_IFC}m into the reservoir")
-ax2.set_xlabel("Time (days)")
-ax1.set_xlim(0,2)
+ax1.set_title(f"Near-well, {DIST_FROM_IFC}m into the reservoir")
+# ax2.set_xlabel(r"$\sqrt{\text{time}}$ (days)")
+ax2.set_xlabel(r"Time (days)")
+ax1.set_xlim(0,np.sqrt(2))
 
 ax1.set_ylabel(r"$-\sigma$, p (MPa)")
 # ax1.invert_yaxis()
