@@ -284,7 +284,7 @@ import matplotlib.colors as mcolors
 cmap = create_custom_cmap(vmin,0,vmax)
 im = ax1.imshow(dummy_data, cmap=cmap, vmin=vmin, vmax=vmax)
 cbar = plt.colorbar(im, cax=ax_cbar)
-cbar.set_label(r'Minimum principal stress ($-\Delta \sigma_3$, MPa)', rotation=270, labelpad=7)
+cbar.set_label(r'Min. principal stress change ($-\Delta \sigma_3$, MPa)', rotation=270, labelpad=7, fontsize=7)
 ax1.clear()
 
 ax_cbar.annotate('', xy=(0.5, 0.85), xytext=(0.5, 0.67), xycoords='axes fraction', arrowprops=dict(arrowstyle='->', lw=0.5, color='black'))

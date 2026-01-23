@@ -144,7 +144,7 @@ for tag, filepath in CASES.items() :
     im = ax1.imshow(dummy_data, cmap=cmap, vmin=vmin, vmax=vmax)
     ax1.clear()
     cbar = plt.colorbar(im, cax=ax_cbar)
-    cbar.set_label(r'Minimum principal stress ($-\Delta \sigma_3$, MPa)', rotation=270, labelpad=7)
+    cbar.set_label(r'Min. principal stress change ($-\Delta \sigma_3$, MPa)', rotation=270, labelpad=7, fontsize=7)
 
     ax_cbar.annotate('', xy=(0.5, 0.85), xytext=(0.5, 0.67), xycoords='axes fraction', arrowprops=dict(arrowstyle='->', lw=0.5, color='black'))
     ax_cbar.annotate('', xy=(0.5, 0.32), xytext=(0.5, 0.15),  xycoords='axes fraction', arrowprops=dict(arrowstyle='-', lw=0.5, color='black'))
