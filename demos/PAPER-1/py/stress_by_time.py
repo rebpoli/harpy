@@ -137,7 +137,7 @@ for ax in [ax1,ax2] :
     ax.set_xlabel("Time (days)")
 #     ax.set_xlim(0,np.sqrt(365*2))
 #     ax.set_xlim(0,365*2)
-    ax.set_xlim(0.01,365*3)
+    ax.set_xlim(0.05,365*3)
     ax.set_xscale('log')
     ax.xaxis.set_major_formatter(FuncFormatter(format_time))
 

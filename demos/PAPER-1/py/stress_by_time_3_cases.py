@@ -32,6 +32,15 @@ STRESS_COLORS = ['purple', 'orange']  # Colors for sigmaxx, sigmazz
 XY_TOLERANCE = 1e-6  # Tolerance for (x,y) position matching
 Z_TOLERANCE = 2.0  # Tolerance for depth matching (meters)
 
+from matplotlib.ticker import FuncFormatter
+def format_time(value, tick_number):
+    if value < 1:
+        if value < 0.1:
+            return f''
+        return f'{value:.1f}'  # 1 decimal place for values < 1
+    else:
+        return f'{int(value)}'  # No decimals for values >= 1
+
 # # Load dataset
 # filename = 'plane_yz.cd'
 # filepath = f"run/cdf/{filename}"
@@ -100,7 +109,9 @@ ax1.set_title(r"5m into the reservoir")
 ax2.set_title(r"5m into the caprock")
 for ax in [ax1,ax2] : 
     ax.set_xlabel("Time (days)")
-    ax.set_xlim(0,365*2)
+    ax.set_xlim(0.05,365*3)
+    ax.set_xscale('log')
+    ax.xaxis.set_major_formatter(FuncFormatter(format_time))
 
 # leg=ax1.legend(loc='upper center', bbox_to_anchor=(0.5,0.98),
 #            ncol=4, columnspacing=1, fontsize=7, frameon=True, edgecolor='k', fancybox=False, framealpha=1)
