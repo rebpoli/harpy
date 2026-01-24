@@ -13,7 +13,6 @@ cwd = os.path.dirname(__file__)
 fn = f"{cwd}/my.mplstyle"
 plt.style.use(fn)
 
-
 # ============================================================================
 
 # Option 4: Auto-select evenly spaced timesteps (default)
@@ -212,6 +211,25 @@ fig.savefig('png/pres_contours.png', dpi=300, bbox_inches='tight')
 #
 ### PLOT PxRADIUS
 
+lab_list = [
+            '10 days',
+            '23 days',
+            '56 days',
+            '4 months',
+            '10 months',
+            '23 months',
+            '4 years',
+            '10 years'
+            ]
+
+
+markers = ['o', 's', '^', 'v', 'd', 'p', '*', 'h']
+cmap = plt.cm.jet
+n_curves = len(selected_timesteps)
+color_values = np.linspace(0.1, 0.92, 10)
+
+
+
 # Select timetseps
 t_min = 10*24*60*60
 t_max = 10*365*24*60*60
@@ -226,14 +244,38 @@ print(f"Plotting timesteps: {sel_strs}")
 
 # Do the plotting
 fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
-for t_bg in selected_timesteps :
+i=0
+for t_bg in reversed(selected_timesteps) :
+    lab = lab_list[-i-1]
+    marker = markers[i % len(markers)]  # Cycle through markers
+    color = cmap(color_values[-i])
+
+    i+=1
+
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5505]  # single depth
     
     X  = df_bg['x'].values
     P = df_bg['PRES'].values
 
-    ax.plot(X, P/1e6, ls='--', lw=0.6, color='k')
+    ax.plot(X, P/1e6, ls='--', lw=0.6, 
+            label=lab, color=color)
+#             marker=marker, markevery=(offset,1), markersize=3,markeredgewidth=0.2, fillstyle='none', 
+
+#     ## ADD MARKERS
+#     x_min, x_max = 0.2, 90
+#     if i%2 : 
+#         fac = 1.8
+#         x_min *= fac
+#         x_max *= fac
+#     n_markers = 5  # Number of markers you want
+#     x_marker_positions = np.geomspace(x_min, x_max, n_markers)
+#     P_interpolated = np.interp(x_marker_positions, X, P)
+#     ax.plot(x_marker_positions, P_interpolated/1e6, 
+#             ls='', marker=marker, markersize=4,
+#             markeredgewidth=0.3, #fillstyle='none', 
+#             label=lab, markeredgecolor='k', color=color)    
+#     print(f"x_markers:{x_marker_positions}  //  P_interpolated:{P_interpolated}")
 
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Pressure (MPa)")
@@ -241,6 +283,7 @@ ax.set_title(r"5m into the reservoir")
 ax.set_xlim(0.1,100)
 ax.set_xscale('log')
 ax.set_ylim(63,75)
+ax.legend( ncol=2, fontsize=6, loc='lower left' )
 
 from matplotlib.ticker import FuncFormatter
 ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: f'{x:.10g}'))
