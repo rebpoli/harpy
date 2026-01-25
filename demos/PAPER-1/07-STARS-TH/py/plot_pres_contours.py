@@ -226,7 +226,7 @@ lab_list = [
 markers = ['o', 's', '^', 'v', 'd', 'p', '*', 'h']
 cmap = plt.cm.jet
 n_curves = len(selected_timesteps)
-color_values = np.linspace(0.1, 0.92, 10)
+color_values = np.geomspace(0.1, 0.95, n_curves)
 
 
 
@@ -248,7 +248,7 @@ i=0
 for t_bg in reversed(selected_timesteps) :
     lab = lab_list[-i-1]
     marker = markers[i % len(markers)]  # Cycle through markers
-    color = cmap(color_values[-i])
+    color = cmap(color_values[-i-1])
 
     i+=1
 
@@ -258,7 +258,7 @@ for t_bg in reversed(selected_timesteps) :
     X  = df_bg['x'].values
     P = df_bg['PRES'].values
 
-    ax.plot(X, P/1e6, ls='--', lw=0.6, 
+    ax.plot(X, P/1e6, ls='--', lw=.7, 
             label=lab, color=color)
 #             marker=marker, markevery=(offset,1), markersize=3,markeredgewidth=0.2, fillstyle='none', 
 
