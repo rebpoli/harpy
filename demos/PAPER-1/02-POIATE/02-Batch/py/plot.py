@@ -179,7 +179,7 @@ log_max = vmax
 # levels = 10**np.linspace(-12, -3, 10)
 levels = [ 1e-12, 1e-11, 1e-10, 1e-9, 1e-7, 1e-5]
 contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels, colors='k', linewidths=0.5)
-ax2.clabel(contour_lines, inline=True, fontsize=6, fmt='%.1e')
+ax2.clabel(contour_lines, inline=True, fontsize=6, fmt=lambda x: f"$10^{{{int(np.log10(x))}}}$")
 
 levels = [ 1e-8, 1e-6, 1e-4, 1e-3]
 contour_lines = ax2.contour(grid_x, grid_y, grid_z, levels=levels, colors='k', linewidths=0.5)
