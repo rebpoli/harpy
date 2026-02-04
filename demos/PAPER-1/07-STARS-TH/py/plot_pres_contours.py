@@ -16,7 +16,7 @@ plt.style.use(fn)
 # ============================================================================
 
 # Option 4: Auto-select evenly spaced timesteps (default)
-AUTO_SELECT = 15  
+AUTO_SELECT = 14
 contour_levels = [5e6]
 
 # ============================================================================
@@ -51,7 +51,7 @@ print(f"Time range: {timesteps[0]:.2f} to {timesteps[-1]:.2e} days")
 # t_min = 1*60*60#timesteps[0]
 # t_max = 5*365*24*60*60#timesteps[-1]
 t_min = 10*24*60*60
-t_max = 10*365*24*60*60
+t_max = 3*365*24*60*60
 log_times = np.logspace(np.log10(t_min), np.log10(t_max), AUTO_SELECT)
 # log_times = np.linspace(t_min, t_max, AUTO_SELECT)
 
@@ -212,14 +212,13 @@ print(f"Contour levels: {contour_levels}")
 ### PLOT PxRADIUS
 
 lab_list = [
-            [ '10 days', (0.13,69.8), -10 ] ,
+            [ '10 days', (0.13,69.9), -13 ] ,
             [ '23 days' ] , #, (1,68), 0 ] ,
-            [ '56 days' ] , #, (1,68), 0 ] ,
-            [ '4 months', (.28,70.23), -13 ] ,
-            [ '10 months'],#, (1,70.25), -13 ] ,
-            [ '23 months', (1,69.95), -15 ] ,
-            [ '4 years', (.3,71.7), -13 ] ,
-            [ '10 years', (.5,72.85), -13 ] 
+            [ '45 days' ] , #, (1,68), 0 ] ,
+            [ '3 months', (.28,70.23), -20 ] ,
+            [ '8 months'],#, (1,70.25), -13 ] ,
+            [ '17 months', (1,69.83), -24 ] ,
+            [ '3 years', (.3,71.4), -19 ] ,
             ]
 
 
@@ -232,8 +231,8 @@ color_values = np.geomspace(0.1, 0.95, n_curves)
 
 # Select timetseps
 t_min = 10*24*60*60
-t_max = 10*365*24*60*60
-log_times = np.logspace(np.log10(t_min), np.log10(t_max), 8)
+t_max = 3*365*24*60*60
+log_times = np.logspace(np.log10(t_min), np.log10(t_max), 7)
 selected_timesteps = []
 for log_t in log_times:
     idx = np.argmin(np.abs(np.array(timesteps) - log_t))
@@ -291,9 +290,9 @@ for t_bg in reversed(selected_timesteps) :
 ax.set_xlabel("Distance from the well (m)")
 ax.set_ylabel(r"Pressure (MPa)")
 ax.set_title(r"5m into the reservoir")
-ax.set_xlim(0.1,100)
+ax.set_xlim(0.1,350)
 ax.set_xscale('log')
-ax.set_ylim(63,75)
+ax.set_ylim(63.7,73)
 # ax.legend( ncol=2, fontsize=6, loc='lower left' )
 
 from matplotlib.ticker import FuncFormatter
