@@ -183,6 +183,11 @@ for tag, filepath in CASES.items() :
         ax.legend(handles=legend_elements, loc='upper right')
         ax.set_xlabel("X-Distance from the well (m)")
 
+        l = "Reservoir"
+        if tag == "caprock" : l ="Caprock"
+        ax.text(x_max-2, 2, l, fontsize=7, va='bottom', ha='right',
+                bbox=dict(boxstyle='square,pad=0.3', facecolor='white', edgecolor='none', alpha=1),#, linewidth=0.5, ls='--'),
+                zorder=11)
 
     ax2.tick_params(axis='y', labelleft=False)
     ax1.set_ylabel("Y-Distance from the well (m)")
