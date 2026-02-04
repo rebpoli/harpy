@@ -16,7 +16,7 @@ plt.style.use(fn)
 # ============================================================================
 
 # Option 4: Auto-select evenly spaced timesteps (default)
-AUTO_SELECT = 14
+AUTO_SELECT = 12
 contour_levels = [5e6]
 
 # ============================================================================
@@ -46,7 +46,6 @@ timesteps = [t for t in timesteps if t > 0]
 print(f"\nTotal available timesteps: {len(timesteps)}")
 print(f"Time range: {timesteps[0]:.2f} to {timesteps[-1]:.2e} days")
 
-
 # Create logarithmically spaced time values
 # t_min = 1*60*60#timesteps[0]
 # t_max = 5*365*24*60*60#timesteps[-1]
@@ -74,103 +73,100 @@ sel_strs = [ format_label(t) for t in selected_timesteps ]
 print(f"Plotting timesteps: {sel_strs}")
 print(f"Contour levels: {contour_levels}")
 
-# # Create the plot
-# fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
+# Create the plot
+fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
 
-# # Define colormap for different timesteps
-# colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
+# Define colormap for different timesteps
+colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
 
-# lab_list = [
-#     [ '10 days', (30, 5530), -88, 7 ],   #10 d
-#     [ ], # 15 d
-#     [ ], # 23 d
-#     [ ], # 1 m
-#     [ ], # 2 m
-#     [ ], # 2.6 m
-#     [ '4 months', (100, 5540), -80 , -5], # 4 m
-#     [ ], # 6.5 m
-#     [ ], # 9.5 m
-#     [ '15 months', (100, 5540), -72 , -5], # 15 m
-#     [ '23 months', (100, 5540), -70, -5 ], # 23 m
-#     [ '3 years', (300, 5530), -67 , -5], # 3 y
-#     [ ], # 4 y
-#     [ ], # 6.6 y
-#     [ ], # 10 y
-# ]
+lab_list = [
+    [ '10 days', (30, 5530), -88, (7,7) ],   #10 d
+    [ ], # 15 d
+    [ ], # 23 d
+    [ ], # 1 m
+    [ ], # 2 m
+    [ ], # 2.6 m
+    [ '4 months', (100, 5540), -80 , (-5,-5)], # 4 m
+    [ ], # 6.5 m
+    [ ], # 9.5 m
+    [ '16 months', (100, 5540), -72 , (-5,-5)], # 15 m
+    [ '24 months', (100, 5540), -68, (-5,-5) ], # 23 m
+    [ '3 years', (300, 5530), -62 , (8,-5)], # 3 y
+]
 
 
-# # Plot contours for each selected timestep
-# for idx, t in enumerate(selected_timesteps):
-#     df_t = df[df['t'] == t]
+# Plot contours for each selected timestep
+for idx, t in enumerate(selected_timesteps):
+    df_t = df[df['t'] == t]
 
-# #     x, z, delta_pres = add_noflow_ghosts( df_t, [5495, 5595] )
-#     
-#     # Get data
-#     x = df_t['x'].values
-#     z = df_t['z'].values
-#     delta_pres = df_t['DELTA_PRES'].values
-#     
-#     print(f"\nTimestep {t:.2e}: DELTA_PRES range = [{delta_pres.min():.2f}, {delta_pres.max():.2f}]")
-#     
-#     # Create a fine interpolation grid for smooth contours
-#     x_min, x_max = x.min(), x.max()
-#     z_min, z_max = z.min(), z.max()
-#     
-#     # Create a fine grid (increase resolution for smoother contours)
-#     n_points = 1000  # Number of points in each direction
-#     xi = np.logspace(np.log10(x_min), np.log10(x_max), n_points)
-#     zi = np.linspace(z_min, z_max, 2000)
-#     X, Z = np.meshgrid(xi, zi)
-#     
-#     # Interpolate DELTA_PRES onto the fine grid
-#     DELTA_PRES_grid = griddata((x, z), delta_pres, (X, Z), method='linear')
-#     
-#     # Check which contour levels are in range for this timestep
-#     valid_levels = [level for level in contour_levels 
-#                     if delta_pres.min() <= level <= delta_pres.max()]
-#     
-#     contour = ax.contour(X, Z, DELTA_PRES_grid, levels=valid_levels, 
-#                          colors='k', linestyles='--', linewidths=0.6)
+#     x, z, delta_pres = add_noflow_ghosts( df_t, [5495, 5595] )
+    
+    # Get data
+    x = df_t['x'].values
+    z = df_t['z'].values
+    delta_pres = df_t['DELTA_PRES'].values
+    
+    print(f"\nTimestep {t:.2e}: DELTA_PRES range = [{delta_pres.min():.2f}, {delta_pres.max():.2f}]")
+    
+    # Create a fine interpolation grid for smooth contours
+    x_min, x_max = x.min(), x.max()
+    z_min, z_max = z.min(), z.max()
+    
+    # Create a fine grid (increase resolution for smoother contours)
+    n_points = 1000  # Number of points in each direction
+    xi = np.logspace(np.log10(x_min), np.log10(x_max), n_points)
+    zi = np.linspace(z_min, z_max, 2000)
+    X, Z = np.meshgrid(xi, zi)
+    
+    # Interpolate DELTA_PRES onto the fine grid
+    DELTA_PRES_grid = griddata((x, z), delta_pres, (X, Z), method='linear')
+    
+    # Check which contour levels are in range for this timestep
+    valid_levels = [level for level in contour_levels 
+                    if delta_pres.min() <= level <= delta_pres.max()]
+    
+    contour = ax.contour(X, Z, DELTA_PRES_grid, levels=valid_levels, 
+                         colors='k', linestyles='--', linewidths=0.6)
 
-#     # Add inline labels to the contour
-#     l = lab_list[idx]
-#     if len(l) :
-#         labs = ax.clabel(contour, inline=False, fontsize=6, 
-#                           manual=[l[1]], fmt=l[0], inline_spacing=0,
-#                           )#, 
-#         labs[0].set_rotation(l[2])
-#         x,y = labs[0].get_position()
-#         theta = np.deg2rad(l[2])
-#         nx=np.sin(theta)
-#         ny=np.cos(theta)
-#         offset=l[3]
+    # Add inline labels to the contour
+    l = lab_list[idx]
+    if len(l) :
+        labs = ax.clabel(contour, inline=False, fontsize=6, 
+                          manual=[l[1]], fmt=l[0], inline_spacing=0,
+                          )#, 
+        labs[0].set_rotation(l[2])
+        x,y = labs[0].get_position()
+        theta = np.deg2rad(l[2])
+        nx=np.sin(theta)
+        ny=np.cos(theta)
+        xoff, yoff=l[3]
 
-#         labs[0].set_position((x+offset*nx,y+offset*ny))
+        labs[0].set_position((x+xoff*nx,y+yoff*ny))
 
-# ax.axhspan(5500, 5600, facecolor='gray', alpha=0.3, zorder=0)
+ax.axhspan(5500, 5600, facecolor='gray', alpha=0.3, zorder=0)
 
-# # Labels and formatting
-# ax.set_xlabel('Distance from well (m)')
-# ax.set_ylabel('Depth (m)')
-# ax.set_xlim(0,350)
-# ax.set_ylim(5400,5650)
-# ax.invert_yaxis()
+# Labels and formatting
+ax.set_xlabel('Distance from well (m)')
+ax.set_ylabel('Depth (m)')
+ax.set_xlim(0,350)
+ax.set_ylim(5400,5650)
+ax.invert_yaxis()
 
-# # Create title based on contour levels
-# # if len(contour_levels) == 1:
-# #     title = f'DELTA_PRES = {contour_levels[0]} Contours'
-# # else:
-# #     title = f'DELTA_PRES Contours at levels: {contour_levels}'
+# Create title based on contour levels
+# if len(contour_levels) == 1:
+#     title = f'DELTA_PRES = {contour_levels[0]} Contours'
+# else:
+#     title = f'DELTA_PRES Contours at levels: {contour_levels}'
 
-# ax.set_title(r"Isobaric contours $\Delta P(t)=5$MPa, at selected times")
+ax.set_title(r"Isobaric contours $\Delta P(t)=5$MPa, at selected times")
 
-# # Only show legend if we have contours
-# if ax.get_legend_handles_labels()[0]:
-#     ax.legend(loc='best')
-# ax.grid(True, alpha=0.3)
+# Only show legend if we have contours
+if ax.get_legend_handles_labels()[0]:
+    ax.legend(loc='best')
+ax.grid(True, alpha=0.3)
 
 
-# fig.savefig('png/pres_contours.png', dpi=300, bbox_inches='tight')
+fig.savefig('png/pres_contours.png', dpi=300, bbox_inches='tight')
 
 
 # # # Add colormap for 10th timestep as background
