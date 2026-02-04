@@ -324,6 +324,16 @@ for time_idx, ax in zip( [32, 113 ] , [ax1, ax2 ] ) :
     ax.legend(handles=legend_elements, loc='upper right')
     ax.set_xlabel("Distance from the well (m)")
 
+    # Add horizontal line at y=0
+    ax.axhline(y=0, color='black', linewidth=.5, linestyle='--', zorder=10, alpha=0.7)
+    x_min, x_max = ax.get_xlim()
+    ax.text(x_max-2, -2, 'Caprock', fontsize=7, va='bottom', ha='right',
+            bbox=dict(boxstyle='square,pad=0.3', facecolor='white', edgecolor='none', alpha=1),#, linewidth=0.5, ls='--'),
+            zorder=11)
+    ax.text(x_max-2, 2, 'Reservoir', fontsize=7, va='top', ha='right',
+            bbox=dict(boxstyle='square,pad=0.3', facecolor='white', edgecolor='none', alpha=1),#, linewidth=0.5, ls='--'),
+            zorder=11)
+
 
 ax2.tick_params(axis='y', labelleft=False)
 ax1.set_ylabel("Distance from the caprock interface (m)")
@@ -390,6 +400,15 @@ for time_idx, ax in zip( [32, 113 ] , [ax1, ax2 ] ) :
     ax.legend(handles=legend_elements, loc='upper right')
     ax.set_xlabel("Distance from the well (m)")
 
+    # Add horizontal line at y=0
+    ax.axhline(y=0, color='black', linewidth=.5, linestyle='--', zorder=10, alpha=0.7)
+    x_min, x_max = ax.get_xlim()
+    ax.text(x_max-2, -2, 'Caprock', fontsize=7, va='bottom', ha='right',
+            bbox=dict(boxstyle='square,pad=0.3', facecolor='white', edgecolor='none', alpha=1),#, linewidth=0.5, ls='--'),
+            zorder=11)
+    ax.text(x_max-2, 2, 'Reservoir', fontsize=7, va='top', ha='right',
+            bbox=dict(boxstyle='square,pad=0.3', facecolor='white', edgecolor='none', alpha=1),#, linewidth=0.5, ls='--'),
+            zorder=11)
 
 ax2.tick_params(axis='y', labelleft=False)
 ax1.set_ylabel("Distance from the caprock interface (m)")
