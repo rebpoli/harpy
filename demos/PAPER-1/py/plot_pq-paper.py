@@ -137,7 +137,7 @@ ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
     ax.set_xlabel("$P'$ (MPa)")
-    ax.set_ylabel("$Q'$ (MPa)")
+    ax.set_ylabel("$Q$ (MPa)")
     ax.set_xlim(-40,0)
     ax.set_ylim(0,30)
     ax.invert_xaxis()
