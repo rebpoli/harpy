@@ -128,10 +128,8 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
 
 # Dilation boundary band (caprock / total mean stress)
 p_dil, q_dil_lower, q_dil_upper = dilation_band(p_envelope_max)
-ax1.plot(p_dil, q_dil_lower, color='tab:red', linestyle="-", linewidth=0.4)
-ax1.plot(p_dil, q_dil_upper, color='tab:red', linestyle="-", linewidth=0.4)
-ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.25, color='tab:red',
-                  label="Dilation boundary")
+ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.25, color='gray',
+                  linewidth=0, label="Dilation boundary")
 
 # Plot reservoir (Z>0)
 scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
@@ -155,8 +153,9 @@ ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
     ax.set_ylabel("$Q$ (MPa)")
-    ax.set_ylim(0,30)
-    ax.invert_xaxis()
+    ax.set_ylim(0,50)
+ax1.set_xlim(0,-110)   # left panel (Caprock): 0 to -110
+ax2.set_xlim(0,-40)    # right panel (Reservoir): 0 to -40
 ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
 ax2.set_xlabel("$P'$ (MPa)")   # right plot: effective mean stress
 
