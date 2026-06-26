@@ -50,7 +50,9 @@ ax.text(-mid_sigma/1e6-3, z_target+5499, r'$\Delta \sigma$'+f' = {difference/1e6
 #                 color='black'
 #             ))
 
-ax.plot(df['Pressure']/1e6, df['Z']+5500, label=r'$p$', linewidth=0.7, ls='-.', c='b')
+# Plot pressure only in the reservoir (Z >= 0)
+df_res = df[df['Z'] >= 0]
+ax.plot(df_res['Pressure']/1e6, df_res['Z']+5500, label=r'$p$', linewidth=0.7, ls='-.', c='b')
 
 
 # Set labels and limits

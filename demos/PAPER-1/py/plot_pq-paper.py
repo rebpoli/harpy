@@ -59,11 +59,17 @@ y_min, y_max = coords_2d[:, 1].min(), coords_2d[:, 1].max()
 # Extract the variables
 inv_p = ds['Invariant P(eff)'].values
 inv_q = ds['Invariant Q'].values
+pressure = ds['Pressure'].values
 time = ds['time'].values
 z_coord = ds['Coord'].values[:, 2]  # Z is the 3rd component (index 2)
 
+# Total mean stress P = P_eff - pore pressure
+# (source: p_eff = ti.get_P() + p.pressure, see VPReport.cpp)
+inv_p_tot = inv_p - pressure
+
 # Flatten the arrays
 inv_p_flat = inv_p.flatten() / 1e6
+inv_p_tot_flat = inv_p_tot.flatten() / 1e6
 inv_q_flat = inv_q.flatten() / 1e6
 n_points = inv_p.shape[1]
 time_flat = np.repeat(time, n_points)
@@ -78,6 +84,7 @@ n_samples = int(len(inv_p_flat) * sample_fraction)
 indices = np.random.choice(len(inv_p_flat), size=n_samples, replace=False)
 
 inv_p_sub = inv_p_flat[indices]
+inv_p_tot_sub = inv_p_tot_flat[indices]
 inv_q_sub = inv_q_flat[indices]
 time_sub = time_flat_days[indices]
 z_sub = z_flat[indices]
@@ -102,8 +109,8 @@ vmax = time_flat_days.max()
 import matplotlib.colors as mcolors
 norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=(vmin+vmax)/2, vmax=vmax)
 
-# Plot caprock (Z<0)
-scatter1 = ax1.scatter(inv_p_sub[caprock_mask], inv_q_sub[caprock_mask],
+# Plot caprock (Z<0) - left plot uses TOTAL mean stress P
+scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
                        c=time_sub[caprock_mask],
                        cmap=cmap,
                        alpha=alpha,
@@ -136,11 +143,12 @@ ax1.set_title('Caprock')
 ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
-    ax.set_xlabel("$P'$ (MPa)")
     ax.set_ylabel("$Q$ (MPa)")
     ax.set_xlim(-40,0)
     ax.set_ylim(0,30)
     ax.invert_xaxis()
+ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
+ax2.set_xlabel("$P'$ (MPa)")   # right plot: effective mean stress
 
-savefig( fig, "png/PQ_contact.png" )
+savefig( fig, "png/PQ_contact-YZ-FULL_MODEL.png" )
 

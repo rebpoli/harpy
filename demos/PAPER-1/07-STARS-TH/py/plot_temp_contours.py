@@ -67,7 +67,7 @@ print(f"Plotting timesteps: {sel_strs}")
 print(f"Contour levels: {contour_levels}")
 
 # Create the plot
-fig, ax1 = plt.subplots(1,1,figsize=(9/2.54, 6/2.54))
+fig, ax1 = plt.subplots(1,1,figsize=(8/2.54, 6/2.54))
 
 # Define colormap for different timesteps
 colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
@@ -186,7 +186,7 @@ lab_list = [
 
 # Do the plotting
 # fig, [ax1,ax2] = plt.subplots(1,2,figsize=(13/2.54, 6/2.54), sharey=True)
-fig, ax1 = plt.subplots(figsize=(9/2.54, 6/2.54))
+fig, ax1 = plt.subplots(figsize=(8/2.54, 6/2.54))
 for idx, t_bg in enumerate(selected_timesteps) :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5505]  # single depth
@@ -241,7 +241,7 @@ lab_list = [
 ]
 
 # Do the plotting
-fig, ax2 = plt.subplots(figsize=(9/2.54, 6/2.54))
+fig, ax2 = plt.subplots(figsize=(8/2.54, 6/2.54))
 for idx, t_bg in enumerate(selected_timesteps) :
     df_bg = df[df['t'] == t_bg]
     df_bg = df_bg[df['z'] == 5495]  # single depth

@@ -74,7 +74,7 @@ print(f"Plotting timesteps: {sel_strs}")
 print(f"Contour levels: {contour_levels}")
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54))
+fig, ax = plt.subplots(figsize=(8/2.54, 6/2.54))
 
 # Define colormap for different timesteps
 colors = plt.cm.viridis(np.linspace(0, 1, len(selected_timesteps)))
@@ -238,7 +238,7 @@ sel_strs = [ format_label(t) for t in selected_timesteps ]
 print(f"Plotting timesteps: {sel_strs}")
 
 # Do the plotting
-fig, ax = plt.subplots(figsize=(9/2.54, 6/2.54), dpi=500)
+fig, ax = plt.subplots(figsize=(8/2.54, 6/2.54), dpi=500)
 i=0
 for t_bg in reversed(selected_timesteps) :
     reg = lab_list[-i-1]
