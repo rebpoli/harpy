@@ -126,10 +126,6 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
                        s=3,
                        edgecolors='none')
 
-p_env, q_env = mohr_coulomb_envelope(phi_salt, cohesion_salt, p_envelope_max)
-ax1.plot(p_env, q_env, color='k', linestyle="--", linewidth=0.4, label="MC envelope")
-ax1.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k')
-
 # Dilation boundary band (caprock / total mean stress)
 p_dil, q_dil_lower, q_dil_upper = dilation_band(p_envelope_max)
 ax1.plot(p_dil, q_dil_lower, color='tab:red', linestyle="-", linewidth=0.4)
@@ -146,10 +142,6 @@ scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
                        s=3,
                        edgecolors='none')
 
-p_env, q_env= mohr_coulomb_envelope(phi_carb, cohesion_carb, p_envelope_max)
-ax2.plot(p_env, q_env, color='k', linestyle="--", linewidth=0.4, label="MC envelope")
-ax2.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k') 
-
 cbar = plt.colorbar(scatter1, cax=ax_cbar, drawedges=False)
 cbar.solids.set_alpha(1.0)
 cbar.set_label(r'Time (days)', rotation=270, labelpad=10)
@@ -159,7 +151,6 @@ ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
     ax.set_ylabel("$Q$ (MPa)")
-    ax.set_xlim(-40,0)
     ax.set_ylim(0,30)
     ax.invert_xaxis()
 ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
