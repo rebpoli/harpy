@@ -155,7 +155,7 @@ ax2.set_title('Reservoir')
 for ax in [ ax1, ax2 ] :
     ax.set_ylabel("$Q$ (MPa)")
     ax.set_ylim(0,50)
-ax1.set_xlim(0,-110)   # left panel (Caprock): 0 to -110
+ax1.set_xlim(-70,-110)   # left panel (Caprock): -70 to -110
 ax2.set_xlim(0,-40)    # right panel (Reservoir): 0 to -40
 ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
 ax2.set_xlabel("$P'$ (MPa)")   # right plot: effective mean stress
