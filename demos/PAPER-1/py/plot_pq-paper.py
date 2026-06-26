@@ -142,6 +142,10 @@ scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
                        s=3,
                        edgecolors='none')
 
+p_env, q_env= mohr_coulomb_envelope(phi_carb, cohesion_carb, p_envelope_max)
+ax2.plot(p_env, q_env, color='k', linestyle="--", linewidth=0.4, label="MC envelope")
+ax2.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k')
+
 cbar = plt.colorbar(scatter1, cax=ax_cbar, drawedges=False)
 cbar.solids.set_alpha(1.0)
 cbar.set_label(r'Time (days)', rotation=270, labelpad=10)
