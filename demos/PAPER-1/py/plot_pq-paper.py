@@ -127,8 +127,9 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
                        edgecolors='none')
 
 # Dilation boundary band (caprock / total mean stress)
-p_dil, q_dil_lower, q_dil_upper = dilation_band(p_envelope_max)
-ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.25, color='gray',
+# span the full x range of the left panel (beyond -120)
+p_dil, q_dil_lower, q_dil_upper = dilation_band(130)
+ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.2, color='k',
                   linewidth=0, label="Dilation boundary")
 
 # Plot reservoir (Z>0)
