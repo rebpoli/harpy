@@ -131,6 +131,7 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
 p_dil, q_dil_lower, q_dil_upper = dilation_band(130)
 ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.2, color='k',
                   linewidth=0, label="Dilation boundary")
+ax1.plot(p_dil, q_dil_lower, color='k', linestyle="--", linewidth=0.4)
 
 # Plot reservoir (Z>0)
 scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
