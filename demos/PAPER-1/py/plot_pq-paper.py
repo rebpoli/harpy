@@ -25,6 +25,14 @@ def mohr_coulomb_envelope(phi, cohesion, pmax, npoints=200):
     print(f"PHI:{phi} COHESION:{cohesion} => C1:{C1} ; C2:{C2} , where Q=C1+C2*P")
     return -p, q
 
+#
+# Dilation boundary band (power-law envelopes), Q = a * P^b
+def dilation_band(pmax, npoints=200):
+    p = np.linspace(0, pmax, npoints)
+    q_upper = 11.11 * np.power(p, 0.274)  # Upper boundary
+    q_lower = 5.73  * np.power(p, 0.382)   # Lower boundary
+    return -p, q_lower, q_upper
+
 ## Get the mplstyle
 import os
 cwd = os.path.dirname(__file__)
@@ -120,7 +128,14 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
 
 p_env, q_env = mohr_coulomb_envelope(phi_salt, cohesion_salt, p_envelope_max)
 ax1.plot(p_env, q_env, color='k', linestyle="--", linewidth=0.4, label="MC envelope")
-ax1.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k') 
+ax1.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k')
+
+# Dilation boundary band (caprock / total mean stress)
+p_dil, q_dil_lower, q_dil_upper = dilation_band(p_envelope_max)
+ax1.plot(p_dil, q_dil_lower, color='tab:red', linestyle="-", linewidth=0.4)
+ax1.plot(p_dil, q_dil_upper, color='tab:red', linestyle="-", linewidth=0.4)
+ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.25, color='tab:red',
+                  label="Dilation boundary")
 
 # Plot reservoir (Z>0)
 scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
