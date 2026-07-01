@@ -180,7 +180,7 @@ ax1.text(-98, 33, "dilatancy", color='k', rotation=7,
          ha='center', va='center', fontsize=lbl_fs, transform=dil_tf)
 # maximum pore pressure nudged 1pt to the left
 pp_tf = mtransforms.offset_copy(ax1.transData, fig=fig, x=-1, units='points')
-ax1.text(-71.4, 3, r"tensile (max $p$)", color='k', rotation=90,
+ax1.text(-71.4, 3, r"tension (max $p$)", color='k', rotation=90,
          ha='center', va='bottom', fontsize=lbl_fs, transform=pp_tf)
 # Right panel: Mohr-Coulomb envelope (nudged 10pt down)
 mc_tf = mtransforms.offset_copy(ax2.transData, fig=fig, y=-10, units='points')
