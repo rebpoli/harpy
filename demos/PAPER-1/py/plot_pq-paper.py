@@ -180,11 +180,11 @@ ax1.text(-98, 33, "dilatancy", color='k', rotation=7,
          ha='center', va='center', fontsize=lbl_fs, transform=dil_tf)
 # maximum pore pressure nudged 1pt to the left
 pp_tf = mtransforms.offset_copy(ax1.transData, fig=fig, x=-1, units='points')
-ax1.text(-71.4, 3, "maximum pore pressure", color='k', rotation=90,
+ax1.text(-71.4, 3, r"tensile (max $p$)", color='k', rotation=90,
          ha='center', va='bottom', fontsize=lbl_fs, transform=pp_tf)
-# Right panel: Mohr-Coulomb envelope (nudged 8pt down)
-mc_tf = mtransforms.offset_copy(ax2.transData, fig=fig, y=-8, units='points')
-ax2.text(-9, 40, "Mohr-Coulomb", color='k', rotation=52,
+# Right panel: Mohr-Coulomb envelope (nudged 10pt down)
+mc_tf = mtransforms.offset_copy(ax2.transData, fig=fig, y=-10, units='points')
+ax2.text(-9, 40, r"shear (MC)", color='k', rotation=52,
          ha='center', va='center', fontsize=lbl_fs, transform=mc_tf)
 ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
 ax2.set_xlabel("$P'$ (MPa)")   # right plot: effective mean stress
