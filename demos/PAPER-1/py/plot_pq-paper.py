@@ -111,6 +111,12 @@ ax_cbar = fig.add_subplot(gs[0, 2])
 alpha=0.1
 cmap = "jet"
 
+# Shared style for the 3 envelope lines and their shaded areas
+ENV_LW = 0.4
+ENV_LS = "--"
+ENV_SHADE_COLOR = 'k'
+ENV_SHADE_ALPHA = 0.2
+
 ## Colorbar
 vmin=0
 vmax = time_flat_days.max()
@@ -129,14 +135,14 @@ scatter1 = ax1.scatter(inv_p_tot_sub[caprock_mask], inv_q_sub[caprock_mask],
 # Dilation boundary band (caprock / total mean stress)
 # span the full x range of the left panel (beyond -120)
 p_dil, q_dil_lower, q_dil_upper = dilation_band(130)
-ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=0.2, color='k',
-                  linewidth=0, label="Dilation boundary")
-ax1.plot(p_dil, q_dil_lower, color='k', linestyle="--", linewidth=0.4)
+ax1.fill_between( p_dil, q_dil_lower, q_dil_upper, alpha=ENV_SHADE_ALPHA,
+                  color=ENV_SHADE_COLOR, linewidth=0, label="Dilation boundary")
+ax1.plot(p_dil, q_dil_lower, color='k', linestyle=ENV_LS, linewidth=ENV_LW)
 
 # Maximum pore pressure observed (vertical dashed line, shaded to the left)
 p_maxpore = -72.0
-ax1.axvline(p_maxpore, color='k', linestyle="--", linewidth=0.6)
-ax1.axvspan(-70, p_maxpore, alpha=0.15, color='gray', linewidth=0)
+ax1.axvline(p_maxpore, color='k', linestyle=ENV_LS, linewidth=ENV_LW)
+ax1.axvspan(-70, p_maxpore, alpha=ENV_SHADE_ALPHA, color=ENV_SHADE_COLOR, linewidth=0)
 
 # Plot reservoir (Z>0)
 scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
@@ -168,15 +174,18 @@ ax2.set_xlim(0,-40)    # right panel (Reservoir): 0 to -40
 import matplotlib.transforms as mtransforms
 lbl_fs = plt.rcParams['font.size'] - 3   # reduce new-text fonts by 3pt
 # Left panel: dilatancy band + maximum pore pressure line
-# dilatancy nudged up by 5pt
-dil_tf = mtransforms.offset_copy(ax1.transData, fig=fig, y=5, units='points')
+# dilatancy nudged up by 4pt (5pt up, then 1pt down)
+dil_tf = mtransforms.offset_copy(ax1.transData, fig=fig, y=4, units='points')
 ax1.text(-98, 33, "dilatancy", color='k', rotation=7,
          ha='center', va='center', fontsize=lbl_fs, transform=dil_tf)
+# maximum pore pressure nudged 1pt to the left
+pp_tf = mtransforms.offset_copy(ax1.transData, fig=fig, x=-1, units='points')
 ax1.text(-71.4, 3, "maximum pore pressure", color='k', rotation=90,
-         ha='center', va='bottom', fontsize=lbl_fs)
-# Right panel: Mohr-Coulomb envelope
+         ha='center', va='bottom', fontsize=lbl_fs, transform=pp_tf)
+# Right panel: Mohr-Coulomb envelope (nudged 5pt down)
+mc_tf = mtransforms.offset_copy(ax2.transData, fig=fig, y=-5, units='points')
 ax2.text(-9, 40, "Mohr-Coulomb", color='k', rotation=52,
-         ha='center', va='center', fontsize=lbl_fs)
+         ha='center', va='center', fontsize=lbl_fs, transform=mc_tf)
 ax1.set_xlabel("$P$ (MPa)")    # left plot: total mean stress
 ax2.set_xlabel("$P'$ (MPa)")   # right plot: effective mean stress
 
