@@ -154,8 +154,8 @@ scatter2 = ax2.scatter(inv_p_sub[reservoir_mask], inv_q_sub[reservoir_mask],
                        edgecolors='none')
 
 p_env, q_env= mohr_coulomb_envelope(phi_carb, cohesion_carb, p_envelope_max)
-ax2.plot(p_env, q_env, color='k', linestyle="--", linewidth=0.4, label="MC envelope")
-ax2.fill_between( p_env, q_env, q_env.max(), alpha=0.2, color='k')
+ax2.plot(p_env, q_env, color='k', linestyle=ENV_LS, linewidth=ENV_LW, label="MC envelope")
+ax2.fill_between( p_env, q_env, q_env.max(), alpha=ENV_SHADE_ALPHA, color=ENV_SHADE_COLOR)
 
 cbar = plt.colorbar(scatter1, cax=ax_cbar, drawedges=False)
 cbar.solids.set_alpha(1.0)
