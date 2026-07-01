@@ -161,7 +161,7 @@ cbar = plt.colorbar(scatter1, cax=ax_cbar, drawedges=False)
 cbar.solids.set_alpha(1.0)
 cbar.set_label(r'Time (days)', rotation=270, labelpad=10)
 
-ax1.set_title('Caprock')
+ax1.set_title('Salt Caprock')
 ax2.set_title('Reservoir')
 
 for ax in [ ax1, ax2 ] :
